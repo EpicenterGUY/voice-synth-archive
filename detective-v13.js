@@ -172,7 +172,11 @@
       aliases:aliases,
       artistString:(item&&item.artistString)||artists.join(", "),
       lyrics:arr(item&&item.lyrics).map(function(x){return {value:String((x&&x.value)||"")};}).filter(function(x){return x.value;}),
-      bpm:(item&&item.bpm)||null,
+      minBpm:item&&item.minMilliBpm!=null?Number(item.minMilliBpm)/1000:null,
+      maxBpm:item&&item.maxMilliBpm!=null?Number(item.maxMilliBpm)/1000:null,
+      bpm:(item&&item.minMilliBpm!=null&&item.maxMilliBpm!=null)
+        ? (Number(item.minMilliBpm)+Number(item.maxMilliBpm))/2000
+        : (item&&item.minMilliBpm!=null?Number(item.minMilliBpm)/1000:null),
       vocadbId:id,
       vocadbUrl:"https://vocadb.net/S/"+id,
       vocadbPVs:arr(item&&item.pvs),
