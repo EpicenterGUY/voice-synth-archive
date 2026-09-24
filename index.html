@@ -2543,7 +2543,7 @@ function updateSummary(){
     const raw=state.counts[t.id];
     const n=raw==null?null:(+raw||0);
     $("#tierCount").textContent=n==null?"-":fmt(n);
-    $("#tierDesc").textContent=`${t.name} · ${t.range}회${state.upperTierCensus && ["myth","ultra","legend","nearlegend","halltop","hall"].includes(t.id) ? " · 정밀집계" : ""}`;
+    $("#tierDesc").textContent=`${t.name} · ${t.range}회${state.upperTierCensus && ["myth","ultra","legend"].includes(t.id) ? " · 정밀집계" : ""}`;
     $("#tierShare").textContent=n==null||total==null?"-":pct(n,total);
   }else{
     $("#tierCount").textContent=total==null?"-":fmt(total);
@@ -2606,7 +2606,7 @@ async function fetchExactUnionTierIds(tier,year,sourceMode=state.sourceMode){
 
 async function refreshExactUnionUpperTiers(year){
   if(!isUnionSourceMode())return null;
-  const exactIds=["myth","ultra","legend","nearlegend","halltop","hall"];
+  const exactIds=["myth","ultra","legend"];
   const result={};
   for(const id of exactIds){
     const tier=TIERS.find(t=>t.id===id);
@@ -2632,7 +2632,7 @@ async function refreshStats(){
     state.counts={total};
     for(const [id,n] of pairs) state.counts[id]=n;
 
-    // 통합 모집단은 상위 6개 빙산을 전체 태그 청크 + contentId 중복제거 방식으로 다시 센다.
+    // 통합 모집단은 신화·초전설·전설을 전체 태그 청크 + contentId 중복제거 방식으로 다시 센다.
     // 특히 신화(1,000만+)는 대표 태그 누락 때문에 숫자가 틀어지는 문제를 방지한다.
     if(isUnionSourceMode()){
       setStatus("warn","상위 빙산 정밀 집계 중");
@@ -2641,7 +2641,7 @@ async function refreshStats(){
         for(const [id,x] of Object.entries(exact)){
           if(x && !x.truncated)state.counts[id]=x.count;
         }
-        state.upperTierCensus="정밀 청크 집계";
+        state.upperTierCensus="상위 3구간 정밀 청크 집계";
       }
     }else{
       state.upperTierCensus="";
