@@ -356,6 +356,52 @@
   }
   detectiveSearch=v13Search;
 
+  // ===== Whole-app mobile pager =====
+  let mainMobileView="icebergPanel";
+  function setMainMobileView(id){
+    const app=document.querySelector(".app");
+    if(!app||!isMobile())return;
+    mainMobileView=id||"icebergPanel";
+    app.classList.add("mobile-paged");
+    ["icebergPanel","resultsPanel","universePanel","settingsPanel"].forEach(function(pid){
+      const el=document.getElementById(pid);
+      if(el)el.classList.toggle("mobile-main-active",pid===mainMobileView);
+    });
+    document.querySelectorAll("#mobileSectionNav button").forEach(function(b){
+      b.classList.toggle("active",b.dataset.target===mainMobileView);
+    });
+    window.scrollTo({top:0,behavior:"auto"});
+  }
+
+  function wireMainMobilePager(){
+    const nav=document.getElementById("mobileSectionNav");
+    if(!nav)return;
+    Array.from(nav.querySelectorAll("button")).forEach(function(old){
+      const fresh=old.cloneNode(true);
+      old.parentNode.replaceChild(fresh,old);
+      fresh.addEventListener("click",function(){
+        if(fresh.dataset.action==="tools"){
+          openToolsModal("detective");
+          return;
+        }
+        setMainMobileView(fresh.dataset.target||"icebergPanel");
+      });
+    });
+
+    ["apiSearchBtn","songsBtn"].forEach(function(id){
+      const b=document.getElementById(id);
+      if(b)b.addEventListener("click",function(){
+        if(isMobile())setTimeout(function(){setMainMobileView("resultsPanel");},30);
+      });
+    });
+    const openTools=document.getElementById("openToolsBtn");
+    if(openTools)openTools.addEventListener("click",function(){
+      if(isMobile())mainMobileView=mainMobileView||"icebergPanel";
+    });
+
+    if(isMobile())setMainMobileView(mainMobileView);
+  }
+
   // ===== Boot/UI wiring =====
   function boot(){
     if(!panel)return;
@@ -382,9 +428,19 @@
       fresh.addEventListener("click",v13Search);
     }
 
+    wireMainMobilePager();
     window.addEventListener("resize",function(){
-      if(isMobile())setMobileStep(mobileStep);
-      else if(panel)panel.classList.remove("mobile-show-results");
+      if(isMobile()){
+        setMobileStep(mobileStep);
+        setMainMobileView(mainMobileView);
+      }else{
+        if(panel)panel.classList.remove("mobile-show-results");
+        const app=document.querySelector(".app");
+        if(app)app.classList.remove("mobile-paged");
+        ["icebergPanel","resultsPanel","universePanel","settingsPanel"].forEach(function(pid){
+          const el=document.getElementById(pid);if(el)el.classList.remove("mobile-main-active");
+        });
+      }
     });
 
     // Small desktop simplification: advanced detective tuning stays available only in detailed mode.
@@ -393,7 +449,31 @@
       '.detective-panel.detective-simple .detective-controlbar>.control:first-child,'+
       '.detective-panel.detective-simple .detective-controlbar>.detective-toggle{display:none}'+
       '.detective-mobile-back{display:none}'+
-      '@media(max-width:699px){.detective-panel.mobile-show-results .detective-mobile-back{display:block;margin:5px 6px 0;height:30px;font-size:8px;padding:0 9px}}';
+      '@media(max-width:699px){.detective-panel.mobile-show-results .detective-mobile-back{display:block;margin:5px 6px 0;height:30px;font-size:8px;padding:0 9px}}'+
+      '@media(max-width:699px){'+
+      '.app.mobile-paged{height:100dvh;overflow:hidden;padding:6px 7px calc(8px + var(--safe-bottom))!important}'+
+      '.app.mobile-paged .topbar{height:54px;display:flex!important;align-items:center!important;margin:0!important;padding:2px 1px!important}'+
+      '.app.mobile-paged .brand .sub{display:none}.app.mobile-paged .logo{width:34px;height:34px}.app.mobile-paged h1{font-size:15px}'+
+      '.app.mobile-paged .status{margin-left:auto;max-width:48%;padding:0!important}.app.mobile-paged #snapshotLabel{display:none}.app.mobile-paged .status .pill{font-size:7.5px;padding:4px 6px}'+
+      '.app.mobile-paged #openToolsBtn{display:none}'+
+      '.app.mobile-paged .mobile-section-nav{position:static;margin:3px 0 5px;height:38px;padding:3px 4px;border-radius:10px}'+
+      '.app.mobile-paged .mobile-section-nav button{min-height:30px;padding:0 9px;font-size:8px}'+
+      '.app.mobile-paged .fold-settings-toggle{min-height:34px;margin:0 0 5px;font-size:9px}'+
+      '.app.mobile-paged .summary{display:flex!important;overflow-x:auto;gap:5px;margin:0 0 5px;padding-bottom:2px;scrollbar-width:none}'+
+      '.app.mobile-paged .summary::-webkit-scrollbar{display:none}.app.mobile-paged .summary .card{flex:0 0 132px;padding:7px 8px;border-radius:10px;scroll-snap-align:start}'+
+      '.app.mobile-paged .summary .k{font-size:7px}.app.mobile-paged .summary .v{font-size:14px}.app.mobile-paged .summary .note{font-size:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'+
+      '.app.mobile-paged #icebergPanel,.app.mobile-paged #resultsPanel,.app.mobile-paged #universePanel,.app.mobile-paged #settingsPanel{display:none!important}'+
+      '.app.mobile-paged #icebergPanel.mobile-main-active,.app.mobile-paged #resultsPanel.mobile-main-active,.app.mobile-paged #universePanel.mobile-main-active,.app.mobile-paged #settingsPanel.mobile-main-active{display:block!important}'+
+      '.app.mobile-paged .gem-panel{display:none!important}'+
+      '.app.mobile-paged .main{display:block!important;min-height:0}'+
+      '.app.mobile-paged .mobile-main-active{height:calc(100dvh - 54px - 43px - 39px - 63px - var(--safe-bottom));min-height:260px;overflow:auto;margin:0!important;border-radius:12px}'+
+      '.app.mobile-paged #icebergPanel .panel-head{padding:7px 8px 5px}.app.mobile-paged #icebergPanel .panel-head p{display:none}.app.mobile-paged #icebergPanel .panel-head h2{font-size:12px}'+
+      '.app.mobile-paged #icebergPanel .iceberg-wrap{padding:5px}.app.mobile-paged #icebergPanel .iceberg{display:grid!important;grid-template-columns:1fr 1fr;height:auto!important;gap:4px!important}'+
+      '.app.mobile-paged #icebergPanel .tier{min-height:42px!important;padding:4px 7px!important;border-radius:8px!important}.app.mobile-paged #icebergPanel .tier .name{font-size:9px!important}.app.mobile-paged #icebergPanel .tier .range{font-size:7px!important}.app.mobile-paged #icebergPanel .tier .count{font-size:10px!important}.app.mobile-paged #icebergPanel .tier .pct{font-size:7px!important}'+
+      '.app.mobile-paged #icebergPanel .legend{display:none}'+
+      '.app.mobile-paged #resultsPanel .panel-head{padding:7px 8px}.app.mobile-paged #resultsPanel .free-search{padding:6px}.app.mobile-paged #resultsPanel .song{grid-template-columns:24px 58px minmax(0,1fr);padding:5px 3px}.app.mobile-paged #resultsPanel .thumb{width:58px}.app.mobile-paged #resultsPanel .song-title{font-size:10px}'+
+      '.app.mobile-paged #universePanel .panel-head,.app.mobile-paged #settingsPanel .panel-head{padding:7px 8px}'+
+      '}';
     document.head.appendChild(style);
   }
 
