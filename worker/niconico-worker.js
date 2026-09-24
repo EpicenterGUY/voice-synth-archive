@@ -638,6 +638,41 @@ async function handleWarm(request,env){
   return json({ok:true,...w,indexedSongs:await dbCount(env)});
 }
 
+function rowToEntityForEmbedding(row){
+  return {
+    canonical_key:row.canonical_key,
+    title:row.title||"",
+    aliases:parseJson(row.aliases_json),
+    artists:parseJson(row.artists_json),
+    vocals:parseJson(row.vocals_json),
+    tags:parseJson(row.tags_json),
+    lyrics:row.lyrics_text||"",
+    publish_year:row.publish_year||null
+  };
+}
+
+async function backfillSemantic(env,{limit=120}={}){
+  if(!env?.AI||!env?.VECTORIZE||!await dbReady(env))return {ok:false,reason:"semantic-bindings-unavailable",upserted:0};
+  const key="semantic_cursor";
+  const row=await env.DB.prepare("SELECT value FROM sync_state WHERE key=?").bind(key).first();
+  let cursor=Math.max(0,Number(row?.value)||0);
+  let rows=arr((await env.DB.prepare("SELECT * FROM songs WHERE id>? ORDER BY id ASC LIMIT ?").bind(cursor,Math.max(1,Math.min(300,limit))).all())?.results);
+  if(!rows.length&&cursor>0){
+    cursor=0;
+    rows=arr((await env.DB.prepare("SELECT * FROM songs WHERE id>? ORDER BY id ASC LIMIT ?").bind(cursor,Math.max(1,Math.min(300,limit))).all())?.results);
+  }
+  if(!rows.length)return {ok:true,upserted:0,next:cursor};
+
+  const records=rows.map(row=>({songId:Number(row.id),entity:rowToEntityForEmbedding(row)}));
+  const sem=await upsertSemanticVectors(env,records);
+  const next=Number(rows[rows.length-1].id)||cursor;
+  await env.DB.prepare(`
+    INSERT INTO sync_state(key,value,updated_at) VALUES(?,?,?)
+    ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=excluded.updated_at
+  `).bind(key,String(next),new Date().toISOString()).run();
+  return {ok:true,upserted:sem.upserted||0,next};
+}
+
 async function syncVocaDBPages(env,{pages=4}={}){
   if(!await dbReady(env))return {ok:false,reason:"no-db"};
   const key="vocadb_original_cursor";
@@ -687,6 +722,16 @@ async function handleManualSync(request,env){
   return json(await syncVocaDBPages(env,{pages}));
 }
 
+async function handleManualReindex(request,env){
+  if(!env?.SYNC_TOKEN)return json({ok:false,error:"manual reindex disabled"},403);
+  const auth=clean(request.headers.get("Authorization"));
+  if(auth!=="Bearer "+env.SYNC_TOKEN)return json({ok:false,error:"unauthorized"},401);
+  let body={};
+  try{body=await request.json()}catch{}
+  const limit=Math.max(1,Math.min(300,Number(body?.limit)||150));
+  return json(await backfillSemantic(env,{limit}));
+}
+
 export default {
   async fetch(request,env,ctx) {
     if(request.method==="OPTIONS") return new Response(null,{status:204,headers:cors()});
@@ -709,6 +754,7 @@ export default {
     if(u.pathname==="/detective/search" && request.method==="POST")return handleDetectiveSearch(request,env);
     if(u.pathname==="/detective/warm" && request.method==="POST")return handleWarm(request,env);
     if(u.pathname==="/detective/sync" && request.method==="POST")return handleManualSync(request,env);
+    if(u.pathname==="/detective/reindex" && request.method==="POST")return handleManualReindex(request,env);
 
     if(request.method!=="GET") return json({ok:false,error:"GET only"},405);
 
@@ -770,6 +816,6 @@ export default {
   },
 
   async scheduled(event,env,ctx){
-    ctx.waitUntil(syncVocaDBPages(env,{pages:4}));
+    ctx.waitUntil((async()=>{await syncVocaDBPages(env,{pages:4});await backfillSemantic(env,{limit:120});})());
   }
 };
