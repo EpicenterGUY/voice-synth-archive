@@ -1,4 +1,4 @@
-# Detective index backend v17
+# Detective index backend v18
 
 The fast detective path is now a hybrid local search engine:
 
@@ -8,17 +8,21 @@ The fast detective path is now a hybrid local search engine:
 2. **Workers AI multilingual semantic embedding**
    - model: `@cf/baai/bge-m3`
    - Korean fuzzy memories can retrieve Japanese song metadata semantically
-3. **Vectorize nearest-neighbor search**
+3. **MV visual-semantic search**
+   - candidate thumbnails are captioned with `@cf/meta/llama-3.2-11b-vision-instruct`
+   - captions are embedded with `bge-m3` into a separate Vectorize index
+   - uploaded screenshots/drawings are captioned with the same vision model and queried against that visual index
+4. **Vectorize nearest-neighbor search**
    - 1024 dimensions
    - cosine metric
-4. **Existing client reranker**
+5. **Existing client reranker**
    - exact words / lyrics
    - vocal / year / producer
    - where-heard context
    - MV visual fingerprint
    - BPM / humming evidence
    - rejection feedback
-5. **Live Niconico + VocaDB fallback**
+6. **Live Niconico + VocaDB fallback**
    - used when the local index is still young or low-confidence
 
 ## One-time Cloudflare setup
@@ -45,11 +49,25 @@ Bind it as `VECTORIZE`.
 
 Add the Workers AI binding as `AI`.
 
-### 4. Cron
+The MV semantic layer currently uses Meta Llama 3.2 11B Vision. Cloudflare requires a one-time acceptance of Meta's license before first use of that model. Run the model once with `{"prompt":"agree"}` from the Workers AI API or Playground.
 
-A 15-minute cron is recommended. Each run processes up to 200 VocaDB Original-song rows, stores them in D1, batches semantic embeddings into Vectorize, enriches Niconico-linked songs with current Snapshot metadata, and backfills semantic vectors for older D1 rows.
+### 4. Visual Vectorize
 
-### 5. Deploy
+Create a second 1024-dimensional cosine index:
+
+```bash
+npx wrangler@latest vectorize create voice-synth-visual --dimensions=1024 --metric=cosine
+```
+
+Bind it as `VISUALIZE`.
+
+This index stores semantic vectors derived from MV/thumbnail captions, separate from the title/lyrics semantic index.
+
+### 5. Cron
+
+A 15-minute cron is recommended. Each run processes up to 200 VocaDB Original-song rows, stores them in D1, batches semantic embeddings into Vectorize, enriches Niconico-linked songs with current Snapshot metadata, backfills semantic vectors for older D1 rows, and captions a small batch of unprocessed thumbnails for the MV visual index.
+
+### 6. Deploy
 
 Deploy the updated `niconico-worker.js`.
 
@@ -87,6 +105,8 @@ Repeated calls advance a stored semantic cursor.
 - `POST /detective/warm`
 - `POST /detective/sync` — requires `SYNC_TOKEN`
 - `POST /detective/reindex` — semantic backfill for existing D1 rows; requires `SYNC_TOKEN`
+- `POST /detective/reindex-visual` — captions unprocessed thumbnails and fills the MV visual index; requires `SYNC_TOKEN`
+- `POST /detective/visual-query` — visual-memory search used by the browser
 
 ## Search behavior
 
@@ -103,3 +123,20 @@ The D1 schema already contains:
 - `audio_fingerprint`
 
 These are intended for precomputed MV/image embeddings and melody/audio fingerprints.
+
+
+## Faster MV visual backfill
+
+After the Meta vision-model license has been accepted and `VISUALIZE` is bound, you can accelerate thumbnail indexing:
+
+```text
+POST /detective/reindex-visual
+Authorization: Bearer <SYNC_TOKEN>
+Content-Type: application/json
+
+{"limit":30}
+```
+
+Repeat as needed. Normal cron runs also caption a small batch automatically.
+
+The visual layer is deliberately semantic rather than identity-based: it searches visible properties such as red/blue palettes, monochrome illustration, face close-ups, text-heavy frames, 3D/MMD-like visuals, backgrounds and objects.
