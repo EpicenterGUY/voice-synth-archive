@@ -1032,7 +1032,7 @@ body.tools-open{overflow:hidden}
     </details>
   </section>
 
-  <div class="footer">v11.1 · 광역 검색 · Niconico×VocaDB 교차 탐정 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v11.2 · 빙산 모집단 보정 · 광역 검색 · 교차 탐정 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -1778,19 +1778,67 @@ function compactScopeTags(scope){
  * v10.3의 8개 대표 태그만 쓰는 방식보다 누락을 줄이되,
  * 전체 세부 태그를 한 URL에 넣어 414가 나는 문제는 피한다.
  */
-const STAT_COVERAGE_TAGS = [
-  "VOCALOIDオリジナル曲",
-  "ミクオリジナル曲","リンオリジナル曲","レンオリジナル曲","ルカオリジナル曲",
-  "GUMIオリジナル曲","IAオリジナル曲","flowerオリジナル曲","KAITOオリジナル曲","MEIKOオリジナル曲",
-  "音街ウナオリジナル曲","結月ゆかりオリジナル曲",
-  "UTAUオリジナル曲","重音テトオリジナル曲","波音リツオリジナル曲","デフォ子オリジナル曲",
-  "SynthesizerVオリジナル曲","重音テトSVオリジナル曲","小春六花オリジナル曲","夏色花梨オリジナル曲",
-  "花隈千冬オリジナル曲","宮舞モカオリジナル曲","弦巻マキオリジナル曲",
-  "CeVIOオリジナル曲","CeVIO_AIオリジナル曲","可不オリジナル曲","星界オリジナル曲","裏命オリジナル曲",
-  "VoiSonaオリジナル曲","知声オリジナル曲",
-  "NEUTRINOオリジナル曲","東北きりたんオリジナル曲",
-  "VOICEVOXオリジナル曲","VOICEVOXハミングオリジナル曲","ずんだもんオリジナル曲"
-];
+const STAT_SCOPE_TAGS = {
+  vocaloid: [
+    "VOCALOIDオリジナル曲",
+    "ミクオリジナル曲","リンオリジナル曲","レンオリジナル曲","リンレンオリジナル曲","ルカオリジナル曲",
+    "MEIKOオリジナル曲","KAITOオリジナル曲","GUMIオリジナル曲","IAオリジナル曲",
+    "結月ゆかりオリジナル曲","歌愛ユキオリジナル曲","音街ウナオリジナル曲",
+    "flowerオリジナル曲","v_flowerオリジナル曲","鳴花ヒメオリジナル曲","鳴花ミコトオリジナル曲",
+    "Lilyオリジナル曲","MAYUオリジナル曲","VY1オリジナル曲","VY2オリジナル曲",
+    "猫村いろはオリジナル曲","mikiオリジナル曲","洛天依オリジナル曲"
+  ],
+  utau: [
+    "UTAUオリジナル曲","ＵＴＡＵオリジナル曲",
+    "重音テトオリジナル曲","波音リツオリジナル曲","桃音モモオリジナル曲","デフォ子オリジナル曲",
+    "雪歌ユフオリジナル曲","闇音レンリオリジナル曲","カゼヒキオリジナル曲","ゲキヤクオリジナル曲",
+    "足立レイオリジナル曲","ナースロボ＿タイプＴオリジナル曲"
+  ],
+  synthv: [
+    "SynthesizerVオリジナル曲","Synthesizervオリジナル曲","SynthVオリジナル曲",
+    "重音テトSVオリジナル曲","小春六花オリジナル曲","夏色花梨オリジナル曲","花隈千冬オリジナル曲",
+    "宮舞モカオリジナル曲","弦巻マキオリジナル曲","琴葉茜・葵オリジナル曲",
+    "Sakiオリジナル曲","Maiオリジナル曲"
+  ],
+  cevio: [
+    "CeVIOオリジナル曲","CeVIO_AIオリジナル曲","CeVIOAIオリジナル曲",
+    "可不オリジナル曲","星界オリジナル曲","裏命オリジナル曲","狐子オリジナル曲","羽累オリジナル曲",
+    "さとうささらオリジナル曲","ONEオリジナル曲"
+  ],
+  voisona: [
+    "VoiSonaオリジナル曲","voisonaオリジナル曲","知声オリジナル曲",
+    "機流音オリジナル曲","双葉湊音オリジナル曲","AiSuuオリジナル曲"
+  ],
+  neutrino: [
+    "NEUTRINOオリジナル曲","neutrinoオリジナル曲","東北きりたんオリジナル曲",
+    "めろうオリジナル曲","ナクモオリジナル曲","東北ずん子オリジナル曲","東北イタコオリジナル曲",
+    "No.7オリジナル曲","ずんだもんオリジナル曲"
+  ],
+  voicevox: [
+    "VOICEVOXオリジナル曲","VOICEVOXハミングオリジナル曲","VOICEVOX_songオリジナル曲",
+    "ずんだもんオリジナル曲","四国めたんオリジナル曲","春日部つむぎオリジナル曲"
+  ],
+  ace: [
+    "ACEStudioオリジナル曲","ACE_Studioオリジナル曲"
+  ]
+};
+
+STAT_SCOPE_TAGS.voice_synth = [...new Set([
+  ...STAT_SCOPE_TAGS.vocaloid,
+  ...STAT_SCOPE_TAGS.utau,
+  ...STAT_SCOPE_TAGS.synthv
+])];
+
+// 전체 음성합성은 414 여유를 남기기 위해, 각 엔진에서 실제 사용 빈도가 높은 태그만 합친다.
+STAT_SCOPE_TAGS.all_voice_synth = [...new Set([
+  ...STAT_SCOPE_TAGS.voice_synth,
+  ...STAT_SCOPE_TAGS.cevio,
+  ...STAT_SCOPE_TAGS.voisona,
+  ...STAT_SCOPE_TAGS.neutrino,
+  ...STAT_SCOPE_TAGS.voicevox
+])].slice(0,72);
+
+const STAT_COVERAGE_TAGS = STAT_SCOPE_TAGS.all_voice_synth;
 
 function fullScopeTags(scope){
   if(scope==="all_voice_synth") return ALL_VOICE_SYNTH_ORIGINAL_TAGS;
@@ -1893,7 +1941,8 @@ const state = {
   detectiveAudioEvidence:null,
   detectiveNearTags:[],
   rankObserver:null,
-  lastError:""
+  lastError:"",
+  statsCoverageWarning:""
 };
 
 const $ = s => document.querySelector(s);
@@ -1938,7 +1987,7 @@ function sourceDefinition(){
     return {
       label:"음성합성 오리지널 전체",
       description:"주요 음성합성 엔진의 대표 오리지널곡 태그를 통합 · URL 길이 제한 방지를 위해 통계 요청은 대표 태그로 집계",
-      q:STAT_COVERAGE_TAGS.join(" OR "),
+      q:STAT_SCOPE_TAGS.all_voice_synth.join(" OR "),
       targets:"tagsExact",
       unit:"곡"
     };
@@ -1947,7 +1996,7 @@ function sourceDefinition(){
     return {
       label:"CeVIO / CeVIO AI 오리지널곡",
       description:"CeVIO·CeVIO AI·可不·星界·裏命·狐子·羽累 등 주요 오리지널곡 태그 통합",
-      q:["CeVIOオリジナル曲","CeVIO_AIオリジナル曲","可不オリジナル曲"].join(" OR "),
+      q:STAT_SCOPE_TAGS.cevio.join(" OR "),
       targets:"tagsExact",
       unit:"곡"
     };
@@ -1956,7 +2005,7 @@ function sourceDefinition(){
     return {
       label:"VoiSona 오리지널곡",
       description:"VoiSona·知声·機流音·双葉湊音·AiSuu 등 주요 오리지널곡 태그 통합",
-      q:["VoiSonaオリジナル曲","知声オリジナル曲"].join(" OR "),
+      q:STAT_SCOPE_TAGS.voisona.join(" OR "),
       targets:"tagsExact",
       unit:"곡"
     };
@@ -1965,7 +2014,7 @@ function sourceDefinition(){
     return {
       label:"NEUTRINO 오리지널곡",
       description:"NEUTRINO·きりたん·めろう·ナクモ·ずん子·No.7 등 주요 오리지널곡 태그 통합",
-      q:["NEUTRINOオリジナル曲","東北きりたんオリジナル曲"].join(" OR "),
+      q:STAT_SCOPE_TAGS.neutrino.join(" OR "),
       targets:"tagsExact",
       unit:"곡"
     };
@@ -1974,7 +2023,7 @@ function sourceDefinition(){
     return {
       label:"VOICEVOX 계열 오리지널곡",
       description:"VOICEVOX·VOICEVOXハミング 및 주요 보이스의 오리지널곡 태그 통합",
-      q:["VOICEVOXオリジナル曲","VOICEVOXハミングオリジナル曲","ずんだもんオリジナル曲"].join(" OR "),
+      q:STAT_SCOPE_TAGS.voicevox.join(" OR "),
       targets:"tagsExact",
       unit:"곡"
     };
@@ -1983,7 +2032,7 @@ function sourceDefinition(){
     return {
       label:"ACE Studio 계열",
       description:"ACE Studio 관련 오리지널곡 태그",
-      q:["ACEStudioオリジナル曲","ACE_Studioオリジナル曲"].join(" OR "),
+      q:STAT_SCOPE_TAGS.ace.join(" OR "),
       targets:"tagsExact",
       unit:"곡"
     };
@@ -1992,8 +2041,8 @@ function sourceDefinition(){
   if(mode==="voice_synth_union"){
     return {
       label:"합성음성 오리지널 통합",
-      description:"VOCALOID + UTAU + Synthesizer V의 주요 오리지널곡 태그를 통합 · 같은 영상은 한 번만 집계",
-      q:COMPACT_SCOPE_TAGS.voice_synth.join(" OR "),
+      description:"VOCALOID + UTAU + Synthesizer V의 공통 태그뿐 아니라 주요 보컬별 오리지널 태그까지 통합",
+      q:STAT_SCOPE_TAGS.voice_synth.join(" OR "),
       targets:"tagsExact",
       unit:"곡"
     };
@@ -2001,8 +2050,8 @@ function sourceDefinition(){
   if(mode==="utau_union"){
     return {
       label:"UTAU 오리지널곡 통합",
-      description:"UTAUオリジナル曲 + 테토·리츠·모모·데포코 등 주요 UTAU 보컬별 오리지널 태그 통합",
-      q:["UTAUオリジナル曲","重音テトオリジナル曲"].join(" OR "),
+      description:"UTAU 공통 태그 + 테토·리츠·모모·데포코·유후·렌리·아다치 레이 등 주요 보컬별 태그 통합",
+      q:STAT_SCOPE_TAGS.utau.join(" OR "),
       targets:"tagsExact",
       unit:"곡"
     };
@@ -2010,8 +2059,8 @@ function sourceDefinition(){
   if(mode==="synthv_union"){
     return {
       label:"Synthesizer V 오리지널곡 통합",
-      description:"SynthesizerVオリジナル曲 + 테토SV·리카·카린·치후유·모카 등 주요 SynthV 보컬 태그 통합",
-      q:["SynthesizerVオリジナル曲","重音テトSVオリジナル曲"].join(" OR "),
+      description:"Synthesizer V 공통 표기 + 테토SV·릿카·카린·치후유·모카·마키 등 주요 보컬별 태그 통합",
+      q:STAT_SCOPE_TAGS.synthv.join(" OR "),
       targets:"tagsExact",
       unit:"곡"
     };
@@ -2065,7 +2114,7 @@ function sourceDefinition(){
   return {
     label:"VOCALOID 오리지널곡 통합",
     description:"VOCALOID 공통 오리지널 태그 + 미쿠·린·렌·루카·GUMI·IA·flower 등 주요 보컬별 오리지널 태그 통합",
-    q:["VOCALOIDオリジナル曲","ミクオリジナル曲","リンオリジナル曲","レンオリジナル曲","ルカオリジナル曲","GUMIオリジナル曲","IAオリジナル曲","flowerオリジナル曲","KAITOオリジナル曲","MEIKOオリジナル曲","音街ウナオリジナル曲","結月ゆかりオリジナル曲"].join(" OR "),
+    q:STAT_SCOPE_TAGS.vocaloid.join(" OR "),
     targets:"tagsExact",
     unit:"곡"
   };
@@ -2075,7 +2124,7 @@ function currentUnit(){
 }
 function sourceCacheKey(year=state.year){
   const d=sourceDefinition();
-  return "vocaloidIcebergCacheV4:"+encodeURIComponent(state.sourceMode+"|"+(state.customTag||"")+"|"+year+"|"+d.q);
+  return "vocaloidIcebergCacheV5:"+encodeURIComponent(state.sourceMode+"|"+(state.customTag||"")+"|"+year+"|"+d.q);
 }
 function syncSourceUI(){
   const d=sourceDefinition();
@@ -2279,10 +2328,21 @@ async function refreshStats(){
     });
     state.counts={total};
     for(const [id,n] of pairs) state.counts[id]=n;
+
+    // 모든 조회수 구간은 서로 겹치지 않고 전체 범위를 덮으므로 합계가 total과 같아야 한다.
+    const tierSum=TIERS.reduce((sum,t)=>sum+(+state.counts[t.id]||0),0);
+    state.statsCoverageWarning=Math.abs(tierSum-total)>Math.max(2,total*.001)
+      ? `구간 합계 ${fmt(tierSum)} / 전체 ${fmt(total)} · 집계 응답 불일치`
+      : "";
+    if(state.statsCoverageWarning){
+      console.warn(state.statsCoverageWarning);
+      $("#snapshotLabel").textContent=state.statsCoverageWarning;
+    }
+
     const cache={at:Date.now(),year:state.year,sourceMode:state.sourceMode,customTag:state.customTag,counts:state.counts,mode:state.mode};
     localStorage.setItem(sourceCacheKey(state.year),JSON.stringify(cache));
     setStatus("live","최신 스냅샷 연결");
-    $("#snapshotLabel").textContent="스냅샷: "+new Date().toLocaleString("ko-KR",{dateStyle:"short",timeStyle:"short"});
+    if(!state.statsCoverageWarning) $("#snapshotLabel").textContent="스냅샷: "+new Date().toLocaleString("ko-KR",{dateStyle:"short",timeStyle:"short"});
     toast("니코동 최신 스냅샷 통계를 갱신했습니다.");
   }catch(e){
     const cached=loadCacheForYear(state.year);
