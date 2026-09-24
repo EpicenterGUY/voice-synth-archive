@@ -1,15 +1,27 @@
 name = "voice-synth-archive-worker"
 main = "niconico-worker.js"
-compatibility_date = "2026-01-01"
+compatibility_date = "2026-09-01"
 
-# Create a D1 database, then fill in its IDs.
-# Binding name must stay "DB" because the worker uses env.DB.
 [[d1_databases]]
 binding = "DB"
 database_name = "voice-synth-detective"
 database_id = "PUT_YOUR_D1_DATABASE_ID_HERE"
 
-# Optional but recommended: gradually warm the local song index.
-# 50 VocaDB Original songs are indexed per run.
+# Workers AI multilingual embedding binding.
+[ai]
+binding = "AI"
+
+# Create first:
+# npx wrangler@latest vectorize create voice-synth-semantic --dimensions=1024 --metric=cosine
+[[vectorize]]
+binding = "VECTORIZE"
+index_name = "voice-synth-semantic"
+
+# Gradually fills D1 and Vectorize. Four 50-song VocaDB pages are processed per run.
 [triggers]
 crons = ["*/15 * * * *"]
+
+# Optional manual sync endpoint:
+# POST /detective/sync with Authorization: Bearer <SYNC_TOKEN>
+# Set this as a Worker secret, do not hardcode it:
+# npx wrangler secret put SYNC_TOKEN
