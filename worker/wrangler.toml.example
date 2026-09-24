@@ -17,6 +17,14 @@ binding = "AI"
 binding = "VECTORIZE"
 index_name = "voice-synth-semantic"
 
+# MV/thumbnail visual-semantic index.
+# Candidate thumbnails are captioned by a vision model, then embedded with bge-m3.
+# Create:
+# npx wrangler@latest vectorize create voice-synth-visual --dimensions=1024 --metric=cosine
+[[vectorize]]
+binding = "VISUALIZE"
+index_name = "voice-synth-visual"
+
 # Gradually fills D1 and Vectorize. Four 50-song VocaDB pages are processed per run.
 [triggers]
 crons = ["*/15 * * * *"]
