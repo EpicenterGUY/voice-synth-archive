@@ -382,14 +382,6 @@
       fresh.addEventListener("click",v13Search);
     }
 
-    // Context chips were inserted after the original main-script wiring, so bind them here.
-    document.querySelectorAll('.detective-chip[data-group="context"]').forEach(function(b){
-      b.addEventListener("click",function(){
-        b.classList.toggle("active");
-        updateDetectiveClueMeter();
-      });
-    });
-
     window.addEventListener("resize",function(){
       if(isMobile())setMobileStep(mobileStep);
       else if(panel)panel.classList.remove("mobile-show-results");
