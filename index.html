@@ -1187,7 +1187,7 @@ body.tools-open{overflow:hidden}
     </details>
   </section>
 
-  <div class="footer">v15.1 · 모바일 스크롤 UI · 상위 빙산 정밀집계 · 시각/허밍 탐정 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v15.2 · 레거시 원곡 보정 · 모바일 스크롤 UI · 정밀 빙산 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -1817,11 +1817,20 @@ const TAG = "VOCALOIDオリジナル曲";
  */
 const ORIGINAL_TAGS = [
   "VOCALOIDオリジナル曲",
+  "vocaloidオリジナル曲",
+  "VOCALOID神話入り",
+  "VOCALOID伝説入り",
+  "VOCALOID殿堂入り",
   "ミクオリジナル曲",
+  "初音ミクオリジナル曲",
   "リンオリジナル曲",
+  "鏡音リンオリジナル曲",
   "レンオリジナル曲",
+  "鏡音レンオリジナル曲",
   "リンレンオリジナル曲",
+  "鏡音リン・レンオリジナル曲",
   "ルカオリジナル曲",
+  "巡音ルカオリジナル曲",
   "MEIKOオリジナル曲",
   "KAITOオリジナル曲",
   "GUMIオリジナル曲",
@@ -1855,7 +1864,10 @@ const ORIGINAL_TAGS = [
 /* UTAU / Synthesizer V 추가 모집단 */
 const UTAU_ORIGINAL_TAGS = [
   "UTAUオリジナル曲",
+  "utauオリジナル曲",
   "ＵＴＡＵオリジナル曲",
+  "UTAU伝説入り",
+  "UTAU殿堂入り",
   "重音テトオリジナル曲",
   "波音リツオリジナル曲",
   "桃音モモオリジナル曲",
@@ -1878,7 +1890,10 @@ const UTAU_ORIGINAL_TAGS = [
 const SYNTHV_ORIGINAL_TAGS = [
   "SynthesizerVオリジナル曲",
   "Synthesizervオリジナル曲",
+  "synthesizervオリジナル曲",
   "SynthVオリジナル曲",
+  "SynthesizerV伝説入り",
+  "SynthesizerV殿堂入り",
   "重音テトSVオリジナル曲",
   "小春六花オリジナル曲",
   "夏色花梨オリジナル曲",
@@ -1905,6 +1920,9 @@ const VOICE_SYNTH_ORIGINAL_TAGS = [
 
 const CEVIO_ORIGINAL_TAGS = [
   "CeVIOオリジナル曲",
+  "cevioオリジナル曲",
+  "CeVIO伝説入り",
+  "CeVIO殿堂入り",
   "CeVIO_AIオリジナル曲",
   "CeVIOAIオリジナル曲",
   "可不オリジナル曲",
@@ -1919,6 +1937,8 @@ const CEVIO_ORIGINAL_TAGS = [
 const VOISONA_ORIGINAL_TAGS = [
   "VoiSonaオリジナル曲",
   "voisonaオリジナル曲",
+  "VoiSona伝説入り",
+  "VoiSona殿堂入り",
   "知声オリジナル曲",
   "機流音オリジナル曲",
   "双葉湊音オリジナル曲",
@@ -1929,6 +1949,8 @@ const VOISONA_ORIGINAL_TAGS = [
 const NEUTRINO_ORIGINAL_TAGS = [
   "NEUTRINOオリジナル曲",
   "neutrinoオリジナル曲",
+  "NEUTRINO伝説入り",
+  "NEUTRINO殿堂入り",
   "東北きりたんオリジナル曲",
   "めろうオリジナル曲",
   "ナクモオリジナル曲",
@@ -1941,6 +1963,8 @@ const NEUTRINO_ORIGINAL_TAGS = [
 
 const VOICEVOX_ORIGINAL_TAGS = [
   "VOICEVOXオリジナル曲",
+  "VOICEVOX伝説入り",
+  "VOICEVOX殿堂入り",
   "VOICEVOXハミングオリジナル曲",
   "VOICEVOX_songオリジナル曲",
   "ずんだもんオリジナル曲",
@@ -2006,8 +2030,9 @@ function compactScopeTags(scope){
  */
 const STAT_SCOPE_TAGS = {
   vocaloid: [
-    "VOCALOIDオリジナル曲",
-    "ミクオリジナル曲","リンオリジナル曲","レンオリジナル曲","リンレンオリジナル曲","ルカオリジナル曲",
+    "VOCALOIDオリジナル曲","vocaloidオリジナル曲",
+    "VOCALOID神話入り","VOCALOID伝説入り","VOCALOID殿堂入り",
+    "ミクオリジナル曲","初音ミクオリジナル曲","リンオリジナル曲","レンオリジナル曲","リンレンオリジナル曲","ルカオリジナル曲",
     "MEIKOオリジナル曲","KAITOオリジナル曲","GUMIオリジナル曲","IAオリジナル曲",
     "結月ゆかりオリジナル曲","歌愛ユキオリジナル曲","音街ウナオリジナル曲",
     "flowerオリジナル曲","v_flowerオリジナル曲","鳴花ヒメオリジナル曲","鳴花ミコトオリジナル曲",
@@ -2015,33 +2040,36 @@ const STAT_SCOPE_TAGS = {
     "猫村いろはオリジナル曲","mikiオリジナル曲","洛天依オリジナル曲"
   ],
   utau: [
-    "UTAUオリジナル曲","ＵＴＡＵオリジナル曲",
+    "UTAUオリジナル曲","utauオリジナル曲","ＵＴＡＵオリジナル曲",
+    "UTAU伝説入り","UTAU殿堂入り",
     "重音テトオリジナル曲","波音リツオリジナル曲","桃音モモオリジナル曲","デフォ子オリジナル曲",
     "雪歌ユフオリジナル曲","闇音レンリオリジナル曲","カゼヒキオリジナル曲","ゲキヤクオリジナル曲",
     "足立レイオリジナル曲","ナースロボ＿タイプＴオリジナル曲"
   ],
   synthv: [
-    "SynthesizerVオリジナル曲","Synthesizervオリジナル曲","SynthVオリジナル曲",
+    "SynthesizerVオリジナル曲","Synthesizervオリジナル曲","synthesizervオリジナル曲","SynthVオリジナル曲",
+    "SynthesizerV伝説入り","SynthesizerV殿堂入り",
     "重音テトSVオリジナル曲","小春六花オリジナル曲","夏色花梨オリジナル曲","花隈千冬オリジナル曲",
     "宮舞モカオリジナル曲","弦巻マキオリジナル曲","琴葉茜・葵オリジナル曲",
     "Sakiオリジナル曲","Maiオリジナル曲"
   ],
   cevio: [
-    "CeVIOオリジナル曲","CeVIO_AIオリジナル曲","CeVIOAIオリジナル曲",
+    "CeVIOオリジナル曲","cevioオリジナル曲","CeVIO伝説入り","CeVIO殿堂入り",
+    "CeVIO_AIオリジナル曲","CeVIOAIオリジナル曲",
     "可不オリジナル曲","星界オリジナル曲","裏命オリジナル曲","狐子オリジナル曲","羽累オリジナル曲",
     "さとうささらオリジナル曲","ONEオリジナル曲"
   ],
   voisona: [
-    "VoiSonaオリジナル曲","voisonaオリジナル曲","知声オリジナル曲",
+    "VoiSonaオリジナル曲","voisonaオリジナル曲","VoiSona伝説入り","VoiSona殿堂入り","知声オリジナル曲",
     "機流音オリジナル曲","双葉湊音オリジナル曲","AiSuuオリジナル曲"
   ],
   neutrino: [
-    "NEUTRINOオリジナル曲","neutrinoオリジナル曲","東北きりたんオリジナル曲",
+    "NEUTRINOオリジナル曲","neutrinoオリジナル曲","NEUTRINO伝説入り","NEUTRINO殿堂入り","東北きりたんオリジナル曲",
     "めろうオリジナル曲","ナクモオリジナル曲","東北ずん子オリジナル曲","東北イタコオリジナル曲",
     "No.7オリジナル曲","ずんだもんオリジナル曲"
   ],
   voicevox: [
-    "VOICEVOXオリジナル曲","VOICEVOXハミングオリジナル曲","VOICEVOX_songオリジナル曲",
+    "VOICEVOXオリジナル曲","VOICEVOX伝説入り","VOICEVOX殿堂入り","VOICEVOXハミングオリジナル曲","VOICEVOX_songオリジナル曲",
     "ずんだもんオリジナル曲","四国めたんオリジナル曲","春日部つむぎオリジナル曲"
   ],
   ace: [
@@ -2231,7 +2259,7 @@ function sourceDefinition(){
   if(mode==="all_voice_synth_union"){
     return {
       label:"음성합성 오리지널 전체",
-      description:"주요 음성합성 엔진의 대표 오리지널곡 태그를 통합 · URL 길이 제한 방지를 위해 통계 요청은 대표 태그로 집계",
+      description:"주요 음성합성 엔진의 오리지널곡 태그 + 레거시 원곡/달성 태그를 통합 · 멜트처럼 현재 오리지널 태그가 빠진 고전곡도 보정",
       q:STAT_SCOPE_TAGS.all_voice_synth.join(" OR "),
       targets:"tagsExact",
       unit:"곡"
@@ -2286,7 +2314,7 @@ function sourceDefinition(){
   if(mode==="voice_synth_union"){
     return {
       label:"합성음성 오리지널 통합",
-      description:"VOCALOID + UTAU + Synthesizer V의 공통 태그뿐 아니라 주요 보컬별 오리지널 태그까지 통합",
+      description:"VOCALOID + UTAU + Synthesizer V의 보컬별 오리지널 태그와 레거시 원곡/달성 태그까지 통합",
       q:STAT_SCOPE_TAGS.voice_synth.join(" OR "),
       targets:"tagsExact",
       unit:"곡"
@@ -2358,7 +2386,7 @@ function sourceDefinition(){
   }
   return {
     label:"VOCALOID 오리지널곡 통합",
-    description:"VOCALOID 공통 오리지널 태그 + 미쿠·린·렌·루카·GUMI·IA·flower 등 주요 보컬별 오리지널 태그 통합",
+    description:"VOCALOID 공통/보컬별 오리지널 태그 + 神話入り·伝説入り·殿堂入り 같은 레거시 원곡 구조 태그까지 통합",
     q:STAT_SCOPE_TAGS.vocaloid.join(" OR "),
     targets:"tagsExact",
     unit:"곡"
@@ -2369,7 +2397,7 @@ function currentUnit(){
 }
 function sourceCacheKey(year=state.year){
   const d=sourceDefinition();
-  return "vocaloidIcebergCacheV7:"+encodeURIComponent(state.sourceMode+"|"+(state.customTag||"")+"|"+year+"|"+d.q);
+  return "vocaloidIcebergCacheV8:"+encodeURIComponent(state.sourceMode+"|"+(state.customTag||"")+"|"+year+"|"+d.q);
 }
 function syncSourceUI(){
   const d=sourceDefinition();
