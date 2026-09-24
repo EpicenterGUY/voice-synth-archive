@@ -1187,7 +1187,7 @@ body.tools-open{overflow:hidden}
     </details>
   </section>
 
-  <div class="footer">v14.0 · 시각 지문 · BPM 대조 · 허밍 윤곽 · 단계형 심층 수사 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v15.0 · 상위 빙산 정밀집계 · 모바일 재배치 · 시각/허밍 탐정 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -2079,6 +2079,24 @@ function fullScopeTags(scope){
   return null;
 }
 
+function fullTagsForSourceMode(mode=state.sourceMode){
+  if(mode==="all_voice_synth_union") return ALL_VOICE_SYNTH_ORIGINAL_TAGS;
+  if(mode==="voice_synth_union") return VOICE_SYNTH_ORIGINAL_TAGS;
+  if(mode==="original_union") return ORIGINAL_TAGS;
+  if(mode==="utau_union") return UTAU_ORIGINAL_TAGS;
+  if(mode==="synthv_union") return SYNTHV_ORIGINAL_TAGS;
+  if(mode==="cevio_union") return CEVIO_ORIGINAL_TAGS;
+  if(mode==="voisona_union") return VOISONA_ORIGINAL_TAGS;
+  if(mode==="neutrino_union") return NEUTRINO_ORIGINAL_TAGS;
+  if(mode==="voicevox_union") return VOICEVOX_ORIGINAL_TAGS;
+  if(mode==="ace_union") return ACE_ORIGINAL_TAGS;
+  return null;
+}
+function isUnionSourceMode(mode=state.sourceMode){
+  return Array.isArray(fullTagsForSourceMode(mode));
+}
+
+
 function songMatchesScope(song,scope){
   if(!scope || scope==="all") return true;
   const full=fullScopeTags(scope);
@@ -2168,7 +2186,8 @@ const state = {
   detectiveNearTags:[],
   rankObserver:null,
   lastError:"",
-  statsCoverageWarning:""
+  statsCoverageWarning:"",
+  upperTierCensus:""
 };
 
 const $ = s => document.querySelector(s);
@@ -2350,7 +2369,7 @@ function currentUnit(){
 }
 function sourceCacheKey(year=state.year){
   const d=sourceDefinition();
-  return "vocaloidIcebergCacheV6:"+encodeURIComponent(state.sourceMode+"|"+(state.customTag||"")+"|"+year+"|"+d.q);
+  return "vocaloidIcebergCacheV7:"+encodeURIComponent(state.sourceMode+"|"+(state.customTag||"")+"|"+year+"|"+d.q);
 }
 function syncSourceUI(){
   const d=sourceDefinition();
@@ -2374,14 +2393,14 @@ function yearBounds(year){
   const y=+year;
   return {gte:`${y}-01-01T00:00:00+09:00`, lt:`${y+1}-01-01T00:00:00+09:00`};
 }
-function makeParams({tier=null,year="all",sort="-viewCounter",limit=1,offset=0,mode="ranking",query="",scope="all",applyYear=true,applyTier=true,numericFilters=null,extraExactTag="",dateRange=null,queryTargets=null}={}){
+function makeParams({tier=null,year="all",sort="-viewCounter",limit=1,offset=0,mode="ranking",query="",scope="all",applyYear=true,applyTier=true,numericFilters=null,extraExactTag="",dateRange=null,queryTargets=null,overrideQuery=null,overrideTargets=null}={}){
   let q="";
   let targets="";
 
   if(mode==="ranking"){
     const d=sourceDefinition();
-    q=d.q;
-    targets=d.targets;
+    q=overrideQuery!=null ? String(overrideQuery) : d.q;
+    targets=overrideTargets || d.targets;
     if(!q) throw new Error("사용자 지정 태그를 입력하세요.");
   }else if(mode==="free"){
     q=(query||"").trim();
@@ -2524,7 +2543,7 @@ function updateSummary(){
     const raw=state.counts[t.id];
     const n=raw==null?null:(+raw||0);
     $("#tierCount").textContent=n==null?"-":fmt(n);
-    $("#tierDesc").textContent=`${t.name} · ${t.range}회`;
+    $("#tierDesc").textContent=`${t.name} · ${t.range}회${state.upperTierCensus && ["myth","ultra","legend","nearlegend","halltop","hall"].includes(t.id) ? " · 정밀집계" : ""}`;
     $("#tierShare").textContent=n==null||total==null?"-":pct(n,total);
   }else{
     $("#tierCount").textContent=total==null?"-":fmt(total);
@@ -2542,6 +2561,62 @@ function setupSelectors(){
   const ts=$("#tierSelect");
   ts.innerHTML=`<option value="all">전체 구간</option>`+TIERS.map(t=>`<option value="${t.id}">${t.name} · ${t.range}</option>`).join("");
 }
+
+function chunkArray(items,size){
+  const out=[];
+  for(let i=0;i<items.length;i+=size)out.push(items.slice(i,i+size));
+  return out;
+}
+
+async function fetchExactUnionTierIds(tier,year,sourceMode=state.sourceMode){
+  const tags=fullTagsForSourceMode(sourceMode);
+  if(!tags || !tags.length)return null;
+
+  // 상위 조회수 구간은 건수가 작으므로 전체 태그를 여러 짧은 OR 쿼리로 나누고 contentId로 중복 제거한다.
+  // 한 번의 초장문 쿼리보다 414에 강하고, 태그가 여러 개 붙은 같은 영상도 한 곡으로 계산된다.
+  const chunks=chunkArray([...new Set(tags)],8);
+  const ids=new Set();
+  let truncated=false;
+
+  await mapLimit(chunks,3,async group=>{
+    const q=group.join(" OR ");
+    let offset=0;
+    let seen=0;
+    while(offset<=1600){
+      const d=await fetchNico({
+        tier,year,sort:"-viewCounter",limit:100,offset,
+        mode:"ranking",applyYear:true,applyTier:true,
+        overrideQuery:q,overrideTargets:"tagsExact"
+      });
+      const rows=d.data||[];
+      for(const s of rows)if(s?.contentId)ids.add(s.contentId);
+      seen+=rows.length;
+      const total=+d.meta.totalCount||0;
+      if(!rows.length || offset+rows.length>=total)break;
+      offset+=100;
+      if(offset>1600){
+        truncated=true;
+        break;
+      }
+    }
+  });
+
+  return {count:ids.size,truncated};
+}
+
+async function refreshExactUnionUpperTiers(year){
+  if(!isUnionSourceMode())return null;
+  const exactIds=["myth","ultra","legend","nearlegend","halltop","hall"];
+  const result={};
+  for(const id of exactIds){
+    const tier=TIERS.find(t=>t.id===id);
+    if(!tier)continue;
+    const x=await fetchExactUnionTierIds(tier,year);
+    if(x)result[id]=x;
+  }
+  return result;
+}
+
 async function refreshStats(){
   if(state.busy)return; state.busy=true;
   $("#refreshBtn").disabled=true; $("#songsBtn").disabled=true;
@@ -2557,13 +2632,29 @@ async function refreshStats(){
     state.counts={total};
     for(const [id,n] of pairs) state.counts[id]=n;
 
-    // 모든 조회수 구간은 서로 겹치지 않고 전체 범위를 덮으므로 합계가 total과 같아야 한다.
+    // 통합 모집단은 상위 6개 빙산을 전체 태그 청크 + contentId 중복제거 방식으로 다시 센다.
+    // 특히 신화(1,000만+)는 대표 태그 누락 때문에 숫자가 틀어지는 문제를 방지한다.
+    if(isUnionSourceMode()){
+      setStatus("warn","상위 빙산 정밀 집계 중");
+      const exact=await refreshExactUnionUpperTiers(state.year);
+      if(exact){
+        for(const [id,x] of Object.entries(exact)){
+          if(x && !x.truncated)state.counts[id]=x.count;
+        }
+        state.upperTierCensus="정밀 청크 집계";
+      }
+    }else{
+      state.upperTierCensus="";
+    }
+
+    // 하위 구간은 대규모라 compact OR 집계를 유지한다. 상위 구간만 정밀 census로 교체되므로
+    // total과 전체 구간합이 완전히 같지 않을 수 있으며, 이를 오류가 아닌 집계 방식 차이로 표시한다.
     const tierSum=TIERS.reduce((sum,t)=>sum+(+state.counts[t.id]||0),0);
     state.statsCoverageWarning=Math.abs(tierSum-total)>Math.max(2,total*.001)
-      ? `구간 합계 ${fmt(tierSum)} / 전체 ${fmt(total)} · 집계 응답 불일치`
+      ? `상위 정밀 / 하위 대표태그 집계 · 전체 ${fmt(total)}`
       : "";
     if(state.statsCoverageWarning){
-      console.warn(state.statsCoverageWarning);
+      console.info("mixed census:",tierSum,total);
       $("#snapshotLabel").textContent=state.statsCoverageWarning;
     }
 
