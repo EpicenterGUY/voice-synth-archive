@@ -71,7 +71,11 @@
         source:String((x&&x.source)||""),
         url:String((x&&x.url)||"")
       };}).filter(function(x){return x.value;}),
-      bpm:(item&&item.bpm)||null,
+      minBpm:item&&item.minMilliBpm!=null?Number(item.minMilliBpm)/1000:null,
+      maxBpm:item&&item.maxMilliBpm!=null?Number(item.maxMilliBpm)/1000:null,
+      bpm:(item&&item.minMilliBpm!=null&&item.maxMilliBpm!=null)
+        ? (Number(item.minMilliBpm)+Number(item.maxMilliBpm))/2000
+        : (item&&item.minMilliBpm!=null?Number(item.minMilliBpm)/1000:null),
       vocadbId:id,
       vocadbUrl:"https://vocadb.net/S/"+id,
       vocadbPVs:v11Arr(item&&item.pvs),
