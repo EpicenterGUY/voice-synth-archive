@@ -820,6 +820,27 @@ body.tools-open{overflow:hidden}
 .detective-source-badge.cross{border-color:#39745f;background:#102b24;color:#a5f0d1}
 @media(max-width:1050px){.detective-search-sources{grid-column:1/-1}}
 
+
+/* ===== detective v12 ===== */
+.detective-lyrics-box textarea{min-height:82px}
+.detective-new-badge{display:inline-flex;padding:2px 5px;border-radius:999px;background:#193b33;border:1px solid #37765f;color:#a8f1d2;font-size:7px;font-weight:950;vertical-align:middle}
+.detective-deep-lyrics{align-self:end;min-height:42px}
+.detective-feedback-summary{margin:10px 0;padding:9px 11px;border:1px solid #29445f;border-radius:11px;background:#091727;font-size:9px;color:#91aec4;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.detective-feedback-summary>b{color:#d9efff}
+.detective-feedback-chip{display:inline-flex;padding:3px 6px;border-radius:999px;background:#18243a;border:1px solid #3e4d6d;color:#cfd8ff;font-weight:850}
+.detective-reject-menu{margin-top:7px;padding:7px;border:1px solid #433b58;border-radius:9px;background:#120f1d;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.detective-reject-menu[hidden]{display:none}
+.detective-reject-menu>span{font-size:8px;color:#9a91ae;font-weight:900;margin-right:2px}
+.detective-reject-menu button{border:1px solid #4d4660;background:#1c1727;color:#d9cfea;border-radius:8px;padding:5px 7px;font-size:8px;font-weight:850;cursor:pointer}
+.detective-reject-menu button:hover{background:#292038}
+.detective-web-actions{margin:10px 0;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.detective-web-actions>span{font-size:8px;color:#7694aa}
+.detective-web-hunt{margin:8px 0 12px;padding:11px;border:1px solid #28536e;border-radius:12px;background:#0a1928}
+.detective-web-title{display:flex;gap:6px;flex-wrap:wrap;align-items:baseline;margin-bottom:8px}
+.detective-web-title>b{font-size:10px;color:#dff4ff}.detective-web-title>span{font-size:8px;color:#7898ae}
+.detective-web-links{display:flex;gap:6px;flex-wrap:wrap}
+.detective-web-links a{display:inline-flex;padding:7px 9px;border-radius:9px;border:1px solid #315d79;background:#10263a;color:#bfe9ff;text-decoration:none;font-size:9px;font-weight:900}
+
 </style>
 </head>
 <body>
@@ -1032,7 +1053,7 @@ body.tools-open{overflow:hidden}
     </details>
   </section>
 
-  <div class="footer">v11.2 · 빙산 모집단 보정 · 광역 검색 · 교차 탐정 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v12.0 · 가사 수사 · 피드백 학습 · 광역 교차 탐정 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -1057,7 +1078,7 @@ body.tools-open{overflow:hidden}
         <div class="panel-head">
           <div>
             <h2>잊어버린 음성합성곡 기억 복원 탐정</h2>
-            <p>Niconico와 VocaDB를 교차 수색하고, 곡명·별칭·보컬·PV·태그를 증거처럼 합쳐 후보를 좁힙니다.</p>
+            <p>Niconico와 VocaDB를 교차 수색하고, 곡명·별칭·가사·보컬·PV·태그를 합치고, 틀린 후보의 이유까지 학습해 다음 수색을 좁힙니다.</p>
           </div>
           <div class="pill">정밀 수색 모드</div>
         </div>
@@ -1110,6 +1131,20 @@ body.tools-open{overflow:hidden}
                   <option value="vague">희미함</option>
                 </select>
               </div>
+              <div class="control detective-span-2 detective-lyrics-box">
+                <label>가사로 기억나는 부분 <span class="detective-new-badge">NEW</span></label>
+                <textarea id="detectiveLyrics" placeholder="예: さよならなんて言わないで / 가사에 '죽고 싶다' 비슷한 뜻이 있었음"></textarea>
+                <div class="detective-parser-preview" id="detectiveLyricsPreview">일본어 원문 일부가 기억나면 가장 강한 단서가 됩니다. 한국어로 기억난 뜻도 적을 수 있습니다.</div>
+              </div>
+              <div class="control">
+                <label>가사 기억 확실도</label>
+                <select id="detectiveLyricCertainty">
+                  <option value="likely" selected>꽤 확실함</option>
+                  <option value="exact">문구가 거의 정확함</option>
+                  <option value="vague">뜻만 희미하게 기억</option>
+                </select>
+              </div>
+              <label class="check detective-toggle detective-deep-lyrics"><input type="checkbox" id="detectiveDeepLyrics" checked> VocaDB 가사 후보 심층 대조</label>
               <div class="control">
                 <label>P명 / 작곡가 / 업로더 단서</label>
                 <input id="detectiveProducer" placeholder="예: wowaka, DECO*27">
@@ -1447,6 +1482,16 @@ body.tools-open{overflow:hidden}
         </div>
 
         <div class="detective-followup" id="detectiveFollowup" style="display:none"></div>
+
+        <div class="detective-feedback-summary" id="detectiveFeedbackSummary">
+          <span>후보를 제외할 때 이유를 고르면 다음 수색이 그 피드백을 기억합니다.</span>
+        </div>
+
+        <div class="detective-web-actions">
+          <button class="btn" id="detectiveWebHuntBtn">웹까지 확장 수색</button>
+          <span>앱 후보가 부족할 때 Google·Niconico·YouTube·VocaDB 검색으로 단서를 넘깁니다.</span>
+        </div>
+        <div class="detective-web-hunt" id="detectiveWebHunt" hidden></div>
 
         <div class="detective-results" id="detectiveResults">
           <div class="detective-empty">
@@ -4766,6 +4811,7 @@ setTimeout(async()=>{
   }
 },350);
 </script>
-<script src="./detective-v11.js?v=11.0"></script>
+<script src="./detective-v11.js?v=11.5"></script>
+<script src="./detective-v12.js?v=12.0"></script>
 </body>
 </html>
