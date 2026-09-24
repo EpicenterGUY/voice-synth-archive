@@ -47,7 +47,7 @@ Add the Workers AI binding as `AI`.
 
 ### 4. Cron
 
-A 15-minute cron is recommended. Each run processes up to 200 VocaDB Original-song rows, stores them in D1, and batches semantic embeddings into Vectorize.
+A 15-minute cron is recommended. Each run processes up to 200 VocaDB Original-song rows, stores them in D1, batches semantic embeddings into Vectorize, enriches Niconico-linked songs with current Snapshot metadata, and backfills semantic vectors for older D1 rows.
 
 ### 5. Deploy
 
@@ -65,7 +65,19 @@ Content-Type: application/json
 {"pages":8}
 ```
 
-Set `SYNC_TOKEN` as a Cloudflare Worker secret. Up to 8 × 50 songs are processed per call.
+Set `SYNC_TOKEN` as a Cloudflare Worker secret. Up to 8 × 50 songs are processed per sync call.
+
+If D1 already contains songs before Vectorize is enabled, backfill their embeddings with:
+
+```text
+POST /detective/reindex
+Authorization: Bearer <SYNC_TOKEN>
+Content-Type: application/json
+
+{"limit":300}
+```
+
+Repeated calls advance a stored semantic cursor.
 
 ## Endpoints
 
@@ -74,6 +86,7 @@ Set `SYNC_TOKEN` as a Cloudflare Worker secret. Up to 8 × 50 songs are processe
 - `POST /detective/search`
 - `POST /detective/warm`
 - `POST /detective/sync` — requires `SYNC_TOKEN`
+- `POST /detective/reindex` — semantic backfill for existing D1 rows; requires `SYNC_TOKEN`
 
 ## Search behavior
 
