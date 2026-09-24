@@ -2495,21 +2495,23 @@ function renderIceberg(loading=false){
   }
 }
 function updateSummary(){
-  const total=state.counts.total||0;
+  const totalRaw=state.counts.total;
+  const total=totalRaw==null?null:(+totalRaw||0);
   const t=TIERS.find(x=>x.id===state.tier);
   const d=sourceDefinition();
   syncSourceUI();
-  $("#totalCount").textContent=fmt(total);
+  $("#totalCount").textContent=total==null?"-":fmt(total);
   $("#totalDesc").textContent=(state.year==="all"?"전체 연도":state.year+"년")+" · "+d.label;
   if(t){
-    const n=state.counts[t.id]||0;
-    $("#tierCount").textContent=fmt(n);
+    const raw=state.counts[t.id];
+    const n=raw==null?null:(+raw||0);
+    $("#tierCount").textContent=n==null?"-":fmt(n);
     $("#tierDesc").textContent=`${t.name} · ${t.range}회`;
-    $("#tierShare").textContent=pct(n,total);
+    $("#tierShare").textContent=n==null||total==null?"-":pct(n,total);
   }else{
-    $("#tierCount").textContent=fmt(total);
-    $("#tierDesc").textContent="모든 빙산 구간";
-    $("#tierShare").textContent=total?"100%":"-";
+    $("#tierCount").textContent=total==null?"-":fmt(total);
+    $("#tierDesc").textContent=total==null?"통계 갱신 후 표시":"모든 빙산 구간";
+    $("#tierShare").textContent=total==null?"-":(total?"100%":"-");
   }
   $("#dataMode").textContent=state.mode;
   $("#iceYear").textContent=state.year==="all"?"전체 연도":state.year+"년";
