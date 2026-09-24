@@ -1,4 +1,4 @@
-/* Voice Synth Archive Detective v17
+/* Voice Synth Archive Detective v18
  * Backend-first local song index search.
  * Falls back to the existing live Niconico + VocaDB detective when D1 is unavailable.
  */
@@ -6,6 +6,7 @@
   "use strict";
 
   const CACHE=new Map();
+  const VISUAL_CACHE=new Map();
   let statusCache={at:0,data:null};
   const previousSearch=detectiveSearch;
 
@@ -33,6 +34,7 @@
       contexts:arr(c.contexts),
       genre:arr(c.genre),
       mood:arr(c.mood),
+      visual:c.visual||"",
       visualTags:arr(c.visualTags),
       audio:state.detectiveAudioEvidence?{
         type:state.detectiveAudioEvidence.type||"",
@@ -72,11 +74,16 @@
     }
     if(d?.indexReady){
       badge.className="detective-index-status ready";
-      const sem=d.semanticReady?" · 의미검색 ON":" · 의미검색 대기";
-      badge.textContent="로컬 인덱스 "+Number(d.indexedSongs||0).toLocaleString("ko-KR")+"곡"+sem;
-      badge.title=d.semanticReady
-        ?"D1 문자 검색 + 다국어 의미검색을 함께 사용합니다."
-        :"D1 문자 인덱스만 사용 중입니다. AI/Vectorize binding을 연결하면 의미검색이 켜집니다.";
+      const flags=[
+        d.semanticReady?"의미검색 ON":"의미검색 대기",
+        d.visualReady?"MV시각 ON":"MV시각 대기"
+      ];
+      badge.textContent="로컬 인덱스 "+Number(d.indexedSongs||0).toLocaleString("ko-KR")+"곡 · "+flags.join(" · ");
+      badge.title=d.visualReady
+        ?"D1 문자검색 + 다국어 의미검색 + MV 썸네일 의미검색을 함께 사용합니다."
+        :d.semanticReady
+          ?"D1 문자검색 + 다국어 의미검색을 사용 중입니다. VISUALIZE binding을 연결하면 MV 의미검색도 켜집니다."
+          :"D1 문자 인덱스만 사용 중입니다.";
     }else{
       badge.className="detective-index-status";
       badge.textContent="실시간 수색";
@@ -105,6 +112,58 @@
     return d;
   }
 
+
+  async function fetchVisualIndexedCandidates(c){
+    const st=await indexStatus();
+    if(!st.visualReady||!relayBase())return null;
+
+    const visualText=[c.visual||"",...arr(c.visualTags)].filter(Boolean).join(" · ");
+    const evidence=state.detectiveImageEvidence;
+    const hasImage=!!(evidence&&evidence.file);
+    if(!hasImage&&!visualText.trim())return null;
+
+    if(hasImage&&evidence.__visualBackendResult&&Date.now()-(evidence.__visualBackendAt||0)<5*60*1000){
+      return evidence.__visualBackendResult;
+    }
+
+    const cacheKeyText=visualText.trim();
+    if(!hasImage&&cacheKeyText){
+      const hit=VISUAL_CACHE.get(cacheKeyText);
+      if(hit&&Date.now()-hit.at<5*60*1000)return hit.data;
+    }
+
+    let r;
+    if(hasImage){
+      const form=new FormData();
+      form.append("image",evidence.file,evidence.file.name||"memory-image");
+      if(visualText)form.append("hint",visualText);
+      r=await fetch(relayBase()+"/detective/visual-query",{method:"POST",body:form});
+    }else{
+      r=await fetch(relayBase()+"/detective/visual-query",{
+        method:"POST",
+        headers:{"Content-Type":"application/json","Accept":"application/json"},
+        body:JSON.stringify({text:visualText})
+      });
+    }
+    if(!r.ok){
+      if(r.status===503)return null;
+      throw new Error("visual index "+r.status);
+    }
+    const d=await r.json();
+
+    if(hasImage){
+      evidence.__visualBackendResult=d;
+      evidence.__visualBackendAt=Date.now();
+      const fp=document.getElementById("detectiveImageFingerprint");
+      if(fp&&d.caption){
+        fp.innerHTML='AI 시각 기억 해석: <b>'+esc(String(d.caption).slice(0,220))+'</b>';
+      }
+    }else if(cacheKeyText){
+      VISUAL_CACHE.set(cacheKeyText,{at:Date.now(),data:d});
+    }
+    return d;
+  }
+
   function songKey(song){
     if(song?.vocadbId)return "v:"+song.vocadbId;
     return "n:"+String(song?.contentId||"");
@@ -113,11 +172,16 @@
     if(!a)return b;if(!b)return a;
     const aIndex=arr(a.__sources).includes("index");
     const p=aIndex?a:b,s=p===a?b:a;
-    return Object.assign({},s,p,{
+    const out=Object.assign({},s,p,{
       tags:[...new Set(parseTags(a.tags).concat(parseTags(b.tags)))],
       aliases:[...new Set(arr(a.aliases).concat(arr(b.aliases)))],
       __sources:[...new Set(arr(a.__sources||[a.__source]).concat(arr(b.__sources||[b.__source]).filter(Boolean)))]
     });
+    out.__indexScore=Math.max(Number(a.__indexScore)||0,Number(b.__indexScore)||0);
+    out.__semanticScore=Math.max(Number(a.__semanticScore)||0,Number(b.__semanticScore)||0);
+    out.__visualSemanticScore=Math.max(Number(a.__visualSemanticScore)||0,Number(b.__visualSemanticScore)||0);
+    out.__visualCaption=a.__visualCaption||b.__visualCaption||"";
+    return out;
   }
 
   async function scorePool(songs,c,backendMeta){
@@ -139,6 +203,18 @@
           text:"의미검색 "+(sem*100).toFixed(0)+"%",
           strong:sem>=.72
         });
+      }
+      const vis=Number(song.__visualSemanticScore)||0;
+      if(vis>0){
+        const visBonus=Math.max(0,Math.min(13,(vis-.30)*22));
+        ev.score=Math.min(99.9,ev.score+visBonus);
+        if(vis>=.48){
+          ev.matchedCount++;
+          ev.matches.unshift({
+            text:"MV 의미검색 "+(vis*100).toFixed(0)+"%",
+            strong:vis>=.70
+          });
+        }
       }
       return {song,...ev};
     });
@@ -163,7 +239,7 @@
     const status=document.getElementById("detectiveStatus");
     if(status){
       status.insertAdjacentHTML("afterbegin",
-        '<span class="detective-stage-progress index">전용 인덱스 '+Number(backendMeta?.indexedSongs||0).toLocaleString("ko-KR")+'곡'+(backendMeta?.semanticReady?' · 의미검색':'')+'</span> ');
+        '<span class="detective-stage-progress index">전용 인덱스 '+Number(backendMeta?.indexedSongs||0).toLocaleString("ko-KR")+'곡'+(backendMeta?.semanticReady?' · 의미검색':'')+(backendMeta?.visualReady?' · MV시각':'')+'</span> ');
     }
     return rows;
   }
@@ -185,14 +261,26 @@
     const sourceStatus=document.getElementById("detectiveSourceStatus");
     if(sourceStatus)sourceStatus.textContent="전용 곡 인덱스 우선 검색 중…";
 
-    let indexedData=null,indexedSongs=[];
+    let indexedData=null,indexedSongs=[],visualData=null;
     try{
-      indexedData=await fetchIndexedCandidates(c);
+      [indexedData,visualData]=await Promise.all([
+        fetchIndexedCandidates(c),
+        fetchVisualIndexedCandidates(c).catch(e=>{console.warn("visual detective fallback",e);return null;})
+      ]);
       indexedSongs=arr(indexedData?.candidates);
 
+      const firstMap=new Map();
+      for(const s of indexedSongs)firstMap.set(songKey(s),s);
+      for(const s of arr(visualData?.candidates)){
+        const k=songKey(s);
+        firstMap.set(k,firstMap.has(k)?mergeSongs(firstMap.get(k),s):s);
+      }
+      indexedSongs=[...firstMap.values()];
+
       if(indexedData?.indexReady&&indexedSongs.length){
-        const rows=await scorePool(indexedSongs,c,indexedData);
-        if(sourceStatus)sourceStatus.textContent="전용 인덱스 즉시 검색 · "+rows.length+"후보";
+        const meta=Object.assign({},indexedData,{visualReady:!!visualData?.visualReady||!!indexedData?.visualReady});
+        const rows=await scorePool(indexedSongs,c,meta);
+        if(sourceStatus)sourceStatus.textContent="전용 인덱스"+(visualData?.visualReady?" + MV시각":"")+" 즉시 검색 · "+rows.length+"후보";
 
         // A healthy local pool is the fast path. Do not make the user wait for external APIs.
         const top=rows[0]?.score||0;
