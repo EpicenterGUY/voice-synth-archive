@@ -841,6 +841,125 @@ body.tools-open{overflow:hidden}
 .detective-web-links{display:flex;gap:6px;flex-wrap:wrap}
 .detective-web-links a{display:inline-flex;padding:7px 9px;border-radius:9px;border:1px solid #315d79;background:#10263a;color:#bfe9ff;text-decoration:none;font-size:9px;font-weight:900}
 
+
+/* ===== detective v13 complexity/mobile overhaul ===== */
+.detective-ui-modes{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.detective-mode-btn{min-height:34px;padding:0 10px;border:1px solid #29445f;border-radius:9px;background:#0b1b2b;color:#9db8cb;font-size:9px;font-weight:900;cursor:pointer}
+.detective-mode-btn.active{background:#173653;border-color:#5b96bf;color:#fff}
+.detective-auto-stage{font-size:8px;min-height:34px}
+.detective-mobile-steps{display:none}
+.detective-panel.detective-simple .detective-advanced-section{display:none}
+.detective-panel.detective-simple .detective-section{margin-bottom:6px}
+.detective-panel.detective-simple .detective-simple-visible:not([open]) .detective-section-body{display:none}
+.detective-panel.detective-simple .detective-controlbar{padding-bottom:7px}
+.detective-panel.detective-simple .detective-questionnaire{padding-top:6px}
+.detective-panel.detective-simple .detective-section summary{min-height:42px}
+.detective-stage-progress{display:inline-flex;gap:5px;align-items:center;padding:4px 7px;border-radius:999px;border:1px solid #31536e;background:#0d2032;color:#a8cce0;font-size:8px;font-weight:900}
+
+@media(max-width:699px){
+  .tools-modal{padding:0!important;display:block}
+  .tools-shell{width:100vw!important;height:100dvh!important;max-height:none!important;border:0!important;border-radius:0!important}
+  .tools-header{height:48px;padding:5px 8px!important}
+  .tools-title{font-size:14px}.tools-sub{display:none}.tools-close{width:38px;height:38px;border-radius:10px}
+  .tools-tabs{height:42px;padding:5px 7px!important;gap:5px}
+  .tools-tabs button{min-height:32px;padding:0 10px;font-size:9px}
+  .tools-body{overflow:hidden!important}
+  .tools-body>.panel.active{height:calc(100dvh - 90px);min-height:0!important;overflow:hidden!important}
+  .detective-panel .panel-head{display:none}
+  .detective-controlbar{
+    display:grid!important;grid-template-columns:1fr auto!important;gap:5px!important;
+    padding:6px 7px!important;border-bottom:1px solid #1b3248;max-height:88px;overflow:hidden
+  }
+  .detective-controlbar>.control:first-child,
+  .detective-controlbar>.detective-toggle,
+  .detective-search-sources .detective-source-label{display:none!important}
+  .detective-search-sources{grid-column:1/2;min-height:34px!important;padding:4px 7px!important;gap:7px!important}
+  .detective-search-sources label{font-size:8px!important}
+  .detective-search-sources span{display:none}
+  .detective-ui-modes{grid-column:2/3;justify-content:flex-end}
+  .detective-mode-btn{display:none}
+  .detective-auto-stage{padding:0 5px;white-space:nowrap}
+  .detective-clue-meter{grid-column:1/-1!important;min-height:28px!important;padding:4px 7px!important}
+  .detective-clue-meter>div:first-child{font-size:8px}.detective-clue-meter b{font-size:9px}
+  .detective-clue-track{height:3px;margin-top:3px}
+
+  .detective-mobile-steps{
+    display:grid;grid-template-columns:repeat(7,1fr);gap:3px;padding:5px 6px;
+    border-bottom:1px solid #1b3045;background:#081522
+  }
+  .detective-mobile-steps button{
+    min-width:0;height:32px;padding:0 2px;border:1px solid #253f58;border-radius:8px;
+    background:#0c1b2b;color:#7897ad;font-size:7.5px;font-weight:900
+  }
+  .detective-mobile-steps button.active{background:#193957;border-color:#5a9ac6;color:#fff}
+  .detective-questionnaire{
+    height:calc(100dvh - 90px - 88px - 43px - 58px)!important;
+    min-height:0;padding:5px 6px!important;overflow:hidden!important
+  }
+  .detective-questionnaire .detective-section{
+    display:none!important;height:100%;margin:0!important;border-radius:11px!important
+  }
+  .detective-questionnaire .detective-section.mobile-active{
+    display:flex!important;flex-direction:column
+  }
+  .detective-questionnaire .detective-section summary{
+    flex:0 0 38px;min-height:38px!important;padding:0 9px!important;font-size:10px
+  }
+  .detective-questionnaire .detective-section summary small{font-size:7px}
+  .detective-questionnaire .detective-section summary:after{display:none}
+  .detective-questionnaire .detective-section-body{
+    display:block!important;flex:1;min-height:0;overflow:auto;padding:6px!important;border-top:1px solid #172c42
+  }
+  .detective-grid{grid-template-columns:1fr 1fr!important;gap:5px!important}
+  .detective-grid .control label,.detective-inline-selects .control label{font-size:7.5px!important}
+  .detective-section input,.detective-section select,.detective-section textarea{font-size:11px!important}
+  .detective-section textarea{min-height:58px!important;padding:7px!important}
+  .detective-lyrics-box textarea{min-height:58px!important}
+  .detective-parser-preview,.detective-hint,.detective-hint-block{font-size:7.5px!important;line-height:1.35}
+  .detective-korean-examples{gap:3px!important;margin-top:4px!important}
+  .detective-korean-examples button{font-size:7px!important;padding:4px 5px!important}
+  .detective-chip-title{font-size:8px!important;margin:6px 0 4px!important}
+  .detective-chips{gap:4px!important}
+  .detective-chip{min-height:28px!important;padding:0 7px!important;font-size:8px!important}
+  .evidence-grid{grid-template-columns:1fr 1fr!important;gap:5px!important}
+  .evidence-card{padding:6px!important}.evidence-sub{display:none}.evidence-title{font-size:9px!important}
+  .evidence-preview{min-height:52px!important}
+  .evidence-warning{font-size:7px!important;padding:6px!important;margin-top:5px!important}
+
+  .detective-sticky-actions{
+    position:absolute!important;left:0;right:0;bottom:0;height:58px;box-sizing:border-box;
+    padding:6px!important;display:grid!important;grid-template-columns:1fr auto!important;gap:5px!important;z-index:20
+  }
+  .detective-sticky-actions .btn.primary{height:42px;font-size:11px}
+  .detective-sticky-actions #detectiveResetBtn{height:42px;font-size:9px;padding:0 10px}
+  .detective-sticky-actions .detective-hint{display:none}
+  .detective-status,.detective-followup,.detective-feedback-summary,.detective-web-actions,.detective-web-hunt,.detective-results{
+    display:none!important
+  }
+  .detective-panel.mobile-show-results .detective-controlbar,
+  .detective-panel.mobile-show-results .detective-mobile-steps,
+  .detective-panel.mobile-show-results .detective-questionnaire{display:none!important}
+  .detective-panel.mobile-show-results .detective-status{display:block!important;margin:5px 6px!important}
+  .detective-panel.mobile-show-results .detective-followup:not([style*="display:none"]){display:block!important;margin:5px 6px!important}
+  .detective-panel.mobile-show-results .detective-feedback-summary{display:flex!important;margin:5px 6px!important}
+  .detective-panel.mobile-show-results .detective-web-actions{display:flex!important;margin:5px 6px!important}
+  .detective-panel.mobile-show-results .detective-web-hunt:not([hidden]){display:block!important;margin:5px 6px!important}
+  .detective-panel.mobile-show-results .detective-results{
+    display:grid!important;grid-template-columns:1fr!important;gap:5px!important;
+    height:calc(100dvh - 90px - 58px - 80px);overflow:auto;padding:0 6px 8px!important
+  }
+  .detective-card{grid-template-columns:92px minmax(0,1fr)!important;padding:6px!important;gap:7px!important;border-radius:10px!important}
+  .detective-thumb{width:92px!important;border-radius:7px!important}
+  .detective-card-title{font-size:10px!important}.detective-card-meta{font-size:7px!important}
+  .detective-actions-row{gap:3px!important}.detective-actions-row .mini-btn{font-size:7px!important;padding:4px 5px!important}
+  .detective-score{font-size:11px!important}
+}
+@media(max-width:430px){
+  .detective-grid{grid-template-columns:1fr 1fr!important}
+  .detective-span-2{grid-column:1/-1!important}
+  .detective-inline-selects{grid-template-columns:1fr 1fr!important}
+}
+
 </style>
 </head>
 <body>
@@ -1053,7 +1172,7 @@ body.tools-open{overflow:hidden}
     </details>
   </section>
 
-  <div class="footer">v12.0 · 가사 수사 · 피드백 학습 · 광역 교차 탐정 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v13.0 · 간결 UI · 단계형 심층 수사 · 출처 기억 확장 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -1101,14 +1220,28 @@ body.tools-open{overflow:hidden}
             <label><input type="checkbox" id="detectiveUseVocaDB" checked> VocaDB</label>
             <span id="detectiveSourceStatus">두 소스를 교차 수색합니다.</span>
           </div>
+          <div class="detective-ui-modes">
+            <button type="button" class="detective-mode-btn active" id="detectiveSimpleMode">간단 입력</button>
+            <button type="button" class="detective-mode-btn" id="detectiveDetailMode">상세 단서</button>
+            <label class="check detective-auto-stage"><input type="checkbox" id="detectiveAutoStage" checked> 후보 적으면 자동 심층 수사</label>
+          </div>
           <div class="detective-clue-meter">
             <div><b id="detectiveClueCount">0개 단서</b><span id="detectiveClueNeed"> · 3개 이상 권장</span></div>
             <div class="detective-clue-track"><i id="detectiveClueBar"></i></div>
           </div>
         </div>
 
+        <div class="detective-mobile-steps" id="detectiveMobileSteps" aria-label="탐정 단계">
+          <button type="button" class="active" data-dstep="0">핵심</button>
+          <button type="button" data-dstep="1">시기</button>
+          <button type="button" data-dstep="2">소리</button>
+          <button type="button" data-dstep="3">MV</button>
+          <button type="button" data-dstep="4">출처</button>
+          <button type="button" data-dstep="5">증거</button>
+          <button type="button" data-dstep="6">제외</button>
+        </div>
         <div class="detective-questionnaire">
-          <details class="detective-section" open>
+          <details class="detective-section detective-simple-visible" data-dstep="0" open>
             <summary><span>1. 핵심 기억</span><small>제목·가사·P명·보컬</small></summary>
             <div class="detective-section-body detective-grid">
               <div class="control detective-span-2">
@@ -1259,7 +1392,7 @@ body.tools-open{overflow:hidden}
             </div>
           </details>
 
-          <details class="detective-section" open>
+          <details class="detective-section detective-simple-visible" data-dstep="1" open>
             <summary><span>2. 시기·규모·길이</span><small>강한 필터로 사용</small></summary>
             <div class="detective-section-body detective-grid">
               <div class="control">
@@ -1314,7 +1447,7 @@ body.tools-open{overflow:hidden}
             </div>
           </details>
 
-          <details class="detective-section">
+          <details class="detective-section detective-advanced-section" data-dstep="2">
             <summary><span>3. 소리와 분위기</span><small>장르·템포·악기</small></summary>
             <div class="detective-section-body">
               <div class="detective-inline-selects">
@@ -1377,7 +1510,7 @@ body.tools-open{overflow:hidden}
             </div>
           </details>
 
-          <details class="detective-section">
+          <details class="detective-section detective-advanced-section" data-dstep="3">
             <summary><span>4. MV·썸네일</span><small>영상에서 기억나는 특징</small></summary>
             <div class="detective-section-body">
               <div class="control">
@@ -1397,22 +1530,52 @@ body.tools-open{overflow:hidden}
             </div>
           </details>
 
-          <details class="detective-section">
-            <summary><span>5. 어디서 들었나</span><small>게임·노래방·리듬게임 수록 기억</small></summary>
+          <details class="detective-section detective-simple-visible" data-dstep="4">
+            <summary><span>5. 어디서 들었나</span><small>웹·게임·노래방·스트리밍·기타</small></summary>
             <div class="detective-section-body">
+              <div class="detective-chip-title">웹 / SNS</div>
+              <div class="detective-chips detective-context-chips">
+                <button class="detective-chip" data-group="context" data-context="niconico">Niconico</button>
+                <button class="detective-chip" data-group="context" data-context="youtube">YouTube</button>
+                <button class="detective-chip" data-group="context" data-context="shorts">TikTok / Shorts</button>
+                <button class="detective-chip" data-group="context" data-context="x">X / Twitter</button>
+                <button class="detective-chip" data-group="context" data-context="bilibili">Bilibili</button>
+              </div>
+
+              <div class="detective-chip-title">게임 / 리듬게임</div>
               <div class="detective-chips" id="detectiveSourceChips">
                 <button class="detective-chip detective-source-chip" data-group="source" data-term="ProjectDIVA収録曲">Project DIVA</button>
                 <button class="detective-chip detective-source-chip" data-group="source" data-term="プロセカ収録曲">프로세카</button>
                 <button class="detective-chip detective-source-chip" data-group="source" data-term="maimai収録曲">maimai</button>
                 <button class="detective-chip detective-source-chip" data-group="source" data-term="CHUNITHM収録曲">CHUNITHM</button>
                 <button class="detective-chip detective-source-chip" data-group="source" data-term="SOUND_VOLTEX収録曲">SOUND VOLTEX</button>
-                <button class="detective-chip detective-source-chip" data-group="source" data-term="JOYSOUND配信中">JOYSOUND</button>
+                <button class="detective-chip detective-source-chip" data-group="source" data-term="太鼓の達人収録曲">태고의 달인</button>
+                <button class="detective-chip" data-group="context" data-context="osu">osu!</button>
+                <button class="detective-chip" data-group="context" data-context="game-other">다른 게임</button>
               </div>
-              <div class="detective-hint detective-hint-block">수록처 단서는 비교적 강하게 취급합니다. 니코동 태그가 누락된 영상은 제외될 수 있습니다.</div>
+
+              <div class="detective-chip-title">음원 / 노래방</div>
+              <div class="detective-chips">
+                <button class="detective-chip detective-source-chip" data-group="source" data-term="JOYSOUND配信中">JOYSOUND</button>
+                <button class="detective-chip" data-group="context" data-context="dam">DAM</button>
+                <button class="detective-chip" data-group="context" data-context="spotify">Spotify</button>
+                <button class="detective-chip" data-group="context" data-context="applemusic">Apple Music</button>
+                <button class="detective-chip" data-group="context" data-context="cd">CD / 앨범</button>
+              </div>
+
+              <div class="detective-chip-title">그 밖의 기억</div>
+              <div class="detective-chips">
+                <button class="detective-chip" data-group="context" data-context="live">라이브 / 콘서트</button>
+                <button class="detective-chip" data-group="context" data-context="mad">MAD / 밈 영상</button>
+                <button class="detective-chip" data-group="context" data-context="friend">친구 추천</button>
+                <button class="detective-chip" data-group="context" data-context="playlist">플레이리스트 자동추천</button>
+                <button class="detective-chip" data-group="context" data-context="unknown-web">어딘가의 웹 영상</button>
+              </div>
+              <div class="detective-hint detective-hint-block">게임·JOYSOUND처럼 데이터에 직접 남는 단서는 강하게, YouTube·SNS·스트리밍처럼 출처만 기억나는 경우는 보조 단서로 사용합니다.</div>
             </div>
           </details>
 
-          <details class="detective-section">
+          <details class="detective-section detective-advanced-section" data-dstep="5">
             <summary><span>6. 이미지·녹음 증거</span><small>그림·MV 캡처·허밍·녹음</small></summary>
             <div class="detective-section-body">
               <div class="evidence-grid">
@@ -1457,7 +1620,7 @@ body.tools-open{overflow:hidden}
             </div>
           </details>
 
-          <details class="detective-section">
+          <details class="detective-section detective-advanced-section" data-dstep="6">
             <summary><span>7. 제외 단서</span><small>확실히 아닌 것을 적으면 강하게 제거</small></summary>
             <div class="detective-section-body detective-grid">
               <div class="control detective-span-2">
@@ -1942,16 +2105,16 @@ const TIERS = [
   {id:"abyss", name:"미발견권", min:0, max:99, range:"0 ~ 99", c1:"#213f56", c2:"#101e31", width:100}
 ];
 
-const FALLBACK_COUNTS = {
-  total:108007,
-  myth:28, ultra:130, legend:843, nearlegend:1100, halltop:1100, hall:3460,
-  nearhall:4140, upperhit:5400, hit:10801, smallhit:10800, middle:27002,
-  minorplus:16201, minor:21602, abyss:5400
-};
+function emptyCounts(){
+  const out={total:null};
+  for(const t of TIERS)out[t.id]=null;
+  return out;
+}
+const FALLBACK_COUNTS = emptyCounts();
 
 const state = {
   counts:{...FALLBACK_COUNTS},
-  mode:"캐시 예시",
+  mode:"집계 대기",
   year:"all",
   tier:"all",
   offset:0,
@@ -2169,7 +2332,7 @@ function currentUnit(){
 }
 function sourceCacheKey(year=state.year){
   const d=sourceDefinition();
-  return "vocaloidIcebergCacheV5:"+encodeURIComponent(state.sourceMode+"|"+(state.customTag||"")+"|"+year+"|"+d.q);
+  return "vocaloidIcebergCacheV6:"+encodeURIComponent(state.sourceMode+"|"+(state.customTag||"")+"|"+year+"|"+d.q);
 }
 function syncSourceUI(){
   const d=sourceDefinition();
@@ -2397,7 +2560,7 @@ async function refreshStats(){
       $("#snapshotLabel").textContent="캐시: "+new Date(cached.at).toLocaleString("ko-KR");
       toast("API 연결 실패로 저장된 캐시를 사용합니다.");
     }else{
-      state.counts={total:0}; for(const t of TIERS) state.counts[t.id]=0;
+      state.counts=emptyCounts();
       state.mode="조회 실패";
       setStatus("err","API 연결 실패");
       $("#snapshotLabel").textContent="스냅샷: 연결 필요";
@@ -4645,7 +4808,7 @@ function restore(){
     state.counts=cached.counts; state.mode="로컬 캐시";
     $("#snapshotLabel").textContent="캐시: "+new Date(cached.at).toLocaleString("ko-KR");
   }else{
-    state.counts={total:0}; for(const t of TIERS) state.counts[t.id]=0;
+    state.counts=emptyCounts();
   }
   renderIceberg(); updateSummary();
   if($("#routeInfo")) $("#routeInfo").textContent=relayBase() ? "저장된 Worker 주소가 있습니다. 연결 확인을 눌러주세요." : "중계 주소가 비어 있습니다. Worker를 배포한 뒤 주소를 붙여넣어 주세요.";
@@ -4656,7 +4819,7 @@ $("#yearSelect").addEventListener("change",e=>{
   state.year=e.target.value;state.songs=[];state.offset=0;
   const c=loadCacheForYear(state.year);
   if(c){state.counts=c.counts;state.mode="로컬 캐시"} else {
-    state.counts={total:0};for(const t of TIERS)state.counts[t.id]=0;
+    state.counts=emptyCounts();
   }
   if($("#gemApplyYear")?.checked) resetGemPool();
   renderIceberg();updateSummary();refreshStats();
@@ -4691,7 +4854,7 @@ $("#applySourceBtn").onclick=()=>{
   resetGemPool();
   const c=loadCacheForYear(state.year);
   if(c){state.counts=c.counts;state.mode="로컬 캐시";}
-  else{state.counts={total:0};for(const t of TIERS)state.counts[t.id]=0;}
+  else{state.counts=emptyCounts();}
   renderIceberg();updateSummary();refreshStats();
 };
 $("#tagIcebergBtn").onclick=()=>{
@@ -4711,7 +4874,7 @@ $("#tagIcebergBtn").onclick=()=>{
   state.songs=[];state.offset=0;
   state.sourceTotalCache.clear();
   resetGemPool();
-  state.counts={total:0};for(const t of TIERS)state.counts[t.id]=0;
+  state.counts=emptyCounts();
   renderIceberg();updateSummary();
   window.scrollTo({top:0,behavior:"smooth"});
   refreshStats();
@@ -4813,5 +4976,6 @@ setTimeout(async()=>{
 </script>
 <script src="./detective-v11.js?v=11.5"></script>
 <script src="./detective-v12.js?v=12.0"></script>
+<script src="./detective-v13.js?v=13.0"></script>
 </body>
 </html>
