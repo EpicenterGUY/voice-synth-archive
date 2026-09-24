@@ -187,7 +187,7 @@
       __sources:["vocadb"]
     };
   }
-  function vocaUrl(c,start,sort){
+  function vocaUrl(c,start,sort,bpmCenter){
     const p=new URLSearchParams();
     p.set("songTypes","Original");
     p.set("maxResults","50");
@@ -206,6 +206,11 @@
       if(bounds[0])p.set("minLength",String(bounds[0]));
       if(bounds[1]!=null)p.set("maxLength",String(bounds[1]));
     }
+    if(Number.isFinite(+bpmCenter)&&+bpmCenter>0){
+      const lo=Math.max(35,+bpmCenter-18),hi=Math.min(300,+bpmCenter+18);
+      p.set("minMilliBpm",String(Math.round(lo*1000)));
+      p.set("maxMilliBpm",String(Math.round(hi*1000)));
+    }
     return V13_VOCADB_API+"/songs?"+p.toString();
   }
   async function fetchVocaPool(c){
@@ -213,6 +218,12 @@
       vocaUrl(c,0,"FavoritedTimes"),vocaUrl(c,50,"FavoritedTimes"),
       vocaUrl(c,0,"PublishDate"),vocaUrl(c,50,"PublishDate")
     ];
+    const audio=state.detectiveAudioEvidence;
+    if(audio&&audio.bpm){
+      [audio.bpm,audio.bpm*2,audio.bpm/2].filter(function(x){return x>=45&&x<=260;}).forEach(function(b){
+        urls.push(vocaUrl(c,0,"FavoritedTimes",b));
+      });
+    }
     const batches=await Promise.all(urls.map(async function(url){
       try{
         const r=await fetch(url,{headers:{"Accept":"application/json"}});
