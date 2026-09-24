@@ -19,6 +19,7 @@ const VOCADB_API = "https://vocadb.net/api";
 const INDEX_VERSION = 2;
 const EMBED_MODEL = "@cf/baai/bge-m3";
 const EMBED_DIMENSIONS = 1024;
+const VISION_MODEL = "@cf/meta/llama-3.2-11b-vision-instruct";
 
 function cors() {
   return {
@@ -258,6 +259,189 @@ async function enrichNicoRows(env,ids){
     }catch{}
   }
   return {updated};
+}
+
+
+function safeVisualHost(host){
+  host=String(host||"").toLowerCase();
+  return host==="nicovideo.jp" || host.endsWith(".nicovideo.jp") ||
+         host==="nimg.jp" || host.endsWith(".nimg.jp") ||
+         host==="vocadb.net" || host.endsWith(".vocadb.net") ||
+         host==="ytimg.com" || host.endsWith(".ytimg.com") ||
+         host==="youtube.com" || host.endsWith(".youtube.com");
+}
+function bytesToBase64(bytes){
+  let binary="";
+  const chunk=0x8000;
+  for(let i=0;i<bytes.length;i+=chunk){
+    binary+=String.fromCharCode(...bytes.subarray(i,Math.min(bytes.length,i+chunk)));
+  }
+  return btoa(binary);
+}
+function aiText(out){
+  if(typeof out==="string")return out;
+  return clean(out?.response||out?.result||out?.description||out?.output_text||out?.text||"");
+}
+async function imageDataUrlFromUrl(url){
+  if(!url)return null;
+  let u;
+  try{u=new URL(url)}catch{return null}
+  if(u.protocol!=="https:" || !safeVisualHost(u.hostname))return null;
+  const r=await fetch(u.toString(),{
+    headers:{"Accept":"image/avif,image/webp,image/png,image/jpeg,image/*"},
+    cf:{cacheEverything:true,cacheTtl:86400}
+  });
+  if(!r.ok)return null;
+  const len=Number(r.headers.get("content-length")||0);
+  if(len>4000000)return null;
+  const ab=await r.arrayBuffer();
+  if(ab.byteLength>4000000)return null;
+  const type=r.headers.get("content-type")||"image/jpeg";
+  return "data:"+type+";base64,"+bytesToBase64(new Uint8Array(ab));
+}
+async function captionVisual(env,imageDataUrl,hint=""){
+  if(!env?.AI||!imageDataUrl)return "";
+  const prompt=[
+    "Describe this music-video thumbnail for visual retrieval only.",
+    "Focus on visible facts: dominant colors, monochrome or colorful, illustration/anime/3D/live-action, number of people or characters, face close-up or full body, text-heavy or text-free, composition, background, objects, lighting, mood, drawing style and unusual visual motifs.",
+    "Do not guess the song title, artist or identity.",
+    "Return one compact retrieval paragraph in English plus useful Japanese visual keywords when obvious.",
+    hint ? "User memory hint: "+clean(hint).slice(0,500) : ""
+  ].filter(Boolean).join("\n");
+  try{
+    const out=await env.AI.run(VISION_MODEL,{
+      messages:[
+        {role:"system",content:"You create concise factual visual-search captions."},
+        {role:"user",content:prompt}
+      ],
+      image:imageDataUrl,
+      max_tokens:220,
+      temperature:0.1
+    });
+    return aiText(out).slice(0,3000);
+  }catch(e){
+    console.warn("vision caption failed",String(e?.message||e));
+    return "";
+  }
+}
+async function visualVector(env,text){
+  if(!env?.AI||!text)return null;
+  const rows=await embedTexts(env,[text]);
+  const v=rows[0];
+  return Array.isArray(v)&&v.length===EMBED_DIMENSIONS?v:null;
+}
+async function upsertVisualVector(env,songId,caption,entity){
+  if(!env?.VISUALIZE||!caption||!songId)return false;
+  const v=await visualVector(env,caption);
+  if(!v)return false;
+  await env.VISUALIZE.upsert([{
+    id:String(songId),
+    values:v,
+    metadata:{
+      song_id:Number(songId),
+      canonical_key:entity?.canonical_key||"",
+      title:clean(entity?.title).slice(0,180),
+      year:Number(entity?.publish_year)||0,
+      kind:"visual-caption"
+    }
+  }]);
+  return true;
+}
+async function backfillVisual(env,{limit=10}={}){
+  if(!env?.AI||!env?.VISUALIZE||!await dbReady(env))return {ok:false,reason:"visual-bindings-unavailable",captioned:0};
+  const rows=arr((await env.DB.prepare(
+    "SELECT * FROM songs WHERE thumbnail_url IS NOT NULL AND thumbnail_url<>'' AND (visual_json IS NULL OR visual_json='') ORDER BY id ASC LIMIT ?"
+  ).bind(Math.max(1,Math.min(30,limit))).all())?.results);
+  let captioned=0;
+  for(const row of rows){
+    try{
+      const dataUrl=await imageDataUrlFromUrl(row.thumbnail_url);
+      if(!dataUrl)continue;
+      const caption=await captionVisual(env,dataUrl,"");
+      if(!caption)continue;
+      const entity=rowToEntityForEmbedding(row);
+      entity.canonical_key=row.canonical_key;
+      entity.title=row.title;
+      entity.publish_year=row.publish_year;
+      const ok=await upsertVisualVector(env,Number(row.id),caption,entity);
+      if(!ok)continue;
+      await env.DB.prepare("UPDATE songs SET visual_json=?,updated_at=? WHERE id=?")
+        .bind(JSON.stringify({version:1,model:VISION_MODEL,caption,at:new Date().toISOString()}),new Date().toISOString(),Number(row.id))
+        .run();
+      captioned++;
+    }catch(e){
+      console.warn("visual backfill row failed",String(e?.message||e));
+    }
+  }
+  return {ok:true,captioned};
+}
+async function visualSearchByText(env,text,topK=70){
+  if(!env?.AI||!env?.VISUALIZE||!await dbReady(env)||!clean(text))return [];
+  const v=await visualVector(env,clean(text).slice(0,5000));
+  if(!v)return [];
+  try{
+    const result=await env.VISUALIZE.query(v,{topK:Math.max(1,Math.min(100,topK)),returnMetadata:"all"});
+    const matches=arr(result?.matches||result);
+    const ids=[];
+    const scores=new Map();
+    for(const m of matches){
+      const id=Number(m?.metadata?.song_id||m?.id);
+      if(!id)continue;
+      ids.push(id);
+      scores.set(id,Number(m?.score)||0);
+    }
+    const unique=[...new Set(ids)].slice(0,100);
+    if(!unique.length)return [];
+    const marks=unique.map(()=>"?").join(",");
+    const rows=arr((await env.DB.prepare("SELECT * FROM songs WHERE id IN ("+marks+")").bind(...unique).all())?.results);
+    for(const row of rows){
+      row.__visualSemantic=scores.get(Number(row.id))||0;
+      const vj=parseJson(row.visual_json,{});
+      row.__visualCaption=clean(vj?.caption||"");
+    }
+    rows.sort((a,b)=>Number(b.__visualSemantic)-Number(a.__visualSemantic));
+    return rows;
+  }catch(e){
+    console.warn("visual search failed",String(e?.message||e));
+    return [];
+  }
+}
+async function handleVisualQuery(request,env){
+  if(!env?.AI||!env?.VISUALIZE||!await dbReady(env)){
+    return json({ok:false,visualReady:false,error:"visual semantic index is not configured"},503);
+  }
+  const type=clean(request.headers.get("content-type"));
+  let queryText="",caption="",hadImage=false;
+  if(type.includes("multipart/form-data")){
+    const form=await request.formData();
+    const file=form.get("image");
+    const hint=clean(form.get("hint"));
+    queryText=hint;
+    if(file&&typeof file.arrayBuffer==="function"){
+      const ab=await file.arrayBuffer();
+      if(ab.byteLength>4000000)return json({ok:false,error:"image too large"},413);
+      const mime=clean(file.type)||"image/jpeg";
+      const dataUrl="data:"+mime+";base64,"+bytesToBase64(new Uint8Array(ab));
+      caption=await captionVisual(env,dataUrl,hint);
+      hadImage=true;
+    }
+  }else{
+    let body={};
+    try{body=await request.json()}catch{}
+    queryText=clean(body?.text||body?.hint);
+  }
+  const visualText=[caption,queryText].filter(Boolean).join("\n");
+  if(!visualText)return json({ok:false,error:"missing visual clue"},400);
+  const rows=await visualSearchByText(env,visualText,80);
+  return json({
+    ok:true,visualReady:true,hadImage,caption,
+    candidates:rows.map(row=>{
+      const s=rowToSong(row);
+      s.__visualSemanticScore=Number(row.__visualSemantic)||0;
+      s.__visualCaption=row.__visualCaption||"";
+      return s;
+    })
+  });
 }
 
 async function semanticSearch(env,body){
@@ -732,6 +916,17 @@ async function handleManualReindex(request,env){
   return json(await backfillSemantic(env,{limit}));
 }
 
+
+async function handleManualVisualReindex(request,env){
+  if(!env?.SYNC_TOKEN)return json({ok:false,error:"manual visual reindex disabled"},403);
+  const auth=clean(request.headers.get("Authorization"));
+  if(auth!=="Bearer "+env.SYNC_TOKEN)return json({ok:false,error:"unauthorized"},401);
+  let body={};
+  try{body=await request.json()}catch{}
+  const limit=Math.max(1,Math.min(30,Number(body?.limit)||10));
+  return json(await backfillVisual(env,{limit}));
+}
+
 export default {
   async fetch(request,env,ctx) {
     if(request.method==="OPTIONS") return new Response(null,{status:204,headers:cors()});
@@ -739,22 +934,26 @@ export default {
 
     if(u.pathname==="/" || u.pathname==="/health"){
       return json({
-        ok:true,service:"voice-synth-archive-worker",version:"17.0",
+        ok:true,service:"voice-synth-archive-worker",version:"18.0",
         detectiveIndex:await dbReady(env),
         semanticIndex:!!(env?.AI&&env?.VECTORIZE),
+        visualIndex:!!(env?.AI&&env?.VISUALIZE),
         embeddingModel:env?.AI?EMBED_MODEL:null,
+        visionModel:env?.AI?VISION_MODEL:null,
         indexedSongs:await dbCount(env)
       });
     }
 
     if(u.pathname==="/detective/status"){
       const ready=await dbReady(env);
-      return json({ok:true,indexReady:ready,semanticReady:!!(env?.AI&&env?.VECTORIZE),indexVersion:INDEX_VERSION,embeddingModel:env?.AI?EMBED_MODEL:null,indexedSongs:ready?await dbCount(env):0});
+      return json({ok:true,indexReady:ready,semanticReady:!!(env?.AI&&env?.VECTORIZE),visualReady:!!(env?.AI&&env?.VISUALIZE),indexVersion:INDEX_VERSION,embeddingModel:env?.AI?EMBED_MODEL:null,visionModel:env?.AI?VISION_MODEL:null,indexedSongs:ready?await dbCount(env):0});
     }
     if(u.pathname==="/detective/search" && request.method==="POST")return handleDetectiveSearch(request,env);
+    if(u.pathname==="/detective/visual-query" && request.method==="POST")return handleVisualQuery(request,env);
     if(u.pathname==="/detective/warm" && request.method==="POST")return handleWarm(request,env);
     if(u.pathname==="/detective/sync" && request.method==="POST")return handleManualSync(request,env);
     if(u.pathname==="/detective/reindex" && request.method==="POST")return handleManualReindex(request,env);
+    if(u.pathname==="/detective/reindex-visual" && request.method==="POST")return handleManualVisualReindex(request,env);
 
     if(request.method!=="GET") return json({ok:false,error:"GET only"},405);
 
@@ -789,7 +988,7 @@ export default {
 
     const out=new URL(NICO_API);
     for(const [k,v] of u.searchParams)out.searchParams.append(k,v);
-    if(!out.searchParams.has("_context"))out.searchParams.set("_context","voice_synth_archive_v17");
+    if(!out.searchParams.has("_context"))out.searchParams.set("_context","voice_synth_archive_v18");
     if(!out.searchParams.has("_limit"))out.searchParams.set("_limit","20");
 
     const limit=Math.min(100,Math.max(0,Number(out.searchParams.get("_limit"))||20));
@@ -799,7 +998,7 @@ export default {
 
     try{
       const r=await fetch(out.toString(),{
-        headers:{"Accept":"application/json","User-Agent":"voice-synth-niconico-archive/17.0"}
+        headers:{"Accept":"application/json","User-Agent":"voice-synth-niconico-archive/18.0"}
       });
       const body=await r.text();
       return new Response(body,{
@@ -816,6 +1015,6 @@ export default {
   },
 
   async scheduled(event,env,ctx){
-    ctx.waitUntil((async()=>{await syncVocaDBPages(env,{pages:4});await backfillSemantic(env,{limit:120});})());
+    ctx.waitUntil((async()=>{await syncVocaDBPages(env,{pages:4});await backfillSemantic(env,{limit:120});await backfillVisual(env,{limit:10});})());
   }
 };
