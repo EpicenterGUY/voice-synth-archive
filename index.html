@@ -806,6 +806,20 @@ body.tools-open{overflow:hidden}
   font-size:8px;font-weight:900;border:1px solid #31516f;background:#0b1c2d;color:#a9c9df
 }
 
+
+/* ===== detective multi-source v11 ===== */
+.detective-search-sources{
+  min-height:46px;display:flex;align-items:center;gap:9px;flex-wrap:wrap;
+  padding:7px 10px;border:1px solid #29445f;border-radius:11px;background:#071321
+}
+.detective-source-label{width:100%;font-size:8px;color:#718da5;font-weight:900;text-transform:uppercase;letter-spacing:.05em}
+.detective-search-sources label{display:flex;align-items:center;gap:5px;font-size:9px;font-weight:850;color:#c2d9e9}
+.detective-search-sources span{font-size:8px;color:#7593aa}
+.detective-source-badge{display:inline-flex;align-items:center;padding:3px 6px;border-radius:999px;border:1px solid #35536e;background:#0d2133;color:#acd1e7;font-size:8px;font-weight:900}
+.detective-source-badge.vocadb{border-color:#5b547f;background:#19182d;color:#c9c2ff}
+.detective-source-badge.cross{border-color:#39745f;background:#102b24;color:#a5f0d1}
+@media(max-width:1050px){.detective-search-sources{grid-column:1/-1}}
+
 </style>
 </head>
 <body>
@@ -1018,7 +1032,7 @@ body.tools-open{overflow:hidden}
     </details>
   </section>
 
-  <div class="footer">v10.3 · 통계 414 수정 · 한국어 기억 복원 · 니코니코 공식 서비스가 아닙니다.</div>
+  <div class="footer">v11.0 · Niconico×VocaDB 교차 탐정 · 정보량 질문 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -1043,7 +1057,7 @@ body.tools-open{overflow:hidden}
         <div class="panel-head">
           <div>
             <h2>잊어버린 음성합성곡 기억 복원 탐정</h2>
-            <p>단서를 넓게 던지지 않고, 확실한 조건은 실제 필터처럼 적용해 후보를 좁힙니다.</p>
+            <p>Niconico와 VocaDB를 교차 수색하고, 곡명·별칭·보컬·PV·태그를 증거처럼 합쳐 후보를 좁힙니다.</p>
           </div>
           <div class="pill">정밀 수색 모드</div>
         </div>
@@ -1060,6 +1074,12 @@ body.tools-open{overflow:hidden}
           </div>
           <label class="check detective-toggle"><input type="checkbox" id="detectiveHardStructured" checked> 구조화 단서는 반드시 일치</label>
           <label class="check detective-toggle"><input type="checkbox" id="detectiveHardTags"> 장르·영상 태그도 반드시 일치</label>
+          <div class="detective-search-sources">
+            <div class="detective-source-label">수색 데이터베이스</div>
+            <label><input type="checkbox" id="detectiveUseNico" checked> Niconico</label>
+            <label><input type="checkbox" id="detectiveUseVocaDB" checked> VocaDB</label>
+            <span id="detectiveSourceStatus">두 소스를 교차 수색합니다.</span>
+          </div>
           <div class="detective-clue-meter">
             <div><b id="detectiveClueCount">0개 단서</b><span id="detectiveClueNeed"> · 3개 이상 권장</span></div>
             <div class="detective-clue-track"><i id="detectiveClueBar"></i></div>
@@ -4603,5 +4623,6 @@ setTimeout(async()=>{
   }
 },350);
 </script>
+<script src="./detective-v11.js?v=11.0"></script>
 </body>
 </html>
