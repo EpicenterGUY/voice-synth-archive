@@ -1,4 +1,4 @@
-/* Voice Synth Archive Detective v11
+/* Voice Synth Archive Detective v11.5
  * Niconico + VocaDB cross-search, adaptive follow-up questions.
  */
 (function(){
@@ -64,6 +64,13 @@
       tags:Array.from(new Set(tags)),
       aliases:aliases,
       artistString:(item&&item.artistString) || artists.join(", "),
+      lyrics:v11Arr(item&&item.lyrics).map(function(x){return {
+        value:String((x&&x.value)||""),
+        translationType:String((x&&x.translationType)||""),
+        cultureCodes:v11Arr(x&&x.cultureCodes),
+        source:String((x&&x.source)||""),
+        url:String((x&&x.url)||"")
+      };}).filter(function(x){return x.value;}),
       bpm:(item&&item.bpm)||null,
       vocadbId:id,
       vocadbUrl:"https://vocadb.net/S/"+id,
@@ -93,10 +100,11 @@
     p.set("getTotalCount","false");
     p.set("nameMatchMode","Partial");
     p.set("preferAccurateMatches","true");
-    p.set("fields","AdditionalNames,Artists,Names,PVs,Tags,ThumbUrl,Bpm");
+    p.set("fields","AdditionalNames,Artists,Names,PVs,Tags,ThumbUrl,Bpm,Lyrics");
     p.set("lang","Japanese");
     p.set("sort",opts.sort||"FavoritedTimes");
     if(opts.artistId!=null)p.append("artistId",String(opts.artistId));
+    if(opts.start!=null)p.set("start",String(opts.start));
     if(c.yearFrom)p.set("afterDate",c.yearFrom+"-01-01T00:00:00Z");
     if(c.yearTo)p.set("beforeDate",(c.yearTo+1)+"-01-01T00:00:00Z");
     if(c.duration){
@@ -143,6 +151,54 @@
       }catch(e){return [];}
     }));
     return batches.flat();
+  }
+
+  function v11LyricHaystack(song){
+    return v11Arr(song&&song.lyrics).map(function(x){return String((x&&x.value)||"");}).join("\n");
+  }
+
+  function v11NormText(s){
+    return String(s||"").normalize("NFKC").toLowerCase().replace(/[\s\u3000\p{P}\p{S}]+/gu,"");
+  }
+
+  function v11LyricsMatch(song,terms){
+    if(!terms||!terms.length)return true;
+    const hay=v11NormText(v11LyricHaystack(song));
+    if(!hay)return false;
+    return terms.some(function(t){
+      const n=v11NormText(t);
+      return n.length>=2 && hay.includes(n);
+    });
+  }
+
+  async function v11SearchLyricsPool(c){
+    if(!c||!c.lyrics||!c.deepLyrics)return [];
+    const terms=(c.lyricPhrases||c.lyricTokens||[]).filter(Boolean).slice(0,6);
+    if(!terms.length)return [];
+
+    const pages=[];
+    // 한 번의 수사에서 최대 150곡만 읽고, 같은 URL은 v11Cache가 30분 재사용한다.
+    for(let start=0;start<150;start+=50){
+      pages.push((async function(offset){
+        try{
+          const data=await v11FetchJson(v11SongUrl({
+            query:"",
+            clues:c,
+            sort:c.yearFrom||c.yearTo?"PublishDate":"FavoritedTimes",
+            start:offset
+          }));
+          return v11Arr(data&&data.items).map(v11ItemToSong);
+        }catch(e){return [];}
+      })(start));
+    }
+
+    const rows=(await Promise.all(pages)).flat();
+    const matched=rows.filter(function(song){return v11LyricsMatch(song,terms);});
+    // 가사가 VocaDB에 없어서 직접 매치가 불가능한 경우도 있으므로,
+    // 다른 강한 단서가 있을 때는 일부 후보를 보존한다.
+    if(matched.length)return matched;
+    if(c.vocal||c.producer||c.yearFrom||c.yearTo)return rows.slice(0,80);
+    return [];
   }
 
   function v11Key(song){
@@ -243,6 +299,18 @@
         }
       }
 
+      if(c.lyrics){
+        const lyricTerms=(c.lyricPhrases||c.lyricTokens||[]).filter(Boolean).slice(0,4);
+        if(c.useNico&&relayBase()){
+          lyricTerms.forEach(function(term){
+            nicoTasks.push(detectiveFetchText(term,c,"-viewCounter","description"));
+          });
+        }
+        if(c.useVocaDB&&c.deepLyrics){
+          vocaTasks.push(v11SearchLyricsPool(c));
+        }
+      }
+
       if(c.useVocaDB){
         Array.from(new Set(titleTerms)).slice(0,6).forEach(function(term){vocaTasks.push(v11SearchVocaDB(term,c));});
         if(c.producer)vocaTasks.push(v11SearchByArtist(c.producer,c));
@@ -271,7 +339,7 @@
 
       const both=await Promise.all([
         Promise.all(nicoTasks.slice(0,14)),
-        Promise.all(vocaTasks.slice(0,8))
+        Promise.all(vocaTasks.slice(0,12))
       ]);
       const uniq=new Map();
 
