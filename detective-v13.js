@@ -102,25 +102,30 @@
 
   // ===== Mobile one-screen step wizard =====
   let mobileStep=0;
-  function setMobileStep(i){
+  function setMobileStep(i,scroll=true){
     const sections=Array.from(document.querySelectorAll("#detectivePanel .detective-questionnaire .detective-section"));
     if(!sections.length)return;
     mobileStep=Math.max(0,Math.min(sections.length-1,Number(i)||0));
-    sections.forEach(function(s,idx){
-      s.classList.toggle("mobile-active",idx===mobileStep);
-      s.open=idx===mobileStep;
-    });
+    const target=sections[mobileStep];
+    if(target)target.open=true;
     document.querySelectorAll("#detectiveMobileSteps button").forEach(function(b,idx){
       b.classList.toggle("active",idx===mobileStep);
     });
+    if(scroll&&isMobile()&&target){
+      target.scrollIntoView({behavior:"smooth",block:"start"});
+    }
   }
 
   function showMobileResults(){
-    if(panel&&isMobile())panel.classList.add("mobile-show-results");
+    if(!isMobile())return;
+    if(panel)panel.classList.remove("mobile-show-results");
+    const results=document.getElementById("detectiveStatus")||document.getElementById("detectiveResults");
+    if(results)setTimeout(function(){results.scrollIntoView({behavior:"smooth",block:"start"});},60);
   }
   function showMobileClues(){
     if(panel)panel.classList.remove("mobile-show-results");
-    setMobileStep(mobileStep);
+    const q=document.querySelector("#detectivePanel .detective-questionnaire");
+    if(q)q.scrollIntoView({behavior:"smooth",block:"start"});
   }
 
   function ensureMobileBack(){
@@ -433,9 +438,9 @@
     if(detailBtn)detailBtn.onclick=function(){setMode(true)};
 
     document.querySelectorAll("#detectiveMobileSteps button").forEach(function(b){
-      b.onclick=function(){setMobileStep(Number(b.dataset.dstep)||0)};
+      b.onclick=function(){setMobileStep(Number(b.dataset.dstep)||0,true)};
     });
-    setMobileStep(0);
+    setMobileStep(0,false);
     ensureMobileBack();
 
     // v11 installed its own click listener; clone once so v13 owns the primary search action.
@@ -449,7 +454,7 @@
     wireMainMobilePager();
     window.addEventListener("resize",function(){
       if(isMobile()){
-        setMobileStep(mobileStep);
+        setMobileStep(mobileStep,false);
         setMainMobileView(mainMobileView);
       }else{
         if(panel)panel.classList.remove("mobile-show-results");
@@ -492,7 +497,44 @@
       '.app.mobile-paged #icebergPanel .legend{display:none}'+
       '.app.mobile-paged #resultsPanel .panel-head{padding:6px 7px;min-height:36px}.app.mobile-paged #resultsPanel .panel-head p{display:none}.app.mobile-paged #resultsPanel .free-search{padding:5px}.app.mobile-paged #resultsPanel .results-toolbar{padding:4px 5px}.app.mobile-paged #resultsPanel .song{grid-template-columns:22px 54px minmax(0,1fr);padding:4px 3px;gap:5px}.app.mobile-paged #resultsPanel .thumb{width:54px}.app.mobile-paged #resultsPanel .song-title{font-size:9.5px}'+
       '.app.mobile-paged #universePanel .panel-head,.app.mobile-paged #settingsPanel .panel-head{padding:6px 7px}'+
-      '.detective-mobile-steps{display:flex!important;gap:4px;overflow-x:auto;padding:5px 6px;scrollbar-width:none}.detective-mobile-steps::-webkit-scrollbar{display:none}.detective-mobile-steps button{flex:0 0 52px!important;width:52px;height:30px!important;font-size:8px!important}'+
+      '.detective-mobile-steps{display:flex!important;position:sticky;top:0;z-index:14;gap:5px;overflow-x:auto;padding:6px 8px;background:#081522;border-bottom:1px solid #1c3348;scrollbar-width:none}.detective-mobile-steps::-webkit-scrollbar{display:none}.detective-mobile-steps button{flex:0 0 auto!important;width:auto!important;min-width:54px;height:32px!important;padding:0 10px!important;font-size:9px!important}'+
+      '.tools-body{overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch}'+
+      '.tools-body>.panel.active{height:auto!important;min-height:calc(100dvh - 90px)!important;overflow:visible!important;padding-bottom:calc(68px + env(safe-area-inset-bottom))!important}'+
+      '.detective-panel .detective-controlbar{display:flex!important;align-items:center!important;gap:6px!important;flex-wrap:wrap!important;max-height:none!important;overflow:visible!important;padding:7px 8px!important;background:#091725}'+
+      '.detective-panel .detective-controlbar>.control:first-child{display:none!important}'+
+      '.detective-panel .detective-controlbar>.detective-toggle{display:none!important}'+
+      '.detective-search-sources{display:flex!important;grid-column:auto!important;flex:1 1 auto!important;min-width:0!important;min-height:36px!important;padding:5px 8px!important;gap:8px!important;border-radius:10px!important}'+
+      '.detective-search-sources .detective-source-label,.detective-search-sources #detectiveSourceStatus{display:none!important}'+
+      '.detective-search-sources label{font-size:10px!important;white-space:nowrap!important}'+
+      '.detective-ui-modes{display:flex!important;grid-column:auto!important;flex:0 0 auto!important;gap:4px!important;justify-content:flex-end!important}'+
+      '.detective-mode-btn{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-height:34px!important;padding:0 8px!important;font-size:8px!important}'+
+      '.detective-auto-stage{min-height:34px!important;padding:0 8px!important;font-size:8px!important;white-space:nowrap!important}'+
+      '.detective-clue-meter{display:flex!important;align-items:center!important;gap:8px!important;grid-column:auto!important;flex:1 0 100%!important;min-height:28px!important;padding:4px 7px!important}'+
+      '.detective-clue-meter>div:first-child{flex:0 0 auto!important;font-size:9px!important;white-space:nowrap!important}.detective-clue-meter #detectiveClueNeed{display:none!important}.detective-clue-track{flex:1 1 auto!important;height:4px!important;margin:0!important}'+
+      '.detective-questionnaire{height:auto!important;min-height:0!important;padding:7px 8px!important;overflow:visible!important}'+
+      '.detective-questionnaire .detective-section{display:block!important;height:auto!important;margin:0 0 7px!important;border-radius:12px!important;scroll-margin-top:46px!important}'+
+      '.detective-questionnaire .detective-section summary{min-height:44px!important;padding:0 11px!important;font-size:11px!important}'+
+      '.detective-questionnaire .detective-section summary:after{display:block!important}.detective-questionnaire .detective-section summary small{font-size:8px!important}'+
+      '.detective-questionnaire .detective-section-body{display:block!important;max-height:none!important;overflow:visible!important;padding:8px!important}'+
+      '.detective-panel.detective-simple .detective-advanced-section{display:block!important}'+
+      '.detective-panel.detective-simple .detective-advanced-section:not([open])>.detective-section-body{display:none!important}'+
+      '.detective-panel.detective-simple .detective-simple-visible:not([open])>.detective-section-body{display:none!important}'+
+      '.detective-grid{grid-template-columns:1fr!important;gap:8px!important}.detective-span-2{grid-column:auto!important}'+
+      '.detective-inline-selects{grid-template-columns:1fr 1fr!important;gap:7px!important}'+
+      '.detective-section input,.detective-section select,.detective-section textarea{font-size:14px!important;min-height:42px!important;border-radius:10px!important}'+
+      '.detective-section textarea{min-height:76px!important;line-height:1.45!important}.detective-lyrics-box textarea{min-height:72px!important}'+
+      '.detective-grid .control label,.detective-inline-selects .control label{font-size:9px!important;margin-bottom:4px!important}'+
+      '.detective-parser-preview,.detective-hint,.detective-hint-block{font-size:8px!important;line-height:1.45!important}'+
+      '.detective-korean-examples{display:flex!important;overflow-x:auto!important;flex-wrap:nowrap!important;gap:5px!important;padding-bottom:2px!important;scrollbar-width:none}.detective-korean-examples::-webkit-scrollbar{display:none}.detective-korean-examples button{flex:0 0 auto!important;font-size:8px!important;padding:6px 8px!important}'+
+      '.detective-chips{gap:5px!important}.detective-chip{min-height:32px!important;padding:0 9px!important;font-size:9px!important}'+
+      '.evidence-grid{grid-template-columns:1fr!important;gap:7px!important}.evidence-card{padding:8px!important}.evidence-sub{display:block!important;font-size:8px!important}.evidence-title{font-size:10px!important}'+
+      '.detective-sticky-actions{position:sticky!important;left:auto!important;right:auto!important;bottom:0!important;height:58px!important;padding:7px 8px calc(7px + env(safe-area-inset-bottom))!important;display:grid!important;grid-template-columns:1fr auto!important;gap:6px!important;background:linear-gradient(180deg,#081522dd,#081522 35%)!important;z-index:30!important}'+
+      '.detective-sticky-actions .btn.primary{height:44px!important;font-size:12px!important}.detective-sticky-actions #detectiveResetBtn{height:44px!important;padding:0 12px!important;font-size:9px!important}.detective-sticky-actions .detective-hint{display:none!important}'+
+      '.detective-status,.detective-followup,.detective-feedback-summary,.detective-web-actions,.detective-web-hunt,.detective-results{display:block!important;margin-left:8px!important;margin-right:8px!important}'+
+      '.detective-feedback-summary{display:flex!important}.detective-web-actions{display:flex!important}.detective-web-hunt[hidden]{display:none!important}'+
+      '.detective-panel.mobile-show-results .detective-controlbar,.detective-panel.mobile-show-results .detective-mobile-steps,.detective-panel.mobile-show-results .detective-questionnaire{display:flex!important}.detective-panel.mobile-show-results .detective-questionnaire{display:block!important}'+
+      '.detective-panel.mobile-show-results .detective-results{height:auto!important;overflow:visible!important;padding:0!important}'+
+      '.detective-mobile-back{display:none!important}'+
       '}';
     document.head.appendChild(style);
   }
