@@ -194,6 +194,72 @@ async function upsertSemanticVectors(env,records){
   }
   return {upserted};
 }
+async function fetchNicoMetaByIds(ids){
+  const unique=uniq(ids.map(clean).filter(x=>/^(sm|nm|so)\d+$/i.test(x))).slice(0,100);
+  if(!unique.length)return [];
+  const out=[];
+  for(let i=0;i<unique.length;i+=20){
+    const group=unique.slice(i,i+20);
+    const p=new URLSearchParams();
+    p.set("q",group.join(" OR "));
+    p.set("targets","contentId");
+    p.set("fields","contentId,title,description,viewCounter,startTime,lengthSeconds,thumbnailUrl,commentCounter,mylistCounter,likeCounter,tags");
+    p.set("_sort","-viewCounter");
+    p.set("_limit","100");
+    p.set("_offset","0");
+    p.set("_context","voice_synth_archive_index_enrich");
+    try{
+      const r=await fetch(NICO_API+"?"+p.toString(),{headers:{"Accept":"application/json","User-Agent":"voice-synth-archive-index/17.0"}});
+      if(!r.ok)continue;
+      const d=await r.json();
+      out.push(...arr(d?.data));
+    }catch{}
+  }
+  return out;
+}
+
+async function enrichNicoRows(env,ids){
+  if(!await dbReady(env))return {updated:0};
+  const rows=await fetchNicoMetaByIds(ids);
+  let updated=0;
+  for(const s of rows){
+    const id=clean(s?.contentId);
+    if(!id)continue;
+    try{
+      await env.DB.prepare(`
+        UPDATE songs SET
+          title=CASE WHEN ?<>'' THEN ? ELSE title END,
+          tags_json=CASE WHEN ?<>'' THEN ? ELSE tags_json END,
+          view_counter=?,
+          comment_counter=?,
+          mylist_counter=?,
+          like_counter=?,
+          publish_date=COALESCE(NULLIF(?,''),publish_date),
+          publish_year=COALESCE(?,publish_year),
+          duration_seconds=CASE WHEN ?>0 THEN ? ELSE duration_seconds END,
+          thumbnail_url=COALESCE(NULLIF(?,''),thumbnail_url),
+          updated_at=?
+        WHERE nico_id=?
+      `).bind(
+        clean(s?.title),clean(s?.title),
+        clean(s?.tags),JSON.stringify(clean(s?.tags).split(/\s+/).filter(Boolean)),
+        Number(s?.viewCounter)||0,
+        Number(s?.commentCounter)||0,
+        Number(s?.mylistCounter)||0,
+        Number(s?.likeCounter)||0,
+        clean(s?.startTime),
+        clean(s?.startTime)?Number(clean(s.startTime).slice(0,4))||null:null,
+        Number(s?.lengthSeconds)||0,Number(s?.lengthSeconds)||0,
+        clean(s?.thumbnailUrl),
+        new Date().toISOString(),
+        id
+      ).run();
+      updated++;
+    }catch{}
+  }
+  return {updated};
+}
+
 async function semanticSearch(env,body){
   if(!env?.AI||!env?.VECTORIZE||!await dbReady(env))return [];
   const q=semanticQueryText(body);
@@ -602,12 +668,13 @@ async function syncVocaDBPages(env,{pages=4}={}){
 
   const sem=await upsertSemanticVectors(env,semanticRecords);
   semanticUpserted=sem.upserted||0;
+  const nicoEnrich=await enrichNicoRows(env,semanticRecords.map(x=>x.entity.nico_id).filter(Boolean));
   await env.DB.prepare(`
     INSERT INTO sync_state(key,value,updated_at) VALUES(?,?,?)
     ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=excluded.updated_at
   `).bind(key,String(start),new Date().toISOString()).run();
 
-  return {ok:true,next:start,added,semanticUpserted,lastCount,indexedSongs:await dbCount(env)};
+  return {ok:true,next:start,added,semanticUpserted,nicoUpdated:nicoEnrich.updated||0,lastCount,indexedSongs:await dbCount(env)};
 }
 
 async function handleManualSync(request,env){
