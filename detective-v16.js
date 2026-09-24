@@ -1,4 +1,4 @@
-/* Voice Synth Archive Detective v18
+/* Voice Synth Archive Detective v19
  * Backend-first local song index search.
  * Falls back to the existing live Niconico + VocaDB detective when D1 is unavailable.
  */
@@ -74,16 +74,17 @@
     }
     if(d?.indexReady){
       badge.className="detective-index-status ready";
-      const flags=[
-        d.semanticReady?"의미검색 ON":"의미검색 대기",
-        d.visualReady?"MV시각 ON":"MV시각 대기"
-      ];
-      badge.textContent="로컬 인덱스 "+Number(d.indexedSongs||0).toLocaleString("ko-KR")+"곡 · "+flags.join(" · ");
-      badge.title=d.visualReady
-        ?"D1 문자검색 + 다국어 의미검색 + MV 썸네일 의미검색을 함께 사용합니다."
-        :d.semanticReady
-          ?"D1 문자검색 + 다국어 의미검색을 사용 중입니다. VISUALIZE binding을 연결하면 MV 의미검색도 켜집니다."
-          :"D1 문자 인덱스만 사용 중입니다.";
+      const count=Number(d.indexedSongs||0).toLocaleString("ko-KR");
+      if(d.semanticReady||d.visualReady){
+        const flags=[];
+        if(d.semanticReady)flags.push("의미검색 ON");
+        if(d.visualReady)flags.push("MV시각 ON");
+        badge.textContent="인덱스 "+count+"곡 · "+flags.join(" · ");
+        badge.title="AI 확장 검색이 활성화되어 있습니다.";
+      }else{
+        badge.textContent="무료 인덱스 "+count+"곡 · FTS/n-gram";
+        badge.title="무료 모드: D1 문자·가사·태그·부분제목 검색 + 실시간 보강을 사용합니다.";
+      }
     }else{
       badge.className="detective-index-status";
       badge.textContent="실시간 수색";
