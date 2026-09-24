@@ -16,10 +16,16 @@
  */
 const NICO_API = "https://snapshot.search.nicovideo.jp/api/v2/snapshot/video/contents/search";
 const VOCADB_API = "https://vocadb.net/api";
-const INDEX_VERSION = 2;
+const INDEX_VERSION = 3;
 const EMBED_MODEL = "@cf/baai/bge-m3";
 const EMBED_DIMENSIONS = 1024;
 const VISION_MODEL = "@cf/meta/llama-3.2-11b-vision-instruct";
+
+// Free-first default. AI / Vectorize paths stay in the codebase for a later paid upgrade,
+// but are never used unless ENABLE_AI is explicitly set to "1".
+function aiEnabled(env){return String(env?.ENABLE_AI||"0")==="1" && !!env?.AI}
+function semanticEnabled(env){return aiEnabled(env) && !!env?.VECTORIZE}
+function visualEnabled(env){return aiEnabled(env) && !!env?.VISUALIZE}
 
 function cors() {
   return {
@@ -158,13 +164,13 @@ function embeddingRows(result){
   return [];
 }
 async function embedTexts(env,texts){
-  if(!env?.AI||!texts?.length)return [];
+  if(!aiEnabled(env)||!texts?.length)return [];
   const cleaned=texts.map(x=>clean(x).slice(0,7000));
   const out=await env.AI.run(EMBED_MODEL,{text:cleaned});
   return embeddingRows(out);
 }
 async function upsertSemanticVectors(env,records){
-  if(!env?.AI||!env?.VECTORIZE||!records?.length)return {upserted:0};
+  if(!semanticEnabled(env)||!records?.length)return {upserted:0};
   let upserted=0;
   for(let i=0;i<records.length;i+=16){
     const batch=records.slice(i,i+16);
@@ -300,7 +306,7 @@ async function imageDataUrlFromUrl(url){
   return "data:"+type+";base64,"+bytesToBase64(new Uint8Array(ab));
 }
 async function captionVisual(env,imageDataUrl,hint=""){
-  if(!env?.AI||!imageDataUrl)return "";
+  if(!aiEnabled(env)||!imageDataUrl)return "";
   const prompt=[
     "Describe this music-video thumbnail for visual retrieval only.",
     "Focus on visible facts: dominant colors, monochrome or colorful, illustration/anime/3D/live-action, number of people or characters, face close-up or full body, text-heavy or text-free, composition, background, objects, lighting, mood, drawing style and unusual visual motifs.",
@@ -325,13 +331,13 @@ async function captionVisual(env,imageDataUrl,hint=""){
   }
 }
 async function visualVector(env,text){
-  if(!env?.AI||!text)return null;
+  if(!aiEnabled(env)||!text)return null;
   const rows=await embedTexts(env,[text]);
   const v=rows[0];
   return Array.isArray(v)&&v.length===EMBED_DIMENSIONS?v:null;
 }
 async function upsertVisualVector(env,songId,caption,entity){
-  if(!env?.VISUALIZE||!caption||!songId)return false;
+  if(!visualEnabled(env)||!caption||!songId)return false;
   const v=await visualVector(env,caption);
   if(!v)return false;
   await env.VISUALIZE.upsert([{
@@ -348,7 +354,7 @@ async function upsertVisualVector(env,songId,caption,entity){
   return true;
 }
 async function backfillVisual(env,{limit=10}={}){
-  if(!env?.AI||!env?.VISUALIZE||!await dbReady(env))return {ok:false,reason:"visual-bindings-unavailable",captioned:0};
+  if(!visualEnabled(env)||!await dbReady(env))return {ok:false,reason:"visual-disabled-free-mode",captioned:0};
   const rows=arr((await env.DB.prepare(
     "SELECT * FROM songs WHERE thumbnail_url IS NOT NULL AND thumbnail_url<>'' AND (visual_json IS NULL OR visual_json='') ORDER BY id ASC LIMIT ?"
   ).bind(Math.max(1,Math.min(30,limit))).all())?.results);
@@ -376,7 +382,7 @@ async function backfillVisual(env,{limit=10}={}){
   return {ok:true,captioned};
 }
 async function visualSearchByText(env,text,topK=70){
-  if(!env?.AI||!env?.VISUALIZE||!await dbReady(env)||!clean(text))return [];
+  if(!visualEnabled(env)||!await dbReady(env)||!clean(text))return [];
   const v=await visualVector(env,clean(text).slice(0,5000));
   if(!v)return [];
   try{
@@ -407,7 +413,7 @@ async function visualSearchByText(env,text,topK=70){
   }
 }
 async function handleVisualQuery(request,env){
-  if(!env?.AI||!env?.VISUALIZE||!await dbReady(env)){
+  if(!visualEnabled(env)||!await dbReady(env)){
     return json({ok:false,visualReady:false,error:"visual semantic index is not configured"},503);
   }
   const type=clean(request.headers.get("content-type"));
@@ -445,7 +451,7 @@ async function handleVisualQuery(request,env){
 }
 
 async function semanticSearch(env,body){
-  if(!env?.AI||!env?.VECTORIZE||!await dbReady(env))return [];
+  if(!semanticEnabled(env)||!await dbReady(env))return [];
   const q=semanticQueryText(body);
   if(q.length<2)return [];
   try{
@@ -486,7 +492,7 @@ function makeNgrams(text){
   for(let n=2;n<=3;n++){
     for(let i=0;i<=s.length-n;i++)out.add(s.slice(i,i+n));
   }
-  return [...out].slice(0,320);
+  return [...out].slice(0,96);
 }
 
 async function dbReady(env){
@@ -583,6 +589,35 @@ async function vocadbSearch(query,{start=0,artistId=null,yearFrom=null,yearTo=nu
   return arr(d?.items);
 }
 
+const FREE_CONCEPT_EXPANSIONS = [
+  [/어두|암울|우울|절망|dark/i,["ダーク","鬱","病み","絶望","暗い"]],
+  [/밝|신나|경쾌|bright|happy/i,["明るい","爽やか","ポップ","元気"]],
+  [/몽환|꿈같|dream/i,["幻想的","幻想","夢","アンビエント"]],
+  [/기괴|무서|공포|호러|괴상/i,["ホラー","不気味","狂気","怖い"]],
+  [/귀여|cute/i,["かわいい","可愛い","キュート"]],
+  [/록|락|rock/i,["VOCAROCK","ロック"]],
+  [/전자|일렉|electro/i,["エレクトロ","テクノ","電子音"]],
+  [/피아노|piano/i,["ピアノ"]],
+  [/기타|guitar/i,["ギター"]],
+  [/빠르|fast/i,["高速","疾走感","アップテンポ"]],
+  [/느리|잔잔|slow|calm/i,["バラード","静か","スローテンポ"]],
+  [/흑백|모노크롬|black.?white/i,["白黒","モノクロ"]],
+  [/빨간|붉은|red/i,["赤","赤色"]],
+  [/파란|푸른|blue/i,["青","青色"]],
+  [/손그림|낙서|hand.?drawn/i,["手描き","手書き"]],
+  [/한.?장|정지화면|single.?image/i,["一枚絵","静止画"]],
+  [/글자|텍스트|lyrics?.?video/i,["文字PV","歌詞動画","テキスト"]],
+  [/mmd|3d/i,["MMD","3D"]],
+  [/실사|live.?action/i,["実写"]],
+  [/미쿠|miku/i,["初音ミク","ミク"]],
+  [/테토|teto/i,["重音テト","テト"]],
+  [/린|rin/i,["鏡音リン","リン"]],
+  [/렌|len/i,["鏡音レン","レン"]],
+  [/루카|luka/i,["巡音ルカ","ルカ"]],
+  [/플라워|flower/i,["flower","v_flower"]],
+  [/카후|可不|kafu/i,["可不"]]
+];
+
 function queryAtoms(body){
   const out=[];
   const push=v=>{
@@ -590,14 +625,29 @@ function queryAtoms(body){
     if(!s)return;
     s.split(/[\s,、/|]+/).forEach(x=>x.length>=1&&out.push(x));
   };
+  const raw=[
+    body?.words,body?.lyrics,body?.producer,body?.vocal,body?.visual,
+    ...arr(body?.genre),...arr(body?.mood),...arr(body?.instrument),
+    ...arr(body?.visualTags),...arr(body?.inferred)
+  ].filter(Boolean).join(" ");
   push(body?.words);
   push(body?.lyrics);
   push(body?.producer);
   push(body?.vocal);
+  push(body?.visual);
   for(const x of arr(body?.wordTokens))push(x);
   for(const x of arr(body?.lyricTokens))push(x);
   for(const x of arr(body?.kanjiHints))push(x?.kanji||x);
-  return uniq(out).slice(0,18);
+  for(const x of arr(body?.genre))push(x);
+  for(const x of arr(body?.mood))push(x);
+  for(const x of arr(body?.instrument))push(x);
+  for(const x of arr(body?.visualTags))push(x);
+  for(const x of arr(body?.inferred))push(x);
+  for(const [re,terms] of FREE_CONCEPT_EXPANSIONS){
+    re.lastIndex=0;
+    if(re.test(raw))terms.forEach(push);
+  }
+  return uniq(out).slice(0,32);
 }
 function rowToSong(row){
   return {
@@ -741,9 +791,9 @@ async function warmFromClues(env,body){
   let added=0;
   const seen=new Set();
   const semanticRecords=[];
-  for(const q of queries.slice(0,5)){
+  for(const q of queries.slice(0,3)){
     try{
-      const items=await vocadbSearch(q,{yearFrom:body?.yearFrom,yearTo:body?.yearTo,maxResults:30});
+      const items=await vocadbSearch(q,{yearFrom:body?.yearFrom,yearTo:body?.yearTo,maxResults:12});
       for(const item of items){
         const e=vocadbToEntity(item);
         if(seen.has(e.canonical_key))continue;
@@ -765,10 +815,8 @@ async function handleDetectiveSearch(request,env){
   const ready=await dbReady(env);
   if(!ready)return json({ok:false,indexReady:false,error:"D1 detective index is not configured"},503);
 
-  let [lexical,semantic]=await Promise.all([
-    lexicalSearch(env,body),
-    semanticSearch(env,body)
-  ]);
+  let lexical=await lexicalSearch(env,body);
+  let semantic=semanticEnabled(env)?await semanticSearch(env,body):[];
 
   let warmed=0,semanticUpserted=0;
   if(Math.max(lexical.length,semantic.length)<12){
@@ -776,7 +824,8 @@ async function handleDetectiveSearch(request,env){
     warmed=w.added||0;
     semanticUpserted=w.semanticUpserted||0;
     if(warmed){
-      [lexical,semantic]=await Promise.all([lexicalSearch(env,body),semanticSearch(env,body)]);
+      lexical=await lexicalSearch(env,body);
+      semantic=semanticEnabled(env)?await semanticSearch(env,body):[];
     }
   }
 
@@ -806,7 +855,7 @@ async function handleDetectiveSearch(request,env){
   const count=await dbCount(env);
   return json({
     ok:true,indexReady:true,indexVersion:INDEX_VERSION,indexedSongs:count,
-    semanticReady:!!(env?.AI&&env?.VECTORIZE),
+    semanticReady:semanticEnabled(env),
     warmed,semanticUpserted,
     lexicalCandidates:lexical.length,
     semanticCandidates:semantic.length,
@@ -836,7 +885,7 @@ function rowToEntityForEmbedding(row){
 }
 
 async function backfillSemantic(env,{limit=120}={}){
-  if(!env?.AI||!env?.VECTORIZE||!await dbReady(env))return {ok:false,reason:"semantic-bindings-unavailable",upserted:0};
+  if(!semanticEnabled(env)||!await dbReady(env))return {ok:false,reason:"semantic-disabled-free-mode",upserted:0};
   const key="semantic_cursor";
   const row=await env.DB.prepare("SELECT value FROM sync_state WHERE key=?").bind(key).first();
   let cursor=Math.max(0,Number(row?.value)||0);
@@ -857,7 +906,7 @@ async function backfillSemantic(env,{limit=120}={}){
   return {ok:true,upserted:sem.upserted||0,next};
 }
 
-async function syncVocaDBPages(env,{pages=4}={}){
+async function syncVocaDBPages(env,{pages=1}={}){
   if(!await dbReady(env))return {ok:false,reason:"no-db"};
   const key="vocadb_original_cursor";
   const row=await env.DB.prepare("SELECT value FROM sync_state WHERE key=?").bind(key).first();
@@ -902,7 +951,7 @@ async function handleManualSync(request,env){
   if(auth!=="Bearer "+env.SYNC_TOKEN)return json({ok:false,error:"unauthorized"},401);
   let body={};
   try{body=await request.json()}catch{}
-  const pages=Math.max(1,Math.min(8,Number(body?.pages)||4));
+  const pages=Math.max(1,Math.min(4,Number(body?.pages)||2));
   return json(await syncVocaDBPages(env,{pages}));
 }
 
@@ -934,19 +983,19 @@ export default {
 
     if(u.pathname==="/" || u.pathname==="/health"){
       return json({
-        ok:true,service:"voice-synth-archive-worker",version:"18.0",
+        ok:true,service:"voice-synth-archive-worker",version:"19.0",
         detectiveIndex:await dbReady(env),
-        semanticIndex:!!(env?.AI&&env?.VECTORIZE),
-        visualIndex:!!(env?.AI&&env?.VISUALIZE),
-        embeddingModel:env?.AI?EMBED_MODEL:null,
-        visionModel:env?.AI?VISION_MODEL:null,
+        semanticIndex:semanticEnabled(env),
+        visualIndex:visualEnabled(env),
+        embeddingModel:semanticEnabled(env)?EMBED_MODEL:null,
+        visionModel:visualEnabled(env)?VISION_MODEL:null,
         indexedSongs:await dbCount(env)
       });
     }
 
     if(u.pathname==="/detective/status"){
       const ready=await dbReady(env);
-      return json({ok:true,indexReady:ready,semanticReady:!!(env?.AI&&env?.VECTORIZE),visualReady:!!(env?.AI&&env?.VISUALIZE),indexVersion:INDEX_VERSION,embeddingModel:env?.AI?EMBED_MODEL:null,visionModel:env?.AI?VISION_MODEL:null,indexedSongs:ready?await dbCount(env):0});
+      return json({ok:true,indexReady:ready,semanticReady:semanticEnabled(env),visualReady:visualEnabled(env),indexVersion:INDEX_VERSION,embeddingModel:semanticEnabled(env)?EMBED_MODEL:null,visionModel:visualEnabled(env)?VISION_MODEL:null,indexedSongs:ready?await dbCount(env):0});
     }
     if(u.pathname==="/detective/search" && request.method==="POST")return handleDetectiveSearch(request,env);
     if(u.pathname==="/detective/visual-query" && request.method==="POST")return handleVisualQuery(request,env);
@@ -988,7 +1037,7 @@ export default {
 
     const out=new URL(NICO_API);
     for(const [k,v] of u.searchParams)out.searchParams.append(k,v);
-    if(!out.searchParams.has("_context"))out.searchParams.set("_context","voice_synth_archive_v18");
+    if(!out.searchParams.has("_context"))out.searchParams.set("_context","voice_synth_archive_v19");
     if(!out.searchParams.has("_limit"))out.searchParams.set("_limit","20");
 
     const limit=Math.min(100,Math.max(0,Number(out.searchParams.get("_limit"))||20));
@@ -998,7 +1047,7 @@ export default {
 
     try{
       const r=await fetch(out.toString(),{
-        headers:{"Accept":"application/json","User-Agent":"voice-synth-niconico-archive/18.0"}
+        headers:{"Accept":"application/json","User-Agent":"voice-synth-niconico-archive/19.0"}
       });
       const body=await r.text();
       return new Response(body,{
@@ -1015,6 +1064,6 @@ export default {
   },
 
   async scheduled(event,env,ctx){
-    ctx.waitUntil((async()=>{await syncVocaDBPages(env,{pages:4});await backfillSemantic(env,{limit:120});await backfillVisual(env,{limit:10});})());
+    ctx.waitUntil((async()=>{await syncVocaDBPages(env,{pages:1});if(semanticEnabled(env))await backfillSemantic(env,{limit:60});if(visualEnabled(env))await backfillVisual(env,{limit:5});})());
   }
 };
