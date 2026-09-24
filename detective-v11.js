@@ -75,6 +75,8 @@
       vocadbId:id,
       vocadbUrl:"https://vocadb.net/S/"+id,
       vocadbPVs:v11Arr(item&&item.pvs),
+      webLinks:v11Arr(item&&item.webLinks),
+      albums:v11Arr(item&&item.albums),
       __nicoId:nicoId,
       __source:"vocadb",
       __sources:["vocadb"]
@@ -100,7 +102,7 @@
     p.set("getTotalCount","false");
     p.set("nameMatchMode","Partial");
     p.set("preferAccurateMatches","true");
-    p.set("fields","AdditionalNames,Artists,Names,PVs,Tags,ThumbUrl,Bpm,Lyrics");
+    p.set("fields","AdditionalNames,Artists,Names,PVs,Tags,ThumbUrl,Bpm,Lyrics,WebLinks,Albums");
     p.set("lang","Japanese");
     p.set("sort",opts.sort||"FavoritedTimes");
     if(opts.artistId!=null)p.append("artistId",String(opts.artistId));
