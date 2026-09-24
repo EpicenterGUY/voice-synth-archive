@@ -960,6 +960,21 @@ body.tools-open{overflow:hidden}
   .detective-inline-selects{grid-template-columns:1fr 1fr!important}
 }
 
+
+/* ===== detective v14 visual/audio evidence ===== */
+.evidence-fingerprint{
+  margin-top:6px;padding:6px 7px;border:1px solid #233c55;border-radius:8px;
+  background:#081522;color:#7898ae;font-size:8px;line-height:1.45
+}
+.detective-pitch-canvas{
+  display:block;width:100%;height:72px;margin-top:7px;border:1px solid #233c55;
+  border-radius:9px;background:#07121e
+}
+@media(max-width:699px){
+  .detective-pitch-canvas{height:54px;margin-top:5px}
+  .evidence-fingerprint{font-size:7px;padding:4px 5px;margin-top:4px}
+}
+
 </style>
 </head>
 <body>
@@ -1172,7 +1187,7 @@ body.tools-open{overflow:hidden}
     </details>
   </section>
 
-  <div class="footer">v13.0 · 간결 UI · 단계형 심층 수사 · 출처 기억 확장 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v14.0 · 시각 지문 · BPM 대조 · 허밍 윤곽 · 단계형 심층 수사 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -1593,6 +1608,7 @@ body.tools-open{overflow:hidden}
                   <input type="file" id="detectiveImageFile" accept="image/*">
                   <div class="evidence-preview" id="detectiveImagePreview">이미지 없음</div>
                   <div class="evidence-analysis" id="detectiveImageAnalysis">업로드하면 색감·명암·흑백 여부·구도 복잡도를 분석합니다.</div>
+                  <div class="evidence-fingerprint" id="detectiveImageFingerprint">시각 지문 대기 · 색 분포 / 4×4 구도 / 윤곽 / 퍼셉추얼 해시</div>
                 </div>
 
                 <div class="evidence-card">
@@ -1609,13 +1625,15 @@ body.tools-open{overflow:hidden}
                   <input type="file" id="detectiveAudioFile" accept="audio/*">
                   <audio id="detectiveAudioPlayer" controls style="display:none;width:100%;margin-top:7px"></audio>
                   <div class="evidence-analysis" id="detectiveAudioAnalysis">업로드하면 대략적인 BPM·에너지·음색 밝기를 분석합니다.</div>
+                  <canvas id="detectivePitchCanvas" class="detective-pitch-canvas" width="560" height="110" aria-label="허밍 음높이 윤곽"></canvas>
+                  <div class="evidence-fingerprint" id="detectivePitchMeta">음높이 윤곽 대기 · 허밍이면 키와 무관한 상대 음정 흐름을 추출합니다.</div>
                 </div>
               </div>
 
               <div class="evidence-warning">
-                이미지 비교는 후보 영상의 <b>썸네일과 시각 특징</b>을 비교하는 보조 증거입니다.
-                녹음은 현재 <b>오디오 지문 대조가 아니라 BPM·에너지 같은 특징 추정</b>입니다.
-                따라서 둘 다 제목·연도·보컬 같은 확실한 단서를 뒤집는 용도로는 쓰지 않습니다.
+                이미지는 후보 썸네일과 <b>색 분포·4×4 구도·윤곽 방향·퍼셉추얼 해시</b>를 함께 비교합니다.
+                녹음은 <b>BPM·길이·에너지와 허밍의 상대 음높이 윤곽</b>을 추출하고, VocaDB에 BPM이 있는 곡은 직접 대조합니다.
+                후보곡 자체의 멜로디 지문 DB는 아직 없으므로 허밍 윤곽만으로 곡을 확정하지는 않습니다.
               </div>
             </div>
           </details>
@@ -4979,5 +4997,6 @@ setTimeout(async()=>{
 <script src="./detective-v11.js?v=11.5"></script>
 <script src="./detective-v12.js?v=12.0"></script>
 <script src="./detective-v13.js?v=13.0"></script>
+<script src="./detective-v14.js?v=14.0"></script>
 </body>
 </html>
