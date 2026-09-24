@@ -1,4 +1,4 @@
-/* Voice Synth Archive Detective v16
+/* Voice Synth Archive Detective v17
  * Backend-first local song index search.
  * Falls back to the existing live Niconico + VocaDB detective when D1 is unavailable.
  */
@@ -72,8 +72,11 @@
     }
     if(d?.indexReady){
       badge.className="detective-index-status ready";
-      badge.textContent="로컬 인덱스 "+Number(d.indexedSongs||0).toLocaleString("ko-KR")+"곡";
-      badge.title="D1에 미리 저장된 곡을 먼저 검색합니다.";
+      const sem=d.semanticReady?" · 의미검색 ON":" · 의미검색 대기";
+      badge.textContent="로컬 인덱스 "+Number(d.indexedSongs||0).toLocaleString("ko-KR")+"곡"+sem;
+      badge.title=d.semanticReady
+        ?"D1 문자 검색 + 다국어 의미검색을 함께 사용합니다."
+        :"D1 문자 인덱스만 사용 중입니다. AI/Vectorize binding을 연결하면 의미검색이 켜집니다.";
     }else{
       badge.className="detective-index-status";
       badge.textContent="실시간 수색";
@@ -123,10 +126,19 @@
     let rows=songs.map(song=>{
       const ev=detectiveEvidence(song,c);
       const ix=Number(song.__indexScore)||0;
+      const sem=Number(song.__semanticScore)||0;
       if(ix>0){
-        const bonus=Math.min(9,Math.log2(1+ix)*1.7);
+        const bonus=Math.min(8,Math.log2(1+ix)*1.45);
         ev.score=Math.min(99.9,ev.score+bonus);
-        ev.matches.unshift({text:"전용 인덱스 후보 · lexical "+ix.toFixed(1),strong:ix>=35});
+        ev.matches.unshift({text:"전용 인덱스 문자검색 "+ix.toFixed(1),strong:ix>=35});
+      }
+      if(sem>0){
+        const semBonus=Math.max(0,Math.min(11,(sem-.35)*22));
+        ev.score=Math.min(99.9,ev.score+semBonus);
+        if(sem>=.55)ev.matches.unshift({
+          text:"의미검색 "+(sem*100).toFixed(0)+"%",
+          strong:sem>=.72
+        });
       }
       return {song,...ev};
     });
@@ -151,7 +163,7 @@
     const status=document.getElementById("detectiveStatus");
     if(status){
       status.insertAdjacentHTML("afterbegin",
-        '<span class="detective-stage-progress index">전용 인덱스 '+Number(backendMeta?.indexedSongs||0).toLocaleString("ko-KR")+'곡</span> ');
+        '<span class="detective-stage-progress index">전용 인덱스 '+Number(backendMeta?.indexedSongs||0).toLocaleString("ko-KR")+'곡'+(backendMeta?.semanticReady?' · 의미검색':'')+'</span> ');
     }
     return rows;
   }
@@ -184,7 +196,7 @@
 
         // A healthy local pool is the fast path. Do not make the user wait for external APIs.
         const top=rows[0]?.score||0;
-        if(rows.length>=8&&top>=48){
+        if(rows.length>=8&&top>=46){
           return;
         }
       }
