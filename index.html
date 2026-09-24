@@ -1018,7 +1018,7 @@ body.tools-open{overflow:hidden}
     </details>
   </section>
 
-  <div class="footer">v10.2 · 414 검색 수정 · 한국어 기억 복원 · 니코니코 공식 서비스가 아닙니다.</div>
+  <div class="footer">v10.3 · 통계 414 수정 · 한국어 기억 복원 · 니코니코 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -1898,8 +1898,8 @@ function sourceDefinition(){
   if(mode==="all_voice_synth_union"){
     return {
       label:"음성합성 오리지널 전체",
-      description:"VOCALOID·UTAU·Synthesizer V·CeVIO/CeVIO AI·VoiSona·NEUTRINO·VOICEVOX 계열·ACE Studio의 주요 오리지널곡 태그 통합",
-      q:ALL_VOICE_SYNTH_ORIGINAL_TAGS.join(" OR "),
+      description:"주요 음성합성 엔진의 대표 오리지널곡 태그를 통합 · URL 길이 제한 방지를 위해 통계 요청은 대표 태그로 집계",
+      q:COMPACT_SCOPE_TAGS.all_voice_synth.join(" OR "),
       targets:"tagsExact",
       unit:"곡"
     };
@@ -1908,7 +1908,7 @@ function sourceDefinition(){
     return {
       label:"CeVIO / CeVIO AI 오리지널곡",
       description:"CeVIO·CeVIO AI·可不·星界·裏命·狐子·羽累 등 주요 오리지널곡 태그 통합",
-      q:CEVIO_ORIGINAL_TAGS.join(" OR "),
+      q:["CeVIOオリジナル曲","CeVIO_AIオリジナル曲","可不オリジナル曲"].join(" OR "),
       targets:"tagsExact",
       unit:"곡"
     };
@@ -1917,7 +1917,7 @@ function sourceDefinition(){
     return {
       label:"VoiSona 오리지널곡",
       description:"VoiSona·知声·機流音·双葉湊音·AiSuu 등 주요 오리지널곡 태그 통합",
-      q:VOISONA_ORIGINAL_TAGS.join(" OR "),
+      q:["VoiSonaオリジナル曲","知声オリジナル曲"].join(" OR "),
       targets:"tagsExact",
       unit:"곡"
     };
@@ -1926,7 +1926,7 @@ function sourceDefinition(){
     return {
       label:"NEUTRINO 오리지널곡",
       description:"NEUTRINO·きりたん·めろう·ナクモ·ずん子·No.7 등 주요 오리지널곡 태그 통합",
-      q:NEUTRINO_ORIGINAL_TAGS.join(" OR "),
+      q:["NEUTRINOオリジナル曲","東北きりたんオリジナル曲"].join(" OR "),
       targets:"tagsExact",
       unit:"곡"
     };
@@ -1935,7 +1935,7 @@ function sourceDefinition(){
     return {
       label:"VOICEVOX 계열 오리지널곡",
       description:"VOICEVOX·VOICEVOXハミング 및 주요 보이스의 오리지널곡 태그 통합",
-      q:VOICEVOX_ORIGINAL_TAGS.join(" OR "),
+      q:["VOICEVOXオリジナル曲","VOICEVOXハミングオリジナル曲","ずんだもんオリジナル曲"].join(" OR "),
       targets:"tagsExact",
       unit:"곡"
     };
@@ -1944,7 +1944,7 @@ function sourceDefinition(){
     return {
       label:"ACE Studio 계열",
       description:"ACE Studio 관련 오리지널곡 태그",
-      q:ACE_ORIGINAL_TAGS.join(" OR "),
+      q:["ACEStudioオリジナル曲","ACE_Studioオリジナル曲"].join(" OR "),
       targets:"tagsExact",
       unit:"곡"
     };
@@ -1954,7 +1954,7 @@ function sourceDefinition(){
     return {
       label:"합성음성 오리지널 통합",
       description:"VOCALOID + UTAU + Synthesizer V의 주요 오리지널곡 태그를 통합 · 같은 영상은 한 번만 집계",
-      q:VOICE_SYNTH_ORIGINAL_TAGS.join(" OR "),
+      q:COMPACT_SCOPE_TAGS.voice_synth.join(" OR "),
       targets:"tagsExact",
       unit:"곡"
     };
@@ -1963,7 +1963,7 @@ function sourceDefinition(){
     return {
       label:"UTAU 오리지널곡 통합",
       description:"UTAUオリジナル曲 + 테토·리츠·모모·데포코 등 주요 UTAU 보컬별 오리지널 태그 통합",
-      q:UTAU_ORIGINAL_TAGS.join(" OR "),
+      q:["UTAUオリジナル曲","重音テトオリジナル曲"].join(" OR "),
       targets:"tagsExact",
       unit:"곡"
     };
@@ -1972,7 +1972,7 @@ function sourceDefinition(){
     return {
       label:"Synthesizer V 오리지널곡 통합",
       description:"SynthesizerVオリジナル曲 + 테토SV·리카·카린·치후유·모카 등 주요 SynthV 보컬 태그 통합",
-      q:SYNTHV_ORIGINAL_TAGS.join(" OR "),
+      q:["SynthesizerVオリジナル曲","重音テトSVオリジナル曲"].join(" OR "),
       targets:"tagsExact",
       unit:"곡"
     };
@@ -2026,7 +2026,7 @@ function sourceDefinition(){
   return {
     label:"VOCALOID 오리지널곡 통합",
     description:"VOCALOID 공통 오리지널 태그 + 미쿠·린·렌·루카·GUMI·IA·flower 등 주요 보컬별 오리지널 태그 통합",
-    q:ORIGINAL_TAGS.join(" OR "),
+    q:["VOCALOIDオリジナル曲","ミクオリジナル曲","鏡音オリジナル曲","GUMIオリジナル曲","IAオリジナル曲","flowerオリジナル曲"].join(" OR "),
     targets:"tagsExact",
     unit:"곡"
   };
