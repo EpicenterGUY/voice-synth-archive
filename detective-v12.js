@@ -313,6 +313,12 @@
     if(lc)lc.value="likely";
     const deep=document.getElementById("detectiveDeepLyrics");
     if(deep)deep.checked=true;
+    const useNico=document.getElementById("detectiveUseNico");
+    const useVoca=document.getElementById("detectiveUseVocaDB");
+    const sourceStatus=document.getElementById("detectiveSourceStatus");
+    if(useNico)useNico.checked=true;
+    if(useVoca)useVoca.checked=true;
+    if(sourceStatus)sourceStatus.textContent="두 소스를 교차 수색합니다.";
     state.detectiveFeedback=null;
     const hunt=document.getElementById("detectiveWebHunt");
     if(hunt){hunt.hidden=true;hunt.innerHTML="";}
@@ -334,6 +340,15 @@
     if(deep)deep.addEventListener("change",updateDetectiveClueMeter);
     const hunt=document.getElementById("detectiveWebHuntBtn");
     if(hunt)hunt.addEventListener("click",renderWebHunt);
+
+    // 메인 스크립트가 먼저 걸어둔 초기화 리스너를 제거하고 v12 초기화로 교체.
+    const resetBtn=document.getElementById("detectiveResetBtn");
+    if(resetBtn){
+      const fresh=resetBtn.cloneNode(true);
+      resetBtn.parentNode.replaceChild(fresh,resetBtn);
+      fresh.addEventListener("click",resetDetective);
+    }
+
     updateLyricsPreview();
     renderFeedbackSummary();
     updateDetectiveClueMeter();
