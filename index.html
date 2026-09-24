@@ -1032,7 +1032,7 @@ body.tools-open{overflow:hidden}
     </details>
   </section>
 
-  <div class="footer">v11.0 · Niconico×VocaDB 교차 탐정 · 정보량 질문 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v11.1 · 광역 검색 · Niconico×VocaDB 교차 탐정 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -1773,6 +1773,25 @@ function compactScopeTags(scope){
   return COMPACT_SCOPE_TAGS[scope] || null;
 }
 
+/*
+ * 통계용 균형 태그 세트.
+ * v10.3의 8개 대표 태그만 쓰는 방식보다 누락을 줄이되,
+ * 전체 세부 태그를 한 URL에 넣어 414가 나는 문제는 피한다.
+ */
+const STAT_COVERAGE_TAGS = [
+  "VOCALOIDオリジナル曲",
+  "ミクオリジナル曲","リンオリジナル曲","レンオリジナル曲","ルカオリジナル曲",
+  "GUMIオリジナル曲","IAオリジナル曲","flowerオリジナル曲","KAITOオリジナル曲","MEIKOオリジナル曲",
+  "音街ウナオリジナル曲","結月ゆかりオリジナル曲",
+  "UTAUオリジナル曲","重音テトオリジナル曲","波音リツオリジナル曲","デフォ子オリジナル曲",
+  "SynthesizerVオリジナル曲","重音テトSVオリジナル曲","小春六花オリジナル曲","夏色花梨オリジナル曲",
+  "花隈千冬オリジナル曲","宮舞モカオリジナル曲","弦巻マキオリジナル曲",
+  "CeVIOオリジナル曲","CeVIO_AIオリジナル曲","可不オリジナル曲","星界オリジナル曲","裏命オリジナル曲",
+  "VoiSonaオリジナル曲","知声オリジナル曲",
+  "NEUTRINOオリジナル曲","東北きりたんオリジナル曲",
+  "VOICEVOXオリジナル曲","VOICEVOXハミングオリジナル曲","ずんだもんオリジナル曲"
+];
+
 function fullScopeTags(scope){
   if(scope==="all_voice_synth") return ALL_VOICE_SYNTH_ORIGINAL_TAGS;
   if(scope==="voice_synth") return VOICE_SYNTH_ORIGINAL_TAGS;
@@ -1919,7 +1938,7 @@ function sourceDefinition(){
     return {
       label:"음성합성 오리지널 전체",
       description:"주요 음성합성 엔진의 대표 오리지널곡 태그를 통합 · URL 길이 제한 방지를 위해 통계 요청은 대표 태그로 집계",
-      q:COMPACT_SCOPE_TAGS.all_voice_synth.join(" OR "),
+      q:STAT_COVERAGE_TAGS.join(" OR "),
       targets:"tagsExact",
       unit:"곡"
     };
@@ -2046,7 +2065,7 @@ function sourceDefinition(){
   return {
     label:"VOCALOID 오리지널곡 통합",
     description:"VOCALOID 공통 오리지널 태그 + 미쿠·린·렌·루카·GUMI·IA·flower 등 주요 보컬별 오리지널 태그 통합",
-    q:["VOCALOIDオリジナル曲","ミクオリジナル曲","鏡音オリジナル曲","GUMIオリジナル曲","IAオリジナル曲","flowerオリジナル曲"].join(" OR "),
+    q:["VOCALOIDオリジナル曲","ミクオリジナル曲","リンオリジナル曲","レンオリジナル曲","ルカオリジナル曲","GUMIオリジナル曲","IAオリジナル曲","flowerオリジナル曲","KAITOオリジナル曲","MEIKOオリジナル曲","音街ウナオリジナル曲","結月ゆかりオリジナル曲"].join(" OR "),
     targets:"tagsExact",
     unit:"곡"
   };
@@ -4210,64 +4229,128 @@ async function freeSearch(reset=false){
     state.freeScope=$("#searchScope").value;
     state.freeApplyYear=$("#applyYearToSearch").checked;
     state.freeApplyTier=$("#applyTierToSearch").checked;
-    state.offset=0; state.songs=[]; $("#titleFilter").value="";
+    state.offset=0;
+    state.freeFetchOffset=0;
+    state.freeHasMore=true;
+    state.songs=[];
+    $("#titleFilter").value="";
   }
+
   state.listMode="free";
-  state.busy=true; $("#apiSearchBtn").disabled=true; $("#loadMoreBtn").disabled=true;
+  state.busy=true;
+  $("#apiSearchBtn").disabled=true;
+  $("#loadMoreBtn").disabled=true;
 
   const tier=state.freeApplyTier ? (TIERS.find(t=>t.id===state.tier)||null) : null;
   const year=state.freeApplyYear ? state.year : "all";
   const sort=$("#sortSelect").value;
-  $("#songList").innerHTML=state.songs.length?$("#songList").innerHTML:`<div class="empty">‘${esc(state.freeQuery)}’ 검색 중…</div>`;
+  const fetchOffset=state.freeFetchOffset||0;
+
+  $("#songList").innerHTML=state.songs.length?$("#songList").innerHTML:`<div class="empty">‘${esc(state.freeQuery)}’ 넓게 검색 중…</div>`;
 
   try{
-    let d=await fetchNico({
-      tier,year,sort,limit:100,offset:state.offset,
-      mode:"free",query:state.freeQuery,scope:state.freeScope,
-      applyYear:state.freeApplyYear,applyTier:state.freeApplyTier
-    });
+    let rawRows=[];
+    let exactTotal=0;
+    let pageHasMore=false;
 
-    let rawRows=d.data||[];
-
-    // 통합 검색에서 대표 태그 누락 때문에 결과가 없으면,
-    // 짧은 무필터 검색을 한 번 더 하고 세부 엔진 태그로 로컬 판정.
-    if(!rawRows.length && state.freeScope!=="all"){
-      try{
-        const broad=await fetchNico({
-          tier,year,sort,limit:100,offset:state.offset,
+    if(state.freeScope==="all"){
+      const d=await fetchNico({
+        tier,year,sort,limit:100,offset:fetchOffset,
+        mode:"free",query:state.freeQuery,scope:"all",
+        applyYear:state.freeApplyYear,applyTier:state.freeApplyTier
+      });
+      rawRows=d.data||[];
+      exactTotal=+d.meta.totalCount||rawRows.length||0;
+      pageHasMore=fetchOffset+rawRows.length<exactTotal;
+    }else{
+      // 1) 대표 태그로 빠르게 범위 수색
+      // 2) 니코동 전체에서 같은 검색어를 한 번 더 찾은 뒤 전체 세부 태그로 로컬 판정
+      // 두 결과를 합쳐 대표 태그 누락곡을 회수한다.
+      const [scoped,broad]=await Promise.all([
+        fetchNico({
+          tier,year,sort,limit:100,offset:fetchOffset,
+          mode:"free",query:state.freeQuery,scope:state.freeScope,
+          applyYear:state.freeApplyYear,applyTier:state.freeApplyTier
+        }).catch(()=>({data:[],meta:{totalCount:0}})),
+        fetchNico({
+          tier,year,sort,limit:100,offset:fetchOffset,
           mode:"free",query:state.freeQuery,scope:"all",
           applyYear:state.freeApplyYear,applyTier:state.freeApplyTier
-        });
-        rawRows=(broad.data||[]).filter(s=>songMatchesScope(s,state.freeScope));
-        d={...broad,meta:{...broad.meta,totalCount:rawRows.length}};
-      }catch{}
+        }).catch(()=>({data:[],meta:{totalCount:0}}))
+      ]);
+
+      const merged=new Map();
+      for(const s of (scoped.data||[])){
+        if(s?.contentId)merged.set(s.contentId,s);
+      }
+      for(const s of (broad.data||[])){
+        if(s?.contentId && songMatchesScope(s,state.freeScope))merged.set(s.contentId,s);
+      }
+      rawRows=[...merged.values()];
+      exactTotal=+scoped.meta?.totalCount||0;
+
+      const scopedMore=(scoped.data||[]).length===100;
+      const broadMore=(broad.data||[]).length===100;
+      pageHasMore=scopedMore||broadMore;
+
+      // 정렬 순서는 두 요청을 합친 뒤 다시 맞춘다.
+      if(sort==="-viewCounter")rawRows.sort((a,b)=>(+b.viewCounter||0)-(+a.viewCounter||0));
+      else if(sort==="+viewCounter")rawRows.sort((a,b)=>(+a.viewCounter||0)-(+b.viewCounter||0));
+      else if(sort==="-startTime")rawRows.sort((a,b)=>new Date(b.startTime||0)-new Date(a.startTime||0));
+      else if(sort==="+startTime")rawRows.sort((a,b)=>new Date(a.startTime||0)-new Date(b.startTime||0));
+      else if(sort==="-mylistCounter")rawRows.sort((a,b)=>(+b.mylistCounter||0)-(+a.mylistCounter||0));
+      else if(sort==="-likeCounter")rawRows.sort((a,b)=>(+b.likeCounter||0)-(+a.likeCounter||0));
+      else if(sort==="-commentCounter")rawRows.sort((a,b)=>(+b.commentCounter||0)-(+a.commentCounter||0));
     }
 
-    state.totalSongsInQuery=+d.meta.totalCount||rawRows.length||0;
-    const rows=rawRows.map((x,i)=>({...x,__rank:state.offset+i+1}));
-    state.songs=reset?rows:state.songs.concat(rows);
+    const existing=new Map(state.songs.map(x=>[x.contentId,x]));
+    for(const s of rawRows){
+      if(!s?.contentId)continue;
+      existing.set(s.contentId,s);
+    }
+    state.songs=[...existing.values()].map((x,i)=>({...x,__rank:i+1}));
+    state.freeFetchOffset=fetchOffset+100;
     state.offset=state.songs.length;
+    state.freeHasMore=pageHasMore;
+
+    // 전체 니코동 검색만 API의 정확 총건수를 표시.
+    // 엔진 제한 검색은 두 검색 경로를 병합하므로 '현재 확인된 곡 수+'로 표시한다.
+    state.totalSongsInQuery=state.freeScope==="all"?exactTotal:state.songs.length;
+
     renderSongs();
-    $("#loadMoreBtn").style.display=state.songs.length<state.totalSongsInQuery?"block":"none";
+    $("#loadMoreBtn").style.display=state.freeHasMore?"block":"none";
 
     const filters=[];
     if(state.freeApplyYear && state.year!=="all") filters.push(state.year+"년");
     if(state.freeApplyTier){
       const t=TIERS.find(x=>x.id===state.tier); if(t) filters.push(t.name);
     }
+    const scopeLabel=
+      state.freeScope==="all_voice_synth"?"음성합성 오리지널 전체":
+      state.freeScope==="voice_synth"?"VOCALOID+UTAU+SynthV":
+      state.freeScope==="vocaloid"?"VOCALOID 오리지널곡":
+      state.freeScope==="utau"?"UTAU 오리지널곡":
+      state.freeScope==="synthv"?"Synthesizer V 오리지널곡":
+      state.freeScope==="cevio"?"CeVIO / CeVIO AI":
+      state.freeScope==="voisona"?"VoiSona":
+      state.freeScope==="neutrino"?"NEUTRINO":
+      state.freeScope==="voicevox"?"VOICEVOX 계열":"니코동 전체";
+
     $("#listTitle").textContent=`검색: ${state.freeQuery}`;
-    $("#listSub").textContent=`${state.freeScope==="voice_synth"?"합성음성 오리지널 통합":
-       state.freeScope==="vocaloid"?"VOCALOID 오리지널곡":
-       state.freeScope==="utau"?"UTAU 오리지널곡":
-       state.freeScope==="synthv"?"Synthesizer V 오리지널곡":"니코동 전체"} · 총 ${fmt(state.totalSongsInQuery)}건${filters.length?" · "+filters.join(" · "):" · 연도/빙산 조건 없음"}`;
-    setStatus("live","검색 API 연결");
-    if(isFoldedLayout()) setTimeout(()=>$("#resultsPanel")?.scrollIntoView({behavior:"smooth",block:"start"}),80);
+    $("#listSub").textContent=state.freeScope==="all"
+      ? `${scopeLabel} · 총 ${fmt(exactTotal)}건${filters.length?" · "+filters.join(" · "):" · 연도/빙산 조건 없음"}`
+      : `${scopeLabel} · 현재 확인 ${fmt(state.songs.length)}곡+${filters.length?" · "+filters.join(" · "):" · 넓은 수색 병합"}`;
+
+    setStatus("live","광역 검색 연결");
+    if(isFoldedLayout())setTimeout(()=>$("#resultsPanel")?.scrollIntoView({behavior:"smooth",block:"start"}),80);
   }catch(e){
-    showApiFallback("앱 내부 검색 연결에 실패했습니다.", state.freeQuery);
-    toast("Worker가 연결되지 않아도 ‘니코동에서 열기’로 바로 검색할 수 있습니다.");
+    showApiFallback("앱 내부 검색 연결에 실패했습니다.",state.freeQuery);
+    toast("Worker 연결이나 검색 조건을 확인해주세요.");
     console.warn(e);
   }finally{
-    state.busy=false; $("#apiSearchBtn").disabled=false; $("#loadMoreBtn").disabled=false;
+    state.busy=false;
+    $("#apiSearchBtn").disabled=false;
+    $("#loadMoreBtn").disabled=false;
   }
 }
 function retryCurrentSearch(){
