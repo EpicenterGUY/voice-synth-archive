@@ -975,6 +975,42 @@ body.tools-open{overflow:hidden}
   .evidence-fingerprint{font-size:7px;padding:4px 5px;margin-top:4px}
 }
 
+
+/* ===== discovery v20: rich prompts + mobile natural scroll ===== */
+.recommend-prompt-box{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:12px;border-bottom:1px solid #1c3047;background:#091522}
+.recommend-prompt-box textarea{min-height:86px;resize:vertical;border:1px solid #28425f;border-radius:13px;background:#071321;color:#eef7ff;padding:10px 11px;font:inherit;outline:none;line-height:1.5}
+.recommend-prompt-box textarea:focus{border-color:#60c9fa;box-shadow:0 0 0 3px #48bff31c}
+.recommend-prompt-box .btn{min-width:132px}
+.recommend-chip-groups{padding:9px 12px 4px;background:#081522}
+.recommend-chip-label{margin:8px 0 5px;color:#7f9bb3;font-size:9px;font-weight:900}
+.recommend-chips{max-height:118px;overflow:auto;padding:1px 0 5px}
+.discovery-controls-v20{grid-template-columns:1fr 1fr 1.3fr 1.3fr}
+.gem-prompt-box{padding-bottom:9px}
+.gem-quick-chips{padding:0 13px 9px;background:#091522;border-bottom:1px solid #1c3047}
+.gem-controls-v20{grid-template-columns:1fr 1fr 1fr 1.2fr 1.2fr}
+@media(max-width:699px){
+  html,body{height:auto!important;min-height:100%;overflow-y:auto!important;overscroll-behavior-y:auto}
+  body:not(.tools-open){overflow-y:auto!important}
+  .app.mobile-paged{height:auto!important;min-height:100dvh!important;overflow:visible!important}
+  .app.mobile-paged .mobile-main-active{height:auto!important;min-height:0!important;overflow:visible!important}
+  .recommend-prompt-box{grid-template-columns:1fr;padding:8px}
+  .recommend-prompt-box textarea{min-height:78px;font-size:13px}
+  .recommend-prompt-box .btn{min-width:0;min-height:42px}
+  .recommend-chip-groups{padding:7px 8px 3px}
+  .recommend-chips{display:flex!important;flex-wrap:nowrap!important;overflow-x:auto!important;overflow-y:hidden!important;max-height:none!important;scrollbar-width:none;padding-bottom:4px}
+  .recommend-chips::-webkit-scrollbar{display:none}
+  .recommend-chips .taste-chip{flex:0 0 auto}
+  .discovery-controls-v20,.gem-controls-v20{grid-template-columns:1fr 1fr!important;padding:8px!important}
+  .discovery-controls-v20 .control:nth-child(n+3),.gem-controls-v20 .wide{grid-column:1/-1!important}
+  .taste-selects-v20{grid-template-columns:1fr 1fr!important}
+  .taste-selects-v20 .control:nth-last-child(-n+2){grid-column:1/-1}
+  .tools-body{touch-action:pan-y!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch}
+}
+@media(max-width:420px){
+  .discovery-controls-v20,.gem-controls-v20,.taste-selects-v20{grid-template-columns:1fr!important}
+  .discovery-controls-v20 .control,.gem-controls-v20 .control,.taste-selects-v20 .control{grid-column:1!important}
+}
+
 </style>
 </head>
 <body>
@@ -1187,7 +1223,7 @@ body.tools-open{overflow:hidden}
     </details>
   </section>
 
-  <div class="footer">v19.0 · 무료 탐정 모드 · D1 FTS/n-gram · 실시간 보강 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v20.0 · 다양화 추천 · 자유문장 취향/명곡 · 모바일 스크롤 수정 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -1684,46 +1720,68 @@ body.tools-open{overflow:hidden}
 
   <section class="panel discovery-panel tool-view" id="guidePanel" data-tool-view="guide">
     <div class="panel-head">
-      <div><h2>음성합성곡 단계별 추천 코스</h2><p>초보는 대표곡과 장르 폭, 중수는 시대·P·장르 확장, 고수는 깊은 발굴을 중심으로 골라줍니다.</p></div>
+      <div><h2>노래 추천 · 단계별 코스</h2><p>그냥 원하는 느낌을 문장으로 써도 되고, 아래 선택지를 여러 개 섞어도 됩니다.</p></div>
       <div class="pill" id="guideSourceLabel">현재 모집단 기준</div>
     </div>
     <div class="discovery-tabs" id="guideTabs">
-      <button class="active" data-level="beginner">초보 코스</button>
-      <button data-level="intermediate">중수 코스</button>
-      <button data-level="advanced">고수 코스</button>
+      <button class="active" data-level="beginner">입문 / 대표곡</button>
+      <button data-level="intermediate">중간 / 확장</button>
+      <button data-level="advanced">고수 / 깊은 발굴</button>
     </div>
-    <div class="discovery-controls">
-      <div class="control"><label>추천 곡 수</label><select id="guideCount"><option value="8">8곡</option><option value="12" selected>12곡</option><option value="20">20곡</option></select></div>
+    <div class="recommend-prompt-box">
+      <textarea id="guidePrompt" placeholder="예: 2010년대 초반 미쿠 록 중에서 멜로디 강하고 너무 유명한 곡만은 빼줘&#10;예: 기괴하고 실험적인데 중독성 있는 곡, 보컬은 상관없음"></textarea>
+      <button class="btn primary" id="buildGuideBtn">추천 만들기</button>
+    </div>
+    <div class="recommend-chip-groups">
+      <div class="recommend-chip-label">빠른 선택</div>
+      <div class="taste-chips recommend-chips" id="guideQuickChips">
+        <button class="taste-chip" data-term="初音ミク">미쿠</button><button class="taste-chip" data-term="鏡音リン">린</button><button class="taste-chip" data-term="鏡音レン">렌</button><button class="taste-chip" data-term="巡音ルカ">루카</button><button class="taste-chip" data-term="GUMI">GUMI</button><button class="taste-chip" data-term="flower">flower</button><button class="taste-chip" data-term="重音テト">테토</button><button class="taste-chip" data-term="可不">카후</button>
+        <button class="taste-chip" data-term="VOCAROCK">록</button><button class="taste-chip" data-term="エレクトロ">전자음</button><button class="taste-chip" data-term="バラード">발라드</button><button class="taste-chip" data-term="ジャズ">재즈</button><button class="taste-chip" data-term="メタル">메탈</button><button class="taste-chip" data-term="ピアノ">피아노</button><button class="taste-chip" data-term="ドラムンベース">DnB</button><button class="taste-chip" data-term="和風">화풍</button>
+        <button class="taste-chip" data-term="ダーク">어두움</button><button class="taste-chip" data-term="爽やか">청량</button><button class="taste-chip" data-term="幻想的">몽환</button><button class="taste-chip" data-term="切ない">애절</button><button class="taste-chip" data-term="中毒性">중독성</button><button class="taste-chip" data-term="疾走感">질주감</button><button class="taste-chip" data-term="ホラー">기괴/호러</button><button class="taste-chip" data-term="かわいい">귀여움</button>
+      </div>
+    </div>
+    <div class="discovery-controls discovery-controls-v20">
+      <div class="control"><label>추천 곡 수</label><select id="guideCount"><option value="8">8곡</option><option value="12" selected>12곡</option><option value="20">20곡</option><option value="30">30곡</option></select></div>
       <div class="control"><label>시대</label><select id="guideEra"><option value="all">전 시대</option><option value="2007-2012">2007~2012</option><option value="2013-2018">2013~2018</option><option value="2019-2022">2019~2022</option><option value="2023-9999">2023~현재</option></select></div>
-      <div class="control"><label>보컬/태그 (선택)</label><input id="guideTag" placeholder="예: 初音ミク, VOCAROCK"></div>
-      <button class="btn primary wide" id="buildGuideBtn">추천 코스 만들기</button>
+      <div class="control"><label>보컬/태그 직접 입력</label><input id="guideTag" placeholder="예: 初音ミク, VOCAROCK"></div>
+      <div class="control"><label>빼고 싶은 요소</label><input id="guideAvoid" placeholder="예: MMD, 너무 느린 곡"></div>
     </div>
-    <div class="discovery-grid" id="guideGrid"><div class="discovery-empty">초보·중수·고수 코스를 선택하고 추천 목록을 만들어보세요.</div></div>
+    <div class="taste-summary" id="guideSummary">문장 또는 여러 선택지를 조합해서 추천받을 수 있습니다.</div>
+    <div class="discovery-grid" id="guideGrid"><div class="discovery-empty">원하는 느낌을 적거나 선택한 뒤 추천을 만들어보세요.</div></div>
   </section>
 
   <section class="panel taste-panel tool-view" id="tastePanel" data-tool-view="taste">
     <div class="panel-head">
-      <div><h2>내 취향 음성합성곡 추천기</h2><p>분위기·장르·보컬·시대·유명도를 자유롭게 섞어서 원하는 느낌의 곡을 찾습니다.</p></div>
+      <div><h2>내 취향 음성합성곡 추천기</h2><p>문장 입력 + 다중 선택을 함께 사용합니다. 조건이 많아도 완전 일치만 강요하지 않고 가까운 곡을 넓게 찾습니다.</p></div>
       <div class="pill" id="tasteSourceLabel">현재 모집단 기준</div>
     </div>
     <div class="taste-builder">
-      <div class="taste-main">
-        <textarea id="tastePrompt" placeholder="예: 어둡고 빠른 록, 미쿠나 flower, 2010년대, 너무 유명하지 않은 곡\n예: 몽환적이고 잔잔한 전자음, 최근 곡 위주"></textarea>
+      <div class="taste-main taste-main-v20">
+        <textarea id="tastePrompt" placeholder="예: 어둡고 빠른 록인데 멜로디가 슬프고, 2012년 전후 미쿠/린 위주, 너무 유명한 곡은 제외&#10;예: 정신없고 기괴한 전자음 + 변박 + 손그림 MV 같은 느낌"></textarea>
         <button class="btn primary" id="tasteRecommendBtn">취향 추천</button>
       </div>
-      <div class="taste-selects">
-        <div class="control"><label>분위기</label><select id="tasteMood"><option value="">자동/상관없음</option><option value="dark">어두움</option><option value="bright">밝음</option><option value="emotional">감성적</option><option value="dreamy">몽환적</option><option value="cute">귀여움</option><option value="intense">강렬함</option></select></div>
-        <div class="control"><label>장르</label><select id="tasteGenre"><option value="">자동/상관없음</option><option value="rock">록</option><option value="electronic">전자음악</option><option value="pop">팝</option><option value="metal">메탈</option><option value="ballad">발라드</option><option value="jazz">재즈</option><option value="experimental">실험적</option></select></div>
-        <div class="control"><label>유명도</label><select id="tasteFame"><option value="">상관없음</option><option value="famous">유명한 곡</option><option value="middle">적당히 알려진 곡</option><option value="hidden">숨은 곡</option><option value="deep">깊은 발굴</option></select></div>
-        <div class="control"><label>시대</label><select id="tasteEra"><option value="">자동/상관없음</option><option value="old">초창기~2012</option><option value="mid">2013~2018</option><option value="new">2019~2022</option><option value="recent">2023~현재</option></select></div>
-        <div class="control"><label>보컬/태그</label><input id="tasteTag" placeholder="예: 初音ミク"></div>
+      <div class="taste-selects taste-selects-v20">
+        <div class="control"><label>분위기</label><select id="tasteMood">
+          <option value="">자동/상관없음</option><option value="dark">어두움</option><option value="bright">밝음/청량</option><option value="emotional">감성/애절</option><option value="dreamy">몽환</option><option value="cute">귀여움</option><option value="intense">강렬/질주</option><option value="eerie">기괴/호러</option><option value="melancholic">우울/퇴폐</option><option value="healing">잔잔/힐링</option><option value="chaotic">혼돈/정신없음</option><option value="cool">쿨/세련</option><option value="retro">레트로</option>
+        </select></div>
+        <div class="control"><label>장르</label><select id="tasteGenre">
+          <option value="">자동/상관없음</option><option value="rock">록</option><option value="electronic">전자음악</option><option value="pop">팝</option><option value="metal">메탈</option><option value="ballad">발라드</option><option value="jazz">재즈</option><option value="experimental">실험/변박</option><option value="piano">피아노</option><option value="orchestral">오케스트라</option><option value="dnb">DnB</option><option value="trance">트랜스</option><option value="hiphop">힙합/랩</option><option value="chiptune">칩튠</option><option value="shoegaze">슈게이즈</option><option value="wafu">화풍/민족조</option>
+        </select></div>
+        <div class="control"><label>유명도</label><select id="tasteFame"><option value="">상관없음</option><option value="famous">유명곡 중심</option><option value="middle">적당히 알려짐</option><option value="hidden">숨은 곡</option><option value="deep">극심해</option></select></div>
+        <div class="control"><label>시대</label><select id="tasteEra"><option value="">자동/상관없음</option><option value="old">2007~2012</option><option value="mid">2013~2018</option><option value="new">2019~2022</option><option value="recent">2023~현재</option></select></div>
+        <div class="control"><label>추천 수</label><select id="tasteCount"><option value="12">12곡</option><option value="20" selected>20곡</option><option value="30">30곡</option><option value="40">40곡</option></select></div>
+        <div class="control"><label>보컬/태그</label><input id="tasteTag" placeholder="예: 初音ミク, flower"></div>
+        <div class="control"><label>제외할 요소</label><input id="tasteAvoid" placeholder="예: MMD, 발라드, 남성 보컬"></div>
       </div>
-      <div class="taste-chips" id="tasteChips">
-        <button class="taste-chip" data-term="疾走感">질주감</button><button class="taste-chip" data-term="ダーク">다크</button><button class="taste-chip" data-term="幻想的">몽환</button><button class="taste-chip" data-term="切ない">애절</button><button class="taste-chip" data-term="中毒性">중독성</button><button class="taste-chip" data-term="かわいい">귀여움</button><button class="taste-chip" data-term="VOCAROCK">보카록</button><button class="taste-chip" data-term="エレクトロ">전자음</button>
+      <div class="recommend-chip-label">분위기 · 장르 · 특징을 여러 개 선택</div>
+      <div class="taste-chips recommend-chips" id="tasteChips">
+        <button class="taste-chip" data-term="疾走感">질주감</button><button class="taste-chip" data-term="ダーク">다크</button><button class="taste-chip" data-term="幻想的">몽환</button><button class="taste-chip" data-term="切ない">애절</button><button class="taste-chip" data-term="中毒性">중독성</button><button class="taste-chip" data-term="かわいい">귀여움</button><button class="taste-chip" data-term="爽やか">청량</button><button class="taste-chip" data-term="鬱">우울</button><button class="taste-chip" data-term="ホラー">호러</button><button class="taste-chip" data-term="狂気">광기</button>
+        <button class="taste-chip" data-term="VOCAROCK">보카록</button><button class="taste-chip" data-term="エレクトロ">전자음</button><button class="taste-chip" data-term="メタル">메탈</button><button class="taste-chip" data-term="バラード">발라드</button><button class="taste-chip" data-term="ジャズ">재즈</button><button class="taste-chip" data-term="ピアノ">피아노</button><button class="taste-chip" data-term="ドラムンベース">DnB</button><button class="taste-chip" data-term="トランス">트랜스</button><button class="taste-chip" data-term="チップチューン">칩튠</button><button class="taste-chip" data-term="シューゲイザー">슈게이즈</button><button class="taste-chip" data-term="変拍子">변박</button><button class="taste-chip" data-term="和風">화풍</button>
+        <button class="taste-chip" data-term="初音ミク">미쿠</button><button class="taste-chip" data-term="鏡音リン">린</button><button class="taste-chip" data-term="鏡音レン">렌</button><button class="taste-chip" data-term="巡音ルカ">루카</button><button class="taste-chip" data-term="GUMI">GUMI</button><button class="taste-chip" data-term="IA">IA</button><button class="taste-chip" data-term="flower">flower</button><button class="taste-chip" data-term="重音テト">테토</button><button class="taste-chip" data-term="可不">카후</button><button class="taste-chip" data-term="知声">치세이</button>
       </div>
     </div>
-    <div class="taste-summary" id="tasteSummary">원하는 느낌을 문장으로 적거나 아래 조건을 골라주세요. 둘을 함께 써도 됩니다.</div>
-    <div class="discovery-grid" id="tasteGrid"><div class="discovery-empty">원하는 취향을 입력하고 ‘취향 추천’을 눌러보세요.</div></div>
+    <div class="taste-summary" id="tasteSummary">글로 원하는 느낌을 적거나 아래 조건을 여러 개 골라주세요. 둘을 함께 써도 됩니다.</div>
+    <div class="discovery-grid" id="tasteGrid"><div class="discovery-empty">취향을 입력하고 ‘취향 추천’을 눌러보세요.</div></div>
   </section>
 
   <section class="panel gem-panel tool-view" id="gemPanel" data-tool-view="gems">
@@ -1735,40 +1793,38 @@ body.tools-open{overflow:hidden}
       <div class="pill" id="gemSourceLabel">현재 모집단 기준</div>
     </div>
 
-    <div class="gem-controls">
+    <div class="recommend-prompt-box gem-prompt-box">
+      <textarea id="gemPrompt" placeholder="예: 조회수 3만 이하에서 어둡고 기괴한 전자음, 테토/flower면 좋고 반응 좋은 곡&#10;예: 2010년 이전 숨은 미쿠 록 명곡"></textarea>
+      <button class="btn primary" id="findGemsBtn">명곡 발굴</button>
+    </div>
+    <div class="taste-chips recommend-chips gem-quick-chips" id="gemQuickChips">
+      <button class="taste-chip" data-term="ダーク">다크</button><button class="taste-chip" data-term="幻想的">몽환</button><button class="taste-chip" data-term="中毒性">중독성</button><button class="taste-chip" data-term="疾走感">질주감</button><button class="taste-chip" data-term="ホラー">호러</button><button class="taste-chip" data-term="変拍子">변박</button><button class="taste-chip" data-term="VOCAROCK">록</button><button class="taste-chip" data-term="エレクトロ">전자음</button><button class="taste-chip" data-term="初音ミク">미쿠</button><button class="taste-chip" data-term="flower">flower</button><button class="taste-chip" data-term="重音テト">테토</button><button class="taste-chip" data-term="可不">카후</button>
+    </div>
+    <div class="gem-controls gem-controls-v20">
       <div class="control">
         <label>발굴 모드</label>
         <select id="gemMode">
-          <option value="smart" selected>알아서 발굴</option>
+          <option value="smart" selected>알아서 균형 발굴</option>
           <option value="deep">심해 명곡</option>
           <option value="recent">최근 저평가</option>
           <option value="classic">고전 재발굴</option>
+          <option value="reaction">반응률 최우선</option>
+          <option value="cult">컬트/마니아 반응</option>
+          <option value="weird">괴작/실험 발굴</option>
         </select>
       </div>
       <div class="control">
         <label>최대 조회수</label>
         <select id="gemMaxViews">
-          <option value="10000">1만 미만</option>
-          <option value="30000">3만 미만</option>
-          <option value="50000">5만 미만</option>
-          <option value="100000" selected>10만 미만</option>
-          <option value="300000">30만 미만</option>
+          <option value="1000">1천 미만</option><option value="3000">3천 미만</option><option value="10000">1만 미만</option><option value="30000">3만 미만</option><option value="50000">5만 미만</option><option value="100000" selected>10만 미만</option><option value="300000">30만 미만</option>
         </select>
       </div>
       <div class="control">
         <label>추천 곡 수</label>
-        <select id="gemCount">
-          <option value="6">6곡</option>
-          <option value="12" selected>12곡</option>
-          <option value="18">18곡</option>
-          <option value="24">24곡</option>
-        </select>
+        <select id="gemCount"><option value="6">6곡</option><option value="12" selected>12곡</option><option value="18">18곡</option><option value="24">24곡</option><option value="30">30곡</option></select>
       </div>
-      <div class="control wide">
-        <label>취향 태그 (선택)</label>
-        <input id="gemTag" placeholder="예: ボカロック, ダーク, 初音ミク">
-      </div>
-      <button class="btn primary" id="findGemsBtn">명곡 발굴</button>
+      <div class="control wide"><label>취향 태그 직접 입력</label><input id="gemTag" placeholder="예: ボカロック, ダーク, 初音ミク"></div>
+      <div class="control wide"><label>제외할 요소</label><input id="gemAvoid" placeholder="예: MMD, 발라드"></div>
     </div>
 
     <div class="gem-status">
@@ -5118,5 +5174,6 @@ setTimeout(async()=>{
 <script src="./detective-v13.js?v=13.0"></script>
 <script src="./detective-v14.js?v=14.0"></script>
 <script src="./detective-v16.js?v=19.0"></script>
+<script src="./discovery-v20.js?v=20.0"></script>
 </body>
 </html>
