@@ -1832,11 +1832,11 @@ STAT_SCOPE_TAGS.voice_synth = [...new Set([
 // 전체 음성합성은 414 여유를 남기기 위해, 각 엔진에서 실제 사용 빈도가 높은 태그만 합친다.
 STAT_SCOPE_TAGS.all_voice_synth = [...new Set([
   ...STAT_SCOPE_TAGS.voice_synth,
-  ...STAT_SCOPE_TAGS.cevio,
-  ...STAT_SCOPE_TAGS.voisona,
-  ...STAT_SCOPE_TAGS.neutrino,
-  ...STAT_SCOPE_TAGS.voicevox
-])].slice(0,72);
+  ...STAT_SCOPE_TAGS.cevio.slice(0,7),
+  ...STAT_SCOPE_TAGS.voisona.slice(0,4),
+  ...STAT_SCOPE_TAGS.neutrino.slice(0,5),
+  ...STAT_SCOPE_TAGS.voicevox.slice(0,5)
+])];
 
 const STAT_COVERAGE_TAGS = STAT_SCOPE_TAGS.all_voice_synth;
 
