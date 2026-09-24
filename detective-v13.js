@@ -287,7 +287,7 @@
     });
 
     rows.sort(function(a,b){return b.score-a.score;});
-    try{await enrichImageSimilarity(rows.slice(0,50));}catch{}
+    try{await enrichImageSimilarity(rows.slice(0,72));}catch{}
 
     const explicitStrict=["strict","very_strict"].includes(c.strictness);
     rows=rows.filter(function(ev){
@@ -333,18 +333,21 @@
     await baseSearch();
 
     let count=(state.detectiveCandidates||[]).length;
-    if(auto&&count<6&&!["strict","very_strict"].includes(before.strictness)){
+    let topScore=count?Number(state.detectiveCandidates[0].score||0):0;
+    if(auto&&(count<6||topScore<54)&&!["strict","very_strict"].includes(before.strictness)){
       state.detectiveStageUsed=2;
       if(sourceStatus)sourceStatus.textContent="2차 조건 완화 수사 중…";
       if(strict)strict.value="balanced";
       if(hardTags)hardTags.checked=false;
       await baseSearch();
       count=(state.detectiveCandidates||[]).length;
+      topScore=count?Number(state.detectiveCandidates[0].score||0):0;
       if(strict)strict.value=before.strictness;
       if(hardTags)hardTags.checked=before.hardTags;
     }
 
-    if(auto&&count<8){
+    // 후보 수가 많아도 최고 점수가 낮으면 '많지만 다 애매한 후보'이므로 3차 수사를 진행한다.
+    if(auto&&(count<8||topScore<62)){
       const c=collectDetectiveClues();
       // Restore the user's requested UI settings before final broad scoring.
       c.strictness=before.strictness;
