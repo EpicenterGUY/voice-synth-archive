@@ -2920,7 +2920,7 @@ body[data-vsa-theme="light"] .v3911-theme-toggle{background:#fff!important;borde
     </details>
   </section>
 
-  <div class="footer">v39.13.0 · Home 3.0 · Search 4.0 · Watch 1.3 · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.13.0 · Home 3.0 · Search 4.0 · Watch 1.3 · Nav fix · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -7877,13 +7877,26 @@ function openDetective37(){
 }
 
 function setToolView(name){
-  var prev=window.__VSA37_CURRENT_ROUTE;
+  var prev=window.__VSA37_CURRENT_ROUTE,modal=document.getElementById("toolsModal");
   if(prev==="songDetail39"&&name!=="songDetail39")stopWatchInline399(false);
-  document.querySelectorAll("#toolsTabs button").forEach(b=>b.classList.toggle("active",b.dataset.tool===name));
-  document.querySelectorAll("#toolsModal .tool-view").forEach(v=>v.classList.toggle("active",v.dataset.toolView===name));
+  document.querySelectorAll("#toolsTabs button").forEach(function(b){b.classList.toggle("active",b.dataset.tool===name)});
+  var views=Array.from(document.querySelectorAll("#toolsModal .tool-view")),target=null;
+  views.forEach(function(v){
+    var on=v.dataset.toolView===name;
+    v.classList.toggle("active",on);
+    if(on)target=v
+  });
+  if(modal){
+    modal.hidden=false;
+    modal.dataset.currentView=name;
+  }
   window.__VSA37_CURRENT_ROUTE=name;
-  const modal=document.getElementById("toolsModal");if(modal)modal.dataset.currentView=name;
-  if(name==="songDetail39")setTimeout(ensureWatch399,0)
+  if(target){
+    target.hidden=false;
+    target.style.removeProperty("display");
+  }
+  if(name==="songDetail39")setTimeout(ensureWatch399,0);
+  return !!target
 }
 function mountToolsPage37(){
   const modal=$("#toolsModal"), app=document.querySelector(".app"), top=app?.querySelector(":scope > .topbar");
@@ -9110,6 +9123,28 @@ function initTheme3911(){
     status.appendChild(b);applyTheme3911(theme)
   }
 }
+function forceDockRoute3913(view){
+  var modal=document.getElementById("toolsModal"),target=document.querySelector('#toolsModal .tool-view[data-tool-view="'+view+'"]');
+  if(!modal||!target)return false;
+  modal.hidden=false;
+  document.body.classList.add("tools-open");
+  document.querySelectorAll("#toolsModal .tool-view").forEach(function(v){v.classList.toggle("active",v===target)});
+  target.hidden=false;
+  target.style.removeProperty("display");
+  modal.dataset.currentView=view;
+  window.__VSA37_CURRENT_ROUTE=view;
+  window.scrollTo({top:0,behavior:"auto"});
+  return true
+}
+function verifyDockRoute3913(view,dockName){
+  requestAnimationFrame(function(){
+    var modal=document.getElementById("toolsModal");
+    if(!modal||modal.hidden||modal.dataset.currentView!==view||!document.querySelector('#toolsModal .tool-view[data-tool-view="'+view+'"].active')){
+      forceDockRoute3913(view)
+    }
+    if(dockName)setDock(dockName)
+  })
+}
 function dock(){
   if(document.querySelector(".v37-dock"))return;
   var d=document.createElement("nav");d.className="v37-dock";
@@ -9121,25 +9156,45 @@ function dock(){
     e.preventDefault();e.stopPropagation();
     var v=b.dataset.v37;
     if(window.__VSA37_CURRENT_ROUTE==="songDetail39")stopWatchInline399(false);
-    setDock(v);
+
     if(v==="home"){
-      try{closeToolsModal()}catch(_){}
+      try{closeToolsModal()}catch(_){
+        var m=document.getElementById("toolsModal");if(m)m.hidden=true;
+        document.body.classList.remove("tools-open");
+        window.__VSA37_CURRENT_ROUTE="home";
+      }
       setDock("home");
       document.getElementById("v37Home")?.scrollIntoView({block:"start"});
       return
     }
+
     if(v==="explore"){
-      ensureHub37();refreshHub37();openToolsModal("hub37");setDock("explore");
+      try{ensureHub37()}catch(_){}
+      openToolsModal("hub37");
+      forceDockRoute3913("hub37");
+      try{refreshHub37()}catch(_){}
+      setDock("explore");verifyDockRoute3913("hub37","explore");
       return
     }
+
     if(v==="universe"){
-      ensureCorePages37();openToolsModal("universe29");
-      if(window.VSAEnsureFeatures)window.VSAEnsureFeatures("universe");
-      ensureUniverseToolbar39();setDock("universe");
+      try{ensureCorePages37()}catch(_){}
+      openToolsModal("universe29");
+      forceDockRoute3913("universe29");
+      setDock("universe");
+      if(window.VSAEnsureFeatures)Promise.resolve(VSAEnsureFeatures("universe")).catch(function(){});
+      try{ensureUniverseToolbar39()}catch(_){}
+      verifyDockRoute3913("universe29","universe");
       return
     }
+
     if(v==="personal"){
-      openPersonal395();setDock("personal");
+      try{ensurePersonalHub395();renderPersonalHub395()}catch(_){}
+      openToolsModal("personal395");
+      forceDockRoute3913("personal395");
+      setDock("personal");
+      if(window.VSAEnsureFeatures)Promise.allSettled([VSAEnsureFeatures("personal"),VSAEnsureFeatures("v33")]).then(function(){try{renderPersonalHub395()}catch(_){}});
+      verifyDockRoute3913("personal395","personal");
       return
     }
   })
