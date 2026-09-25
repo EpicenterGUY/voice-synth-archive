@@ -146,6 +146,7 @@ function observe(){
   var home=document.getElementById("v28Home");if(home)new MutationObserver(function(){requestAnimationFrame(patchHome)}).observe(home,{childList:true,subtree:true});
   var modal=document.getElementById("toolsModal");if(modal)new MutationObserver(function(){if(!modal.hidden&&modal.querySelector('[data-tool-view="libraryHub33"].active'))render()}).observe(modal,{attributes:true,attributeFilter:["hidden","class"]});
 }
-function boot(){addStyle();ensureView();ensureFeedView();buildSheet();render();patchHome();bind();observe();window.VSA332Library={open:function(){if(window.VSAV33&&window.VSAV33.openView)window.VSAV33.openView("libraryHub33");setTimeout(render,0)},render:render};setTimeout(patchHome,400)}
-if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
+var __booted=false;
+function boot(){if(__booted)return;__booted=true;addStyle();ensureView();ensureFeedView();buildSheet();render();patchHome();bind();observe();window.VSA332Library={open:function(){if(window.VSAV33&&window.VSAV33.openView)window.VSAV33.openView("libraryHub33");setTimeout(render,0)},render:render};setTimeout(patchHome,400)}
+if(document.body)boot();else if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
 })();
