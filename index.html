@@ -2700,6 +2700,7 @@ const state = {
   hiddenGemSeed:0,
   gemRankCache:new Map(),
   gemSourceRejected:0,
+  gemAdultRejected:0,
   sourceRejectStats:{},
   adultRejectStats:{},
   producerDiscovery:[],
@@ -3369,11 +3370,11 @@ async function loadSongs(reset=false){
     const safeBatch=filterAdultRows37(d.data||[],"ranking");
     const rows=safeBatch.rows.map((x,i)=>({...x,__rank:state.offset+i+1}));
     state.songs=reset?rows:state.songs.concat(rows);
-    state.offset=state.songs.length;
+    state.offset=state.offset+(d.data||[]).length;
     renderSongs();
-    $("#loadMoreBtn").style.display=state.songs.length<state.totalSongsInQuery?"block":"none";
+    $("#loadMoreBtn").style.display=state.offset<state.totalSongsInQuery?"block":"none";
     $("#listTitle").textContent=sourceDefinition().label+" · "+(tier?tier.name:"전체 구간")+" 순위";
-    $("#listSub").textContent=`${state.year==="all"?"전체 연도":state.year+"년"} · 총 ${fmt(state.totalSongsInQuery)}${sourceDefinition().unit} · ${sort.includes("viewCounter")?"조회수":"게시일"} 기준`;
+    $("#listSub").textContent=`${state.year==="all"?"전체 연도":state.year+"년"} · 총 ${fmt(state.totalSongsInQuery)}${sourceDefinition().unit} · ${sort.includes("viewCounter")?"조회수":"게시일"} 기준${adultFilterMode37()==="block"?" · 19+ 차단":""}`;
     setStatus("live","최신 스냅샷 연결");
   }catch(e){
     showApiFallback("빙산 조건 곡 목록을 불러오지 못했습니다.", TAG);
@@ -4696,7 +4697,8 @@ async function findHiddenGems(reroll=false){
   try{
     if(!reroll || !state.hiddenGemPool.length){
       const result=await buildGemCandidatePool();
-      state.gemSourceRejected=(result.rejected||0)+(result.adultRejected||0);
+      state.gemSourceRejected=result.rejected||0;
+      state.gemAdultRejected=result.adultRejected||0;
       state.hiddenGemPool=scoreGemPool(result.pool,result.mode);
     }
     state.hiddenGemSeed=(state.hiddenGemSeed+Date.now()+Math.floor(Math.random()*100000))>>>0;
@@ -4706,7 +4708,7 @@ async function findHiddenGems(reroll=false){
     renderHiddenGems();
     const d=sourceDefinition();
     $("#gemSourceLabel").textContent=d.label+" 기준";
-    $("#gemStatusText").textContent=`후보 ${fmt(state.hiddenGemPool.length)}곡 분석 → ${state.hiddenGems.length}곡 발굴 · ${GEM_PRESETS[$("#gemMode").value].label}${state.gemSourceRejected?` · 무관 후보 ${state.gemSourceRejected}건 차단`:""}`;
+    $("#gemStatusText").textContent=`후보 ${fmt(state.hiddenGemPool.length)}곡 분석 → ${state.hiddenGems.length}곡 발굴 · ${GEM_PRESETS[$("#gemMode").value].label}${state.gemSourceRejected?` · 무관 ${state.gemSourceRejected}건 차단`:""}${state.gemAdultRejected?` · 19+ ${state.gemAdultRejected}건 차단`:""}`;
     $("#rerollGemsBtn").disabled=false;
   }catch(e){
     $("#gemGrid").innerHTML=`<div class="gem-empty">발굴 실패<br><small>${esc(String(e?.message||e))}</small></div>`;
