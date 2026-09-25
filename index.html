@@ -1374,6 +1374,21 @@ body.v37-ready .v37-search-page .results-toolbar{border:1px solid #18393e;border
 .v37-rank-more{width:100%;min-height:38px;margin-top:8px;border:1px solid #285159;border-radius:11px;background:#09252b;color:#cbe7e3;font-size:8px;font-weight:900}
 .v37-ice-analysis{margin-top:10px}.v37-analysis-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.v37-analysis-card{padding:10px;border:1px solid #21464c;border-radius:13px;background:#071a1f}.v37-analysis-card b{display:block;color:#e6faf7;font-size:10px}.v37-analysis-card small{display:block;margin-top:3px;color:#6c918d;font-size:7px}.v37-bar{height:6px;margin-top:7px;border-radius:999px;background:#0c3036;overflow:hidden}.v37-bar i{display:block;height:100%;background:linear-gradient(90deg,#55d4cb,#7986ef)}
 @media(max-width:699px){.v37-vocal-rank-controls{grid-template-columns:1fr 1fr}.v37-vocal-rank-controls button{grid-column:1/-1}.v37-vocal-rank-summary{grid-template-columns:1fr 1fr}.v37-vocal-rank-row{grid-template-columns:34px minmax(0,1fr) 64px}.v37-analysis-grid{grid-template-columns:1fr}}
+.v37-ice-mode-panel{margin-top:12px;padding-top:12px;border-top:1px solid #18393e}
+.v37-ice-mode-tabs{display:flex;gap:6px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:none}.v37-ice-mode-tabs::-webkit-scrollbar{display:none}
+.v37-ice-mode-tabs button{flex:0 0 auto;min-height:36px;padding:0 11px;border:1px solid #285159;border-radius:999px;background:#09262b;color:#8cafab;font-size:8px;font-weight:900}
+.v37-ice-mode-tabs button.active{background:#17464c;border-color:#4c9890;color:#effffb}
+.v37-ice-mode-status{margin:0 0 8px;padding:8px 10px;border:1px solid #1e4146;border-radius:11px;background:#06171b;color:#769a96;font-size:7px;line-height:1.5}
+.v37-reaction-iceberg{display:flex;flex-direction:column;align-items:center;gap:4px;padding:14px 7px 8px;border:1px solid #1f454a;border-radius:16px;background:linear-gradient(180deg,#09242b,#041317)}
+.v37-reaction-tier{min-height:48px;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:7px 10px;border:0;border-radius:8px;color:#06151a;text-align:left;transition:transform .12s ease,filter .12s ease}
+.v37-reaction-tier:active{transform:scale(.99)}.v37-reaction-tier b{display:block;font-size:9px}.v37-reaction-tier small{display:block;margin-top:2px;font-size:7px;opacity:.75}.v37-reaction-tier strong{font-size:10px}
+.v37-reaction-results{display:grid;gap:6px;margin-top:9px}.v37-reaction-song{display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:8px;align-items:center;padding:8px;border:1px solid #1d4146;border-radius:12px;background:#06171b}
+.v37-reaction-song img{width:56px;aspect-ratio:16/9;object-fit:cover;border-radius:7px;background:#0a272c}.v37-reaction-song b{display:block;color:#eafbf8;font-size:8px}.v37-reaction-song small{display:block;margin-top:3px;color:#6f9490;font-size:7px}.v37-reaction-song button{min-height:30px;padding:0 8px;border:1px solid #285159;border-radius:8px;background:#09272d;color:#c7e4df;font-size:7px;font-weight:900}
+.v37-era-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.v37-era-card{padding:10px;border:1px solid #21464c;border-radius:14px;background:#071b20}.v37-era-card h3{margin:0;color:#e9fbf7;font-size:11px}.v37-era-card>small{display:block;margin-top:3px;color:#739793;font-size:7px}
+.v37-era-mini{display:flex;flex-direction:column;align-items:center;gap:3px;margin-top:9px}.v37-era-layer{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;min-height:31px;padding:4px 7px;border-radius:7px;color:#07151b;font-size:7px}.v37-era-layer b{font-size:7px}.v37-era-layer span{font-weight:950}
+.v37-era-note{margin-top:8px;color:#668e89;font-size:7px;line-height:1.5}
+@media(max-width:699px){.v37-era-grid{grid-template-columns:1fr}.v37-reaction-song{grid-template-columns:48px minmax(0,1fr)}.v37-reaction-song img{width:48px}.v37-reaction-song button{grid-column:2;justify-self:start}}
+
 
 
 
@@ -1591,7 +1606,7 @@ body.v37-ready .v37-search-page .results-toolbar{border:1px solid #18393e;border
     </details>
   </section>
 
-  <div class="footer">v37.7.0 · 원곡 전용 발굴 · 보컬 순위표 · 빙산 분석 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v37.8.0 · 반응률 빙산 · 시대별 전체 빙산 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -2763,6 +2778,11 @@ const state = {
   vocalRankRows:[],
   vocalRankBusy:false,
   vocalRankMeta:null,
+  reactionIcebergRows:[],
+  reactionIcebergTiers:[],
+  reactionIcebergBusy:false,
+  eraIcebergData:[],
+  eraIcebergBusy:false,
   guideLevel:"beginner",
   guideSongs:[],
   tasteSongs:[],
@@ -5456,7 +5476,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:"37.7.0",
+    version:"37.8.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -5652,7 +5672,14 @@ function ensureIcebergExtras37(page){
   const ice=document.getElementById("icebergPanel");
   if(ice&&ice.parentElement===page)page.insertBefore(box,ice);else page.appendChild(box);
   box.innerHTML='<div class="v37-extra-head"><div><b>심해 탐사</b><small>현재 모집단에서 1만 조회 이하의 원곡을 즉석에서 한 곡 골라봅니다. 19금 필터가 그대로 적용됩니다.</small></div></div>'+
-    '<div class="v37-ice-actions"><button type="button" data-v37-abyss="random">랜덤 심해 1곡</button><button type="button" data-v37-abyss="reaction">반응 좋은 심층 1곡</button><button type="button" data-v37-feature-id="vocalRank">보컬별 순위표</button></div><div class="v37-ice-pick" id="v37IcePick"></div><div class="v37-ice-analysis" id="v37IceAnalysis"></div>'
+    '<div class="v37-ice-actions"><button type="button" data-v37-abyss="random">랜덤 심해 1곡</button><button type="button" data-v37-abyss="reaction">반응 좋은 심층 1곡</button><button type="button" data-v37-feature-id="vocalRank">보컬별 순위표</button></div><div class="v37-ice-pick" id="v37IcePick"></div>'+
+    '<div class="v37-ice-mode-panel"><div class="v37-extra-head"><div><b>빙산 분석 모드</b><small>조회수만 보지 않고 반응률과 시대별 분포를 별도 빙산으로 비교합니다.</small></div></div>'+
+      '<div class="v37-ice-mode-tabs"><button type="button" data-v37-ice-mode="quick" class="active">현재 표본 분석</button><button type="button" data-v37-ice-mode="reaction">반응률 빙산</button><button type="button" data-v37-ice-mode="era">시대별 전체 빙산</button></div>'+
+      '<div class="v37-ice-mode-status" id="v37IceModeStatus">현재 불러온 곡의 반응률·시대 분포를 빠르게 분석합니다.</div>'+
+      '<div id="v37QuickAnalysisPane"><div class="v37-ice-analysis" id="v37IceAnalysis"></div></div>'+
+      '<div id="v37ReactionPane" hidden><div class="v37-ice-actions"><button type="button" data-v37-build-reaction>반응률 빙산 생성 / 갱신</button></div><div id="v37ReactionIceberg"></div></div>'+
+      '<div id="v37EraPane" hidden><div class="v37-ice-actions"><button type="button" data-v37-build-era>시대별 빙산 생성 / 갱신</button></div><div id="v37EraIceberg"></div></div>'+
+    '</div>'
 }
 async function pickAbyss37(mode){
   if(!relayBase()){toast("먼저 Worker를 연결하세요.");return}
@@ -5884,6 +5911,157 @@ function renderIcebergAnalysis37(){
   const maxEra=Math.max(1,...byEra.values()),eraHtml=[...byEra.entries()].sort(function(a,b){return b[1]-a[1]}).map(function(x){return '<div class="v37-analysis-card"><b>'+x[0]+' · '+x[1]+'곡</b><small>현재 불러온 표본의 시대 분포</small><div class="v37-bar"><i style="width:'+(x[1]/maxEra*100).toFixed(1)+'%"></i></div></div>'}).join("");
   const top=react[0];
   box.innerHTML='<div class="v37-analysis-grid"><div class="v37-analysis-card"><b>반응률 1위 · '+esc(top.title||top.contentId)+'</b><small>현재 표본 반응점수 '+icebergReactionScore37(top).toFixed(2)+' · 조회 '+fmt(top.viewCounter||0)+'</small><div class="v37-bar"><i style="width:100%"></i></div></div>'+eraHtml+'</div>'
+}
+
+
+const REACTION_BANDS37=[
+  {id:"eruption",name:"폭발층",from:0,to:.02,width:43,c1:"#dff7ff",c2:"#8ddcff"},
+  {id:"surge",name:"초강반응",from:.02,to:.05,width:51,c1:"#c7efff",c2:"#78c9ff"},
+  {id:"strong",name:"강반응",from:.05,to:.10,width:60,c1:"#b5e6fc",c2:"#6db8f1"},
+  {id:"hot",name:"호응권",from:.10,to:.25,width:70,c1:"#9fd7f6",c2:"#6a92d8"},
+  {id:"normal",name:"평균권",from:.25,to:.50,width:80,c1:"#83bddf",c2:"#616fc0"},
+  {id:"low",name:"저반응권",from:.50,to:.75,width:89,c1:"#6197be",c2:"#45588e"},
+  {id:"deep",name:"심층 반응권",from:.75,to:.90,width:96,c1:"#437496",c2:"#2d405f"},
+  {id:"silent",name:"미반응권",from:.90,to:1,width:100,c1:"#2a536d",c2:"#172638"}
+];
+const ERA_GROUPS37=[
+  {id:"2007_2010",label:"2007~2010",gte:"2007-01-01T00:00:00+09:00",lt:"2011-01-01T00:00:00+09:00"},
+  {id:"2011_2014",label:"2011~2014",gte:"2011-01-01T00:00:00+09:00",lt:"2015-01-01T00:00:00+09:00"},
+  {id:"2015_2018",label:"2015~2018",gte:"2015-01-01T00:00:00+09:00",lt:"2019-01-01T00:00:00+09:00"},
+  {id:"2019_2022",label:"2019~2022",gte:"2019-01-01T00:00:00+09:00",lt:"2023-01-01T00:00:00+09:00"},
+  {id:"2023_now",label:"2023~현재",gte:"2023-01-01T00:00:00+09:00",lt:null}
+];
+const ERA_VIEW_BANDS37=[
+  {id:"mega",label:"100만+",min:1000000,max:null,width:44,c1:"#dff7ff",c2:"#8ddcff"},
+  {id:"major",label:"10만~99만",min:100000,max:999999,width:58,c1:"#afdff7",c2:"#72b7e8"},
+  {id:"mid",label:"1만~9.9만",min:10000,max:99999,width:72,c1:"#82bad8",c2:"#657fc2"},
+  {id:"niche",label:"1천~9,999",min:1000,max:9999,width:86,c1:"#5c8ead",c2:"#40577f"},
+  {id:"deep",label:"0~999",min:0,max:999,width:100,c1:"#335d76",c2:"#1c2d43"}
+];
+
+function reactionMetric37(song){
+  const v=Math.max(0,+song.viewCounter||0),m=Math.max(0,+song.mylistCounter||0),l=Math.max(0,+song.likeCounter||0),c=Math.max(0,+song.commentCounter||0);
+  // 작은 조회수에서 1~2개의 반응이 과대평가되지 않도록 베이지안 형태의 완충치를 둔다.
+  const my=(m+3)/(v+1200)*1000,like=(l+3)/(v+1600)*1000,com=(c+3)/(v+1100)*1000;
+  return my*.58+like*.24+com*.18
+}
+async function fetchReactionCorpus37(){
+  const key="vsa37ReactionIce:"+sourceIdentity()+":"+state.year+":"+adultFilterMode37();
+  try{
+    const cached=JSON.parse(localStorage.getItem(key)||"null");
+    if(cached&&Date.now()-cached.at<21600000&&Array.isArray(cached.rows))return cached.rows
+  }catch(_){}
+  const sorts=["-mylistCounter","-likeCounter","-commentCounter","-viewCounter","+viewCounter","-startTime"];
+  const batches=await mapLimit(sorts,3,async function(sort){
+    try{
+      const d=await fetchNico({year:state.year,limit:100,offset:0,mode:"ranking",sort:sort,applyYear:true,applyTier:false});
+      return d.data||[]
+    }catch(_){return[]}
+  });
+  const uniq=new Map();batches.flat().forEach(function(song){if(song&&song.contentId)uniq.set(song.contentId,song)});
+  let rows=filterDiscoveryOriginalRows37([...uniq.values()],"reaction_iceberg").rows;
+  rows=filterAdultRows37(rows,"reaction_iceberg").rows;
+  try{localStorage.setItem(key,JSON.stringify({at:Date.now(),rows:rows.slice(0,900)}))}catch(_){}
+  return rows
+}
+function buildReactionBands37(rows){
+  const sorted=rows.slice().map(function(song){return{song:song,score:reactionMetric37(song)}}).sort(function(a,b){return b.score-a.score||(+b.song.viewCounter||0)-(+a.song.viewCounter||0)});
+  return REACTION_BANDS37.map(function(band){
+    const start=Math.floor(sorted.length*band.from),end=band.to>=1?sorted.length:Math.max(start+1,Math.floor(sorted.length*band.to));
+    const items=sorted.slice(start,end);
+    const hi=items[0]?.score??0,lo=items[items.length-1]?.score??0;
+    return Object.assign({},band,{items:items,high:hi,low:lo,count:items.length})
+  })
+}
+async function runReactionIceberg37(){
+  if(state.reactionIcebergBusy)return;
+  if(!relayBase()){toast("먼저 Worker를 연결하세요.");return}
+  const status=document.getElementById("v37IceModeStatus"),box=document.getElementById("v37ReactionIceberg");
+  state.reactionIcebergBusy=true;if(status)status.textContent="원곡 표본을 모아 조회수 대비 마이리스트·좋아요·댓글 반응을 계산하는 중…";
+  if(box)box.innerHTML='<div class="v37-diag-card"><b>반응률 빙산 생성 중…</b></div>';
+  try{
+    const rows=await fetchReactionCorpus37();
+    if(rows.length<15)throw new Error("반응률 빙산을 만들 원곡 표본이 부족합니다.");
+    state.reactionIcebergRows=rows;
+    state.reactionIcebergTiers=buildReactionBands37(rows);
+    renderReactionIceberg37();
+    if(status)status.textContent="원곡 "+fmt(rows.length)+"곡 표본 · 절대 작품성 평가가 아니라 조회수 대비 니코동 반응 강도를 비교합니다.";
+  }catch(e){
+    if(box)box.innerHTML='<div class="v37-diag-card"><b>생성 실패</b><p>'+esc(String(e?.message||e))+'</p></div>';
+    if(status)status.textContent="반응률 빙산 생성에 실패했습니다."
+  }finally{state.reactionIcebergBusy=false}
+}
+function renderReactionIceberg37(){
+  const box=document.getElementById("v37ReactionIceberg");if(!box)return;
+  if(!state.reactionIcebergTiers.length){box.innerHTML='<div class="v37-diag-card"><b>아직 생성하지 않았습니다.</b><p>반응률 빙산 생성을 눌러주세요.</p></div>';return}
+  box.innerHTML='<div class="v37-reaction-iceberg">'+state.reactionIcebergTiers.map(function(t){
+    const range=t.count?(t.low.toFixed(2)+" ~ "+t.high.toFixed(2)):"표본 없음";
+    return '<button type="button" class="v37-reaction-tier" data-v37-reaction-tier="'+t.id+'" style="width:'+t.width+'%;background:linear-gradient(90deg,'+t.c1+','+t.c2+')"><span><b>'+t.name+'</b><small>표본 상위 '+Math.round(t.from*100)+'~'+Math.round(t.to*100)+'% · 점수 '+range+'</small></span><strong>'+t.count+'곡</strong></button>'
+  }).join("")+'</div><div class="v37-reaction-results" id="v37ReactionResults"></div>';
+  const first=state.reactionIcebergTiers.find(function(x){return x.items.length});if(first)showReactionTier37(first.id)
+}
+function showReactionTier37(id){
+  const t=state.reactionIcebergTiers.find(function(x){return x.id===id}),box=document.getElementById("v37ReactionResults");if(!t||!box)return;
+  box.innerHTML=t.items.slice(0,12).map(function(x,i){
+    const s=x.song;
+    return '<div class="v37-reaction-song">'+(s.thumbnailUrl?'<img src="'+esc(s.thumbnailUrl)+'" loading="lazy">':'<div></div>')+'<div><b>'+(i+1)+'. '+esc(s.title||s.contentId)+'</b><small>반응점수 '+x.score.toFixed(2)+' · 조회 '+fmt(s.viewCounter||0)+' · 마이리스트 '+fmt(s.mylistCounter||0)+' · 댓글 '+fmt(s.commentCounter||0)+'</small></div><button type="button" data-v37-reaction-universe="'+esc(s.contentId)+'">우주 보기</button></div>'
+  }).join("")||'<div class="v37-diag-card"><b>이 구간 표본 없음</b></div>';
+  window.__VSA37_REACTION_MAP=new Map(t.items.map(function(x){return[x.song.contentId,x.song]}))
+}
+
+function eraNumeric37(band){
+  const f={viewCounter:{gte:band.min}};
+  if(band.max!=null)f.viewCounter.lte=band.max;
+  return f
+}
+async function countEraBand37(era,band){
+  const d=await fetchNico({year:"all",limit:1,offset:0,mode:"ranking",sort:"-viewCounter",applyYear:false,applyTier:false,dateRange:{gte:era.gte,lt:era.lt},numericFilters:band?eraNumeric37(band):null});
+  return +d.meta.totalCount||0
+}
+async function runEraIceberg37(){
+  if(state.eraIcebergBusy)return;
+  if(!relayBase()){toast("먼저 Worker를 연결하세요.");return}
+  const status=document.getElementById("v37IceModeStatus"),box=document.getElementById("v37EraIceberg");
+  state.eraIcebergBusy=true;if(status)status.textContent="시대별 전체 모집단과 조회수 층을 집계하는 중…";
+  if(box)box.innerHTML='<div class="v37-diag-card"><b>시대별 빙산 집계 중…</b><p>여러 시대의 조회수 층을 병렬 집계합니다.</p></div>';
+  const cacheKey="vsa37EraIce:"+sourceIdentity();
+  try{
+    let data=null;
+    try{const c=JSON.parse(localStorage.getItem(cacheKey)||"null");if(c&&Date.now()-c.at<43200000)data=c.data}catch(_){}
+    if(!data){
+      data=await mapLimit(ERA_GROUPS37,2,async function(era){
+        const total=await countEraBand37(era,null);
+        const pairs=await mapLimit(ERA_VIEW_BANDS37,3,async function(b){return[b.id,await countEraBand37(era,b)]});
+        const counts={};pairs.forEach(function(x){counts[x[0]]=x[1]});
+        return {id:era.id,label:era.label,total:total,counts:counts}
+      });
+      try{localStorage.setItem(cacheKey,JSON.stringify({at:Date.now(),data:data}))}catch(_){}
+    }
+    state.eraIcebergData=data||[];
+    renderEraIceberg37();
+    if(status)status.textContent="시대별 전체 "+currentUnit()+" 집계 · 각 카드 안에서 같은 조회수 기준으로 층을 비교합니다.";
+  }catch(e){
+    if(box)box.innerHTML='<div class="v37-diag-card"><b>집계 실패</b><p>'+esc(String(e?.message||e))+'</p></div>';
+    if(status)status.textContent="시대별 빙산 집계에 실패했습니다."
+  }finally{state.eraIcebergBusy=false}
+}
+function renderEraIceberg37(){
+  const box=document.getElementById("v37EraIceberg");if(!box)return;
+  if(!state.eraIcebergData.length){box.innerHTML='<div class="v37-diag-card"><b>아직 집계하지 않았습니다.</b><p>시대별 빙산 생성을 눌러주세요.</p></div>';return}
+  box.innerHTML='<div class="v37-era-grid">'+state.eraIcebergData.map(function(e){
+    return '<article class="v37-era-card"><h3>'+e.label+'</h3><small>전체 '+fmt(e.total)+' '+currentUnit()+'</small><div class="v37-era-mini">'+ERA_VIEW_BANDS37.map(function(b){
+      const n=e.counts?.[b.id]||0;
+      return '<div class="v37-era-layer" style="width:'+b.width+'%;background:linear-gradient(90deg,'+b.c1+','+b.c2+')"><b>'+b.label+'</b><span>'+fmt(n)+'</span></div>'
+    }).join("")+'</div></article>'
+  }).join("")+'</div><div class="v37-era-note">시대별 빙산의 수치는 현재 선택한 모집단의 니코동 스냅샷 집계입니다. 19금 필터는 개별 곡 목록에는 적용되지만 이 전체 집계 숫자에서는 원본 모집단을 유지합니다.</div>'
+}
+function setIceAnalysisMode37(mode){
+  document.querySelectorAll("[data-v37-ice-mode]").forEach(function(b){b.classList.toggle("active",b.dataset.v37IceMode===mode)});
+  const reaction=document.getElementById("v37ReactionPane"),era=document.getElementById("v37EraPane"),quick=document.getElementById("v37QuickAnalysisPane");
+  if(reaction)reaction.hidden=mode!=="reaction";
+  if(era)era.hidden=mode!=="era";
+  if(quick)quick.hidden=mode!=="quick";
+  if(mode==="quick")renderIcebergAnalysis37()
 }
 
 function makeCorePage37(view,title,desc,cls){
@@ -6301,7 +6479,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="37.7.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
+var VER="37.8.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -6503,6 +6681,17 @@ function init(){
     if(abyss){pickAbyss37(abyss.dataset.v37Abyss);return}
     var abyssUniverse=e.target.closest("[data-v37-abyss-universe]");
     if(abyssUniverse&&window.__VSA37_ABYSS_SONG){openUniversePage37(window.__VSA37_ABYSS_SONG,false);return}
+    var iceMode=e.target.closest("[data-v37-ice-mode]");
+    if(iceMode){setIceAnalysisMode37(iceMode.dataset.v37IceMode);return}
+    if(e.target.closest("[data-v37-build-reaction]")){runReactionIceberg37();return}
+    if(e.target.closest("[data-v37-build-era]")){runEraIceberg37();return}
+    var reactionTier=e.target.closest("[data-v37-reaction-tier]");
+    if(reactionTier){showReactionTier37(reactionTier.dataset.v37ReactionTier);return}
+    var reactionUniverse=e.target.closest("[data-v37-reaction-universe]");
+    if(reactionUniverse&&window.__VSA37_REACTION_MAP){
+      const song=window.__VSA37_REACTION_MAP.get(reactionUniverse.dataset.v37ReactionUniverse);
+      if(song){openUniversePage37(song,false);return}
+    }
     var featureOpen=e.target.closest("[data-v37-feature-id]");
     if(featureOpen){openFeatureById37(featureOpen.dataset.v37FeatureId);return}
     var hubOpen=e.target.closest("[data-v37-open]");
@@ -6573,15 +6762,15 @@ var groups={};
 function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
-  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=37.7.0","./detective-v12.js?v=37.7.0","./detective-v13.js?v=37.7.0","./detective-v14.js?v=37.7.0","./detective-v16.js?v=37.7.0"]);
-  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=37.7.0","./smart-v23.js?v=37.7.0","./playlist-v24.js?v=37.7.0"]);
-  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=37.7.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=37.7.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=37.7.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=37.7.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=37.7.0");
+  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=37.8.0","./detective-v12.js?v=37.8.0","./detective-v13.js?v=37.8.0","./detective-v14.js?v=37.8.0","./detective-v16.js?v=37.8.0"]);
+  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=37.8.0","./smart-v23.js?v=37.8.0","./playlist-v24.js?v=37.8.0"]);
+  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=37.8.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=37.8.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=37.8.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=37.8.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=37.8.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
-    return seq(["./voca-app-v33.js?v=37.7.0","./voca-app-v33-1.js?v=37.7.0","./voca-app-v33-2.js?v=37.7.0","./voca-app-v33-3.js?v=37.7.0"]);
+    return seq(["./voca-app-v33.js?v=37.8.0","./voca-app-v33-1.js?v=37.8.0","./voca-app-v33-2.js?v=37.8.0","./voca-app-v33-3.js?v=37.8.0"]);
   });
   else groups[name]=Promise.resolve(false);
   groups[name]=Promise.resolve(groups[name]).then(function(v){
