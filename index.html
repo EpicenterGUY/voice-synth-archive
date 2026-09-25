@@ -7718,8 +7718,12 @@ function openView(name){if(window.VSAV33&&VSAV33.openView){VSAV33.openView(name)
     var groups=[state.songs,state.tasteSongs,state.guideSongs,state.hiddenGems,state.hiddenGemPool,state.detectiveCandidates];
     for(var g of groups){if(!Array.isArray(g))continue;for(var item of g){var sng=item&&item.song?item.song:item;if(sng&&sng.contentId===id)return sng}}
   }catch(e){}
-  var org=L(OK,{library:{}});
-  return org.library&&org.library[id]&&org.library[id].song||null
+  var org=L(OK,{library:{},recentViews:[]}),sm=L(SK,{feedback:{},lastMix:[]});
+  if(org.library&&org.library[id]&&org.library[id].song)return org.library[id].song;
+  var rv=(org.recentViews||[]).find(function(x){return x&&x.id===id&&x.song});if(rv)return rv.song;
+  if(sm.feedback&&sm.feedback[id]&&sm.feedback[id].song)return sm.feedback[id].song;
+  var lm=(sm.lastMix||[]).find(function(x){return x&&x.contentId===id});if(lm)return lm;
+  return null
 }
 function relatedSongs39(song){
   var f=currentFeed(),m=new Map();
