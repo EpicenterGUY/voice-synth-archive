@@ -36,7 +36,7 @@ function card(s,mark){
 function render(){
   var root=ensureRoot();if(!root)return;
   var f=feed(),rows=(f[key(active)]||[]).slice(),hero=rows[0]||null,list=rows.slice(hero?1:0,13),date=new Date().toLocaleDateString("ko-KR",{month:"long",day:"numeric",weekday:"short"});
-  root.innerHTML='<div class="v35-head"><div><small>VOCALO SUPPORT · '+esc(date)+'</small><h1>오늘의 보카로</h1><p>한 화면에서는 한 피드만. 필요한 추천만 골라서 봅니다.</p></div></div>'+
+  root.innerHTML='<div class="v35-head"><div><small>VOCALO SUPPORT v36.1.0 · '+esc(date)+'</small><h1>오늘의 보카로</h1><p>한 화면에서는 한 피드만. 필요한 추천만 골라서 봅니다.</p></div></div>'+
     '<nav class="v35-tabs">'+[["DAILY","추천"],["FOR YOU","내 취향"],["NEW","신곡"],["DEEP","숨은 곡"],["PRODUCER","프로듀서"]].map(function(x){return'<button type="button" class="'+(active===x[0]?"active":"")+'" data-v35-tab="'+x[0]+'">'+x[1]+'</button>'}).join("")+'</nav>'+
     (hero?'<section class="v35-feature"><a href="https://www.nicovideo.jp/watch/'+encodeURIComponent(hero.contentId)+'" target="_blank" rel="noopener">'+(hero.thumbnailUrl?'<img src="'+esc(hero.thumbnailUrl)+'" loading="lazy" decoding="async" alt="">':'')+'<div class="v35-feature-shade"></div><div class="v35-feature-copy"><small>'+label(active)+' PICK</small><b>'+esc(hero.title||hero.contentId)+'</b><span>조회 '+fmt(hero.viewCounter||0)+' · '+esc(reason(hero,active))+'</span></div><span class="v35-feature-play">▶</span></a></section>':'')+
     '<div class="v35-toolbar"><div><h2>'+label(active)+'</h2><small>'+subtitle(active)+'</small></div><button type="button" id="v35Refresh">'+(busy?"갱신 중…":"다른 곡 ↻")+'</button></div>'+
