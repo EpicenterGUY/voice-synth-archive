@@ -43,6 +43,7 @@ function loadDb(){
     });
   }catch(e){return blankDb()}
 }
+function reloadDb22(){db=loadDb();return db}
 function saveDb(){
   try{localStorage.setItem(KEY,JSON.stringify(db))}
   catch(e){console.warn("v22 organizer save failed",e)}
@@ -408,6 +409,7 @@ function casesHtml(){
   }).join("")+'</div>';
 }
 function renderLibrary(){
+  reloadDb22();
   const panel=document.getElementById("v22LibraryPanel");
   if(!panel)return;
   const counts=libraryCounts();
@@ -578,6 +580,20 @@ function bindUi(){
   const ex=document.getElementById("v22ExportBtn");if(ex)ex.onclick=exportData;
   const im=document.getElementById("v22ImportInput");if(im)im.onchange=function(){importData(im.files&&im.files[0]);im.value=""};
 }
+function openLibrary22(view){
+  reloadDb22();
+  if(view)currentLibraryView=view;
+  try{if(typeof openToolsModal==="function")openToolsModal("library22");}catch(e){}
+  setTimeout(function(){
+    try{if(typeof setToolView==="function")setToolView("library22");}catch(e){}
+    renderLibrary();
+  },0);
+}
+function setSongStatusPublic(id,status,song){
+  reloadDb22();
+  setSongStatus(id,status,song);
+  return db.library[id]||null;
+}
 function patchRenderers(){
   try{
     const oldRenderSongs=renderSongs;
@@ -605,6 +621,9 @@ else boot();
 window.VSAOrganizer22={
   saveDetectiveCase:saveDetectiveCase,
   renderLibrary:renderLibrary,
-  openCompare:openCompare
+  openCompare:openCompare,
+  openLibrary:openLibrary22,
+  setSongStatus:setSongStatusPublic,
+  reload:reloadDb22
 };
 })();
