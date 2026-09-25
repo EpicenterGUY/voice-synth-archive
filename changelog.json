@@ -1,11 +1,26 @@
 {
   "current": {
-    "version": "37.2.0",
+    "version": "37.2.1",
     "releasedAt": "2026-09-25",
-    "title": "기능 화면 완전 페이지화 · 라우팅 안정화",
-    "summary": "탐색·검색·내 취향·보관함 기능을 기존 홈 위에 겹쳐 띄우는 고정 모달 구조에서 제거하고, Voca Support 앱 내부의 실제 페이지로 전환했습니다."
+    "title": "간헐 멈춤 수정 · 이벤트 루프 안정화",
+    "summary": "고급 기능 모듈을 불러온 뒤 MutationObserver가 자기 DOM 변경을 다시 감지하며 반복 실행되던 루프를 제거하고, 내 취향 추천 버튼이 스마트 모듈 로딩 후 무반응이 되던 연결 문제를 수정했습니다."
   },
   "entries": [
+    {
+      "version": "37.2.1",
+      "date": "2026-09-25",
+      "title": "간헐 멈춤 수정 · 이벤트 루프 안정화",
+      "changes": [
+        "voca-app-v33-3의 toolsModal 전체 subtree MutationObserver가 renderActiveFilters의 innerHTML 변경을 다시 감지해 무한 반복될 수 있던 CPU 루프 제거",
+        "v33-3 감시 범위를 tools-body 직접 자식 추가로 축소하고 requestAnimationFrame 1회 동기화로 디바운스",
+        "활성 필터 UI는 실제 HTML이 달라질 때만 갱신하도록 변경해 불필요한 DOM 재생성 차단",
+        "smart-v23 로딩 후 취향 추천 버튼을 복제하면서 기존 onclick이 사라지고 존재하지 않는 recommendTasteV20을 호출하던 문제 수정",
+        "기본 취향 추천 함수를 window.recommendTasteV20으로 명시 노출하고 smart-v23에서도 기본 recommendTaste로 폴백",
+        "지연 로딩 JS 쿼리 버전을 모두 v37.2.1로 갱신해 서비스워커에 남은 이전 스크립트 재사용 차단",
+        "기능 페이지 전환 및 지연 모듈 로딩 완료 시 body/html overflow와 mobile-paged 잔여 잠금을 자동 정리",
+        "PWA·서비스워커·시작 URL을 v37.2.1로 갱신"
+      ]
+    },
     {
       "version": "37.2.0",
       "date": "2026-09-25",
