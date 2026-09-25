@@ -1162,6 +1162,20 @@ body.v37-ready>.app.mobile-paged>.main,body.v37-ready>.app.mobile-paged>.summary
 @media(max-width:699px){.v37-head p{display:none}.v37-grid{grid-template-columns:1fr}.v37-hero{min-height:225px}.v37-title{font-size:11px}}
 @media(min-width:700px) and (max-width:1100px){.v37-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(min-width:900px){.v37-dock{left:50%;right:auto;width:540px;transform:translateX(-50%)}}
+.v37-native-hub{width:100%;max-width:900px;margin:0 auto;padding:8px 0 24px}
+.v37-native-head{padding:10px 2px 14px;border-bottom:1px solid #18393e}
+.v37-native-head small{display:block;color:#70d7cd;font-size:8px;font-weight:950;letter-spacing:.12em}
+.v37-native-head h2{margin:4px 0 4px;font-size:22px;letter-spacing:-.04em}
+.v37-native-head p{margin:0;color:#789c98;font-size:9px;line-height:1.55}
+.v37-hub-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;padding-top:12px}
+.v37-hub-card{width:100%;min-height:92px;text-align:left;border:1px solid #244b50;border-radius:16px;background:#092329;color:#eafaf7;padding:13px;display:flex;align-items:center;gap:12px}
+.v37-hub-card:active{transform:scale(.99)}
+.v37-hub-icon{flex:0 0 42px;height:42px;border-radius:13px;display:grid;place-items:center;background:#12383d;color:#cffff8;font-size:18px;font-weight:950}
+.v37-hub-copy{min-width:0;flex:1}.v37-hub-copy b{display:block;font-size:13px}.v37-hub-copy small{display:block;margin-top:4px;color:#86a8a4;font-size:8px;line-height:1.45}
+.v37-hub-arrow{color:#6aa39f;font-size:18px}
+.v37-hub-status{margin-top:10px;min-height:34px;padding:9px 11px;border:1px solid #1f4247;border-radius:12px;background:#071b20;color:#88aaa6;font-size:8px;line-height:1.5}
+@media(max-width:699px){.v37-hub-grid{grid-template-columns:1fr}.v37-hub-card{min-height:80px}.v37-native-head h2{font-size:20px}}
+
 </style>
 </head>
 <body>
@@ -1374,7 +1388,7 @@ body.v37-ready>.app.mobile-paged>.main,body.v37-ready>.app.mobile-paged>.summary
     </details>
   </section>
 
-  <div class="footer">v37.1.0 · 기능 화면 홈 셸 통합 · 중복 메뉴 제거 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v37.1.1 · 탐색 멈춤 수정 · 즉시 전환 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -5317,7 +5331,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="37.1.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
+var VER="37.1.1",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -5339,17 +5353,47 @@ function similar(id){var song=getSong(id);if(!song)return;if(window.VSAV33&&VSAV
 async function refresh(){if(busy)return;busy=true;render();try{if(window.VSAHome28&&VSAHome28.refreshSection)await VSAHome28.refreshSection(active);else if(typeof fetchNico==="function"){var opts=active==="NEW"?{year:"all",limit:24,offset:0,mode:"ranking",sort:"-startTime"}:active==="DEEP"?{year:"all",limit:80,offset:0,mode:"ranking",sort:"+viewCounter",numericFilters:{viewCounter:{gte:100,lte:50000}}}:{year:"all",limit:40,offset:0,mode:"ranking",sort:"-viewCounter"};var d=await fetchNico(opts),f=currentFeed(),arr=(d.data||[]).sort(function(){return Math.random()-.5}).slice(0,12);f[k(active)]=arr;S(HK,f)}}catch(e){}busy=false;render()}
 function openView(name){if(window.VSAV33&&VSAV33.openView){VSAV33.openView(name);return}try{openToolsModal(name)}catch(e){}}
 function setDock(v){document.querySelectorAll(".v37-dock button").forEach(function(b){b.classList.toggle("active",b.dataset.v37===v)})}
-function openLazy(title,target,fallback){
-  if(window.VSAV33&&target){openView(target);return}
-  if(window.VSAPrepareView)VSAPrepareView(title);
-  else if(fallback)openView(fallback);
-  if(window.VSAEnsureFeatures){
-    VSAEnsureFeatures("v33").then(function(){
-      if(window.VSAV33&&target)openView(target);
-      else if(fallback)openView(fallback)
-    })
-  }
+function ensureHub37(){
+  var body=document.querySelector("#toolsModal .tools-body");
+  if(!body)return null;
+  var v=body.querySelector('[data-tool-view="hub37"]');
+  if(v)return v;
+  v=document.createElement("section");
+  v.className="tool-view v37-native-hub";
+  v.dataset.toolView="hub37";
+  v.innerHTML=
+    '<div class="v37-native-head"><small>VOCALO SUPPORT</small><h2>탐색</h2><p>원하는 작업을 바로 엽니다. 무거운 기능 묶음을 먼저 불러오지 않습니다.</p></div>'+
+    '<div class="v37-hub-grid">'+
+      '<button class="v37-hub-card" type="button" data-v37-open="gems"><span class="v37-hub-icon">◆</span><span class="v37-hub-copy"><b>숨은 곡 발굴</b><small>조회수 아래 묻힌 반응 좋은 곡 찾기</small></span><span class="v37-hub-arrow">›</span></button>'+
+      '<button class="v37-hub-card" type="button" data-v37-open="guide"><span class="v37-hub-icon">✦</span><span class="v37-hub-copy"><b>노래 추천</b><small>입문부터 깊은 발굴까지 조건을 섞어 추천</small></span><span class="v37-hub-arrow">›</span></button>'+
+      '<button class="v37-hub-card" type="button" data-v37-open="taste"><span class="v37-hub-icon">♡</span><span class="v37-hub-copy"><b>내 취향 추천</b><small>분위기·장르·보컬·시대 조건으로 추천</small></span><span class="v37-hub-arrow">›</span></button>'+
+      '<button class="v37-hub-card" type="button" data-v37-open="detective"><span class="v37-hub-icon">?</span><span class="v37-hub-copy"><b>기억 복원 탐정</b><small>가사·PV·시기 같은 기억으로 잊은 곡 찾기</small></span><span class="v37-hub-arrow">›</span></button>'+
+      '<button class="v37-hub-card" type="button" data-v37-advanced="producer"><span class="v37-hub-icon">P</span><span class="v37-hub-copy"><b>프로듀서 허브</b><small>필요할 때만 고급 모듈을 불러옵니다</small></span><span class="v37-hub-arrow">›</span></button>'+
+    '</div><div class="v37-hub-status" id="v37HubStatus">탐색 메뉴는 즉시 사용할 수 있습니다.</div>';
+  body.prepend(v);
+  return v
 }
+function openHub37(){
+  ensureHub37();
+  openToolsModal("hub37")
+}
+function openProducer37(){
+  var st=document.getElementById("v37HubStatus");
+  if(window.VSAV33&&VSAV33.openView){VSAV33.openView("explore33");return}
+  if(st)st.textContent="프로듀서 허브만 추가 기능을 불러오는 중… 다른 메뉴는 계속 사용할 수 있습니다.";
+  if(!window.VSAEnsureFeatures){if(st)st.textContent="고급 모듈을 불러올 수 없습니다.";return}
+  var done=false;
+  var timer=setTimeout(function(){
+    if(done)return;
+    if(st)st.textContent="고급 모듈 로딩이 지연되고 있습니다. 다른 탐색 기능은 정상 사용 가능합니다."
+  },4500);
+  VSAEnsureFeatures("v33").then(function(){
+    done=true;clearTimeout(timer);
+    if(window.VSAV33&&VSAV33.openView)VSAV33.openView("explore33");
+    else if(st)st.textContent="프로듀서 허브를 불러오지 못했습니다. 잠시 후 다시 시도해주세요."
+  })
+}
+function setDock(v){document.querySelectorAll(".v37-dock button").forEach(function(b){b.classList.toggle("active",b.dataset.v37===v)})}
 function dock(){
   if(document.querySelector(".v37-dock"))return;
   var d=document.createElement("nav");d.className="v37-dock";
@@ -5362,18 +5406,22 @@ function dock(){
       try{closeToolsModal()}catch(e){}
       document.getElementById("v37Home")?.scrollIntoView({block:"start"});return
     }
-    if(v==="explore"){openLazy("탐색 준비","explore33","gems");return}
-    if(v==="search"){openLazy("검색 준비","searchHub33","detective");if(window.VSAEnsureFeatures)VSAEnsureFeatures("detective");return}
+    if(v==="explore"){openHub37();return}
+    if(v==="search"){openToolsModal("detective");return}
     if(v==="library"){
       if(window.VSA332Library&&VSA332Library.open){VSA332Library.open();return}
-      if(window.VSAPrepareView)VSAPrepareView("보관함 준비");
+      if(window.VSAOrganizer22&&VSAOrganizer22.openLibrary){VSAOrganizer22.openLibrary("saved");return}
+      var hub=ensureHub37();openToolsModal("hub37");
+      var st=document.getElementById("v37HubStatus");
+      if(st)st.textContent="보관함 기능을 불러오는 중… 탐색 메뉴는 그대로 사용할 수 있습니다.";
       if(window.VSAEnsureFeatures)Promise.all([VSAEnsureFeatures("personal"),VSAEnsureFeatures("v33")]).then(function(){
         if(window.VSA332Library&&VSA332Library.open)VSA332Library.open();
-        else if(window.VSAOrganizer22&&VSAOrganizer22.openLibrary)VSAOrganizer22.openLibrary("saved")
+        else if(window.VSAOrganizer22&&VSAOrganizer22.openLibrary)VSAOrganizer22.openLibrary("saved");
+        else if(st)st.textContent="보관함을 불러오지 못했습니다."
       });
       return
     }
-    if(v==="taste"){openLazy("내 취향 준비","tasteHub33","taste");return}
+    if(v==="taste"){openToolsModal("taste");return}
   })
 }
 function init(){
@@ -5381,14 +5429,18 @@ function init(){
   var app=document.querySelector(".app");if(app)app.classList.remove("mobile-paged");
   var h=document.querySelector(".topbar .brand h1");if(h)h.textContent="Voca Support";
   var subh=document.querySelector(".topbar .brand .sub");if(subh)subh.textContent="추천 · 탐색 · 검색 · 보관 · 취향";
-  render();dock();
+  render();dock();ensureHub37();
   document.addEventListener("click",function(e){
     var t=e.target.closest("[data-v37-tab]");
     if(t){
       var v=t.dataset.v37Tab;
-      if(v==="PRODUCER"){setDock("explore");openLazy("프로듀서 허브 준비","explore33","gems");return}
+      if(v==="PRODUCER"){setDock("explore");openHub37();openProducer37();return}
       active=v;localStorage.setItem(AK,v);render();return
     }
+    var hubOpen=e.target.closest("[data-v37-open]");
+    if(hubOpen){openToolsModal(hubOpen.dataset.v37Open);return}
+    var adv=e.target.closest("[data-v37-advanced]");
+    if(adv&&adv.dataset.v37Advanced==="producer"){openProducer37();return}
     if(e.target.id==="v37Refresh"){refresh();return}
     var a=e.target.closest("[data-v37-save]");if(a){keep(a.dataset.v37Save);return}
     var d=e.target.closest("[data-v37-dislike]");if(d){dislike(d.dataset.v37Dislike);return}
@@ -5406,10 +5458,19 @@ var jobs={};
 function load(src){
   if(jobs[src])return jobs[src];
   jobs[src]=new Promise(function(resolve){
+    var settled=false;
     var el=document.createElement("script");
+    var finish=function(ok){
+      if(settled)return;settled=true;
+      clearTimeout(timer);resolve(ok)
+    };
+    var timer=setTimeout(function(){
+      console.warn("feature load timeout",src);
+      finish(false)
+    },7000);
     el.src=src;el.async=false;
-    el.onload=function(){resolve(true)};
-    el.onerror=function(){console.warn("feature load failed",src);resolve(false)};
+    el.onload=function(){finish(true)};
+    el.onerror=function(){console.warn("feature load failed",src);finish(false)};
     document.body.appendChild(el);
   });
   return jobs[src];
@@ -5424,7 +5485,7 @@ function ensure(name){
   else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=36.1.0");
   else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=28.1.0");
   else if(name==="player")groups[name]=load("./nico-player-v32.js?v=36.1.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=37.1.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=37.1.1");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
     return seq(["./voca-app-v33.js?v=36.1.0","./voca-app-v33-1.js?v=36.1.0","./voca-app-v33-2.js?v=36.1.0","./voca-app-v33-3.js?v=37.0.1"]);
   });
