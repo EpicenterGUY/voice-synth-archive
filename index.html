@@ -2935,7 +2935,7 @@ body.v37-ready #toolsModal .tool-view.active{display:block!important}
     </details>
   </section>
 
-  <div class="footer">v39.15.0 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.16.0 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -7016,7 +7016,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:"39.15.0",
+    version:"39.16.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -7092,46 +7092,144 @@ function renderAdultSettings37(){
     '<div class="v37-safety-note">필터는 곡 목록과 추천 결과에 적용됩니다. 니코동 태그가 잘못되었거나 없는 영상은 완벽하게 판별하지 못할 수 있습니다. 빙산의 전체 통계 건수는 원본 모집단 통계를 유지합니다.</div>'
 }
 
-const PRODUCER_KNOWN37=["DECO*27","wowaka","ryo","ハチ","ピノキオピー","Neru","じん","kz","40mP","Mitchie M","みきとP","Orangestar","ナユタン星人","Ayase","Kanaria","かいりきベア","柊キライ","Chinozo","すりぃ","syudou","ツミキ","wotaku","MARETU","きくお","cosMo@暴走P","OSTER project","sasakure.UK","doriko","164","蝶々P","buzzG","トーマ","れるりり","n-buna","ぬゆり","ユリイ・カノン","Aqu3ra","R Sound Design","はるまきごはん","煮ル果実","いよわ","原口沙輔","なきそ","シャノン","柊マグネタイト","雄之助","Giga","八王子P","電ポルP","TOKOTOKO","西沢さんP","emon(Tes.)"];
-const PRODUCER_KNOWN_MAP37=new Map(PRODUCER_KNOWN37.map(function(x){return[String(x).toLowerCase(),x]}));
+const PRODUCER_KNOWN37=["DECO*27","wowaka","ryo","ハチ","ピノキオピー","Neru","じん","kz","40mP","Mitchie M","みきとP","Orangestar","ナユタン星人","Ayase","Kanaria","かいりきベア","柊キライ","Chinozo","すりぃ","syudou","ツミキ","wotaku","MARETU","きくお","cosMo@暴走P","OSTER project","sasakure.UK","doriko","164","蝶々P","buzzG","トーマ","れるりり","n-buna","ぬゆり","ユリイ・カノン","Aqu3ra","R Sound Design","はるまきごはん","煮ル果実","いよわ","原口沙輔","なきそ","シャノン","柊マグネタイト","雄之助","Giga","八王子P","電ポルP","TOKOTOKO","西沢さんP","emon(Tes.)","MidLuster"];
+const PRODUCER_ALIAS_GROUPS37=[
+  ["MidLuster","みどらすた"],
+  ["ピノキオピー","PinocchioP"],["みきとP","MikitoP"],["八王子P","HachiojiP"],
+  ["すりぃ","Surii"],["雄之助","Yunosuke"],["かいりきベア","Kairiki bear"],["きくお","Kikuo"],
+  ["ハチ","Hachi"],["cosMo@暴走P","cosMo"],["TOKOTOKO","西沢さんP"]
+];
+const PRODUCER_KNOWN_MAP37=new Map();
+const PRODUCER_ALIAS_VARIANTS_MAP37=new Map();
+PRODUCER_KNOWN37.forEach(function(x){PRODUCER_KNOWN_MAP37.set(normalizeSourceTag37(x),x)});
+PRODUCER_ALIAS_GROUPS37.forEach(function(group){
+  const canonical=group[0],variants=[...new Set(group.filter(Boolean))];
+  variants.forEach(function(x){
+    PRODUCER_KNOWN_MAP37.set(normalizeSourceTag37(x),canonical);
+    PRODUCER_ALIAS_VARIANTS_MAP37.set(normalizeSourceTag37(x),variants)
+  })
+});
 const PRODUCER_EXCLUDE37=/VOCALOID|UTAU|Synthesizer|SynthV|CeVIO|VoiSona|NEUTRINO|VOICEVOX|初音ミク|鏡音|巡音|重音|GUMI|flower|可不|IA|KAITO|MEIKO|オリジナル|伝説入り|殿堂入り|神話入り|ミリオン|ランキング|メドレー|作業用|高音質|高画質|歌詞|字幕|MMD|歌ってみた|踊ってみた|演奏してみた|ニコカラ|カラオケ|プロセカ|ゲーム|アニメ|音楽|ロック|メタル|ジャズ|テクノ|トランス|ポップ|バラード|エレクトロ|かわいい|可愛い|切ない|泣ける|中毒|良曲|名曲|神曲|期待の新人|処女作|投稿祭|誕生祭|生誕祭/i;
+function producerAliasVariants37(name){
+  const raw=String(name||"").trim(),key=normalizeSourceTag37(raw),canonical=PRODUCER_KNOWN_MAP37.get(key)||raw;
+  const group=PRODUCER_ALIAS_VARIANTS_MAP37.get(key)||PRODUCER_ALIAS_VARIANTS_MAP37.get(normalizeSourceTag37(canonical))||[canonical];
+  return [...new Set([canonical,raw].concat(group).filter(Boolean))]
+}
+window.VSAProducerAliasVariants37=producerAliasVariants37;
+function canonicalProducerName37(name){
+  const raw=String(name||"").trim();
+  return PRODUCER_KNOWN_MAP37.get(normalizeSourceTag37(raw))||raw
+}
 function vocadbArtistName37(a){
   return String(a?.name||a?.artist?.name||a?.artist?.defaultName||a?.defaultName||"").trim()
+}
+function producerNameClean37(v){
+  let s=String(v||"").replace(/<br\s*\/?\s*>/gi," ").replace(/<[^>]+>/g," ").replace(/\u3000/g," ").trim();
+  s=s.replace(/^[\s\-–—・●■◆★☆]+/,"").replace(/[\s\-–—・●■◆★☆]+$/,"");
+  s=s.replace(/\s*(?:https?:\/\/|www\.)\S.*$/i,"").replace(/\s+[@＠][A-Za-z0-9_]+.*$/,"").trim();
+  s=s.split(/\s{2,}|[|｜]/)[0].trim();
+  s=s.replace(/^[「『【\[(]+/,"").replace(/[」』】\])]+$/,"").trim();
+  return s
+}
+function producerNameValid37(name){
+  const s=producerNameClean37(name),known=PRODUCER_KNOWN_MAP37.has(normalizeSourceTag37(s));
+  if(!s||s.length<2||s.length>52||/https?:|www\.|@/.test(s)||/^\d+$/.test(s))return false;
+  if(!known&&PRODUCER_EXCLUDE37.test(s))return false;
+  if(!known&&s.split(/\s+/).length>6)return false;
+  return true
+}
+function pushProducerCredit37(map,name,source,role,priority,id){
+  name=producerNameClean37(name);if(!producerNameValid37(name))return;
+  const canonical=canonicalProducerName37(name),key=normalizeSourceTag37(canonical);
+  const old=map.get(key),item={id:Number(id)||0,name:canonical,source:source||"",role:role||"",priority:Number(priority)||0,aliases:producerAliasVariants37(canonical)};
+  if(!old||item.priority>old.priority)map.set(key,item);
+  else{
+    old.aliases=[...new Set((old.aliases||[]).concat(item.aliases||[]))];
+    if(source&&!String(old.source||"").includes(source))old.source=[old.source,source].filter(Boolean).join(" + ")
+  }
 }
 function vocadbProducerList37(item){
   const out=new Map();
   for(const a of (Array.isArray(item?.artists)?item.artists:[])){
-    const cats=String(a?.categories||a?.effectiveRoles||"");
-    if(!/(^|,|\s)Producer($|,|\s)/i.test(cats))continue;
+    const cats=[a?.categories,a?.effectiveRoles,a?.roles,a?.role].filter(Boolean).join(" ");
+    let role="",priority=0;
+    if(/Producer/i.test(cats)){role="Producer";priority=100}
+    else if(/Composer|Music|作曲/i.test(cats)){role="Composer";priority=94}
+    else if(/Arranger|Arrange|編曲/i.test(cats)){role="Arranger";priority=82}
+    else if(/Lyricist|Lyrics|作詞/i.test(cats)){role="Lyricist";priority=72}
+    else continue;
     const name=vocadbArtistName37(a);if(!name)continue;
     const id=Number(a?.artist?.id||a?.id)||0;
-    const key=id?"id:"+id:"name:"+normalizeSourceTag37(name);
-    if(!out.has(key))out.set(key,{id:id,name:name,categories:cats})
+    pushProducerCredit37(out,name,"VocaDB",role,priority,id)
   }
   return [...out.values()]
 }
-function producerResolveCacheKey37(id){return "vsa37ProducerPV:"+String(id||"").toLowerCase()}
-async function resolveSongProducers37(song){
-  const id=String(song?.contentId||"").trim();
-  if(!/^(sm|nm|so)\d+$/i.test(id))return [];
-  const key=producerResolveCacheKey37(id);
+function dynamicProducerNames37(){
+  const out=new Map();
+  function add(x){const s=String(x||"").trim();if(s)out.set(normalizeSourceTag37(s),canonicalProducerName37(s))}
+  try{JSON.parse(localStorage.getItem("vsa.v33.followedProducers")||"[]").forEach(add)}catch(_){}
+  try{(state.producerDiscovery||[]).forEach(function(x){add(x&&x.name)})}catch(_){}
   try{
-    const c=JSON.parse(localStorage.getItem(key)||"null");
-    if(c&&Date.now()-c.at<2592000000&&Array.isArray(c.producers))return c.producers
+    if(window.VSAV33&&VSAV33.producerRank){
+      ["popular","taste","deep","followed"].forEach(function(mode){(VSAV33.producerRank(mode)||[]).forEach(function(x){add(x&&x.tag)})})
+    }
   }catch(_){}
-  try{
-    const u=new URL("https://vocadb.net/api/songs/byPv");
-    u.searchParams.set("pvService","NicoNicoDouga");
-    u.searchParams.set("pvId",id);
-    u.searchParams.set("fields","Artists");
-    u.searchParams.set("lang","Japanese");
-    const r=await fetch(u.toString(),{headers:{"Accept":"application/json"}});
-    if(!r.ok)return [];
-    const item=await r.json();
-    const producers=item?vocadbProducerList37(item):[];
-    try{localStorage.setItem(key,JSON.stringify({at:Date.now(),producers:producers}))}catch(_){}
-    return producers
-  }catch(_){return[]}
+  return out
+}
+function inferNicoProducerCredits37(song){
+  const out=new Map(),title=String(song?.title||""),rawDesc=String(song?.description||"");
+  const desc=rawDesc.replace(/<br\s*\/?\s*>/gi,"\n").replace(/<\/p>/gi,"\n").replace(/<[^>]+>/g," ");
+  const titleProd=/\bprod(?:uced)?\.?\s*(?:by\s*)?[:：]?\s*([^()（）\[\]【】|｜]{2,52})/ig;
+  let m;while((m=titleProd.exec(title)))pushProducerCredit37(out,m[1],"니코동 제목","Producer",88,0);
+  desc.split(/[\r\n]+/).forEach(function(line){
+    const x=String(line||"").trim();if(!x)return;
+    const pair=x.match(/^([^:：]{1,48})[:：]\s*(.+)$/);if(!pair)return;
+    const label=pair[1],value=pair[2];
+    if(!/(?:^|[\s,／/&＋+・])(music|composer|producer|prod\.?|作曲|作詞作曲|作編曲|曲|音楽|詞曲)(?:$|[\s,／/&＋+・])/i.test(" "+label+" "))return;
+    value.split(/\s*(?:&|＆|×)\s*|、/).slice(0,3).forEach(function(name){pushProducerCredit37(out,name,"니코동 설명",label,90,0)})
+  });
+  const dynamic=dynamicProducerNames37();
+  const descNorm=normalizeSourceTag37(title+"\n"+desc);
+  const rawTags=Array.isArray(song?.tags)?song.tags:String(song?.tags||"").split(/[\s,、]+/);
+  rawTags.forEach(function(raw){
+    const tag=String(raw||"").trim(),key=normalizeSourceTag37(tag),known=PRODUCER_KNOWN_MAP37.get(key),dyn=dynamic.get(key);
+    if(known)pushProducerCredit37(out,known,"니코동 태그","creator tag",84,0);
+    else if(dyn)pushProducerCredit37(out,dyn,"니코동 태그","producer candidate",80,0);
+    else if(/(?:P|Ｐ)$/i.test(tag)&&!PRODUCER_EXCLUDE37.test(tag))pushProducerCredit37(out,tag,"니코동 태그","P tag",78,0)
+  });
+  PRODUCER_ALIAS_GROUPS37.forEach(function(group){
+    const hit=group.find(function(alias){const n=normalizeSourceTag37(alias);return n.length>=3&&descNorm.includes(n)});
+    if(hit)pushProducerCredit37(out,group[0],"니코동 설명","name mention",76,0)
+  });
+  return [...out.values()].sort(function(a,b){return b.priority-a.priority})
+}
+function producerResolveCacheKey37(id){return "vsa37ProducerPV:"+String(id||"").toLowerCase()+":v2"}
+async function resolveSongProducers37(song){
+  const id=String(song?.contentId||"").trim(),key=producerResolveCacheKey37(id),merged=new Map();
+  if(id){
+    try{
+      const cached=JSON.parse(localStorage.getItem(key)||"null");
+      if(cached&&Date.now()-cached.at<2592000000&&Array.isArray(cached.producers))return cached.producers
+    }catch(_){}
+  }
+  inferNicoProducerCredits37(song).forEach(function(p){pushProducerCredit37(merged,p.name,p.source,p.role,p.priority,p.id)});
+  if(/^(sm|nm|so)\d+$/i.test(id)){
+    try{
+      const u=new URL("https://vocadb.net/api/songs/byPv");
+      u.searchParams.set("pvService","NicoNicoDouga");
+      u.searchParams.set("pvId",id);
+      u.searchParams.set("fields","Artists");
+      u.searchParams.set("lang","Japanese");
+      const r=await fetch(u.toString(),{headers:{"Accept":"application/json"}});
+      if(r.ok){
+        const item=await r.json();
+        vocadbProducerList37(item).forEach(function(p){pushProducerCredit37(merged,p.name,p.source,p.role,p.priority,p.id)})
+      }
+    }catch(_){}
+  }
+  const producers=[...merged.values()].sort(function(a,b){return b.priority-a.priority}).slice(0,4);
+  try{if(id)localStorage.setItem(key,JSON.stringify({at:Date.now(),producers:producers}))}catch(_){}
+  return producers
 }
 function producerDiscoveryScore37(x,mode){
   const avg=x.views/Math.max(1,x.count),react=((x.mylists+2)/(x.views+900))*1000,under=1-Math.min(1,Math.log10(avg+10)/6),count=Math.min(1,x.count/5),recent=x.latest>=new Date().getFullYear()-3?1:0;
@@ -8269,7 +8367,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.15.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
+var VER="39.16.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -8593,7 +8691,7 @@ function renderSongDetail39(song,autoplay){
       '<h2>'+E(song.title||song.contentId)+'</h2><div class="v399-watch-meta"><span>'+E(date)+'</span><span>니코니코</span></div>'+
       '<div class="v399-watch-actions"><button type="button" class="primary" data-v399-mini="'+E(song.contentId)+'">▶ 미니 플레이어</button><button type="button" data-v39-detail-save="'+E(song.contentId)+'">♡ 보관</button><button type="button" data-v39-detail-universe="'+E(song.contentId)+'">✦ 우주</button><a data-external="1" href="https://www.nicovideo.jp/watch/'+E(song.contentId)+'" target="_blank" rel="noopener">니코동 ↗</a><button type="button" data-v39-detail-home>← 홈</button></div>'+
       '<div class="v399-watch-stats"><div class="v399-watch-stat"><small>조회</small><b>'+F(song.viewCounter||0)+'</b></div><div class="v399-watch-stat"><small>마이리스트</small><b>'+F(song.mylistCounter||0)+'</b></div><div class="v399-watch-stat"><small>댓글</small><b>'+F(song.commentCounter||0)+'</b></div><div class="v399-watch-stat"><small>좋아요</small><b>'+F(song.likeCounter||0)+'</b></div></div>'+
-      '<div class="v399-credit-row"><div class="v399-credit"><small>PRODUCER · VocaDB PV 매칭</small><div class="v392-detail-chips" data-v39-producer-credit><span>확인 중…</span></div></div><div class="v399-credit"><small>VOCAL · 등록 태그 기준</small><div class="v392-detail-chips">'+(vocals.length?vocals.map(function(v){return'<button type="button" data-v39-search-tag="'+E(v)+'">'+E(v)+'</button>'}).join(""):'<span>보컬 태그 정보 없음</span>')+'</div></div></div>'+
+      '<div class="v399-credit-row"><div class="v399-credit"><small>PRODUCER · VocaDB + 니코동 크레딧</small><div class="v392-detail-chips" data-v39-producer-credit><span>확인 중…</span></div></div><div class="v399-credit"><small>VOCAL · 등록 태그 기준</small><div class="v392-detail-chips">'+(vocals.length?vocals.map(function(v){return'<button type="button" data-v39-search-tag="'+E(v)+'">'+E(v)+'</button>'}).join(""):'<span>보컬 태그 정보 없음</span>')+'</div></div></div>'+
       '<div class="v399-tag-row">'+ts.map(function(t){return'<button type="button" data-v39-search-tag="'+E(t)+'">'+E(t)+'</button>'}).join("")+'</div>'+
     '</div></main>'+
     '<aside class="v399-side"><div class="v399-side-head"><div><h3>연관 영상</h3><small>태그·VocaDB 연관성 + 오리지널곡 우선</small></div><small id="v399RelatedCount"></small></div><div class="v399-related-list" id="v399Related"></div></aside>'+
@@ -8603,7 +8701,7 @@ function renderSongDetail39(song,autoplay){
   renderWatchRelated399(song,[]);
   var box=p.querySelector("[data-v39-producer-credit]");
   if(box&&typeof resolveSongProducers37==="function"){
-    Promise.resolve(resolveSongProducers37(song)).then(function(ps){if(!box.isConnected)return;box.innerHTML=ps&&ps.length?ps.map(function(x){return'<button type="button" data-v39-search-producer="'+E(x.name)+'">'+E(x.name)+'</button>'}).join(""):'<span>VocaDB에서 P 크레딧을 찾지 못했습니다.</span>'}).catch(function(){if(box.isConnected)box.innerHTML='<span>P 크레딧 확인 실패</span>'})
+    Promise.resolve(resolveSongProducers37(song)).then(function(ps){if(!box.isConnected)return;box.innerHTML=ps&&ps.length?ps.map(function(x){return'<button type="button" data-v39-search-producer="'+E(x.name)+'" title="출처: '+E(x.source||"메타데이터")+(x.role?(" · "+E(x.role)):"")+'">'+E(x.name)+'</button>'}).join(""):'<span>니코동·VocaDB에서 P 크레딧을 확인하지 못했습니다.</span>'}).catch(function(){if(box.isConnected)box.innerHTML='<span>P 크레딧 확인 실패</span>'})
   }else if(box){box.innerHTML='<span>P 크레딧 정보 없음</span>'}
   hydrateWatch399(song)
 }
@@ -9393,15 +9491,15 @@ var groups={};
 function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
-  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.15.0","./detective-v12.js?v=39.15.0","./detective-v13.js?v=39.15.0","./detective-v14.js?v=39.15.0","./detective-v16.js?v=39.15.0"]);
-  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.15.0","./smart-v23.js?v=39.15.0","./playlist-v24.js?v=39.15.0"]);
-  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.15.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.15.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.15.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.15.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.15.0");
+  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.16.0","./detective-v12.js?v=39.16.0","./detective-v13.js?v=39.16.0","./detective-v14.js?v=39.16.0","./detective-v16.js?v=39.16.0"]);
+  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.16.0","./smart-v23.js?v=39.16.0","./playlist-v24.js?v=39.16.0"]);
+  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.16.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.16.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.16.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.16.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.16.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
-    return seq(["./voca-app-v33.js?v=39.15.0","./voca-app-v33-1.js?v=39.15.0","./voca-app-v33-2.js?v=39.15.0","./voca-app-v33-3.js?v=39.15.0"]);
+    return seq(["./voca-app-v33.js?v=39.16.0","./voca-app-v33-1.js?v=39.16.0","./voca-app-v33-2.js?v=39.16.0","./voca-app-v33-3.js?v=39.16.0"]);
   });
   else groups[name]=Promise.resolve(false);
   groups[name]=Promise.resolve(groups[name]).then(function(v){
