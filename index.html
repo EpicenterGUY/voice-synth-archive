@@ -1200,11 +1200,38 @@ body.v37-ready #gemPanel .gem-grid{max-width:100%!important;min-width:0!importan
   body.v37-ready .detective-questionnaire{
     padding:7px 0!important;height:auto!important;overflow:visible!important
   }
+  body.v37-ready .detective-questionnaire .detective-section{
+    height:auto!important;min-height:0!important;margin:0 0 8px!important
+  }
   body.v37-ready .detective-questionnaire .detective-section.mobile-active{
-    display:block!important;height:auto!important;margin:0 0 8px!important
+    display:block!important;height:auto!important;min-height:0!important;margin:0 0 8px!important
   }
   body.v37-ready .detective-questionnaire .detective-section.mobile-active .detective-section-body{
-    display:block!important;height:auto!important;overflow:visible!important
+    display:block!important;height:auto!important;max-height:none!important;overflow:visible!important
+  }
+  body.v37-ready #detectivePanel .detective-sticky-actions{
+    position:static!important;left:auto!important;right:auto!important;bottom:auto!important;
+    height:auto!important;min-height:0!important;margin:8px 0 10px!important;padding:8px!important;
+    display:grid!important;grid-template-columns:minmax(0,1fr) auto!important
+  }
+  body.v37-ready #detectivePanel .detective-status{
+    display:block!important;margin:6px 0!important
+  }
+  body.v37-ready #detectivePanel .detective-feedback-summary{
+    display:flex!important;margin:6px 0!important
+  }
+  body.v37-ready #detectivePanel .detective-web-actions{
+    display:flex!important;margin:6px 0!important
+  }
+  body.v37-ready #detectivePanel .detective-web-hunt:not([hidden]){
+    display:block!important;margin:6px 0!important
+  }
+  body.v37-ready #detectivePanel .detective-results{
+    display:grid!important;grid-template-columns:1fr!important;
+    height:auto!important;max-height:none!important;overflow:visible!important;padding:0 0 12px!important
+  }
+  body.v37-ready #detectivePanel .detective-followup:not([style*="display:none"]){
+    display:block!important;margin:6px 0!important
   }
   body.v37-ready .detective-mobile-steps{
     position:sticky!important;top:53px!important;z-index:35!important;
@@ -1486,7 +1513,7 @@ body.v37-ready .v37-search-page .results-toolbar{border:1px solid #18393e;border
     </details>
   </section>
 
-  <div class="footer">v37.3.0 · 검색/탐정 분리 · 빙산/우주 페이지 복구 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v37.3.1 · Fold 탐정 잘림 수정 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -5158,6 +5185,31 @@ function openUniversePage37(song,force){
   })
 }
 
+function syncDetectiveStep37(step){
+  const sections=Array.from(document.querySelectorAll("#detectivePanel .detective-questionnaire .detective-section"));
+  if(!sections.length)return;
+  let i=Number(step);
+  if(!Number.isFinite(i))i=0;
+  i=Math.max(0,Math.min(sections.length-1,i));
+  sections.forEach(function(section,idx){
+    const active=idx===i;
+    section.classList.toggle("mobile-active",active);
+    if(active)section.open=true;
+  });
+  document.querySelectorAll("#detectiveMobileSteps button").forEach(function(btn,idx){
+    btn.classList.toggle("active",idx===i)
+  })
+}
+function openDetective37(){
+  syncDetectiveStep37(0);
+  openToolsModal("detective");
+  if(window.VSAEnsureFeatures){
+    VSAEnsureFeatures("detective").then(function(){
+      syncDetectiveStep37(document.querySelector("#detectiveMobileSteps button.active")?.dataset.dstep||0)
+    })
+  }
+}
+
 function setToolView(name){
   document.querySelectorAll("#toolsTabs button").forEach(b=>b.classList.toggle("active",b.dataset.tool===name));
   document.querySelectorAll("#toolsModal .tool-view").forEach(v=>v.classList.toggle("active",v.dataset.toolView===name));
@@ -5187,6 +5239,7 @@ function healPageLocks37(){
 }
 function openToolsModal(view="hub37"){
   healPageLocks37();
+  if(view==="detective")syncDetectiveStep37(document.querySelector("#detectiveMobileSteps button.active")?.dataset.dstep||0);
   const modal=$("#toolsModal");
   if(!modal||!mountToolsPage37())return;
   modal.hidden=false;
@@ -5490,7 +5543,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="37.3.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
+var VER="37.3.1",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -5605,7 +5658,10 @@ function init(){
   var app=document.querySelector(".app");if(app)app.classList.remove("mobile-paged");
   var h=document.querySelector(".topbar .brand h1");if(h)h.textContent="Voca Support";
   var subh=document.querySelector(".topbar .brand .sub");if(subh)subh.textContent="추천 · 탐색 · 검색 · 보관 · 취향";
-  render();dock();ensureCorePages37();ensureHub37();mountToolsPage37();
+  render();dock();ensureCorePages37();ensureHub37();mountToolsPage37();syncDetectiveStep37(0);
+  document.querySelectorAll("#detectiveMobileSteps button").forEach(function(btn){
+    btn.addEventListener("click",function(){syncDetectiveStep37(btn.dataset.dstep||0)})
+  });
   document.addEventListener("click",function(e){
     var t=e.target.closest("[data-v37-tab]");
     if(t){
@@ -5614,7 +5670,11 @@ function init(){
       active=v;localStorage.setItem(AK,v);render();return
     }
     var hubOpen=e.target.closest("[data-v37-open]");
-    if(hubOpen){ensureCorePages37();openToolsModal(hubOpen.dataset.v37Open);return}
+    if(hubOpen){
+      ensureCorePages37();
+      if(hubOpen.dataset.v37Open==="detective"){openDetective37();return}
+      openToolsModal(hubOpen.dataset.v37Open);return
+    }
     var tierOpen=e.target.closest("#iceberg .tier,#songsBtn");
     if(tierOpen){setTimeout(function(){ensureCorePages37();openToolsModal("search29")},40)}
     var tagIce=e.target.closest("#tagIcebergBtn");
@@ -5659,15 +5719,15 @@ async function seq(list){for(var i=0;i<list.length;i++)await load(list[i]);retur
 var groups={};
 function ensure(name){
   if(groups[name])return groups[name];
-  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=37.3.0","./detective-v12.js?v=37.3.0","./detective-v13.js?v=37.3.0","./detective-v14.js?v=37.3.0","./detective-v16.js?v=37.3.0"]);
-  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=37.3.0","./smart-v23.js?v=37.3.0","./playlist-v24.js?v=37.3.0"]);
-  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=37.3.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=37.3.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=37.3.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=37.3.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=37.3.0");
+  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=37.3.1","./detective-v12.js?v=37.3.1","./detective-v13.js?v=37.3.1","./detective-v14.js?v=37.3.1","./detective-v16.js?v=37.3.1"]);
+  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=37.3.1","./smart-v23.js?v=37.3.1","./playlist-v24.js?v=37.3.1"]);
+  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=37.3.1");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=37.3.1");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=37.3.1");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=37.3.1");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=37.3.1");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
-    return seq(["./voca-app-v33.js?v=37.3.0","./voca-app-v33-1.js?v=37.3.0","./voca-app-v33-2.js?v=37.3.0","./voca-app-v33-3.js?v=37.3.0"]);
+    return seq(["./voca-app-v33.js?v=37.3.1","./voca-app-v33-1.js?v=37.3.1","./voca-app-v33-2.js?v=37.3.1","./voca-app-v33-3.js?v=37.3.1"]);
   });
   else groups[name]=Promise.resolve(false);
   groups[name]=Promise.resolve(groups[name]).then(function(v){
