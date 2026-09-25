@@ -1,11 +1,26 @@
 {
   "current": {
-    "version": "37.0.0",
+    "version": "37.0.1",
     "releasedAt": "2026-09-25",
-    "title": "인라인 단일 홈 · UI 충돌 차단",
-    "summary": "외부 UI 스크립트가 일부 설치형 환경에서 실행되지 않아 구형 빙산 화면이 남던 문제를 피하기 위해 핵심 홈·내비를 index.html 내부에 직접 내장했습니다."
+    "title": "모바일 스크롤 멈춤 수정",
+    "summary": "폴드 접힘 화면에서 주소창 높이 변화가 resize로 잡힐 때 구형 mobile pager가 window.scrollTo(0)를 반복해 스크롤이 멈춘 것처럼 보이던 충돌을 제거했습니다."
   },
   "entries": [
+    {
+      "version": "37.0.1",
+      "date": "2026-09-25",
+      "title": "폴드 스크롤 멈춤 수정",
+      "changes": [
+        "detective-v13의 구형 전체 앱 mobile pager를 v37 홈에서는 비활성화",
+        "모바일 브라우저 주소창 접힘/펼침으로 resize가 발생할 때 window.scrollTo(0)가 반복되던 동작 차단",
+        "v37 시작 시 남아 있는 mobile-paged 클래스를 즉시 제거",
+        "일반 홈에서는 overflow-y:auto와 touch-action:pan-y를 강제해 세로 스크롤 유지",
+        "구형 mobile-paged 스타일이 다시 붙어도 v37 홈을 숨기지 못하도록 방어 CSS 추가",
+        "상단바와 하단 독의 backdrop-filter를 모바일에서 제거해 스크롤 합성 부하 감소",
+        "팔로우한 프로듀서 신곡 피드를 앱 시작 때 자동 네트워크 요청하지 않고 캐시만 표시",
+        "서비스워커 controllerchange 시 자동 location.reload를 제거해 사용 중 화면이 갑자기 재시작되는 현상 방지"
+      ]
+    },
     {
       "version": "37.0.0",
       "date": "2026-09-25",
