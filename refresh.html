@@ -28,12 +28,12 @@ h1{margin:14px 0 8px;font-size:22px}p{margin:0;color:#82a8a4;font-size:13px;line
       const names=await caches.keys();
       await Promise.all(names.filter(n=>n.startsWith("voice-synth-archive-shell-")).map(n=>caches.delete(n)));
     }
-    sessionStorage.setItem("vsa.hardRefresh","39.14.0");
+    sessionStorage.setItem("vsa.hardRefresh","39.15.0");
     status.textContent="정리 완료 · 최신 화면을 여는 중…";
   }catch(e){
     status.textContent="캐시 정리를 마치고 최신 화면을 여는 중…";
   }
-  setTimeout(()=>location.replace("./?appv=39.14.0&fresh="+Date.now()),350);
+  setTimeout(()=>location.replace("./?appv=39.15.0&fresh="+Date.now()),350);
 })();
 </script>
 </body>
