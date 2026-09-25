@@ -2,7 +2,7 @@
   "id": "./",
   "name": "Voice Synth Archive",
   "short_name": "VSA 탐색",
-  "description": "음성합성 오리지널곡 통계, 빙산 지도, 발굴, 추천, 기억 복원과 플레이리스트 도구",
+  "description": "매일 추천·취향 추천·신곡·숨은 곡·곡 탐정·빙산 통계를 한 곳에서 쓰는 음성합성곡 서포터",
   "lang": "ko-KR",
   "start_url": "./",
   "scope": "./",
