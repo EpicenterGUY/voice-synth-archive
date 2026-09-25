@@ -1066,15 +1066,95 @@ body.v37-ready .v36-dock{display:none!important}
 
 .v37-dock{position:fixed;left:10px;right:10px;bottom:max(8px,env(safe-area-inset-bottom));z-index:23000;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px;padding:5px;border:1px solid #28555b;border-radius:18px;background:rgba(5,22,27,.97);box-shadow:0 18px 50px #000c;backdrop-filter:none}
 .v37-dock button{min-width:0;min-height:49px;border:0;border-radius:13px;background:transparent;color:#789d99;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:7px;font-weight:850}.v37-dock button.active{background:#103139;color:#effffc}.v37-dock i{font-style:normal;font-size:15px;line-height:1}
-body.tools-open .v37-dock,body.v331-player-open .v37-dock{display:none!important}
-body.v37-ready .tools-modal{z-index:26000!important}
-body.v37-ready .tools-backdrop{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(1,7,13,.88)!important}
-body.v37-ready .tools-body{overflow-y:auto!important;overflow-x:hidden!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:contain!important}
-body.v37-ready .tools-body>.tool-view.active:not(.detective-panel){height:auto!important;min-height:100%!important;overflow:visible!important}
+/* v37.1: 기능 화면도 홈과 같은 앱 셸 안에서 보이게 한다. */
+body.v331-player-open .v37-dock{display:none!important}
+body.v37-ready.tools-open .v37-dock{display:grid!important}
+body.v37-ready .tools-modal{
+  position:fixed!important;top:52px!important;right:0!important;
+  bottom:calc(70px + env(safe-area-inset-bottom))!important;left:0!important;
+  z-index:170!important;display:block;padding:0!important;
+  background:#041115!important;overflow:hidden!important
+}
+body.v37-ready .tools-modal[hidden]{display:none!important}
+body.v37-ready .tools-backdrop,
+body.v37-ready .tools-header,
+body.v37-ready .tools-tabs{display:none!important}
+body.v37-ready .tools-shell{
+  width:min(1180px,100vw)!important;height:100%!important;max-height:none!important;
+  margin:0 auto!important;border:0!important;border-radius:0!important;
+  background:#041115!important;box-shadow:none!important;overflow:hidden!important
+}
+body.v37-ready .tools-body{
+  width:100%!important;height:100%!important;min-height:0!important;
+  padding:8px 10px 24px!important;box-sizing:border-box!important;
+  overflow-y:auto!important;overflow-x:hidden!important;
+  touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;
+  overscroll-behavior-y:contain!important
+}
+body.v37-ready .tools-body>.tool-view.active{
+  width:100%!important;max-width:1160px!important;min-width:0!important;
+  margin:0 auto!important;box-sizing:border-box!important
+}
+body.v37-ready .tools-body>.tool-view.active:not(.detective-panel){
+  height:auto!important;min-height:100%!important;overflow:visible!important
+}
+body.v37-ready .tools-body>.panel{
+  margin:0!important;border:0!important;border-radius:0!important;
+  background:transparent!important;box-shadow:none!important
+}
+body.v37-ready .tools-body .panel-head{
+  margin:0 0 10px!important;padding:12px 2px 10px!important;
+  border:0!important;border-bottom:1px solid #18393e!important;
+  background:transparent!important
+}
+body.v37-ready .tools-body .panel-head h2{
+  margin:0!important;color:#eafaf7!important;font-size:20px!important;
+  line-height:1.18!important;letter-spacing:-.035em!important
+}
+body.v37-ready .tools-body .panel-head p{
+  margin:5px 0 0!important;color:#789c98!important;font-size:9px!important;
+  line-height:1.55!important
+}
+body.v37-ready .tools-body .panel-head .pill{
+  border-color:#285159!important;background:#0a272d!important;color:#9ac0bc!important
+}
+body.v37-ready .tools-body :is(.recommend-prompt-box,.taste-builder,.discovery-controls,.gem-controls,.detective-controlbar){
+  max-width:100%!important;min-width:0!important;box-sizing:border-box!important
+}
+body.v37-ready #gemPanel .gem-quick-chips{
+  display:flex!important;flex-wrap:nowrap!important;gap:7px!important;
+  width:100%!important;max-width:100%!important;overflow-x:auto!important;
+  overflow-y:hidden!important;padding:2px 0 9px!important;scrollbar-width:none!important
+}
+body.v37-ready #gemPanel .gem-quick-chips::-webkit-scrollbar{display:none!important}
+body.v37-ready #gemPanel .gem-quick-chips .taste-chip{flex:0 0 auto!important}
+body.v37-ready #gemPanel .gem-controls-v20{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:8px!important;padding:10px!important;border:1px solid #18393e!important;
+  border-radius:15px!important;background:#071b20!important
+}
+body.v37-ready #gemPanel .recommend-prompt-box{
+  padding:10px!important;border:1px solid #18393e!important;border-radius:15px!important;
+  background:#071b20!important
+}
+body.v37-ready #gemPanel textarea,
+body.v37-ready #gemPanel input,
+body.v37-ready #gemPanel select{
+  max-width:100%!important;min-width:0!important;box-sizing:border-box!important
+}
+body.v37-ready #gemPanel .gem-status{max-width:100%!important;min-width:0!important}
+body.v37-ready #gemPanel .gem-grid{max-width:100%!important;min-width:0!important}
 @media(max-width:699px){
-body.v37-ready .tools-modal{padding:0!important}
-body.v37-ready .tools-shell{width:100vw!important;height:100dvh!important;max-height:100dvh!important;border:0!important;border-radius:0!important}
-body.v37-ready .tools-body{height:calc(100dvh - 90px)!important;min-height:0!important}
+  body.v37-ready .tools-modal{
+    top:52px!important;bottom:calc(70px + env(safe-area-inset-bottom))!important
+  }
+  body.v37-ready .tools-shell{width:100%!important;height:100%!important}
+  body.v37-ready .tools-body{padding:7px 10px 18px!important}
+  body.v37-ready .tools-body .panel-head{padding-top:9px!important}
+  body.v37-ready .tools-body .panel-head h2{font-size:19px!important}
+}
+@media(max-width:340px){
+  body.v37-ready #gemPanel .gem-controls-v20{grid-template-columns:1fr!important}
 }
 body.v37-ready>.app.mobile-paged{min-height:100dvh!important;height:auto!important;overflow:visible!important}
 body.v37-ready>.app.mobile-paged #v37Home{display:block!important}
@@ -1294,7 +1374,7 @@ body.v37-ready>.app.mobile-paged>.main,body.v37-ready>.app.mobile-paged>.summary
     </details>
   </section>
 
-  <div class="footer">v37.0.2 · 기능 화면 멈춤 수정 · 초기 로딩 경량화 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v37.1.0 · 기능 화면 홈 셸 통합 · 중복 메뉴 제거 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -5237,7 +5317,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="37.0.1",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
+var VER="37.1.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -5259,8 +5339,62 @@ function similar(id){var song=getSong(id);if(!song)return;if(window.VSAV33&&VSAV
 async function refresh(){if(busy)return;busy=true;render();try{if(window.VSAHome28&&VSAHome28.refreshSection)await VSAHome28.refreshSection(active);else if(typeof fetchNico==="function"){var opts=active==="NEW"?{year:"all",limit:24,offset:0,mode:"ranking",sort:"-startTime"}:active==="DEEP"?{year:"all",limit:80,offset:0,mode:"ranking",sort:"+viewCounter",numericFilters:{viewCounter:{gte:100,lte:50000}}}:{year:"all",limit:40,offset:0,mode:"ranking",sort:"-viewCounter"};var d=await fetchNico(opts),f=currentFeed(),arr=(d.data||[]).sort(function(){return Math.random()-.5}).slice(0,12);f[k(active)]=arr;S(HK,f)}}catch(e){}busy=false;render()}
 function openView(name){if(window.VSAV33&&VSAV33.openView){VSAV33.openView(name);return}try{openToolsModal(name)}catch(e){}}
 function setDock(v){document.querySelectorAll(".v37-dock button").forEach(function(b){b.classList.toggle("active",b.dataset.v37===v)})}
-function dock(){if(document.querySelector(".v37-dock"))return;var d=document.createElement("nav");d.className="v37-dock";d.innerHTML=[["home","⌂","홈"],["explore","✦","탐색"],["search","⌕","검색"],["library","▣","보관함"],["taste","♡","내 취향"]].map(function(x){return'<button type="button" data-v37="'+x[0]+'"><i>'+x[1]+'</i><span>'+x[2]+'</span></button>'}).join("");document.body.appendChild(d);setDock("home");d.addEventListener("click",function(e){var b=e.target.closest("button[data-v37]");if(!b)return;var v=b.dataset.v37;setDock(v);if(v==="home"){try{closeToolsModal()}catch(e){}document.getElementById("v37Home")?.scrollIntoView({block:"start"});return}if(v==="explore"){openView(window.VSAV33?"explore33":"gems");if(window.VSAEnsureFeatures&&!window.VSAV33)VSAEnsureFeatures("v33").then(function(){if(window.VSAV33)openView("explore33")});return}if(v==="search"){openView(window.VSAV33?"searchHub33":"detective");if(window.VSAEnsureFeatures)VSAEnsureFeatures("detective");return}if(v==="library"){if(window.VSA332Library&&VSA332Library.open){VSA332Library.open();return}if(window.VSAOrganizer22&&VSAOrganizer22.openLibrary){VSAOrganizer22.openLibrary("saved");return}if(window.VSAPrepareView)VSAPrepareView("보관함 준비");if(window.VSAEnsureFeatures)Promise.all([VSAEnsureFeatures("personal"),VSAEnsureFeatures("v33")]).then(function(){if(window.VSA332Library&&VSA332Library.open)VSA332Library.open();else if(window.VSAOrganizer22&&VSAOrganizer22.openLibrary)VSAOrganizer22.openLibrary("saved")});return}if(v==="taste"){openView(window.VSAV33?"tasteHub33":"taste");if(window.VSAEnsureFeatures&&!window.VSAV33)VSAEnsureFeatures("v33").then(function(){if(window.VSAV33)openView("tasteHub33")});return}})}
-function init(){document.body.classList.add("v37-ready");var app=document.querySelector(".app");if(app)app.classList.remove("mobile-paged");var h=document.querySelector(".topbar .brand h1");if(h)h.textContent="Voca Support";var subh=document.querySelector(".topbar .brand .sub");if(subh)subh.textContent="추천 · 탐색 · 검색 · 보관 · 취향";render();dock();document.addEventListener("click",function(e){var t=e.target.closest("[data-v37-tab]");if(t){var v=t.dataset.v37Tab;if(v==="PRODUCER"){openView(window.VSAV33?"explore33":"gems");if(window.VSAEnsureFeatures&&!window.VSAV33)VSAEnsureFeatures("v33").then(function(){if(window.VSAV33)openView("explore33")});return}active=v;localStorage.setItem(AK,v);render();return}if(e.target.id==="v37Refresh"){refresh();return}var a=e.target.closest("[data-v37-save]");if(a){keep(a.dataset.v37Save);return}var d=e.target.closest("[data-v37-dislike]");if(d){dislike(d.dataset.v37Dislike);return}var q=e.target.closest("[data-v37-sim]");if(q){similar(q.dataset.v37Sim);return}},true)}
+function openLazy(title,target,fallback){
+  if(window.VSAV33&&target){openView(target);return}
+  if(window.VSAPrepareView)VSAPrepareView(title);
+  else if(fallback)openView(fallback);
+  if(window.VSAEnsureFeatures){
+    VSAEnsureFeatures("v33").then(function(){
+      if(window.VSAV33&&target)openView(target);
+      else if(fallback)openView(fallback)
+    })
+  }
+}
+function dock(){
+  if(document.querySelector(".v37-dock"))return;
+  var d=document.createElement("nav");d.className="v37-dock";
+  d.innerHTML=[["home","⌂","홈"],["explore","✦","탐색"],["search","⌕","검색"],["library","▣","보관함"],["taste","♡","내 취향"]].map(function(x){return'<button type="button" data-v37="'+x[0]+'"><i>'+x[1]+'</i><span>'+x[2]+'</span></button>'}).join("");
+  document.body.appendChild(d);setDock("home");
+  d.addEventListener("click",function(e){
+    var b=e.target.closest("button[data-v37]");if(!b)return;
+    var v=b.dataset.v37;setDock(v);
+    if(v==="home"){
+      try{closeToolsModal()}catch(e){}
+      document.getElementById("v37Home")?.scrollIntoView({block:"start"});return
+    }
+    if(v==="explore"){openLazy("탐색 준비","explore33","gems");return}
+    if(v==="search"){openLazy("검색 준비","searchHub33","detective");return}
+    if(v==="library"){
+      if(window.VSA332Library&&VSA332Library.open){VSA332Library.open();return}
+      if(window.VSAPrepareView)VSAPrepareView("보관함 준비");
+      if(window.VSAEnsureFeatures)Promise.all([VSAEnsureFeatures("personal"),VSAEnsureFeatures("v33")]).then(function(){
+        if(window.VSA332Library&&VSA332Library.open)VSA332Library.open();
+        else if(window.VSAOrganizer22&&VSAOrganizer22.openLibrary)VSAOrganizer22.openLibrary("saved")
+      });
+      return
+    }
+    if(v==="taste"){openLazy("내 취향 준비","tasteHub33","taste");return}
+  })
+}
+function init(){
+  document.body.classList.add("v37-ready");
+  var app=document.querySelector(".app");if(app)app.classList.remove("mobile-paged");
+  var h=document.querySelector(".topbar .brand h1");if(h)h.textContent="Voca Support";
+  var subh=document.querySelector(".topbar .brand .sub");if(subh)subh.textContent="추천 · 탐색 · 검색 · 보관 · 취향";
+  render();dock();
+  document.addEventListener("click",function(e){
+    var t=e.target.closest("[data-v37-tab]");
+    if(t){
+      var v=t.dataset.v37Tab;
+      if(v==="PRODUCER"){setDock("explore");openLazy("프로듀서 허브 준비","explore33","gems");return}
+      active=v;localStorage.setItem(AK,v);render();return
+    }
+    if(e.target.id==="v37Refresh"){refresh();return}
+    var a=e.target.closest("[data-v37-save]");if(a){keep(a.dataset.v37Save);return}
+    var d=e.target.closest("[data-v37-dislike]");if(d){dislike(d.dataset.v37Dislike);return}
+    var q=e.target.closest("[data-v37-sim]");if(q){similar(q.dataset.v37Sim);return}
+  },true)
+}
 init();
 window.VSAHome37={render:render,refresh:refresh};
 })();
@@ -5290,7 +5424,7 @@ function ensure(name){
   else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=36.1.0");
   else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=28.1.0");
   else if(name==="player")groups[name]=load("./nico-player-v32.js?v=36.1.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=37.0.2");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=37.1.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
     return seq(["./voca-app-v33.js?v=36.1.0","./voca-app-v33-1.js?v=36.1.0","./voca-app-v33-2.js?v=36.1.0","./voca-app-v33-3.js?v=37.0.1"]);
   });
