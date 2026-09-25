@@ -168,6 +168,21 @@ function recordSearch(){
   db.recentSearches=db.recentSearches.slice(0,MAX_RECENT_SEARCHES);
   saveDb();
 }
+function clearRecentHistory22(kind){
+  kind=kind||"all";
+  const label=kind==="views"?"시청 기록":kind==="searches"?"검색 기록":"시청·검색 기록";
+  if(!confirm(label+"을 지울까요? 이 기기에 저장된 기록만 삭제됩니다."))return false;
+  if(kind==="views"||kind==="all")db.recentViews=[];
+  if(kind==="searches"||kind==="all"){
+    db.recentSearches=[];
+    try{localStorage.removeItem("vsa397.search.recent")}catch(e){}
+  }
+  saveDb();renderLibrary();
+  try{if(window.VSARefreshPersonal395)window.VSARefreshPersonal395()}catch(e){}
+  try{if(window.VSAHome37&&window.VSAHome37.render)window.VSAHome37.render()}catch(e){}
+  toast22(label+"을 지웠습니다.");
+  return true
+}
 function runRecentSearch(id){
   const r=db.recentSearches.find(function(x){return x.id===id});
   if(!r)return;
@@ -392,14 +407,14 @@ function savedHtml(){
 function recentHtml(){
   const views=db.recentViews.slice(0,40);
   const searches=db.recentSearches.slice(0,25);
-  let html='<div class="v22-split"><section><h3>최근 본 곡</h3>';
+  let html='<div class="v22-split"><section><div class="v22-history-head"><h3>최근 본 곡</h3><button type="button" data-v22-clear-history="views">시청 기록 지우기</button></div>';
   html+=views.length?views.map(function(x){
     return '<div class="v22-line"><div><b>'+esc22(x.title||x.id)+'</b><small>'+formatWhen(x.viewedAt)+'</small></div><div class="v22-row">'+statusSelectHtml(x.id)+'<button class="mini-btn" data-v22-open="'+esc22(x.id)+'">다시 열기</button></div></div>';
-  }).join(""):'<div class="v22-empty compact">아직 최근 본 곡이 없습니다.</div>';
-  html+='</section><section><h3>최근 검색</h3>';
+  }).join(""):'<div class="v22-empty compact">아직 최근 본 곡이 없습니다.<br><small>기록은 현재 기기·브라우저별로 저장됩니다.</small></div>';
+  html+='</section><section><div class="v22-history-head"><h3>최근 검색</h3><button type="button" data-v22-clear-history="searches">검색 기록 지우기</button></div>';
   html+=searches.length?searches.map(function(x){
     return '<div class="v22-line"><div><b>'+esc22(x.query)+'</b><small>'+esc22(x.scope)+' · '+formatWhen(x.searchedAt)+'</small></div><button class="mini-btn" data-v22-search="'+esc22(x.id)+'">다시 검색</button></div>';
-  }).join(""):'<div class="v22-empty compact">아직 검색 기록이 없습니다.</div>';
+  }).join(""):'<div class="v22-empty compact">아직 검색 기록이 없습니다.<br><small>기록은 현재 기기·브라우저별로 저장됩니다.</small></div>';
   return html+'</section></div>';
 }
 function casesHtml(){
@@ -483,7 +498,7 @@ function addUi(){
     ".v22-song-card img{width:100px;aspect-ratio:16/9;object-fit:cover;border-radius:9px;background:#10233a}",
     ".v22-song-main{min-width:0}.v22-song-main>b{display:block;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.v22-song-main small,.v22-line small,.v22-case small{display:block;margin-top:4px;font-size:9px;color:#7f9bb3;line-height:1.45}",
     ".v22-row{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-top:7px}",
-    ".v22-split{display:grid;grid-template-columns:1fr 1fr;gap:10px}.v22-split section{border:1px solid #203a55;border-radius:14px;background:#091624;overflow:hidden}.v22-split h3{margin:0;padding:10px 11px;border-bottom:1px solid #203a55;font-size:12px}",
+    ".v22-split{display:grid;grid-template-columns:1fr 1fr;gap:10px}.v22-split section{border:1px solid #203a55;border-radius:14px;background:#091624;overflow:hidden}.v22-split h3{margin:0;font-size:12px}.v22-history-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 11px;border-bottom:1px solid #203a55}.v22-history-head button{min-height:28px;padding:0 8px;border:1px solid #57323b;border-radius:8px;background:#24171b;color:#d8a6ad;font-size:7px;font-weight:900}",
     ".v22-line,.v22-case{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:9px 10px;border-bottom:1px solid #142b41}.v22-line:last-child,.v22-case:last-child{border-bottom:0}.v22-line>div:first-child,.v22-case>div:first-child{min-width:0}.v22-line b,.v22-case b{font-size:10px}",
     ".v22-case-list{border:1px solid #203a55;border-radius:14px;background:#091624;overflow:hidden}",
     ".v22-empty{padding:48px 20px;text-align:center;color:#8ba4ba;font-size:11px;line-height:1.7}.v22-empty.compact{padding:28px 14px}",
@@ -556,6 +571,7 @@ function bindUi(){
     if(t.id==="apiSearchBtn")recordSearch();
     if(t.matches('#toolsTabs [data-tool="library22"]')){e.preventDefault();setToolView("library22");renderLibrary();return}
     if(t.dataset.v22Libview){e.preventDefault();currentLibraryView=t.dataset.v22Libview;setToolView("library22");renderLibrary();return}
+    if(t.dataset.v22ClearHistory){e.preventDefault();clearRecentHistory22(t.dataset.v22ClearHistory);return}
     if(t.matches(".v22-compare-btn")){e.preventDefault();toggleCompare(t.dataset.songId);return}
     if(t.dataset.v22Open){e.preventDefault();openSong(t.dataset.v22Open);return}
     if(t.dataset.v22Universe){e.preventDefault();openSavedUniverse(t.dataset.v22Universe);return}
@@ -625,6 +641,8 @@ window.VSAOrganizer22={
   openCompare:openCompare,
   openLibrary:openLibrary22,
   setSongStatus:setSongStatusPublic,
+  recordView:recordView,
+  clearRecent:clearRecentHistory22,
   reload:reloadDb22
 };
 })();
