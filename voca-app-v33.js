@@ -45,7 +45,7 @@ function producerCandidates(){
 function producerRank(mode){
   var a=producerCandidates();
   function quality(x){return x.confidence*50000+x.views/Math.max(1,x.count)}
-  if(mode==="taste")return a.sort(function(a,b){return(b.taste*140000+quality(b))-(a.taste*140000+quality(a))}).slice(0,20);
+  if(mode==="followed")return a.filter(function(x){return x.followed}).sort(function(a,b){return b.views-a.views}).slice(0,20);if(mode==="taste")return a.sort(function(a,b){return(b.taste*140000+quality(b))-(a.taste*140000+quality(a))}).slice(0,20);
   if(mode==="deep")return a.filter(function(x){return x.views/Math.max(1,x.count)<250000}).sort(function(a,b){return((b.mylists+2)/Math.max(1,b.views))*100000+b.confidence*3-(((a.mylists+2)/Math.max(1,a.views))*100000+a.confidence*3)}).slice(0,20);
   return a.sort(function(a,b){return(b.views+b.confidence*80000)-(a.views+a.confidence*80000)}).slice(0,20);
 }
