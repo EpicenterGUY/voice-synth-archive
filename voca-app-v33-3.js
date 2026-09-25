@@ -81,6 +81,6 @@ function observe(){
   var tools=document.getElementById("toolsModal");if(tools)new MutationObserver(function(){ensureFollowUi();addQuickChips();renderActiveFilters()}).observe(tools,{childList:true,subtree:true});
 }
 var __booted=false;
-function boot(){if(__booted)return;__booted=true;addStyle();ensureFollowUi();addQuickChips();renderActiveFilters();bind();observe();refreshFollow(false);setTimeout(function(){ensureFollowUi();addQuickChips();renderActiveFilters()},500)}
+function boot(){if(__booted)return;__booted=true;addStyle();ensureFollowUi();addQuickChips();renderActiveFilters();bind();observe();var c=load(CACHE_KEY,null);if(c&&c.rows)renderFollow(c.rows);else renderFollow([]);setTimeout(function(){ensureFollowUi();addQuickChips();renderActiveFilters()},500)}
 if(document.body)boot();else if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
 })();
