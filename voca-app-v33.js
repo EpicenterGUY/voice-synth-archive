@@ -97,6 +97,7 @@ function buildSheet(){
 }
 function durationBounds(kind){if(kind==="short")return[0,119];if(kind==="normal")return[120,239];if(kind==="long")return[240,359];if(kind==="epic")return[360,null];return[null,null]}
 function periodRange(period){if(!period)return null;var days=period==="7d"?7:period==="30d"?30:period==="365d"?365:0;if(!days)return null;return{gte:new Date(Date.now()-days*86400000).toISOString()}}
+function combinedDateRange(f){var p=periodRange(f.period),y=f.year!=="all"&&typeof yearBounds==="function"?yearBounds(f.year):null;if(!p)return y;if(!y)return p;var out={};if(p.gte||y.gte)out.gte=!p.gte?y.gte:!y.gte?p.gte:(new Date(p.gte)>new Date(y.gte)?p.gte:y.gte);if(y.lt)out.lt=y.lt;return out}
 function localMatch(song,f,query){
   if(query){var raw=(String(song.title||"")+" "+String(song.description||"")+" "+songTags(song).join(" ")).toLowerCase();if(raw.indexOf(query.toLowerCase())<0)return false}
   if((f.vocals||[]).length){var tags=new Set(songTags(song));if(!(f.vocals||[]).some(function(v){return tags.has(v)}))return false}
@@ -119,7 +120,7 @@ async function runFilteredSearch(override){
       var org=load("vsa.organizer.v22",{library:{}});rows=Object.values(org.library||{}).map(function(x){return x.song}).filter(Boolean).filter(function(song){return localMatch(song,f,query)});
     }else{
       var vocals=(f.vocals||[]).slice(0,6),requests=vocals.length?vocals:[""];
-      var packs=await Promise.all(requests.map(function(vocal){return fetchNico({year:f.year,limit:100,offset:0,mode:"free",query:query,scope:f.scope,queryTargets:"title,description,tags",sort:f.sort,applyYear:f.year!=="all",applyTier:!!tier,tier:tier,extraExactTag:vocal,numericFilters:nf,dateRange:periodRange(f.period)}).catch(function(){return{data:[]}})}));
+      var packs=await Promise.all(requests.map(function(vocal){return fetchNico({year:f.year,limit:100,offset:0,mode:"free",query:query,scope:f.scope,queryTargets:"title,description,tags",sort:f.sort,applyYear:false,applyTier:!!tier,tier:tier,extraExactTag:vocal,numericFilters:nf,dateRange:combinedDateRange(f)}).catch(function(){return{data:[]}})}));
       var map=new Map();packs.forEach(function(d){(d.data||[]).forEach(function(song){if(song&&song.contentId&&!map.has(song.contentId))map.set(song.contentId,song)})});rows=Array.from(map.values());
     }
     if(f.excludeDisliked!==false){var bad=dislikedSet();rows=rows.filter(function(song){return!bad.has(song.contentId)})}
