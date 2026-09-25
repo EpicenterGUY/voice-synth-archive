@@ -2628,6 +2628,78 @@ body[data-vsa-theme="light"] .v3911-theme-toggle{background:#fff!important;borde
   .v399-watch-layout{grid-template-columns:minmax(0,2fr) minmax(370px,.5fr)!important}
 }
 </style>
+<style id="v3913WatchFillFix">
+/* v39.13 · fill the real Watch gap, do not stretch the whole app */
+@media(min-width:1100px){
+  /* The tools modal is already mounted inside .app. Do not offset Watch a second time. */
+  body.v37-ready .tools-modal[data-current-view="songDetail39"]{
+    margin-left:0!important;
+    width:100%!important;
+  }
+  body.v37-ready .tools-modal[data-current-view="songDetail39"] .tools-body{
+    padding-left:0!important;
+    padding-right:8px!important;
+  }
+  body.v37-ready .tools-modal[data-current-view="songDetail39"] .tool-view.active[data-tool-view="songDetail39"]{
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    padding:20px 6px 28px!important;
+  }
+  body.v37-ready .tools-modal[data-current-view="songDetail39"] .v39-song-detail{
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+  }
+  body.v37-ready .tools-modal[data-current-view="songDetail39"] .v399-watch-layout{
+    grid-template-columns:minmax(0,2.05fr) minmax(370px,.5fr)!important;
+    gap:18px!important;
+  }
+  body.v37-ready .tools-modal[data-current-view="songDetail39"] .v399-watch-info h2{
+    font-size:38px!important;
+  }
+  body.v37-ready .tools-modal[data-current-view="songDetail39"] .v399-watch-actions button,
+  body.v37-ready .tools-modal[data-current-view="songDetail39"] .v399-watch-actions a{
+    min-height:47px!important;
+    font-size:11px!important;
+  }
+  body.v37-ready .tools-modal[data-current-view="songDetail39"] .v399-watch-stat b{font-size:19px!important}
+  body.v37-ready .tools-modal[data-current-view="songDetail39"] .v399-watch-stat small{font-size:9px!important}
+  body.v37-ready .tools-modal[data-current-view="songDetail39"] .v399-related-copy b{font-size:12px!important}
+  body.v37-ready .tools-modal[data-current-view="songDetail39"] .v399-related-copy small,
+  body.v37-ready .tools-modal[data-current-view="songDetail39"] .v399-related-copy em{font-size:9px!important}
+  body.v37-ready .tools-modal[data-current-view="songDetail39"] .v399-section-head h3{font-size:21px!important}
+  body.v37-ready .tools-modal[data-current-view="songDetail39"] .v399-lyric-text{font-size:11.5px!important}
+
+  /* The old desktop rule still had translateX(-50%) from the centered bottom dock. Reset it. */
+  .v37-dock{
+    left:14px!important;
+    right:auto!important;
+    width:118px!important;
+    transform:none!important;
+    overflow:visible!important;
+  }
+  .v38-rail-brand{
+    width:100%!important;
+    box-sizing:border-box!important;
+    overflow:visible!important;
+  }
+  .v38-rail-brand img{width:46px!important;height:46px!important}
+  .v38-rail-brand small{font-size:10px!important;white-space:nowrap!important}
+  .v37-dock button{
+    width:100%!important;
+    box-sizing:border-box!important;
+    min-width:0!important;
+    font-size:10.5px!important;
+  }
+}
+@media(min-width:1600px){
+  body.v37-ready .tools-modal[data-current-view="songDetail39"] .v399-watch-layout{
+    grid-template-columns:minmax(0,2.15fr) minmax(390px,.48fr)!important;
+  }
+  body.v37-ready .tools-modal[data-current-view="songDetail39"] .v399-watch-info h2{font-size:40px!important}
+}
+</style>
 </head>
 <body>
 <div class="app">
@@ -2848,7 +2920,7 @@ body[data-vsa-theme="light"] .v3911-theme-toggle{background:#fff!important;borde
     </details>
   </section>
 
-  <div class="footer">v39.12.0 · Home 3.0 · Search 4.0 · Watch 1.2 · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.13.0 · Home 3.0 · Search 4.0 · Watch 1.3 · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -6925,7 +6997,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:"39.12.0",
+    version:"39.13.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -8161,7 +8233,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.12.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
+var VER="39.13.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -9234,15 +9306,15 @@ var groups={};
 function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
-  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.12.0","./detective-v12.js?v=39.12.0","./detective-v13.js?v=39.12.0","./detective-v14.js?v=39.12.0","./detective-v16.js?v=39.12.0"]);
-  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.12.0","./smart-v23.js?v=39.12.0","./playlist-v24.js?v=39.12.0"]);
-  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.12.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.12.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.12.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.12.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.12.0");
+  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.13.0","./detective-v12.js?v=39.13.0","./detective-v13.js?v=39.13.0","./detective-v14.js?v=39.13.0","./detective-v16.js?v=39.13.0"]);
+  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.13.0","./smart-v23.js?v=39.13.0","./playlist-v24.js?v=39.13.0"]);
+  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.13.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.13.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.13.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.13.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.13.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
-    return seq(["./voca-app-v33.js?v=39.12.0","./voca-app-v33-1.js?v=39.12.0","./voca-app-v33-2.js?v=39.12.0","./voca-app-v33-3.js?v=39.12.0"]);
+    return seq(["./voca-app-v33.js?v=39.13.0","./voca-app-v33-1.js?v=39.13.0","./voca-app-v33-2.js?v=39.13.0","./voca-app-v33-3.js?v=39.13.0"]);
   });
   else groups[name]=Promise.resolve(false);
   groups[name]=Promise.resolve(groups[name]).then(function(v){
