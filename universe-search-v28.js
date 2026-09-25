@@ -1,4 +1,4 @@
-/* VocaDive Universe Search v28.2 */
+/* VocaDive Universe Search v39 bridge */
 (function(){
 "use strict";
 var recentKey="vsa.universe.search.v28";
