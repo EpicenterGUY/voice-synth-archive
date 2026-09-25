@@ -5687,15 +5687,34 @@ const ACE_VOICEBANK_SEEDS37=[];
 function uniqueNames37(xs){
   const m=new Map();for(const x of xs){const k=normalizeSourceTag37(x);if(k&&!m.has(k))m.set(k,x)}return [...m.values()]
 }
+function seedNamesFromOriginalTags37(tags){
+  const out=[];
+  for(const raw of (tags||[])){
+    const m=String(raw||"").match(/^(.+?)オリジナル曲$/);
+    if(!m)continue;
+    const name=m[1].trim();
+    if(!name||/^(VOCALOID|vocaloid|UTAU|utau|ＵＴＡＵ|SynthesizerV|SynthV|CeVIO|CeVIO_AI|VoiSona|NEUTRINO|VOICEVOX|ACEStudio|ACE_Studio)$/i.test(name))continue;
+    out.push(name)
+  }
+  return uniqueNames37(out)
+}
 function vocalRankSeed37(family){
-  if(family==="vocaloid")return uniqueNames37(VOCALOID_VOICEBANK_SEEDS37);
-  if(family==="utau")return uniqueNames37(UTAU_VOICEBANK_SEEDS37);
-  if(family==="synthv")return uniqueNames37(SYNTHV_VOICEBANK_SEEDS37);
-  if(family==="cevio")return uniqueNames37(CEVIO_VOICEBANK_SEEDS37);
-  if(family==="voisona")return uniqueNames37(VOISONA_VOICEBANK_SEEDS37);
-  if(family==="neutrino")return uniqueNames37(NEUTRINO_VOICEBANK_SEEDS37);
-  if(family==="voicevox")return uniqueNames37(VOICEVOX_VOICEBANK_SEEDS37);
-  return uniqueNames37([].concat(VOCALOID_VOICEBANK_SEEDS37,UTAU_VOICEBANK_SEEDS37,SYNTHV_VOICEBANK_SEEDS37,CEVIO_VOICEBANK_SEEDS37,VOISONA_VOICEBANK_SEEDS37,NEUTRINO_VOICEBANK_SEEDS37,VOICEVOX_VOICEBANK_SEEDS37))
+  if(family==="vocaloid")return uniqueNames37(VOCALOID_VOICEBANK_SEEDS37.concat(seedNamesFromOriginalTags37(ORIGINAL_TAGS)));
+  if(family==="utau")return uniqueNames37(UTAU_VOICEBANK_SEEDS37.concat(seedNamesFromOriginalTags37(UTAU_ORIGINAL_TAGS)));
+  if(family==="synthv")return uniqueNames37(SYNTHV_VOICEBANK_SEEDS37.concat(seedNamesFromOriginalTags37(SYNTHV_ORIGINAL_TAGS)));
+  if(family==="cevio")return uniqueNames37(CEVIO_VOICEBANK_SEEDS37.concat(seedNamesFromOriginalTags37(CEVIO_ORIGINAL_TAGS)));
+  if(family==="voisona")return uniqueNames37(VOISONA_VOICEBANK_SEEDS37.concat(seedNamesFromOriginalTags37(VOISONA_ORIGINAL_TAGS)));
+  if(family==="neutrino")return uniqueNames37(NEUTRINO_VOICEBANK_SEEDS37.concat(seedNamesFromOriginalTags37(NEUTRINO_ORIGINAL_TAGS)));
+  if(family==="voicevox")return uniqueNames37(VOICEVOX_VOICEBANK_SEEDS37.concat(seedNamesFromOriginalTags37(VOICEVOX_ORIGINAL_TAGS)));
+  return uniqueNames37([].concat(
+    VOCALOID_VOICEBANK_SEEDS37,seedNamesFromOriginalTags37(ORIGINAL_TAGS),
+    UTAU_VOICEBANK_SEEDS37,seedNamesFromOriginalTags37(UTAU_ORIGINAL_TAGS),
+    SYNTHV_VOICEBANK_SEEDS37,seedNamesFromOriginalTags37(SYNTHV_ORIGINAL_TAGS),
+    CEVIO_VOICEBANK_SEEDS37,seedNamesFromOriginalTags37(CEVIO_ORIGINAL_TAGS),
+    VOISONA_VOICEBANK_SEEDS37,seedNamesFromOriginalTags37(VOISONA_ORIGINAL_TAGS),
+    NEUTRINO_VOICEBANK_SEEDS37,seedNamesFromOriginalTags37(NEUTRINO_ORIGINAL_TAGS),
+    VOICEVOX_VOICEBANK_SEEDS37,seedNamesFromOriginalTags37(VOICEVOX_ORIGINAL_TAGS)
+  ))
 }
 function vocalRankOriginalTags37(family){
   if(family==="vocaloid")return ORIGINAL_TAGS;
@@ -5746,8 +5765,9 @@ function vocalRankScore37(x,max){
   const peak=Math.log1p(x.peakViews)/Math.log1p(Math.max(10,max.maxPeak||1));
   const pop=Math.min(1,x.popularity/Math.max(.001,max.maxPopularity||1));
   const catalog=Math.log1p(x.sampleCount)/Math.log1p(Math.max(2,max.maxCount||1));
-  // UTAU처럼 음원 수가 많은 생태계가 한 곡의 초대형 히트만으로 왜곡되지 않도록
-  // 누적 조회 + 반응률 + 확인된 곡 수 + 최고 히트를 함께 사용한다.
+  // UTAU는 음원 수가 매우 많아 한 곡의 대형 히트가 전체 순위를 독점하지 않도록
+  // 반응률과 확인된 원곡 수 비중을 더 높인다.
+  if(x.engine==="UTAU")return 100*(.30*view+.32*pop+.25*catalog+.13*peak);
   return 100*(.34*view+.28*pop+.22*catalog+.16*peak)
 }
 function vocalRankScanTags37(family){
@@ -5841,7 +5861,7 @@ function renderVocalRank37(){
 function ensureVocalRank37(page){
   if(!page||page.querySelector("#v37VocalRankBody"))return;
   const body=document.createElement("div");body.id="v37VocalRankBody";
-  body.innerHTML='<div class="v37-vocal-rank-note">순위는 단순 조회수 순이 아닙니다. <b>누적 조회 34% + 반응률 28% + 확인된 원곡 수 22% + 최고 히트 16%</b>를 합산합니다. 특히 UTAU처럼 음원이 매우 많은 생태계에서 한 곡의 대형 히트만으로 전체 순위가 과도하게 치우치는 것을 줄였습니다. 파생/MMD/커버/歌ってみた 영상은 원곡 증거 태그가 없으면 집계하지 않습니다.</div>'+
+  body.innerHTML='<div class="v37-vocal-rank-note">순위는 단순 조회수 순이 아닙니다. 기본은 <b>누적 조회 34% + 반응률 28% + 확인된 원곡 수 22% + 최고 히트 16%</b>이고, UTAU는 음원 수가 많은 점을 반영해 <b>조회 30% + 반응률 32% + 원곡 수 25% + 최고 히트 13%</b>로 계산합니다. 파생/MMD/커버/歌ってみた 영상은 원곡 증거 태그가 없으면 집계하지 않습니다.</div>'+
     '<div class="v37-vocal-rank-controls"><label>순위표<select id="v37VocalRankFamily"><option value="combined">VOCALOID + UTAU + 기타 음성합성</option><option value="vocaloid">VOCALOID</option><option value="utau">UTAU</option><option value="synthv">Synthesizer V</option><option value="cevio">CeVIO</option><option value="voisona">VoiSona</option><option value="neutrino">NEUTRINO</option></select></label>'+
     '<label>스캔 깊이<select id="v37VocalRankDepth"><option value="normal">표준</option><option value="deep">깊게 · 더 많은 심해곡</option></select></label>'+
     '<label>목록 검색<input id="v37VocalRankSearch" placeholder="미쿠, 테토, UTAU…"></label><button type="button" id="v37VocalRankRun">순위 생성 / 갱신</button></div>'+
