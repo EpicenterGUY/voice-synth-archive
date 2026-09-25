@@ -119,6 +119,7 @@ function setSongStatus(id,status,song){
   saveDb();
   syncStatusControls(id);
   renderLibrary();
+  try{if(window.VSARefreshPersonal395)window.VSARefreshPersonal395()}catch(e){}
 }
 function syncStatusControls(id){
   document.querySelectorAll('.v22-save-select[data-song-id="'+CSS.escape(id)+'"]').forEach(function(el){
