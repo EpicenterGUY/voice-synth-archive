@@ -5259,28 +5259,46 @@ function similar(id){var song=getSong(id);if(!song)return;if(window.VSAV33&&VSAV
 async function refresh(){if(busy)return;busy=true;render();try{if(window.VSAHome28&&VSAHome28.refreshSection)await VSAHome28.refreshSection(active);else if(typeof fetchNico==="function"){var opts=active==="NEW"?{year:"all",limit:24,offset:0,mode:"ranking",sort:"-startTime"}:active==="DEEP"?{year:"all",limit:80,offset:0,mode:"ranking",sort:"+viewCounter",numericFilters:{viewCounter:{gte:100,lte:50000}}}:{year:"all",limit:40,offset:0,mode:"ranking",sort:"-viewCounter"};var d=await fetchNico(opts),f=currentFeed(),arr=(d.data||[]).sort(function(){return Math.random()-.5}).slice(0,12);f[k(active)]=arr;S(HK,f)}}catch(e){}busy=false;render()}
 function openView(name){if(window.VSAV33&&VSAV33.openView){VSAV33.openView(name);return}try{openToolsModal(name)}catch(e){}}
 function setDock(v){document.querySelectorAll(".v37-dock button").forEach(function(b){b.classList.toggle("active",b.dataset.v37===v)})}
-function dock(){if(document.querySelector(".v37-dock"))return;var d=document.createElement("nav");d.className="v37-dock";d.innerHTML=[["home","⌂","홈"],["explore","✦","탐색"],["search","⌕","검색"],["library","▣","보관함"],["taste","♡","내 취향"]].map(function(x){return'<button type="button" data-v37="'+x[0]+'"><i>'+x[1]+'</i><span>'+x[2]+'</span></button>'}).join("");document.body.appendChild(d);setDock("home");d.addEventListener("click",function(e){var b=e.target.closest("button[data-v37]");if(!b)return;var v=b.dataset.v37;setDock(v);if(v==="home"){try{closeToolsModal()}catch(e){}document.getElementById("v37Home")?.scrollIntoView({block:"start"});return}if(v==="explore"){openView(window.VSAV33?"explore33":"gems");return}if(v==="search"){openView(window.VSAV33?"searchHub33":"detective");return}if(v==="library"){if(window.VSA332Library&&VSA332Library.open)VSA332Library.open();else if(window.VSAOrganizer22&&VSAOrganizer22.openLibrary)VSAOrganizer22.openLibrary("saved");else openView("library22");return}if(v==="taste")openView(window.VSAV33?"tasteHub33":"taste")})}
+function dock(){if(document.querySelector(".v37-dock"))return;var d=document.createElement("nav");d.className="v37-dock";d.innerHTML=[["home","⌂","홈"],["explore","✦","탐색"],["search","⌕","검색"],["library","▣","보관함"],["taste","♡","내 취향"]].map(function(x){return'<button type="button" data-v37="'+x[0]+'"><i>'+x[1]+'</i><span>'+x[2]+'</span></button>'}).join("");document.body.appendChild(d);setDock("home");d.addEventListener("click",function(e){var b=e.target.closest("button[data-v37]");if(!b)return;var v=b.dataset.v37;setDock(v);if(v==="home"){try{closeToolsModal()}catch(e){}document.getElementById("v37Home")?.scrollIntoView({block:"start"});return}if(v==="explore"){openView(window.VSAV33?"explore33":"gems");return}if(v==="search"){openView(window.VSAV33?"searchHub33":"detective");return}if(v==="library"){if(window.VSA332Library&&VSA332Library.open){VSA332Library.open();return}if(window.VSAOrganizer22&&VSAOrganizer22.openLibrary){VSAOrganizer22.openLibrary("saved");return}try{toast("보관함 기능 준비 중…")}catch(e){}if(window.VSAFeatureReadyPromise)window.VSAFeatureReadyPromise.then(function(){if(window.VSA332Library&&VSA332Library.open)VSA332Library.open();else if(window.VSAOrganizer22&&VSAOrganizer22.openLibrary)VSAOrganizer22.openLibrary("saved")});return}if(v==="taste")openView(window.VSAV33?"tasteHub33":"taste")})}
 function init(){document.body.classList.add("v37-ready");var app=document.querySelector(".app");if(app)app.classList.remove("mobile-paged");var h=document.querySelector(".topbar .brand h1");if(h)h.textContent="Voca Support";var subh=document.querySelector(".topbar .brand .sub");if(subh)subh.textContent="추천 · 탐색 · 검색 · 보관 · 취향";render();dock();document.addEventListener("click",function(e){var t=e.target.closest("[data-v37-tab]");if(t){var v=t.dataset.v37Tab;if(v==="PRODUCER"){openView(window.VSAV33?"explore33":"gems");return}active=v;localStorage.setItem(AK,v);render();return}if(e.target.id==="v37Refresh"){refresh();return}var a=e.target.closest("[data-v37-save]");if(a){keep(a.dataset.v37Save);return}var d=e.target.closest("[data-v37-dislike]");if(d){dislike(d.dataset.v37Dislike);return}var q=e.target.closest("[data-v37-sim]");if(q){similar(q.dataset.v37Sim);return}},true)}
 init();
 window.VSAHome37={render:render,refresh:refresh};
 })();
 </script>
-<script defer src="./detective-v11.js?v=11.5"></script>
-<script defer src="./detective-v12.js?v=12.0"></script>
-<script defer src="./detective-v13.js?v=37.0.2"></script>
-<script defer src="./detective-v14.js?v=14.0"></script>
-<script defer src="./detective-v16.js?v=19.0"></script>
-<script defer src="./discovery-v20.js?v=20.0"></script>
-<script defer src="./organizer-v22.js?v=32.0.0"></script>
-<script defer src="./smart-v23.js?v=23.0.0"></script>
-<script defer src="./playlist-v24.js?v=24.0.0"></script>
-<script defer src="./pwa-v21.js?v=37.0.2"></script>
-<script defer src="./vocalo-home-v28.js?v=36.1.0"></script>
-<script defer src="./universe-search-v28.js?v=28.1.0"></script>
-<script defer src="./nico-player-v32.js?v=36.1.0"></script>
-<script defer src="./voca-app-v33.js?v=36.1.0"></script>
-<script defer src="./voca-app-v33-1.js?v=36.1.0"></script>
-<script defer src="./voca-app-v33-2.js?v=36.1.0"></script>
-<script defer src="./voca-app-v33-3.js?v=37.0.1"></script>
+<script id="v37FeatureLoader">
+(function(){
+"use strict";
+function load(src){
+  return new Promise(function(resolve){
+    var s=document.createElement("script");
+    s.src=src;s.async=false;
+    s.onload=function(){resolve(true)};
+    s.onerror=function(){console.warn("feature load failed",src);resolve(false)};
+    document.body.appendChild(s);
+  });
+}
+async function seq(list){for(var i=0;i<list.length;i++)await load(list[i])}
+function start(){
+  var detective=seq(["./detective-v11.js?v=11.5","./detective-v12.js?v=12.0","./detective-v13.js?v=37.0.2","./detective-v14.js?v=14.0","./detective-v16.js?v=19.0"]);
+  var personal=seq(["./organizer-v22.js?v=32.0.0","./smart-v23.js?v=23.0.0","./playlist-v24.js?v=24.0.0"]);
+  var support=Promise.all([
+    load("./discovery-v20.js?v=20.0"),
+    load("./pwa-v21.js?v=37.0.2"),
+    load("./vocalo-home-v28.js?v=36.1.0"),
+    load("./universe-search-v28.js?v=28.1.0"),
+    load("./nico-player-v32.js?v=36.1.0")
+  ]);
+  window.VSAFeatureReadyPromise=Promise.all([detective,personal,support]).then(function(){
+    return seq(["./voca-app-v33.js?v=36.1.0","./voca-app-v33-1.js?v=36.1.0","./voca-app-v33-2.js?v=36.1.0","./voca-app-v33-3.js?v=37.0.1"]);
+  }).then(function(){
+    window.VSA_FEATURES_READY=true;
+    window.dispatchEvent(new Event("vsa-features-ready"));
+    return true;
+  });
+}
+if(document.readyState==="complete")setTimeout(start,80);
+else window.addEventListener("load",function(){setTimeout(start,80)},{once:true});
+})();
+</script>
 </body>
 </html>
