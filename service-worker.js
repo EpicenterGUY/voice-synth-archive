@@ -1,4 +1,4 @@
-const SW_VERSION="33.3.1"
+const SW_VERSION="34.0.0"
 const CACHE_NAME="voice-synth-archive-shell-"+SW_VERSION;
 const SHELL=[
   "./",
@@ -18,17 +18,18 @@ const SHELL=[
   "./playlist-v24.js?v=24.0.0",
   "./studio-ui-v25.js?v=31.2.0",
   "./main-ui-v26.js?v=26.0.1",
-  "./pwa-v21.js?v=33.3.1",
+  "./pwa-v21.js?v=34.0.0",
   "./responsive-ui-v27.js?v=27.0.0",
-  "./vocalo-home-v28.js?v=32.0.0",
+  "./vocalo-home-v28.js?v=34.0.0",
   "./universe-search-v28.js?v=28.1.0",
-  "./app-shell-v29.js?v=32.0.0",
+  "./app-shell-v29.js?v=34.0.0",
   "./adaptive-ui-v31.js?v=31.2.0",
   "./nico-player-v32.js?v=33.2.0",
-  "./voca-app-v33.js?v=33.3.1",
-  "./voca-app-v33-1.js?v=33.1.0",
-  "./voca-app-v33-2.js?v=33.2.0",
-  "./voca-app-v33-3.js?v=33.3.0"
+  "./voca-app-v33.js?v=34.0.0",
+  "./voca-app-v33-1.js?v=34.0.0",
+  "./voca-app-v33-2.js?v=34.0.0",
+  "./voca-app-v33-3.js?v=34.0.0",
+  "./voca-shell-v34.js?v=34.0.0"
 ];
 
 self.addEventListener("install",event=>{
