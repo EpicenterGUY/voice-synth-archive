@@ -1606,7 +1606,7 @@ body.v37-ready .v37-search-page .results-toolbar{border:1px solid #18393e;border
     </details>
   </section>
 
-  <div class="footer">v37.8.0 · 반응률 빙산 · 시대별 전체 빙산 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v37.9.0 · 실제 P명 검증 · 전곡 보컬 전수집계 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -5476,7 +5476,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:"37.8.0",
+    version:"37.9.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -5555,23 +5555,50 @@ function renderAdultSettings37(){
 const PRODUCER_KNOWN37=["DECO*27","wowaka","ryo","ハチ","ピノキオピー","Neru","じん","kz","40mP","Mitchie M","みきとP","Orangestar","ナユタン星人","Ayase","Kanaria","かいりきベア","柊キライ","Chinozo","すりぃ","syudou","ツミキ","wotaku","MARETU","きくお","cosMo@暴走P","OSTER project","sasakure.UK","doriko","164","蝶々P","buzzG","トーマ","れるりり","n-buna","ぬゆり","ユリイ・カノン","Aqu3ra","R Sound Design","はるまきごはん","煮ル果実","いよわ","原口沙輔","なきそ","シャノン","柊マグネタイト","雄之助","Giga","八王子P","電ポルP","TOKOTOKO","西沢さんP","emon(Tes.)"];
 const PRODUCER_KNOWN_MAP37=new Map(PRODUCER_KNOWN37.map(function(x){return[String(x).toLowerCase(),x]}));
 const PRODUCER_EXCLUDE37=/VOCALOID|UTAU|Synthesizer|SynthV|CeVIO|VoiSona|NEUTRINO|VOICEVOX|初音ミク|鏡音|巡音|重音|GUMI|flower|可不|IA|KAITO|MEIKO|オリジナル|伝説入り|殿堂入り|神話入り|ミリオン|ランキング|メドレー|作業用|高音質|高画質|歌詞|字幕|MMD|歌ってみた|踊ってみた|演奏してみた|ニコカラ|カラオケ|プロセカ|ゲーム|アニメ|音楽|ロック|メタル|ジャズ|テクノ|トランス|ポップ|バラード|エレクトロ|かわいい|可愛い|切ない|泣ける|中毒|良曲|名曲|神曲|期待の新人|処女作|投稿祭|誕生祭|生誕祭/i;
-function producerCandidateTags37(song){
-  const out=[],seen=new Set();
-  for(const raw of parseTags(song&&song.tags)){
-    const tag=String(raw||"").trim();if(!tag||seen.has(tag)||tag.length<2||tag.length>34)continue;seen.add(tag);
-    const known=PRODUCER_KNOWN_MAP37.get(tag.toLowerCase());
-    const explicit=/([\-‐‑‒–—ー_ ]?P|Ｐ)$/.test(tag)||/ピー$/.test(tag);
-    if(PRODUCER_EXCLUDE37.test(tag)||/^\d+$/.test(tag)||/^[A-Z]{1,3}$/.test(tag))continue;
-    out.push({tag:known||tag,known:!!known,explicit:explicit})
+function vocadbArtistName37(a){
+  return String(a?.name||a?.artist?.name||a?.artist?.defaultName||a?.defaultName||"").trim()
+}
+function vocadbProducerList37(item){
+  const out=new Map();
+  for(const a of (Array.isArray(item?.artists)?item.artists:[])){
+    const cats=String(a?.categories||a?.effectiveRoles||"");
+    if(!/(^|,|\s)Producer($|,|\s)/i.test(cats))continue;
+    const name=vocadbArtistName37(a);if(!name)continue;
+    const id=Number(a?.artist?.id||a?.id)||0;
+    const key=id?"id:"+id:"name:"+normalizeSourceTag37(name);
+    if(!out.has(key))out.set(key,{id:id,name:name,categories:cats})
   }
-  return out
+  return [...out.values()]
+}
+function producerResolveCacheKey37(id){return "vsa37ProducerPV:"+String(id||"").toLowerCase()}
+async function resolveSongProducers37(song){
+  const id=String(song?.contentId||"").trim();
+  if(!/^(sm|nm|so)\d+$/i.test(id))return [];
+  const key=producerResolveCacheKey37(id);
+  try{
+    const c=JSON.parse(localStorage.getItem(key)||"null");
+    if(c&&Date.now()-c.at<2592000000&&Array.isArray(c.producers))return c.producers
+  }catch(_){}
+  try{
+    const u=new URL("https://vocadb.net/api/songs/byPv");
+    u.searchParams.set("pvService","NicoNicoDouga");
+    u.searchParams.set("pvId",id);
+    u.searchParams.set("fields","Artists");
+    u.searchParams.set("lang","Japanese");
+    const r=await fetch(u.toString(),{headers:{"Accept":"application/json"}});
+    if(!r.ok)return [];
+    const item=await r.json();
+    const producers=item?vocadbProducerList37(item):[];
+    try{localStorage.setItem(key,JSON.stringify({at:Date.now(),producers:producers}))}catch(_){}
+    return producers
+  }catch(_){return[]}
 }
 function producerDiscoveryScore37(x,mode){
-  const avg=x.views/Math.max(1,x.count),react=((x.mylists+2)/(x.views+900))*1000,under=1-Math.min(1,Math.log10(avg+10)/6),count=Math.min(1,x.count/5),recent=x.latest>=new Date().getFullYear()-3?1:0,conf=Math.min(1,x.confidence/12);
-  let score=.28*under+.26*Math.min(1,react/25)+.22*count+.16*conf+.08*recent;
-  if(mode==="deep")score=.45*under+.25*Math.min(1,react/25)+.18*count+.12*conf;
-  if(mode==="rookie")score=.34*recent+.25*under+.20*Math.min(1,react/25)+.12*count+.09*conf;
-  if(mode==="reaction")score=.46*Math.min(1,react/25)+.24*under+.18*count+.12*conf;
+  const avg=x.views/Math.max(1,x.count),react=((x.mylists+2)/(x.views+900))*1000,under=1-Math.min(1,Math.log10(avg+10)/6),count=Math.min(1,x.count/5),recent=x.latest>=new Date().getFullYear()-3?1:0;
+  let score=.30*under+.29*Math.min(1,react/25)+.25*count+.16*recent;
+  if(mode==="deep")score=.48*under+.27*Math.min(1,react/25)+.17*count+.08*recent;
+  if(mode==="rookie")score=.38*recent+.26*under+.22*Math.min(1,react/25)+.14*count;
+  if(mode==="reaction")score=.50*Math.min(1,react/25)+.25*under+.17*count+.08*recent;
   return Math.max(0,Math.min(1,score))*100
 }
 async function runProducerDiscovery37(){
@@ -5583,42 +5610,50 @@ async function runProducerDiscovery37(){
   const count=+document.getElementById("v37ProdCount")?.value||12;
   const status=document.getElementById("v37ProducerStatus"),grid=document.getElementById("v37ProducerGrid"),btn=document.getElementById("v37ProducerRun");
   state.producerDiscoveryBusy=true;if(btn)btn.disabled=true;
-  if(status)status.textContent="원곡 후보를 모으고 프로듀서 태그를 교차검증하는 중…";
-  if(grid)grid.innerHTML='<div class="v37-diag-card"><b>프로듀서 발굴 중…</b><p>저조회수 원곡의 반복 태그와 반응률을 비교합니다.</p></div>';
+  if(status)status.textContent="원곡 후보 수집 중… 프로듀서명은 VocaDB의 NicoNico PV 정확 일치 정보로 확인합니다.";
+  if(grid)grid.innerHTML='<div class="v37-diag-card"><b>프로듀서 발굴 중…</b><p>니코동 태그를 P명으로 쓰지 않고 VocaDB의 Producer 크레딧만 사용합니다.</p></div>';
   try{
     const nf={viewCounter:{gte:100,lte:maxViews}};
     const sorts=mode==="rookie"?["-startTime","-mylistCounter","-commentCounter","+viewCounter"]:["-mylistCounter","-commentCounter","+viewCounter","-startTime"];
     const batches=await mapLimit(sorts,3,async function(sort){
       try{return(await fetchNico({year:"all",limit:100,offset:0,mode:"ranking",sort:sort,applyYear:false,applyTier:false,numericFilters:nf})).data||[]}catch(_){return[]}
     });
-    const uniq=new Map();
-    batches.flat().forEach(function(song){if(song&&song.contentId)uniq.set(song.contentId,song)});
+    const uniq=new Map();batches.flat().forEach(function(song){if(song&&song.contentId)uniq.set(song.contentId,song)});
     let rows=filterDiscoveryOriginalRows37([...uniq.values()],"producer_discovery").rows;
     rows=filterAdultRows37(rows,"producer_discovery").rows;
-    const map=new Map();
-    rows.forEach(function(song){
+    rows=rows.slice().sort(function(a,b){
+      const av=(+a.viewCounter||0),bv=(+b.viewCounter||0);
+      if(mode==="rookie")return String(b.startTime||"").localeCompare(String(a.startTime||""));
+      if(mode==="reaction")return ((+b.mylistCounter||0)+2)/(bv+900)-(((+a.mylistCounter||0)+2)/(av+900));
+      return av-bv
+    }).slice(0,400);
+
+    const map=new Map();let resolvedSongs=0,processed=0;
+    await mapLimit(rows,4,async function(song){
+      const producers=await resolveSongProducers37(song);processed++;
+      if(producers.length)resolvedSongs++;
+      if(status&&(processed%10===0||processed===rows.length))status.textContent="실제 P명 확인 중… "+processed+"/"+rows.length+"곡 · VocaDB 일치 "+resolvedSongs+"곡";
       const y=song.startTime?new Date(song.startTime).getFullYear():0;
-      producerCandidateTags37(song).forEach(function(c){
-        let x=map.get(c.tag)||{tag:c.tag,count:0,views:0,mylists:0,comments:0,likes:0,latest:0,known:false,explicit:false,songs:[]};
-        x.count++;x.views+=+song.viewCounter||0;x.mylists+=+song.mylistCounter||0;x.comments+=+song.commentCounter||0;x.likes+=+song.likeCounter||0;x.latest=Math.max(x.latest,y);x.known=x.known||c.known;x.explicit=x.explicit||c.explicit;
-        x.songs.push(song);map.set(c.tag,x)
-      })
+      for(const p of producers){
+        const key=p.id?"id:"+p.id:"name:"+normalizeSourceTag37(p.name);
+        let x=map.get(key)||{id:p.id||0,name:p.name,count:0,views:0,mylists:0,comments:0,likes:0,latest:0,songs:[]};
+        x.count++;x.views+=+song.viewCounter||0;x.mylists+=+song.mylistCounter||0;x.comments+=+song.commentCounter||0;x.likes+=+song.likeCounter||0;x.latest=Math.max(x.latest,y);x.songs.push(song);map.set(key,x)
+      }
     });
+
     let candidates=[...map.values()].map(function(x){
-      x.confidence=(x.known?8:0)+(x.explicit?7:0)+Math.min(6,Math.max(0,x.count-1)*2);
       x.avgViews=x.views/Math.max(1,x.count);
       x.reaction=(x.mylists+2)/(x.views+900)*1000;
       x.score=producerDiscoveryScore37(x,mode);
       return x
     }).filter(function(x){
       if(x.count<minSongs)return false;
-      if(!x.known&&!x.explicit&&x.count<3)return false;
       if(mode==="rookie"&&x.latest<new Date().getFullYear()-3)return false;
       return x.avgViews<=maxViews
-    }).sort(function(a,b){return b.score-a.score||b.count-a.count}).slice(0,count);
+    }).sort(function(a,b){return b.score-a.score||b.count-a.count||a.name.localeCompare(b.name,"ja")}).slice(0,count);
     state.producerDiscovery=candidates;
     renderProducerDiscovery37();
-    if(status)status.textContent='원곡 '+rows.length+'곡 분석 → 프로듀서 '+candidates.length+'명 발굴 · 19금 '+(adultFilterMode37()==="block"?"차단":"표시");
+    if(status)status.textContent='원곡 '+rows.length+'곡 확인 · VocaDB PV 일치 '+resolvedSongs+'곡 → 실제 프로듀서 '+candidates.length+'명 발굴 · 태그 추정 0건';
   }catch(e){
     if(grid)grid.innerHTML='<div class="v37-diag-card"><b>발굴 실패</b><p>'+esc(String(e?.message||e))+'</p></div>';
     if(status)status.textContent="프로듀서 발굴에 실패했습니다.";
@@ -5629,10 +5664,10 @@ function renderProducerDiscovery37(){
   if(!state.producerDiscovery.length){grid.innerHTML='<div class="v37-diag-card"><b>아직 발굴 결과가 없습니다.</b><p>조건을 정한 뒤 프로듀서 발굴 시작을 눌러주세요.</p></div>';return}
   grid.innerHTML=state.producerDiscovery.map(function(x,i){
     const reps=x.songs.slice().sort(function(a,b){return(+b.mylistCounter||0)-(+a.mylistCounter||0)}).slice(0,2);
-    return '<article class="v37-producer-card"><div class="v37-producer-card-head"><div><small style="color:#71d9d0;font-size:7px">DISCOVERY '+(i+1)+'</small><h3>'+esc(x.tag)+'</h3></div><span class="score">'+x.score.toFixed(1)+'</span></div>'+
+    return '<article class="v37-producer-card"><div class="v37-producer-card-head"><div><small style="color:#71d9d0;font-size:7px">VOCADB VERIFIED · DISCOVERY '+(i+1)+'</small><h3>'+esc(x.name)+'</h3></div><span class="score">'+x.score.toFixed(1)+'</span></div>'+
       '<div class="v37-producer-meta"><span>'+x.count+'곡 확인</span><span>평균 조회 '+fmt(Math.round(x.avgViews))+'</span><span>반응 '+x.reaction.toFixed(1)+'</span><span>최근 '+(x.latest||"-")+'</span></div>'+
       '<div class="v37-producer-songs">'+reps.map(function(song){return '• '+esc(song.title||song.contentId)+' · '+fmt(song.viewCounter||0)+'회'}).join('<br>')+'</div>'+
-      '<div class="v37-producer-actions"><button type="button" data-v37-producer-detail="'+esc(x.tag)+'">프로듀서 상세</button><button type="button" data-v37-producer-follow="'+esc(x.tag)+'">♡ 팔로우</button><button type="button" data-v37-producer-search="'+esc(x.tag)+'">곡 검색</button></div></article>'
+      '<div class="v37-producer-actions"><button type="button" data-v37-producer-detail="'+esc(x.name)+'">프로듀서 상세</button><button type="button" data-v37-producer-follow="'+esc(x.name)+'">♡ 팔로우</button><button type="button" data-v37-producer-search="'+esc(x.name)+'">곡 검색</button></div></article>'
   }).join("")
 }
 function ensureProducerDiscovery37(page){
@@ -5644,7 +5679,7 @@ function ensureProducerDiscovery37(page){
     '<label>최소 확인 곡<select id="v37ProdMinSongs"><option value="2">2곡</option><option value="3">3곡</option><option value="4">4곡</option></select></label>'+
     '<label>표시 수<select id="v37ProdCount"><option value="8">8명</option><option value="12" selected>12명</option><option value="20">20명</option></select></label>'+
     '<button type="button" id="v37ProducerRun">프로듀서 발굴 시작</button></div>'+
-    '<div class="v37-producer-status" id="v37ProducerStatus">저조회수 음성합성 원곡에서 반복되는 P명 태그와 반응률을 분석합니다.</div><div class="v37-producer-grid" id="v37ProducerGrid"></div>';
+    '<div class="v37-producer-status" id="v37ProducerStatus">저조회수 음성합성 원곡을 모은 뒤 VocaDB의 NicoNico PV 정확 일치 크레딧에서 실제 Producer만 집계합니다. 일반 태그는 프로듀서명으로 사용하지 않습니다.</div><div class="v37-producer-grid" id="v37ProducerGrid"></div>';
   page.appendChild(body);
   document.getElementById("v37ProducerRun").onclick=runProducerDiscovery37;
   renderProducerDiscovery37()
@@ -6084,7 +6119,7 @@ function ensureCorePages37(){
   const search=makeCorePage37("search29","검색","곡명·P명·보컬·태그·sm번호를 바로 검색합니다. 탐정 시스템과 분리된 일반 검색입니다.","v37-search-page");
   const universe=makeCorePage37("universe29","보카로 우주","선택한 곡을 중심으로 비슷한 곡을 연결해 탐색합니다.","v37-universe-page");
   const settings=makeCorePage37("settings29","설정","Worker 연결과 기술 설정을 관리합니다.","v37-settings-page");
-  const producerDiscovery=makeCorePage37("producerDiscover37","프로듀서 발굴","저조회수 음성합성 원곡의 반복 P명 태그와 반응률을 분석해 덜 알려진 프로듀서를 찾습니다.","v37-producer-discovery-page");
+  const producerDiscovery=makeCorePage37("producerDiscover37","프로듀서 발굴","저조회수 음성합성 원곡을 VocaDB의 실제 Producer 크레딧과 연결해 덜 알려진 프로듀서를 찾습니다.","v37-producer-discovery-page");
   const vocalRank=makeCorePage37("vocalRank37","보컬 · 음원 순위표","VOCALOID, UTAU, SynthV 등 음성합성 보컬을 원곡 데이터 기반으로 비교합니다.","v37-vocal-rank-page");
   const diagnostics=makeCorePage37("diagnostics37","진단 센터","앱 상태·라우트·모듈·서비스워커·최근 오류를 한 번에 확인합니다.","v37-diagnostics-page");
   ensureDiagnostics37(diagnostics);
@@ -6479,7 +6514,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="37.8.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
+var VER="37.9.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -6762,15 +6797,15 @@ var groups={};
 function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
-  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=37.8.0","./detective-v12.js?v=37.8.0","./detective-v13.js?v=37.8.0","./detective-v14.js?v=37.8.0","./detective-v16.js?v=37.8.0"]);
-  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=37.8.0","./smart-v23.js?v=37.8.0","./playlist-v24.js?v=37.8.0"]);
-  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=37.8.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=37.8.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=37.8.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=37.8.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=37.8.0");
+  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=37.9.0","./detective-v12.js?v=37.9.0","./detective-v13.js?v=37.9.0","./detective-v14.js?v=37.9.0","./detective-v16.js?v=37.9.0"]);
+  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=37.9.0","./smart-v23.js?v=37.9.0","./playlist-v24.js?v=37.9.0"]);
+  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=37.9.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=37.9.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=37.9.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=37.9.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=37.9.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
-    return seq(["./voca-app-v33.js?v=37.8.0","./voca-app-v33-1.js?v=37.8.0","./voca-app-v33-2.js?v=37.8.0","./voca-app-v33-3.js?v=37.8.0"]);
+    return seq(["./voca-app-v33.js?v=37.9.0","./voca-app-v33-1.js?v=37.9.0","./voca-app-v33-2.js?v=37.9.0","./voca-app-v33-3.js?v=37.9.0"]);
   });
   else groups[name]=Promise.resolve(false);
   groups[name]=Promise.resolve(groups[name]).then(function(v){
