@@ -33,5 +33,5 @@ worker/niconico-worker.js
 
 ## 현재 버전
 
-App: v37.7.0
+App: v37.8.0
 Worker: v10
