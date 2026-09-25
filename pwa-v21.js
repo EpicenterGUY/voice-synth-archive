@@ -1,7 +1,7 @@
 /* Voice Synth Archive PWA v21 */
 (function(){
 "use strict";
-const APP_VERSION="29.2.0";
+const APP_VERSION="30.0.0";
 const CHECK_MS=60000;
 let deferredInstall=null;
 let registration=null;
