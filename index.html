@@ -5363,7 +5363,7 @@ function dock(){
       document.getElementById("v37Home")?.scrollIntoView({block:"start"});return
     }
     if(v==="explore"){openLazy("탐색 준비","explore33","gems");return}
-    if(v==="search"){openLazy("검색 준비","searchHub33","detective");return}
+    if(v==="search"){openLazy("검색 준비","searchHub33","detective");if(window.VSAEnsureFeatures)VSAEnsureFeatures("detective");return}
     if(v==="library"){
       if(window.VSA332Library&&VSA332Library.open){VSA332Library.open();return}
       if(window.VSAPrepareView)VSAPrepareView("보관함 준비");
