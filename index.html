@@ -2549,6 +2549,85 @@ body[data-vsa-theme="light"] p,body[data-vsa-theme="light"] small,body[data-vsa-
 body[data-vsa-theme="light"] .v399-player-shell,body[data-vsa-theme="light"] .v394-universe-panel .universe-stage{background:#000!important}
 body[data-vsa-theme="light"] .v3911-theme-toggle{background:#fff!important;border-color:#bfd9d4!important;color:#28514d!important}
 </style>
+<style id="v3912WatchLayoutFix">
+/* v39.12 · focused desktop Watch sizing + rail/nav hotfix */
+@media(min-width:1100px){
+  /* restore the normal desktop shell instead of stretching every page */
+  body.v37-ready>.app{
+    width:calc(100% - 190px)!important;
+    max-width:1660px!important;
+    margin-left:158px!important;
+    margin-right:32px!important;
+    padding:20px 28px 56px!important
+  }
+  body.v37-ready .tools-modal{
+    margin-left:158px!important;
+    width:calc(100% - 158px)!important
+  }
+  body.v37-ready .tools-body{
+    padding-left:22px!important;
+    padding-right:24px!important
+  }
+  body.v37-ready .tools-body>.tool-view.active{
+    width:auto!important;
+    max-width:1510px!important;
+    margin:0 auto!important;
+    padding:26px!important
+  }
+
+  /* keep the side rail fully inside the viewport */
+  .v37-dock{
+    left:18px!important;
+    width:112px!important;
+    padding:11px!important;
+    box-sizing:border-box!important;
+    overflow:visible!important;
+    pointer-events:auto!important;
+    z-index:30000!important
+  }
+  .v38-rail-brand img{width:44px!important;height:44px!important}
+  .v38-rail-brand small{font-size:9px!important}
+  .v37-dock button{min-height:72px!important;font-size:10px!important;padding-left:6px!important;padding-right:6px!important}
+
+  /* only the Watch page uses the extra horizontal room */
+  body.v37-ready .tools-body>.tool-view.active[data-tool-view="songDetail39"]{
+    width:calc(100% - 8px)!important;
+    max-width:1620px!important;
+    margin:0 auto!important;
+    padding:22px 16px 28px!important
+  }
+  .v39-song-detail{
+    width:100%!important;
+    max-width:1620px!important;
+    margin:0 auto!important
+  }
+  .v399-watch-layout{
+    grid-template-columns:minmax(0,1.9fr) minmax(350px,.52fr)!important;
+    gap:22px!important
+  }
+  .v399-player-shell{width:100%!important}
+  .v399-watch-info{padding-top:16px!important}
+  .v399-watch-info h2{font-size:35px!important;line-height:1.22!important}
+  .v399-watch-kicker span{font-size:9px!important}
+  .v399-watch-meta{font-size:10px!important}
+  .v399-watch-actions button,.v399-watch-actions a{min-height:45px!important;font-size:10px!important;padding:0 15px!important}
+  .v399-watch-stats{gap:9px!important}.v399-watch-stat{padding:12px!important}.v399-watch-stat small{font-size:8px!important}.v399-watch-stat b{font-size:17px!important}
+  .v399-credit{padding:12px!important}.v399-credit>small{font-size:8px!important}
+  .v399-tag-row button,.v392-detail-chips button,.v392-detail-chips span{font-size:8.5px!important;min-height:29px!important}
+  .v399-side{padding:15px!important;max-height:calc(100dvh - 32px)!important}
+  .v399-side-head h3{font-size:20px!important}.v399-side-head small{font-size:8px!important}
+  .v399-related{grid-template-columns:145px minmax(0,1fr)!important;gap:11px!important;padding:8px!important}
+  .v399-related-thumb{width:145px!important}
+  .v399-related-copy b{font-size:11px!important}.v399-related-copy small,.v399-related-copy em{font-size:8px!important}
+  .v399-section-head h3{font-size:20px!important}.v399-section-head small{font-size:8px!important}
+  .v399-lyric-text{font-size:11px!important;line-height:1.9!important}
+}
+@media(min-width:1500px){
+  body.v37-ready .tools-body>.tool-view.active[data-tool-view="songDetail39"]{max-width:1680px!important}
+  .v39-song-detail{max-width:1680px!important}
+  .v399-watch-layout{grid-template-columns:minmax(0,2fr) minmax(370px,.5fr)!important}
+}
+</style>
 </head>
 <body>
 <div class="app">
@@ -2769,7 +2848,7 @@ body[data-vsa-theme="light"] .v3911-theme-toggle{background:#fff!important;borde
     </details>
   </section>
 
-  <div class="footer">v39.11.0 · Home 3.0 · Search 4.0 · Watch 1.1 · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.12.0 · Home 3.0 · Search 4.0 · Watch 1.2 · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -6846,7 +6925,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:"39.11.0",
+    version:"39.12.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -7727,7 +7806,7 @@ function openDetective37(){
 
 function setToolView(name){
   var prev=window.__VSA37_CURRENT_ROUTE;
-  if(prev==="songDetail39"&&name!=="songDetail39")stopWatchInline399(true);
+  if(prev==="songDetail39"&&name!=="songDetail39")stopWatchInline399(false);
   document.querySelectorAll("#toolsTabs button").forEach(b=>b.classList.toggle("active",b.dataset.tool===name));
   document.querySelectorAll("#toolsModal .tool-view").forEach(v=>v.classList.toggle("active",v.dataset.toolView===name));
   window.__VSA37_CURRENT_ROUTE=name;
@@ -7778,7 +7857,7 @@ function openToolsModal(view="hub37"){
 }
 function closeToolsModal(){
   healPageLocks37();
-  if(window.__VSA37_CURRENT_ROUTE==="songDetail39")stopWatchInline399(true);
+  if(window.__VSA37_CURRENT_ROUTE==="songDetail39")stopWatchInline399(false);
   const modal=$("#toolsModal");
   if(!modal)return;
   modal.hidden=true;
@@ -8082,7 +8161,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.11.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
+var VER="39.12.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -8312,7 +8391,10 @@ function ensureWatch399(){
   var song=window.__VSA39_DETAIL_SONG;
   if(!song)return;
   var p=document.querySelector('[data-tool-view="songDetail39"]');
-  if(p&&p.classList.contains("active")&&!document.getElementById("v399InlineFrame"))renderSongDetail39(song,false)
+  if(p&&p.classList.contains("active")&&!document.getElementById("v399InlineFrame")){
+    p.querySelectorAll(".v399-player-fallback-inline").forEach(function(x){x.remove()});
+    renderSongDetail39(song,false)
+  }
 }
 function nicoEmbed399(id,autoplay){
   var q="jsapi=1&playerId=vsaInline399";if(autoplay)q+="&autoplay=1";
@@ -8963,11 +9045,31 @@ function dock(){
     [["home","홈"],["explore","탐색"],["universe","우주"],["personal","MY"]].map(function(x){return'<button type="button" data-v37="'+x[0]+'" aria-label="'+x[1]+'"><i>'+dockIcon38(x[0])+'</i><span>'+x[1]+'</span></button>'}).join("");
   document.body.appendChild(d);setDock("home");
   d.addEventListener("click",function(e){
-    var b=e.target.closest("button[data-v37]");if(!b)return;var v=b.dataset.v37;setDock(v);
-    if(v==="home"){try{closeToolsModal()}catch(e){}document.getElementById("v37Home")?.scrollIntoView({block:"start"});return}
-    if(v==="explore"){openHub37();return}
-    if(v==="universe"){ensureCorePages37();openToolsModal("universe29");if(window.VSAEnsureFeatures)window.VSAEnsureFeatures("universe");ensureUniverseToolbar39();return}
-    if(v==="personal"){openPersonal395();return}
+    var b=e.target.closest("button[data-v37]");if(!b)return;
+    e.preventDefault();e.stopPropagation();
+    var v=b.dataset.v37;
+    if(window.__VSA37_CURRENT_ROUTE==="songDetail39")stopWatchInline399(false);
+    setDock(v);
+    if(v==="home"){
+      try{closeToolsModal()}catch(_){}
+      setDock("home");
+      document.getElementById("v37Home")?.scrollIntoView({block:"start"});
+      return
+    }
+    if(v==="explore"){
+      ensureHub37();refreshHub37();openToolsModal("hub37");setDock("explore");
+      return
+    }
+    if(v==="universe"){
+      ensureCorePages37();openToolsModal("universe29");
+      if(window.VSAEnsureFeatures)window.VSAEnsureFeatures("universe");
+      ensureUniverseToolbar39();setDock("universe");
+      return
+    }
+    if(v==="personal"){
+      openPersonal395();setDock("personal");
+      return
+    }
   })
 }
 function init(){
@@ -9132,15 +9234,15 @@ var groups={};
 function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
-  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.11.0","./detective-v12.js?v=39.11.0","./detective-v13.js?v=39.11.0","./detective-v14.js?v=39.11.0","./detective-v16.js?v=39.11.0"]);
-  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.11.0","./smart-v23.js?v=39.11.0","./playlist-v24.js?v=39.11.0"]);
-  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.11.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.11.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.11.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.11.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.11.0");
+  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.12.0","./detective-v12.js?v=39.12.0","./detective-v13.js?v=39.12.0","./detective-v14.js?v=39.12.0","./detective-v16.js?v=39.12.0"]);
+  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.12.0","./smart-v23.js?v=39.12.0","./playlist-v24.js?v=39.12.0"]);
+  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.12.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.12.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.12.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.12.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.12.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
-    return seq(["./voca-app-v33.js?v=39.11.0","./voca-app-v33-1.js?v=39.11.0","./voca-app-v33-2.js?v=39.11.0","./voca-app-v33-3.js?v=39.11.0"]);
+    return seq(["./voca-app-v33.js?v=39.12.0","./voca-app-v33-1.js?v=39.12.0","./voca-app-v33-2.js?v=39.12.0","./voca-app-v33-3.js?v=39.12.0"]);
   });
   else groups[name]=Promise.resolve(false);
   groups[name]=Promise.resolve(groups[name]).then(function(v){
