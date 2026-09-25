@@ -56,7 +56,7 @@ function normalizeQueue(items){
   return out;
 }
 function queueFromAnchor(anchor,id,title){
-  var container=anchor&&anchor.closest(".v28-cards,.v331-songgrid,.v22-card-grid,.list,.us-results");
+  var container=anchor&&anchor.closest(".v28-cards,.v331-songgrid,.v332-feed-grid,.v332-lib-grid,.v22-card-grid,.list,.us-results");
   if(!container)return[{id:id,title:title||id}];
   var out=[];
   container.querySelectorAll('a[href*="nicovideo.jp/watch/"]').forEach(function(a){
