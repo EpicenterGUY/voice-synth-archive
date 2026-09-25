@@ -1229,7 +1229,7 @@ body.tools-open{overflow:hidden}
     </details>
   </section>
 
-  <div class="footer">v24.0.0 · 플레이리스트 연구실 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v25.0.0 · 탐색 스튜디오 UI · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -4877,7 +4877,7 @@ function setToolView(name){
   const body=$("#toolsModal .tools-body");
   if(body)body.scrollTop=0;
 }
-function openToolsModal(view="detective"){
+function openToolsModal(view="studioHome"){
   const modal=$("#toolsModal");
   if(!modal)return;
   modal.hidden=false;
@@ -4891,7 +4891,7 @@ function closeToolsModal(){
   document.body.classList.remove("tools-open");
 }
 function setupToolsModal(){
-  $("#openToolsBtn")?.addEventListener("click",()=>openToolsModal("detective"));
+  $("#openToolsBtn")?.addEventListener("click",()=>openToolsModal("studioHome"));
   $("#closeToolsBtn")?.addEventListener("click",closeToolsModal);
   $("#toolsBackdrop")?.addEventListener("click",closeToolsModal);
   document.querySelectorAll("#toolsTabs button").forEach(btn=>{
@@ -5184,6 +5184,7 @@ setTimeout(async()=>{
 <script src="./organizer-v22.js?v=22.0.1"></script>
 <script src="./smart-v23.js?v=23.0.0"></script>
 <script src="./playlist-v24.js?v=24.0.0"></script>
-<script src="./pwa-v21.js?v=24.0.0"></script>
+<script src="./studio-ui-v25.js?v=25.0.0"></script>
+<script src="./pwa-v21.js?v=25.0.0"></script>
 </body>
 </html>
