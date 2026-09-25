@@ -10,12 +10,17 @@ const META={
   taste:{group:"recommend",title:"취향 추천",short:"취향 추천",desc:"문장과 태그를 섞어 원하는 분위기의 곡을 넓게 추천받습니다.",icon:"♡"},
   smart23:{group:"recommend",title:"스마트 믹스",short:"스마트 믹스",desc:"보관함과 좋아요·제외 피드백을 학습해 자동 믹스를 만듭니다.",icon:"◈"},
   library22:{group:"manage",title:"내 라이브러리",short:"라이브러리",desc:"관심곡·최애·최근 기록·탐정 사건을 한 곳에서 관리합니다.",icon:"▣"},
-  playlist24:{group:"manage",title:"플레이리스트",short:"플레이리스트",desc:"믹스를 저장하고 순서를 바꾸거나 한 곡만 교체합니다.",icon:"☷"}
+  playlist24:{group:"manage",title:"플레이리스트",short:"플레이리스트",desc:"믹스를 저장하고 순서를 바꾸거나 한 곡만 교체합니다.",icon:"☷"},
+  archive29:{group:"archive",title:"빙산 · 통계",short:"빙산 · 통계",desc:"조회수 빙산과 모집단 통계를 한 화면에서 봅니다.",icon:"◇"},
+  search29:{group:"archive",title:"곡 검색",short:"곡 검색",desc:"곡명·P명·보컬·태그·sm번호로 아카이브를 검색합니다.",icon:"⌕"},
+  universe29:{group:"archive",title:"보카로 우주",short:"보카로 우주",desc:"곡을 중심으로 비슷한 곡의 관계를 별자리처럼 탐색합니다.",icon:"✦"},
+  settings29:{group:"archive",title:"앱 설정",short:"앱 설정",desc:"Worker 연결과 앱·업데이트 설정을 관리합니다.",icon:"⚙"}
 };
 const GROUPS=[
   {id:"detective",title:"탐정",desc:"잊은 곡 찾기",tools:["detective"]},
   {id:"recommend",title:"추천",desc:"코스·취향·자동 믹스",tools:["guide","taste","smart23"]},
   {id:"discover",title:"발굴",desc:"숨은 곡 찾기",tools:["gems"]},
+  {id:"archive",title:"아카이브",desc:"빙산·검색·우주",tools:["archive29","search29","universe29","settings29"]},
   {id:"manage",title:"보관",desc:"라이브러리·플레이리스트",tools:["library22","playlist24"]}
 ];
 
