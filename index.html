@@ -1299,6 +1299,28 @@ body.v37-ready .v37-search-page .results-toolbar{border:1px solid #18393e;border
 @media(max-width:390px){
   body.v37-ready .v37-archive-page>.summary{grid-template-columns:1fr!important}
 }
+.v37-diagnostics{display:grid;gap:10px}
+.v37-diag-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.v37-diag-card{min-width:0;padding:12px;border:1px solid #1f454a;border-radius:15px;background:#071b20}
+.v37-diag-card>small{display:block;color:#6f9a96;font-size:7px;font-weight:900;letter-spacing:.08em}
+.v37-diag-card>b{display:block;margin-top:4px;color:#eafffb;font-size:13px;overflow-wrap:anywhere}
+.v37-diag-card p{margin:5px 0 0;color:#83a6a2;font-size:8px;line-height:1.5;overflow-wrap:anywhere}
+.v37-diag-list{display:grid;gap:6px}
+.v37-diag-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px 10px;border:1px solid #193a3f;border-radius:12px;background:#06171b}
+.v37-diag-row b{font-size:9px;color:#dff7f3}.v37-diag-row small{display:block;margin-top:2px;color:#71938f;font-size:7px;overflow-wrap:anywhere}
+.v37-diag-badge{display:inline-flex;align-items:center;min-height:25px;padding:0 8px;border:1px solid #31585d;border-radius:999px;background:#0a292e;color:#9fc6c1;font-size:7px;font-weight:900;white-space:nowrap}
+.v37-diag-badge.ok{border-color:#2e6b5d;background:#0d2e28;color:#9de5cc}
+.v37-diag-badge.warn{border-color:#715e32;background:#2a240f;color:#ead18a}
+.v37-diag-badge.bad{border-color:#713946;background:#2c151c;color:#f0a9b5}
+.v37-diag-actions{display:flex;gap:7px;flex-wrap:wrap}
+.v37-diag-actions button{min-height:38px;padding:0 12px;border:1px solid #285159;border-radius:11px;background:#0b2930;color:#dff8f4;font-size:8px;font-weight:900}
+.v37-diag-pre{margin:0;padding:10px;border:1px solid #193a3f;border-radius:12px;background:#041115;color:#83aaa6;font:8px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;overflow-wrap:anywhere}
+.v37-route-error{min-height:48dvh;display:grid;place-items:center;padding:22px;text-align:center}
+.v37-route-error>div{width:min(520px,100%);padding:18px;border:1px solid #63424a;border-radius:17px;background:#201319}
+.v37-route-error h2{margin:0;color:#ffecef;font-size:17px}.v37-route-error p{margin:7px 0 12px;color:#c7a1aa;font-size:9px;line-height:1.55}
+.v37-route-error button{min-height:38px;padding:0 12px;border:1px solid #6b4a52;border-radius:10px;background:#351c23;color:#fff0f3;font-size:8px;font-weight:900}
+@media(max-width:420px){.v37-diag-summary{grid-template-columns:1fr}}
+
 @media(max-width:699px){.v37-hub-grid{grid-template-columns:1fr}.v37-hub-card{min-height:80px}.v37-native-head h2{font-size:20px}}
 
 </style>
@@ -1513,7 +1535,7 @@ body.v37-ready .v37-search-page .results-toolbar{border:1px solid #18393e;border
     </details>
   </section>
 
-  <div class="footer">v37.3.1 · Fold 탐정 잘림 수정 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v37.4.0 · 진단센터 · 기능 레지스트리 · 빈 화면 방지 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -5144,6 +5166,123 @@ function openUniverseById(id){
 }
 
 
+const VSA37_FEATURES={
+  archive:{id:"archive",label:"빙산 · 통계",route:"archive29",dock:"explore",lazy:null},
+  detective:{id:"detective",label:"기억 복원 탐정",route:"detective",dock:"explore",lazy:"detective"},
+  gems:{id:"gems",label:"숨은 곡 발굴",route:"gems",dock:"explore",lazy:null},
+  guide:{id:"guide",label:"노래 추천",route:"guide",dock:"explore",lazy:null},
+  taste:{id:"taste",label:"내 취향 추천",route:"taste",dock:"taste",lazy:null},
+  universe:{id:"universe",label:"보카로 우주",route:"universe29",dock:"explore",lazy:"universe"},
+  producer:{id:"producer",label:"프로듀서 허브",route:"explore33",dock:"explore",lazy:"v33"},
+  search:{id:"search",label:"일반 검색",route:"search29",dock:"search",lazy:null},
+  library:{id:"library",label:"보관함",route:"library22",dock:"library",lazy:"personal"},
+  settings:{id:"settings",label:"설정",route:"settings29",dock:"explore",lazy:null},
+  diagnostics:{id:"diagnostics",label:"진단 센터",route:"diagnostics37",dock:"explore",lazy:null}
+};
+window.VSA37FeatureRegistry=VSA37_FEATURES;
+window.__VSA37_ERRORS=window.__VSA37_ERRORS||[];
+function recordRuntimeError37(kind,message,extra){
+  const item={at:new Date().toISOString(),kind:String(kind||"error"),message:String(message||"알 수 없는 오류"),extra:extra||""};
+  window.__VSA37_ERRORS.push(item);
+  if(window.__VSA37_ERRORS.length>20)window.__VSA37_ERRORS.shift()
+}
+window.addEventListener("error",function(e){
+  recordRuntimeError37("error",e.message||"리소스 오류",e.filename?e.filename+":"+e.lineno:"")
+});
+window.addEventListener("unhandledrejection",function(e){
+  recordRuntimeError37("promise",e.reason&&e.reason.message?e.reason.message:String(e.reason||"Promise rejection"),"")
+});
+function markFeatureUse37(id){
+  try{
+    const key="vsa37FeatureHistory",now=Date.now(),old=JSON.parse(localStorage.getItem(key)||"[]");
+    const next=[{id:id,at:now}].concat(old.filter(function(x){return x&&x.id!==id})).slice(0,12);
+    localStorage.setItem(key,JSON.stringify(next))
+  }catch(_){}
+}
+function featureIdForRoute37(view){
+  const hit=Object.values(VSA37_FEATURES).find(function(x){return x.route===view});
+  return hit?hit.id:null
+}
+function runtimeDuplicateIds37(){
+  const seen=new Map(),dups=[];
+  document.querySelectorAll("[id]").forEach(function(el){
+    const id=el.id,n=(seen.get(id)||0)+1;seen.set(id,n);if(n===2)dups.push(id)
+  });
+  return dups
+}
+function coreHealth37(){
+  const required=["toolsModal","v37Home","detectivePanel","resultsPanel","icebergPanel","universePanel","settingsPanel"];
+  return required.map(function(id){return{id:id,ok:!!document.getElementById(id)}})
+}
+function routeExists37(view){
+  return !!document.querySelector('#toolsModal [data-tool-view="'+CSS.escape(String(view))+'"]')
+}
+function ensureRouteError37(view){
+  const body=document.querySelector("#toolsModal .tools-body");
+  if(!body)return null;
+  let page=body.querySelector('[data-tool-view="v37RouteError"]');
+  if(!page){page=document.createElement("section");page.className="tool-view v37-route-error";page.dataset.toolView="v37RouteError";body.appendChild(page)}
+  page.dataset.failedRoute=String(view||"");
+  page.innerHTML='<div><h2>화면을 열지 못했습니다.</h2><p><b>'+String(view||"알 수 없는 화면")+'</b> 페이지가 준비되지 않았습니다.<br>빈 화면 대신 여기에서 다시 시도하거나 진단 센터를 열 수 있습니다.</p><button type="button" data-v37-retry-route>다시 시도</button> <button type="button" data-v37-open-diagnostics>진단 센터</button></div>';
+  recordRuntimeError37("route","route missing: "+String(view||""),"");
+  return page
+}
+function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
+async function collectDiagnostics37(){
+  const d={
+    version:"37.4.0",
+    route:window.__VSA37_CURRENT_ROUTE||"home",
+    worker:localStorage.getItem("vocaloidIcebergProxy")||"",
+    routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
+    duplicateIds:runtimeDuplicateIds37(),
+    core:coreHealth37(),
+    errors:(window.__VSA37_ERRORS||[]).slice(-5),
+    loader:window.VSAFeatureLoaderStatus?window.VSAFeatureLoaderStatus():null,
+    serviceWorker:{supported:"serviceWorker" in navigator,controlled:!!navigator.serviceWorker?.controller,script:navigator.serviceWorker?.controller?.scriptURL||""},
+    caches:[]
+  };
+  try{if(window.caches&&caches.keys)d.caches=await caches.keys()}catch(_){}
+  return d
+}
+async function renderDiagnostics37(){
+  const box=document.getElementById("v37DiagnosticsBody");
+  if(!box)return;
+  box.innerHTML='<div class="v37-diag-card"><b>진단 중…</b></div>';
+  const d=await collectDiagnostics37();
+  const coreBad=d.core.filter(function(x){return !x.ok});
+  const loaderGroups=d.loader&&d.loader.groups?d.loader.groups:{};
+  const groupRows=Object.keys(loaderGroups).sort().map(function(k){
+    const st=loaderGroups[k]||"idle";
+    return '<div class="v37-diag-row"><div><b>'+k+'</b><small>지연 기능 그룹</small></div><span class="v37-diag-badge '+(st==="loaded"?"ok":st==="failed"?"bad":"warn")+'">'+st+'</span></div>'
+  }).join("")||'<div class="v37-diag-row"><div><b>아직 로드된 추가 모듈 없음</b><small>필요한 기능을 열 때 로드됩니다.</small></div><span class="v37-diag-badge ok">정상</span></div>';
+  const errorText=d.errors.length?d.errors.map(function(x){return x.at+" ["+x.kind+"] "+x.message+(x.extra?" · "+x.extra:"")}).join("\n"):"최근 런타임 오류 없음";
+  box.innerHTML=
+    '<div class="v37-diag-summary">'+
+      '<div class="v37-diag-card"><small>APP VERSION</small><b>v'+d.version+'</b><p>현재 실행 중인 앱 셸</p></div>'+
+      '<div class="v37-diag-card"><small>CURRENT ROUTE</small><b>'+d.route+'</b><p>현재 페이지 라우트</p></div>'+
+      '<div class="v37-diag-card"><small>WORKER</small><b>'+(d.worker?"주소 저장됨":"주소 없음")+'</b><p>'+(d.worker||"Cloudflare Worker 미설정")+'</p></div>'+
+      '<div class="v37-diag-card"><small>SERVICE WORKER</small><b>'+(d.serviceWorker.controlled?"제어 중":"미제어")+'</b><p>'+(d.serviceWorker.script||"컨트롤러 없음")+'</p></div>'+
+    '</div>'+
+    '<div class="v37-diag-card"><small>CORE UI</small><b>'+(coreBad.length?"확인 필요":"정상")+'</b><p>중복 ID '+d.duplicateIds.length+'개 · 핵심 요소 누락 '+coreBad.length+'개 · 캐시 '+d.caches.length+'개</p></div>'+
+    '<div><div class="v37-diag-list">'+groupRows+'</div></div>'+
+    '<div class="v37-diag-card"><small>RECENT ERRORS</small><pre class="v37-diag-pre">'+errorText.replace(/[&<>]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;"}[c]})+'</pre></div>'+
+    '<div class="v37-diag-actions"><button type="button" data-v37-diag-refresh>다시 검사</button><button type="button" data-v37-diag-heal>페이지 상태 복구</button><button type="button" data-v37-diag-copy>진단 정보 복사</button></div>';
+  window.__VSA37_LAST_DIAG=d
+}
+function ensureDiagnostics37(page){
+  if(!page)return;
+  if(!page.querySelector("#v37DiagnosticsBody")){
+    const body=document.createElement("div");body.id="v37DiagnosticsBody";body.className="v37-diagnostics";page.appendChild(body)
+  }
+}
+async function copyDiagnostics37(){
+  const d=window.__VSA37_LAST_DIAG||await collectDiagnostics37();
+  const textData=JSON.stringify(d,null,2);
+  try{await navigator.clipboard.writeText(textData);if(typeof toast==="function")toast("진단 정보를 복사했습니다.")}catch(_){
+    const ta=document.createElement("textarea");ta.value=textData;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();if(typeof toast==="function")toast("진단 정보를 복사했습니다.")
+  }
+}
+
 function makeCorePage37(view,title,desc,cls){
   const body=document.querySelector("#toolsModal .tools-body");
   if(!body)return null;
@@ -5164,6 +5303,8 @@ function ensureCorePages37(){
   const search=makeCorePage37("search29","검색","곡명·P명·보컬·태그·sm번호를 바로 검색합니다. 탐정 시스템과 분리된 일반 검색입니다.","v37-search-page");
   const universe=makeCorePage37("universe29","보카로 우주","선택한 곡을 중심으로 비슷한 곡을 연결해 탐색합니다.","v37-universe-page");
   const settings=makeCorePage37("settings29","설정","Worker 연결과 기술 설정을 관리합니다.","v37-settings-page");
+  const diagnostics=makeCorePage37("diagnostics37","진단 센터","앱 상태·라우트·모듈·서비스워커·최근 오류를 한 번에 확인합니다.","v37-diagnostics-page");
+  ensureDiagnostics37(diagnostics);
   moveInto37(document.getElementById("filterControls"),archive);
   moveInto37(document.getElementById("sourceControls"),archive);
   moveInto37(document.querySelector(".app > .summary"),archive);
@@ -5171,7 +5312,7 @@ function ensureCorePages37(){
   moveInto37(document.getElementById("resultsPanel"),search);
   moveInto37(document.getElementById("universePanel"),universe);
   moveInto37(document.getElementById("settingsPanel"),settings);
-  return {archive,search,universe,settings}
+  return {archive,search,universe,settings,diagnostics}
 }
 function openUniversePage37(song,force){
   if(!song)return;
@@ -5213,6 +5354,8 @@ function openDetective37(){
 function setToolView(name){
   document.querySelectorAll("#toolsTabs button").forEach(b=>b.classList.toggle("active",b.dataset.tool===name));
   document.querySelectorAll("#toolsModal .tool-view").forEach(v=>v.classList.toggle("active",v.dataset.toolView===name));
+  window.__VSA37_CURRENT_ROUTE=name;
+  const modal=document.getElementById("toolsModal");if(modal)modal.dataset.currentView=name
 }
 function mountToolsPage37(){
   const modal=$("#toolsModal"), app=document.querySelector(".app"), top=app?.querySelector(":scope > .topbar");
@@ -5228,7 +5371,7 @@ function dockForToolView37(view){
   if(view==="taste"||view==="tasteHub33"||view==="smart23"||view==="playlist24")return "taste";
   if(view==="searchHub33"||view==="search29")return "search";
   if(view==="libraryHub33"||view==="saved"||view==="history")return "library";
-  if(view==="hub37"||view==="gems"||view==="guide"||view==="explore33"||view==="producerDetail33"||view==="archive29"||view==="universe29"||view==="settings29"||view==="detective")return "explore";
+  if(view==="hub37"||view==="gems"||view==="guide"||view==="explore33"||view==="producerDetail33"||view==="archive29"||view==="universe29"||view==="settings29"||view==="diagnostics37"||view==="detective"||view==="v37RouteError")return "explore";
   return null;
 }
 function healPageLocks37(){
@@ -5246,7 +5389,12 @@ function openToolsModal(view="hub37"){
   document.body.classList.add("tools-open");
   document.body.style.removeProperty("overflow");
   document.documentElement.style.removeProperty("overflow");
-  setToolView(view);
+  if(!routeExists37(view)){
+    const err=ensureRouteError37(view);
+    if(err){setToolView("v37RouteError")}else setToolView(view)
+  }else setToolView(view);
+  const featureId=featureIdForRoute37(view);if(featureId)markFeatureUse37(featureId);
+  if(view==="diagnostics37")setTimeout(renderDiagnostics37,0);
   const dockView=dockForToolView37(view);
   if(dockView&&typeof setDock==="function")setDock(dockView);
   window.scrollTo({top:0,behavior:"auto"});
@@ -5543,7 +5691,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="37.3.1",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
+var VER="37.4.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -5598,6 +5746,7 @@ function ensureHub37(){
       '<button class="v37-hub-card" type="button" data-v37-open="universe29"><span class="v37-hub-icon">✺</span><span class="v37-hub-copy"><b>보카로 우주</b><small>한 곡을 중심으로 비슷한 곡 연결</small></span><span class="v37-hub-arrow">›</span></button>'+
       '<button class="v37-hub-card" type="button" data-v37-advanced="producer"><span class="v37-hub-icon">P</span><span class="v37-hub-copy"><b>프로듀서 허브</b><small>프로듀서별 탐색과 팔로우</small></span><span class="v37-hub-arrow">›</span></button>'+
       '<button class="v37-hub-card" type="button" data-v37-open="settings29"><span class="v37-hub-icon">⚙</span><span class="v37-hub-copy"><b>설정</b><small>Worker 연결과 기술 설정</small></span><span class="v37-hub-arrow">›</span></button>'+
+      '<button class="v37-hub-card" type="button" data-v37-open="diagnostics37"><span class="v37-hub-icon">＋</span><span class="v37-hub-copy"><b>진단 센터</b><small>멈춤·빈 화면·캐시·모듈 상태 확인</small></span><span class="v37-hub-arrow">›</span></button>'+
     '</div><div class="v37-hub-status" id="v37HubStatus">탐색 메뉴는 즉시 사용할 수 있습니다.</div>';
   body.prepend(v);
   return v
@@ -5679,6 +5828,22 @@ function init(){
     if(tierOpen){setTimeout(function(){ensureCorePages37();openToolsModal("search29")},40)}
     var tagIce=e.target.closest("#tagIcebergBtn");
     if(tagIce){setTimeout(function(){ensureCorePages37();openToolsModal("archive29")},40)}
+    var diagOpen=e.target.closest("[data-v37-open-diagnostics]");
+    if(diagOpen){ensureCorePages37();openToolsModal("diagnostics37");return}
+    var retryRoute=e.target.closest("[data-v37-retry-route]");
+    if(retryRoute){
+      var errPage=document.querySelector('[data-tool-view="v37RouteError"]'),failed=errPage&&errPage.dataset.failedRoute;
+      if(failed){ensureCorePages37();openToolsModal(failed)}
+      return
+    }
+    if(e.target.closest("[data-v37-diag-refresh]")){renderDiagnostics37();return}
+    if(e.target.closest("[data-v37-diag-heal]")){
+      healPageLocks37();document.body.classList.remove("v331-player-open");
+      document.querySelectorAll(".mobile-main-active").forEach(function(x){x.classList.remove("mobile-main-active")});
+      if(typeof toast==="function")toast("페이지 잠금 상태를 복구했습니다.");
+      renderDiagnostics37();return
+    }
+    if(e.target.closest("[data-v37-diag-copy]")){copyDiagnostics37();return}
     var adv=e.target.closest("[data-v37-advanced]");
     if(adv&&adv.dataset.v37Advanced==="producer"){openProducer37();return}
     if(e.target.id==="v37Refresh"||e.target.closest("[data-v37-refresh]")){refresh();return}
@@ -5694,15 +5859,16 @@ window.VSAHome37={render:render,refresh:refresh};
 <script id="v37FeatureLoader">
 (function(){
 "use strict";
-var jobs={};
+var jobs={},assetState={},groupState={};
 function load(src){
   if(jobs[src])return jobs[src];
+  assetState[src]="loading";
   jobs[src]=new Promise(function(resolve){
     var settled=false;
     var el=document.createElement("script");
     var finish=function(ok){
       if(settled)return;settled=true;
-      clearTimeout(timer);resolve(ok)
+      clearTimeout(timer);assetState[src]=ok?"loaded":"failed";resolve(ok)
     };
     var timer=setTimeout(function(){
       console.warn("feature load timeout",src);
@@ -5719,24 +5885,31 @@ async function seq(list){for(var i=0;i<list.length;i++)await load(list[i]);retur
 var groups={};
 function ensure(name){
   if(groups[name])return groups[name];
-  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=37.3.1","./detective-v12.js?v=37.3.1","./detective-v13.js?v=37.3.1","./detective-v14.js?v=37.3.1","./detective-v16.js?v=37.3.1"]);
-  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=37.3.1","./smart-v23.js?v=37.3.1","./playlist-v24.js?v=37.3.1"]);
-  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=37.3.1");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=37.3.1");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=37.3.1");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=37.3.1");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=37.3.1");
+  groupState[name]="loading";
+  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=37.4.0","./detective-v12.js?v=37.4.0","./detective-v13.js?v=37.4.0","./detective-v14.js?v=37.4.0","./detective-v16.js?v=37.4.0"]);
+  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=37.4.0","./smart-v23.js?v=37.4.0","./playlist-v24.js?v=37.4.0"]);
+  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=37.4.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=37.4.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=37.4.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=37.4.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=37.4.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
-    return seq(["./voca-app-v33.js?v=37.3.1","./voca-app-v33-1.js?v=37.3.1","./voca-app-v33-2.js?v=37.3.1","./voca-app-v33-3.js?v=37.3.1"]);
+    return seq(["./voca-app-v33.js?v=37.4.0","./voca-app-v33-1.js?v=37.4.0","./voca-app-v33-2.js?v=37.4.0","./voca-app-v33-3.js?v=37.4.0"]);
   });
   else groups[name]=Promise.resolve(false);
   groups[name]=Promise.resolve(groups[name]).then(function(v){
+    groupState[name]=v===false?"failed":"loaded";
     try{if(typeof healPageLocks37==="function")healPageLocks37()}catch(_){}
     return v
+  }).catch(function(err){
+    groupState[name]="failed";
+    try{if(typeof recordRuntimeError37==="function")recordRuntimeError37("feature",name+": "+(err&&err.message?err.message:String(err)),"")}catch(_){}
+    return false
   });
   return groups[name];
 }
 window.VSAEnsureFeatures=ensure;
+window.VSAFeatureLoaderStatus=function(){return{groups:Object.assign({},groupState),assets:Object.assign({},assetState)}};
 
 function prep(title){
   var body=document.querySelector("#toolsModal .tools-body");
