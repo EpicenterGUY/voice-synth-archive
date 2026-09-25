@@ -1360,6 +1360,21 @@ body.v37-ready .v37-search-page .results-toolbar{border:1px solid #18393e;border
 .v37-ice-pick{margin-top:9px}.v37-ice-pick article{display:grid;grid-template-columns:84px minmax(0,1fr);gap:10px;padding:9px;border:1px solid #21464b;border-radius:13px;background:#06171b}.v37-ice-pick img{width:84px;aspect-ratio:16/9;object-fit:cover;border-radius:9px;background:#0b282d}.v37-ice-pick b{display:block;color:#eafaf7;font-size:9px}.v37-ice-pick small{display:block;margin-top:4px;color:#769a96;font-size:7px}
 @media(max-width:699px){.v37-producer-controls{grid-template-columns:1fr 1fr}.v37-producer-controls button{grid-column:1/-1}.v37-ice-pick article{grid-template-columns:72px minmax(0,1fr)}.v37-ice-pick img{width:72px}}
 @media(max-width:390px){.v37-producer-controls{grid-template-columns:1fr}}
+.v37-vocal-rank-controls{display:grid;grid-template-columns:1.2fr 1fr 1fr auto;gap:7px;align-items:end;margin:10px 0}
+.v37-vocal-rank-controls label{color:#759895;font-size:7px}.v37-vocal-rank-controls select,.v37-vocal-rank-controls input{width:100%;min-height:40px;margin-top:4px;border:1px solid #285159;border-radius:10px;background:#06171c;color:#e9fbf7;padding:0 8px;font-size:8px}
+.v37-vocal-rank-controls button{min-height:40px;padding:0 13px;border:0;border-radius:11px;background:linear-gradient(135deg,#66ddd2,#7688f5);color:#061417;font-size:8px;font-weight:950}
+.v37-vocal-rank-note{margin:8px 0;padding:9px 10px;border:1px solid #20464c;border-radius:12px;background:#071b20;color:#739894;font-size:7px;line-height:1.55}
+.v37-vocal-rank-tabs{display:flex;gap:6px;overflow-x:auto;padding:2px 0 7px;scrollbar-width:none}.v37-vocal-rank-tabs::-webkit-scrollbar{display:none}
+.v37-vocal-rank-tabs button{flex:0 0 auto;min-height:34px;padding:0 11px;border:1px solid #285159;border-radius:999px;background:#09252b;color:#88aaa6;font-size:8px;font-weight:900}.v37-vocal-rank-tabs button.active{background:#17464c;color:#effffb;border-color:#4d8c89}
+.v37-vocal-rank-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:8px 0}.v37-vocal-rank-summary div{padding:9px;border:1px solid #21464c;border-radius:12px;background:#071b20}.v37-vocal-rank-summary small{display:block;color:#678d89;font-size:7px}.v37-vocal-rank-summary b{display:block;margin-top:3px;color:#e9fbf7;font-size:12px}
+.v37-vocal-rank-list{display:flex;flex-direction:column;gap:6px}.v37-vocal-rank-row{display:grid;grid-template-columns:42px minmax(0,1fr) 74px;gap:9px;align-items:center;padding:9px 10px;border:1px solid #1e4248;border-radius:13px;background:#071c21}
+.v37-vocal-rank-num{font-size:12px;font-weight:950;color:#76dcd3;text-align:center}.v37-vocal-rank-main{min-width:0}.v37-vocal-rank-main b{display:block;color:#eafbf8;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.v37-vocal-rank-main small{display:block;margin-top:3px;color:#6e938f;font-size:7px;line-height:1.35}.v37-vocal-rank-score{text-align:right}.v37-vocal-rank-score b{display:block;font-size:12px;color:#dff8f4}.v37-vocal-rank-score small{display:block;color:#668b88;font-size:6px}
+.v37-engine-badge{display:inline-flex;margin-left:5px;padding:2px 5px;border:1px solid #2b565d;border-radius:999px;color:#79c7bf;font-size:6px;vertical-align:1px}
+.v37-vocal-unseen{opacity:.62}.v37-vocal-unseen .v37-vocal-rank-num{color:#526f6c}
+.v37-rank-more{width:100%;min-height:38px;margin-top:8px;border:1px solid #285159;border-radius:11px;background:#09252b;color:#cbe7e3;font-size:8px;font-weight:900}
+.v37-ice-analysis{margin-top:10px}.v37-analysis-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.v37-analysis-card{padding:10px;border:1px solid #21464c;border-radius:13px;background:#071a1f}.v37-analysis-card b{display:block;color:#e6faf7;font-size:10px}.v37-analysis-card small{display:block;margin-top:3px;color:#6c918d;font-size:7px}.v37-bar{height:6px;margin-top:7px;border-radius:999px;background:#0c3036;overflow:hidden}.v37-bar i{display:block;height:100%;background:linear-gradient(90deg,#55d4cb,#7986ef)}
+@media(max-width:699px){.v37-vocal-rank-controls{grid-template-columns:1fr 1fr}.v37-vocal-rank-controls button{grid-column:1/-1}.v37-vocal-rank-summary{grid-template-columns:1fr 1fr}.v37-vocal-rank-row{grid-template-columns:34px minmax(0,1fr) 64px}.v37-analysis-grid{grid-template-columns:1fr}}
+
 
 
 @media(max-width:699px){.v37-hub-grid{grid-template-columns:1fr}.v37-hub-card{min-height:80px}.v37-native-head h2{font-size:20px}}
@@ -1576,7 +1591,7 @@ body.v37-ready .v37-search-page .results-toolbar{border:1px solid #18393e;border
     </details>
   </section>
 
-  <div class="footer">v37.6.0 · 19금 필터 · 프로듀서 발굴 · 빙산 심해탐사 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v37.7.0 · 원곡 전용 발굴 · 보컬 순위표 · 빙산 분석 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -2556,6 +2571,46 @@ function strictSourceProof37(song,mode=state.sourceMode){
   const matched=proof.find(function(t){return tagSet.has(normalizeSourceTag37(t))});
   return {ok:!!matched,tag:matched||"",mode:mode}
 }
+
+function discoveryOriginalTags37(mode=state.sourceMode){
+  if(mode==="vocaloid_all"||mode==="original_common"||mode==="original_union")return ORIGINAL_TAGS;
+  if(mode==="utau_all"||mode==="utau_union")return UTAU_ORIGINAL_TAGS;
+  if(mode==="synthv_all"||mode==="synthv_union")return SYNTHV_ORIGINAL_TAGS;
+  if(mode==="cevio_union")return CEVIO_ORIGINAL_TAGS;
+  if(mode==="voisona_union")return VOISONA_ORIGINAL_TAGS;
+  if(mode==="neutrino_union")return NEUTRINO_ORIGINAL_TAGS;
+  if(mode==="voicevox_union")return VOICEVOX_ORIGINAL_TAGS;
+  if(mode==="ace_union")return ACE_ORIGINAL_TAGS;
+  if(mode==="voice_synth_union")return VOICE_SYNTH_ORIGINAL_TAGS;
+  if(mode==="all_voice_synth_union")return ALL_VOICE_SYNTH_ORIGINAL_TAGS;
+  // custom_tag는 장르/분위기 보조조건으로만 취급하고, 원곡 증거는 별도로 요구한다.
+  if(mode==="custom_tag")return ALL_VOICE_SYNTH_ORIGINAL_TAGS;
+  return ALL_VOICE_SYNTH_ORIGINAL_TAGS
+}
+function discoveryOriginalProof37(song,mode=state.sourceMode){
+  const tags=parseTags(song&&song.tags).map(normalizeSourceTag37);
+  const set=new Set(tags);
+  const proof=discoveryOriginalTags37(mode);
+  const matched=proof.find(function(t){return set.has(normalizeSourceTag37(t))});
+  if(!matched)return {ok:false,tag:"",mode:mode};
+  if(mode==="custom_tag"){
+    const custom=normalizeSourceTag37(state.customTag||"");
+    if(custom&&!set.has(custom))return {ok:false,tag:matched,mode:mode}
+  }
+  return {ok:true,tag:matched,mode:mode}
+}
+function filterDiscoveryOriginalRows37(rows,context,mode=state.sourceMode){
+  const list=Array.isArray(rows)?rows:[],kept=[],rejected=[];
+  for(const song of list){
+    if(discoveryOriginalProof37(song,mode).ok)kept.push(song);else rejected.push(song)
+  }
+  const key=(context||"discovery")+"_original";
+  state.sourceRejectStats[key]={checked:list.length,kept:kept.length,rejected:rejected.length,at:Date.now()};
+  if(rejected.length)console.info("[discovery-original]",context,"rejected",rejected.length);
+  return {rows:kept,rejected:rejected.length,rejectedRows:rejected}
+}
+window.VSA37DiscoveryOriginalRows=filterDiscoveryOriginalRows37;
+
 function strictFilterSourceRows37(rows,context){
   const list=Array.isArray(rows)?rows:[];
   const kept=[],rejected=[];
@@ -2705,6 +2760,9 @@ const state = {
   adultRejectStats:{},
   producerDiscovery:[],
   producerDiscoveryBusy:false,
+  vocalRankRows:[],
+  vocalRankBusy:false,
+  vocalRankMeta:null,
   guideLevel:"beginner",
   guideSongs:[],
   tasteSongs:[],
@@ -4492,7 +4550,7 @@ async function buildGuide(){
   const level=state.guideLevel,preset=GUIDE_PRESETS[level],count=+$("#guideCount").value||12,era=eraBounds($("#guideEra").value),tag=$("#guideTag").value.trim();
   state.busy=true;$("#buildGuideBtn").disabled=true;$("#guideGrid").innerHTML='<div class="discovery-empty">추천 코스를 만드는 중…</div>';
   try{
-    const uniq=new Map();const batches=await mapLimit(preset.sorts,3,async sort=>{try{return(await fetchGuideBatch(sort,preset,tag)).data||[]}catch{return[]}});for(const s of batches.flat())if(inEra(s,era))uniq.set(s.contentId,s);let rows=filterAdultRows37(strictFilterSourceRows37([...uniq.values()],"guide").rows,"guide").rows;if(!rows.length)throw new Error("필터 조건을 통과한 음성합성 원곡을 찾지 못했습니다.");
+    const uniq=new Map();const batches=await mapLimit(preset.sorts,3,async sort=>{try{return(await fetchGuideBatch(sort,preset,tag)).data||[]}catch{return[]}});for(const s of batches.flat())if(inEra(s,era))uniq.set(s.contentId,s);let rows=filterAdultRows37(filterDiscoveryOriginalRows37([...uniq.values()],"guide").rows,"guide").rows;if(!rows.length)throw new Error("필터 조건을 통과한 음성합성 원곡을 찾지 못했습니다.");
     const maxV=Math.max(...rows.map(s=>+s.viewCounter||0),1),maxM=Math.max(...rows.map(s=>+s.mylistCounter||0),1),maxL=Math.max(...rows.map(s=>+s.likeCounter||0),1);
     const scored=rows.map(s=>{const V=+s.viewCounter||0,M=+s.mylistCounter||0,L=+s.likeCounter||0,C=+s.commentCounter||0;let score;if(level==="beginner")score=.58*Math.log1p(V)/Math.log1p(maxV)+.24*Math.log1p(M)/Math.log1p(maxM)+.18*Math.log1p(L)/Math.log1p(maxL);else if(level==="intermediate")score=.34*Math.log1p(V)/Math.log1p(maxV)+.30*Math.log1p(M)/Math.log1p(maxM)+.16*Math.log1p(L)/Math.log1p(maxL)+.20*clamp01((M+2)/(V+900)*45);else score=.18*Math.log1p(V)/Math.log1p(maxV)+.36*clamp01((M+2)/(V+900)*55)+.18*clamp01((C+3)/(V+900)*30)+.28*(1-Math.log1p(V)/Math.log1p(maxV));return{song:s,score}}).sort((a,b)=>b.score-a.score);
     state.guideSongs=diversifySongs(scored,count);renderGuide(preset);
@@ -4509,7 +4567,7 @@ async function fetchTasteTag(tag,min,max){const nf={viewCounter:{gte:min}};if(ma
 function tasteMatchScore(song,terms,era,fame){const raw=(String(song.title||"")+" "+parseTags(song.tags).join(" ")).toLowerCase();let matched=0,weighted=0;for(const t of terms){if(raw.includes(t.toLowerCase())){matched++;weighted+=tagWeight(t)}}const termScore=terms.length?matched/terms.length:.35,tagScore=terms.length?clamp01(weighted/(terms.length*2.5)):.35,V=+song.viewCounter||0,M=+song.mylistCounter||0,L=+song.likeCounter||0,reaction=clamp01(((M+2)/(V+900)*50)+((L+3)/(V+1200)*18)),eraScore=inEra(song,era)?1:0,fb=fameBounds(fame),fameScore=(V>=fb[0]&&(fb[1]==null||V<=fb[1]))?1:.15;return.42*termScore+.20*tagScore+.18*reaction+.10*eraScore+.10*fameScore}
 async function recommendTaste(){
   if(state.busy)return;if(!relayBase()){toast("먼저 Worker를 연결하세요.");return}const parsed=parseTastePrompt(),fame=$("#tasteFame").value,era=eraBounds($("#tasteEra").value),fb=fameBounds(fame);state.busy=true;$("#tasteRecommendBtn").disabled=true;$("#tasteGrid").innerHTML='<div class="discovery-empty">취향에 맞는 곡을 찾는 중…</div>';
-  try{const uniq=new Map();if(parsed.terms.length){const batches=await mapLimit(parsed.terms.slice(0,6),3,async t=>fetchTasteTag(t,fb[0],fb[1]));for(const s of batches.flat())uniq.set(s.contentId,s)}if(uniq.size<15){const nf={viewCounter:{gte:fb[0]}};if(fb[1]!=null)nf.viewCounter.lte=fb[1];for(const sort of["-mylistCounter","-viewCounter","-commentCounter"]){try{const d=await fetchNico({year:"all",limit:100,offset:0,mode:"ranking",sort,applyYear:false,applyTier:false,numericFilters:nf});for(const s of(d.data||[]))uniq.set(s.contentId,s)}catch{}}}let rows=filterAdultRows37(strictFilterSourceRows37([...uniq.values()],"taste").rows,"taste").rows.filter(s=>!era||inEra(s,era));if(!rows.length)throw new Error("필터 조건을 통과한 음성합성 원곡이 없습니다.");const scored=rows.map(s=>({song:s,score:tasteMatchScore(s,parsed.terms,era,fame)})).sort((a,b)=>b.score-a.score);state.tasteSongs=diversifySongs(scored,16);renderTaste(parsed)}catch(e){$("#tasteGrid").innerHTML=`<div class="discovery-empty">추천 실패<br><small>${esc(String(e?.message||e))}</small></div>`}finally{state.busy=false;$("#tasteRecommendBtn").disabled=false}
+  try{const uniq=new Map();if(parsed.terms.length){const batches=await mapLimit(parsed.terms.slice(0,6),3,async t=>fetchTasteTag(t,fb[0],fb[1]));for(const s of batches.flat())uniq.set(s.contentId,s)}if(uniq.size<15){const nf={viewCounter:{gte:fb[0]}};if(fb[1]!=null)nf.viewCounter.lte=fb[1];for(const sort of["-mylistCounter","-viewCounter","-commentCounter"]){try{const d=await fetchNico({year:"all",limit:100,offset:0,mode:"ranking",sort,applyYear:false,applyTier:false,numericFilters:nf});for(const s of(d.data||[]))uniq.set(s.contentId,s)}catch{}}}let rows=filterAdultRows37(filterDiscoveryOriginalRows37([...uniq.values()],"taste").rows,"taste").rows.filter(s=>!era||inEra(s,era));if(!rows.length)throw new Error("필터 조건을 통과한 음성합성 원곡이 없습니다.");const scored=rows.map(s=>({song:s,score:tasteMatchScore(s,parsed.terms,era,fame)})).sort((a,b)=>b.score-a.score);state.tasteSongs=diversifySongs(scored,16);renderTaste(parsed)}catch(e){$("#tasteGrid").innerHTML=`<div class="discovery-empty">추천 실패<br><small>${esc(String(e?.message||e))}</small></div>`}finally{state.busy=false;$("#tasteRecommendBtn").disabled=false}
 }
 function renderTaste(parsed){$("#tasteSummary").innerHTML=`해석한 취향: <b>${parsed.terms.length?parsed.terms.map(esc).join(" · "):"특정 태그 없음"}</b> · ${state.tasteSongs.length}곡 추천`;$("#tasteGrid").innerHTML=state.tasteSongs.map((x,i)=>{const s=x.song,tags=informativeTags(s).slice(0,4);return`<article class="discovery-card"><img src="${esc(s.thumbnailUrl||"")}" loading="lazy" onerror="this.style.visibility='hidden'"><div class="discovery-body"><a class="discovery-title" href="https://www.nicovideo.jp/watch/${encodeURIComponent(s.contentId)}" target="_blank" rel="noopener">${i+1}. ${esc(s.title||s.contentId)}</a><div class="discovery-meta"><span>취향 일치 ${(x.score*100).toFixed(1)}%</span><span>조회 ${fmt(s.viewCounter||0)}</span><span>${songYear(s)||"-"}년</span></div><div class="discovery-tags">${tags.map(t=>`<span class="discovery-tag">${esc(t)}</span>`).join("")}</div><div class="gem-actions"><button class="mini-btn" onclick="openTasteUniverse('${esc(s.contentId)}')">비슷한 곡</button><button class="mini-btn" onclick="window.open('https://www.nicovideo.jp/watch/${encodeURIComponent(s.contentId)}','_blank','noopener')">듣기</button></div></div></article>`}).join("")}
 function openTasteUniverse(id){const x=state.tasteSongs.find(x=>x.song.contentId===id);if(!x)return;openUniversePage37(x.song,false)}
@@ -4634,7 +4692,7 @@ async function buildGemCandidatePool(){
   });
   await Promise.all(tasks);
 
-  let verified=strictFilterSourceRows37([...unique.values()],"gems");
+  let verified=filterDiscoveryOriginalRows37([...unique.values()],"gems");
   let adultChecked=filterAdultRows37(verified.rows,"gems");
   let pool=adultChecked.rows.filter(s=>modeEligible(s,mode));
   if(!pool.length) throw new Error("음성합성 원곡 태그가 확인된 후보곡을 찾지 못했습니다.");
@@ -4643,7 +4701,7 @@ async function buildGemCandidatePool(){
   try{
     const sample=await fetchGemBatch("+viewCounter",preset.minViews,maxViews,tag,useYear);
     for(const s of (sample.data||[])) unique.set(gemPoolKey(s),s);
-    verified=strictFilterSourceRows37([...unique.values()],"gems");
+    verified=filterDiscoveryOriginalRows37([...unique.values()],"gems");
     adultChecked=filterAdultRows37(verified.rows,"gems");
     pool=adultChecked.rows.filter(s=>modeEligible(s,mode));
   }catch{}
@@ -4905,7 +4963,7 @@ async function buildUniverse(center,force=false){
 
     const batches=await mapLimit(queryTags,3,tag=>fetchTagCandidates(tag,40));
     const map=new Map();
-    const universeVerified=strictFilterSourceRows37(batches.flat(),"universe");
+    const universeVerified=filterDiscoveryOriginalRows37(batches.flat(),"universe");
     const universeSafe=filterAdultRows37(universeVerified.rows,"universe");
     for(const rows of universeSafe.rows){
       if(rows.contentId===center.contentId) continue;
@@ -5296,6 +5354,7 @@ function renderSongs(){
     </div>`;
   }).join("");
   setupRankObserver();
+  renderIcebergAnalysis37();
 }
 function queueRankById(id){
   const song=state.songs.find(x=>x.contentId===id);
@@ -5320,6 +5379,7 @@ const VSA37_FEATURES={
   universe:{id:"universe",label:"보카로 우주",route:"universe29",dock:"explore",lazy:"universe"},
   producer:{id:"producer",label:"프로듀서 허브",route:"explore33",dock:"explore",lazy:"v33"},
   producerDiscovery:{id:"producerDiscovery",label:"프로듀서 발굴",route:"producerDiscover37",dock:"explore",lazy:null},
+  vocalRank:{id:"vocalRank",label:"보컬 · 음원 순위표",route:"vocalRank37",dock:"explore",lazy:null},
   search:{id:"search",label:"일반 검색",route:"search29",dock:"search",lazy:null},
   library:{id:"library",label:"보관함",route:"library22",dock:"library",lazy:"personal"},
   settings:{id:"settings",label:"설정",route:"settings29",dock:"explore",lazy:null},
@@ -5396,7 +5456,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:"37.6.0",
+    version:"37.7.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -5513,7 +5573,7 @@ async function runProducerDiscovery37(){
     });
     const uniq=new Map();
     batches.flat().forEach(function(song){if(song&&song.contentId)uniq.set(song.contentId,song)});
-    let rows=strictFilterSourceRows37([...uniq.values()],"producer_discovery").rows;
+    let rows=filterDiscoveryOriginalRows37([...uniq.values()],"producer_discovery").rows;
     rows=filterAdultRows37(rows,"producer_discovery").rows;
     const map=new Map();
     rows.forEach(function(song){
@@ -5592,7 +5652,7 @@ function ensureIcebergExtras37(page){
   const ice=document.getElementById("icebergPanel");
   if(ice&&ice.parentElement===page)page.insertBefore(box,ice);else page.appendChild(box);
   box.innerHTML='<div class="v37-extra-head"><div><b>심해 탐사</b><small>현재 모집단에서 1만 조회 이하의 원곡을 즉석에서 한 곡 골라봅니다. 19금 필터가 그대로 적용됩니다.</small></div></div>'+
-    '<div class="v37-ice-actions"><button type="button" data-v37-abyss="random">랜덤 심해 1곡</button><button type="button" data-v37-abyss="reaction">반응 좋은 심층 1곡</button></div><div class="v37-ice-pick" id="v37IcePick"></div>'
+    '<div class="v37-ice-actions"><button type="button" data-v37-abyss="random">랜덤 심해 1곡</button><button type="button" data-v37-abyss="reaction">반응 좋은 심층 1곡</button><button type="button" data-v37-feature-id="vocalRank">보컬별 순위표</button></div><div class="v37-ice-pick" id="v37IcePick"></div><div class="v37-ice-analysis" id="v37IceAnalysis"></div>'
 }
 async function pickAbyss37(mode){
   if(!relayBase()){toast("먼저 Worker를 연결하세요.");return}
@@ -5600,7 +5660,7 @@ async function pickAbyss37(mode){
   try{
     const sort=mode==="reaction"?"-mylistCounter":"+viewCounter";
     const d=await fetchNico({year:"all",limit:100,offset:Math.floor(Math.random()*3)*100,mode:"ranking",sort:sort,applyYear:false,applyTier:false,numericFilters:{viewCounter:{gte:50,lte:9999}}});
-    let rows=strictFilterSourceRows37(d.data||[],"abyss_pick").rows;
+    let rows=filterDiscoveryOriginalRows37(d.data||[],"abyss_pick").rows;
     rows=filterAdultRows37(rows,"abyss_pick").rows;
     if(!rows.length)throw new Error("조건을 통과한 심해곡이 없습니다.");
     const song=mode==="reaction"?rows.slice().sort(function(a,b){return((+b.mylistCounter||0)+2)/(+b.viewCounter||1)-(((+a.mylistCounter||0)+2)/(+a.viewCounter||1))})[0]:rows[Math.floor(Math.random()*rows.length)];
@@ -5608,6 +5668,189 @@ async function pickAbyss37(mode){
     if(box)box.dataset.songId=song.contentId;
     window.__VSA37_ABYSS_SONG=song
   }catch(e){if(box)box.innerHTML='<div class="v37-diag-card"><b>탐사 실패</b><p>'+esc(String(e?.message||e))+'</p></div>'}
+}
+
+
+const VOCALOID_VOICEBANK_SEEDS37=[
+ "初音ミク","鏡音リン","鏡音レン","巡音ルカ","MEIKO","KAITO","GUMI","神威がくぽ","IA","Lily","MAYU","VY1","VY2","Mew","CUL","SeeU","蒼姫ラピス","兎眠りおん","結月ゆかり","猫村いろは","歌愛ユキ","氷山キヨテル","SF-A2開発コードmiki","miki","音街ウナ","v_flower","flower","鳴花ヒメ","鳴花ミコト","洛天依","Oliver","YOHIOloid","DEX","DAINA","Rana","東北ずん子","杏音鳥音","ZOLA PROJECT","CYBER DIVA","CYBER SONGMAN","Sachiko","アルスロイド","Fukase","音街ウナ"
+];
+const UTAU_VOICEBANK_SEEDS37=[
+ "重音テト","デフォ子","唄音ウタ","波音リツ","桃音モモ","欲音ルコ","雪歌ユフ","春歌ナナ","健音テイ","松田っぽいよ","闇音レンリ","雨歌エル","カゼヒキ","ゲキヤク","足立レイ","ナースロボ＿タイプＴ","ナースロボ_タイプT","名前シレズ","滲音かこい","暗鳴ニュイ","櫻花アリス","薪宮風季","京音ロン","穂歌ソラ","和音マコ","天音ルナ","揺歌サユ","轟栄一","轟栄二","ルーク","ちゃろえもん","空花ルア","塩音ソル","塩音ルト","戯白メリー","逆音セシル","葛駄夜音","葛駄楼","右心フルアラ"
+];
+const SYNTHV_VOICEBANK_SEEDS37=["重音テトSV","小春六花","夏色花梨","花隈千冬","宮舞モカ","弦巻マキ","琴葉茜","琴葉葵","京町セイカ","ついなちゃん","Saki","Mai","Ryo","SOLARIA","Eleanor Forte","Kevin","Natalie","ANRI"];
+const CEVIO_VOICEBANK_SEEDS37=["可不","星界","裏命","狐子","羽累","さとうささら","ONE"];
+const VOISONA_VOICEBANK_SEEDS37=["知声","機流音","双葉湊音","MYK-IV","AiSuu"];
+const NEUTRINO_VOICEBANK_SEEDS37=["東北きりたん","めろう","ナクモ","東北ずん子","東北イタコ","No.7","四国めたん","ずんだもん"];
+
+function uniqueNames37(xs){
+  const m=new Map();for(const x of xs){const k=normalizeSourceTag37(x);if(k&&!m.has(k))m.set(k,x)}return [...m.values()]
+}
+function vocalRankSeed37(family){
+  if(family==="vocaloid")return uniqueNames37(VOCALOID_VOICEBANK_SEEDS37);
+  if(family==="utau")return uniqueNames37(UTAU_VOICEBANK_SEEDS37);
+  if(family==="synthv")return uniqueNames37(SYNTHV_VOICEBANK_SEEDS37);
+  if(family==="cevio")return uniqueNames37(CEVIO_VOICEBANK_SEEDS37);
+  if(family==="voisona")return uniqueNames37(VOISONA_VOICEBANK_SEEDS37);
+  if(family==="neutrino")return uniqueNames37(NEUTRINO_VOICEBANK_SEEDS37);
+  return uniqueNames37([].concat(VOCALOID_VOICEBANK_SEEDS37,UTAU_VOICEBANK_SEEDS37,SYNTHV_VOICEBANK_SEEDS37,CEVIO_VOICEBANK_SEEDS37,VOISONA_VOICEBANK_SEEDS37,NEUTRINO_VOICEBANK_SEEDS37))
+}
+function vocalRankOriginalTags37(family){
+  if(family==="vocaloid")return ORIGINAL_TAGS;
+  if(family==="utau")return UTAU_ORIGINAL_TAGS;
+  if(family==="synthv")return SYNTHV_ORIGINAL_TAGS;
+  if(family==="cevio")return CEVIO_ORIGINAL_TAGS;
+  if(family==="voisona")return VOISONA_ORIGINAL_TAGS;
+  if(family==="neutrino")return NEUTRINO_ORIGINAL_TAGS;
+  return [...new Set([].concat(ORIGINAL_TAGS,UTAU_ORIGINAL_TAGS,SYNTHV_ORIGINAL_TAGS,CEVIO_ORIGINAL_TAGS,VOISONA_ORIGINAL_TAGS,NEUTRINO_ORIGINAL_TAGS))]
+}
+function engineForVocal37(name,familyHint){
+  const n=normalizeSourceTag37(name);
+  function has(list){return list.some(function(x){return normalizeSourceTag37(x)===n})}
+  if(has(UTAU_VOICEBANK_SEEDS37))return "UTAU";
+  if(has(VOCALOID_VOICEBANK_SEEDS37))return "VOCALOID";
+  if(has(SYNTHV_VOICEBANK_SEEDS37))return "SynthV";
+  if(has(CEVIO_VOICEBANK_SEEDS37))return "CeVIO";
+  if(has(VOISONA_VOICEBANK_SEEDS37))return "VoiSona";
+  if(has(NEUTRINO_VOICEBANK_SEEDS37))return "NEUTRINO";
+  return familyHint==="utau"?"UTAU":familyHint==="vocaloid"?"VOCALOID":familyHint==="synthv"?"SynthV":familyHint==="cevio"?"CeVIO":familyHint==="voisona"?"VoiSona":familyHint==="neutrino"?"NEUTRINO":"기타"
+}
+function vocalNamesFromSong37(song,family){
+  const tags=parseTags(song&&song.tags),seed=vocalRankSeed37(family),out=new Map();
+  for(const name of seed){
+    const n=normalizeSourceTag37(name);
+    if(tags.some(function(t){const x=normalizeSourceTag37(t);return x===n||x.startsWith(n+"オリジナル曲")||x.includes(n+"オリジナル曲")}))out.set(n,name)
+  }
+  for(const tag of tags){
+    const raw=String(tag||"").trim();
+    const m=raw.match(/^(.+?)オリジナル曲$/);
+    if(!m)continue;
+    let name=m[1].trim();
+    if(/^(VOCALOID|vocaloid|UTAU|utau|ＵＴＡＵ|SynthesizerV|SynthV|CeVIO|CeVIO_AI|VoiSona|NEUTRINO|VOICEVOX)$/i.test(name))continue;
+    if(/伝説入り|殿堂入り|神話入り/.test(name))continue;
+    if(name.length>1&&name.length<40)out.set(normalizeSourceTag37(name),name)
+  }
+  return [...out.values()]
+}
+function vocalPopularity37(song){
+  const v=+song.viewCounter||0,m=+song.mylistCounter||0,l=+song.likeCounter||0,c=+song.commentCounter||0;
+  return Math.min(1,((m+2)/(v+900))*32+((l+2)/(v+1200))*10+((c+2)/(v+900))*4)
+}
+function vocalRankScore37(x,max){
+  if(!x.sampleCount)return 0;
+  const view=Math.log1p(x.views)/Math.log1p(Math.max(10,max.maxViews||1));
+  const peak=Math.log1p(x.peakViews)/Math.log1p(Math.max(10,max.maxPeak||1));
+  const pop=Math.min(1,x.popularity/Math.max(.001,max.maxPopularity||1));
+  const catalog=Math.log1p(x.sampleCount)/Math.log1p(Math.max(2,max.maxCount||1));
+  // UTAU처럼 음원 수가 많은 생태계가 한 곡의 초대형 히트만으로 왜곡되지 않도록
+  // 누적 조회 + 반응률 + 확인된 곡 수 + 최고 히트를 함께 사용한다.
+  return 100*(.34*view+.28*pop+.22*catalog+.16*peak)
+}
+async function fetchVocalRankCorpus37(family,deep){
+  const tags=vocalRankOriginalTags37(family),chunks=chunkArray([...new Set(tags)],8);
+  const sorts=["-viewCounter","-mylistCounter","-commentCounter","-startTime","+viewCounter"];
+  const jobs=[];
+  for(const group of chunks){
+    const q=group.join(" OR ");
+    for(const sort of sorts)jobs.push({q,sort,offset:0});
+    if(deep)jobs.push({q,sort:"+viewCounter",offset:100});
+  }
+  const batches=await mapLimit(jobs,3,async function(job){
+    try{
+      const d=await fetchNico({year:"all",limit:100,offset:job.offset,mode:"ranking",sort:job.sort,applyYear:false,applyTier:false,overrideQuery:job.q,overrideTargets:"tagsExact"});
+      return d.data||[]
+    }catch(_){return[]}
+  });
+  const uniq=new Map();batches.flat().forEach(function(song){if(song&&song.contentId)uniq.set(song.contentId,song)});
+  let rows=[...uniq.values()];
+  // 순위표도 파생 영상이 아닌 원곡만 인정한다.
+  rows=filterAdultRows37(rows,"vocal_rank").rows;
+  const proofTags=vocalRankOriginalTags37(family).map(normalizeSourceTag37),proof=new Set(proofTags);
+  rows=rows.filter(function(song){return parseTags(song.tags).map(normalizeSourceTag37).some(function(t){return proof.has(t)})});
+  return rows
+}
+function buildVocalRankRows37(family,songs){
+  const seed=vocalRankSeed37(family),map=new Map();
+  seed.forEach(function(name){map.set(normalizeSourceTag37(name),{name:name,engine:engineForVocal37(name,family),views:0,peakViews:0,mylists:0,likes:0,comments:0,popularity:0,sampleCount:0,latest:0})});
+  songs.forEach(function(song){
+    const names=vocalNamesFromSong37(song,family),pop=vocalPopularity37(song),year=song.startTime?new Date(song.startTime).getFullYear():0;
+    names.forEach(function(name){
+      const key=normalizeSourceTag37(name);
+      let x=map.get(key)||{name:name,engine:engineForVocal37(name,family),views:0,peakViews:0,mylists:0,likes:0,comments:0,popularity:0,sampleCount:0,latest:0};
+      x.views+=+song.viewCounter||0;x.peakViews=Math.max(x.peakViews,+song.viewCounter||0);x.mylists+=+song.mylistCounter||0;x.likes+=+song.likeCounter||0;x.comments+=+song.commentCounter||0;x.popularity+=pop;x.sampleCount++;x.latest=Math.max(x.latest,year);map.set(key,x)
+    })
+  });
+  const vals=[...map.values()],max={
+    maxViews:Math.max(1,...vals.map(function(x){return x.views})),
+    maxPeak:Math.max(1,...vals.map(function(x){return x.peakViews})),
+    maxPopularity:Math.max(.001,...vals.map(function(x){return x.popularity})),
+    maxCount:Math.max(1,...vals.map(function(x){return x.sampleCount}))
+  };
+  vals.forEach(function(x){x.score=vocalRankScore37(x,max)});
+  return vals.sort(function(a,b){
+    if(!!a.sampleCount!==!!b.sampleCount)return a.sampleCount?-1:1;
+    return b.score-a.score||b.views-a.views||a.name.localeCompare(b.name,"ja")
+  })
+}
+async function runVocalRank37(){
+  if(state.vocalRankBusy)return;
+  if(!relayBase()){toast("먼저 Worker를 연결하세요.");return}
+  const family=document.getElementById("v37VocalRankFamily")?.value||"combined";
+  const depth=document.getElementById("v37VocalRankDepth")?.value||"normal";
+  const status=document.getElementById("v37VocalRankStatus"),btn=document.getElementById("v37VocalRankRun");
+  state.vocalRankBusy=true;if(btn)btn.disabled=true;if(status)status.textContent="원곡만 수집해 보컬/음원 태그를 집계하는 중…";
+  try{
+    const key="vsa37VocalRank:"+family+":"+depth+":"+adultFilterMode37(),cached=JSON.parse(localStorage.getItem(key)||"null");
+    let songs;
+    if(cached&&Date.now()-cached.at<21600000){songs=cached.songs||[]}else{
+      songs=await fetchVocalRankCorpus37(family,depth==="deep");
+      try{localStorage.setItem(key,JSON.stringify({at:Date.now(),songs:songs.slice(0,2500)}))}catch(_){}
+    }
+    state.vocalRankRows=buildVocalRankRows37(family,songs);
+    state.vocalRankMeta={family:family,songs:songs.length,at:Date.now(),depth:depth};
+    renderVocalRank37();
+    if(status)status.textContent="원곡 "+fmt(songs.length)+"곡 표본 · 등록 목록 + 실제 원곡 태그에서 검출된 보컬을 합쳐 순위를 계산했습니다.";
+  }catch(e){
+    if(status)status.textContent="순위 생성 실패: "+String(e?.message||e)
+  }finally{state.vocalRankBusy=false;if(btn)btn.disabled=false}
+}
+function renderVocalRank37(){
+  const list=document.getElementById("v37VocalRankList"),sum=document.getElementById("v37VocalRankSummary"),q=(document.getElementById("v37VocalRankSearch")?.value||"").trim().toLowerCase();
+  if(!list)return;
+  const rows=state.vocalRankRows.filter(function(x){return !q||x.name.toLowerCase().includes(q)||x.engine.toLowerCase().includes(q)});
+  const active=rows.filter(function(x){return x.sampleCount>0}),zero=rows.length-active.length;
+  if(sum)sum.innerHTML='<div><small>순위 항목</small><b>'+fmt(rows.length)+'</b></div><div><small>원곡 검출</small><b>'+fmt(active.length)+'</b></div><div><small>표본 원곡</small><b>'+fmt(state.vocalRankMeta?.songs||0)+'</b></div><div><small>표본 부족</small><b>'+fmt(zero)+'</b></div>';
+  if(!rows.length){list.innerHTML='<div class="v37-diag-card"><b>검색 결과 없음</b></div>';return}
+  list.innerHTML=rows.map(function(x,i){
+    const rank=x.sampleCount?String(i+1):"—";
+    return '<div class="v37-vocal-rank-row '+(x.sampleCount?"":"v37-vocal-unseen")+'"><div class="v37-vocal-rank-num">'+rank+'</div><div class="v37-vocal-rank-main"><b>'+esc(x.name)+'<span class="v37-engine-badge">'+esc(x.engine)+'</span></b><small>'+(x.sampleCount?('표본 '+x.sampleCount+'곡 · 누적 조회 '+fmt(x.views)+' · 최고 '+fmt(x.peakViews)+' · 최근 '+(x.latest||"-")):'등록 목록 · 현재 스캔 표본 없음')+'</small></div><div class="v37-vocal-rank-score"><b>'+x.score.toFixed(1)+'</b><small>종합점수</small></div></div>'
+  }).join("")
+}
+function ensureVocalRank37(page){
+  if(!page||page.querySelector("#v37VocalRankBody"))return;
+  const body=document.createElement("div");body.id="v37VocalRankBody";
+  body.innerHTML='<div class="v37-vocal-rank-note">순위는 단순 조회수 순이 아닙니다. <b>누적 조회 34% + 반응률 28% + 확인된 원곡 수 22% + 최고 히트 16%</b>를 합산합니다. 특히 UTAU처럼 음원이 매우 많은 생태계에서 한 곡의 대형 히트만으로 전체 순위가 과도하게 치우치는 것을 줄였습니다. 파생/MMD/커버/歌ってみた 영상은 원곡 증거 태그가 없으면 집계하지 않습니다.</div>'+
+    '<div class="v37-vocal-rank-controls"><label>순위표<select id="v37VocalRankFamily"><option value="combined">VOCALOID + UTAU + 기타 음성합성</option><option value="vocaloid">VOCALOID</option><option value="utau">UTAU</option><option value="synthv">Synthesizer V</option><option value="cevio">CeVIO / VoiSona 계열 분리 보기</option><option value="voisona">VoiSona</option><option value="neutrino">NEUTRINO</option></select></label>'+
+    '<label>스캔 깊이<select id="v37VocalRankDepth"><option value="normal">표준</option><option value="deep">깊게 · 더 많은 심해곡</option></select></label>'+
+    '<label>목록 검색<input id="v37VocalRankSearch" placeholder="미쿠, 테토, UTAU…"></label><button type="button" id="v37VocalRankRun">순위 생성 / 갱신</button></div>'+
+    '<div class="v37-vocal-rank-summary" id="v37VocalRankSummary"></div><div class="v37-producer-status" id="v37VocalRankStatus">원곡 표본을 수집하면 모든 등록 보컬과 스캔에서 새로 검출된 보컬을 함께 표시합니다.</div><div class="v37-vocal-rank-list" id="v37VocalRankList"></div>';
+  page.appendChild(body);
+  document.getElementById("v37VocalRankRun").onclick=runVocalRank37;
+  document.getElementById("v37VocalRankSearch").addEventListener("input",renderVocalRank37)
+}
+
+function icebergReactionScore37(song){
+  const v=+song.viewCounter||0,m=+song.mylistCounter||0,l=+song.likeCounter||0,c=+song.commentCounter||0;
+  return ((m+2)/(v+1000))*45+((l+2)/(v+1400))*12+((c+2)/(v+1000))*6
+}
+function renderIcebergAnalysis37(){
+  const box=document.getElementById("v37IceAnalysis");if(!box)return;
+  const rows=(state.songs||[]).filter(Boolean);
+  if(!rows.length){box.innerHTML='<div class="v37-analysis-card"><b>표본 대기</b><small>빙산 층이나 곡 목록을 불러오면 반응률·시대 분석이 여기에 표시됩니다.</small></div>';return}
+  const byEra=new Map(),react=rows.slice().sort(function(a,b){return icebergReactionScore37(b)-icebergReactionScore37(a)});
+  rows.forEach(function(song){const y=song.startTime?new Date(song.startTime).getFullYear():0,k=!y?"불명":y<=2012?"2007~12":y<=2018?"2013~18":y<=2022?"2019~22":"2023~";byEra.set(k,(byEra.get(k)||0)+1)});
+  const maxEra=Math.max(1,...byEra.values()),eraHtml=[...byEra.entries()].sort(function(a,b){return b[1]-a[1]}).map(function(x){return '<div class="v37-analysis-card"><b>'+x[0]+' · '+x[1]+'곡</b><small>현재 불러온 표본의 시대 분포</small><div class="v37-bar"><i style="width:'+(x[1]/maxEra*100).toFixed(1)+'%"></i></div></div>'}).join("");
+  const top=react[0];
+  box.innerHTML='<div class="v37-analysis-grid"><div class="v37-analysis-card"><b>반응률 1위 · '+esc(top.title||top.contentId)+'</b><small>현재 표본 반응점수 '+icebergReactionScore37(top).toFixed(2)+' · 조회 '+fmt(top.viewCounter||0)+'</small><div class="v37-bar"><i style="width:100%"></i></div></div>'+eraHtml+'</div>'
 }
 
 function makeCorePage37(view,title,desc,cls){
@@ -5631,10 +5874,12 @@ function ensureCorePages37(){
   const universe=makeCorePage37("universe29","보카로 우주","선택한 곡을 중심으로 비슷한 곡을 연결해 탐색합니다.","v37-universe-page");
   const settings=makeCorePage37("settings29","설정","Worker 연결과 기술 설정을 관리합니다.","v37-settings-page");
   const producerDiscovery=makeCorePage37("producerDiscover37","프로듀서 발굴","저조회수 음성합성 원곡의 반복 P명 태그와 반응률을 분석해 덜 알려진 프로듀서를 찾습니다.","v37-producer-discovery-page");
+  const vocalRank=makeCorePage37("vocalRank37","보컬 · 음원 순위표","VOCALOID, UTAU, SynthV 등 음성합성 보컬을 원곡 데이터 기반으로 비교합니다.","v37-vocal-rank-page");
   const diagnostics=makeCorePage37("diagnostics37","진단 센터","앱 상태·라우트·모듈·서비스워커·최근 오류를 한 번에 확인합니다.","v37-diagnostics-page");
   ensureDiagnostics37(diagnostics);
   ensureAdultSettings37(settings);
   ensureProducerDiscovery37(producerDiscovery);
+  ensureVocalRank37(vocalRank);
   ensureIcebergExtras37(archive);
   moveInto37(document.getElementById("filterControls"),archive);
   moveInto37(document.getElementById("sourceControls"),archive);
@@ -5643,7 +5888,7 @@ function ensureCorePages37(){
   moveInto37(document.getElementById("resultsPanel"),search);
   moveInto37(document.getElementById("universePanel"),universe);
   moveInto37(document.getElementById("settingsPanel"),settings);
-  return {archive,search,universe,settings,producerDiscovery,diagnostics}
+  return {archive,search,universe,settings,producerDiscovery,vocalRank,diagnostics}
 }
 function openUniversePage37(song,force){
   if(!song)return;
@@ -5702,7 +5947,7 @@ function dockForToolView37(view){
   if(view==="taste"||view==="tasteHub33"||view==="smart23"||view==="playlist24")return "taste";
   if(view==="searchHub33"||view==="search29")return "search";
   if(view==="libraryHub33"||view==="saved"||view==="history")return "library";
-  if(view==="hub37"||view==="gems"||view==="guide"||view==="explore33"||view==="producerDetail33"||view==="archive29"||view==="universe29"||view==="settings29"||view==="diagnostics37"||view==="producerDiscover37"||view==="detective"||view==="v37RouteError")return "explore";
+  if(view==="hub37"||view==="gems"||view==="guide"||view==="explore33"||view==="producerDetail33"||view==="archive29"||view==="universe29"||view==="settings29"||view==="diagnostics37"||view==="producerDiscover37"||view==="vocalRank37"||view==="detective"||view==="v37RouteError")return "explore";
   return null;
 }
 function healPageLocks37(){
@@ -6023,7 +6268,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="37.6.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
+var VER="37.7.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -6060,7 +6305,7 @@ async function refresh(){if(busy)return;busy=true;render();try{if(window.VSAHome
 function openView(name){if(window.VSAV33&&VSAV33.openView){VSAV33.openView(name);return}try{openToolsModal(name)}catch(e){}}
 function setDock(v){document.querySelectorAll(".v37-dock button").forEach(function(b){b.classList.toggle("active",b.dataset.v37===v)})}
 function featureIcon37(id){
-  return {archive:"◇",detective:"?",gems:"◆",guide:"✦",taste:"♡",universe:"✺",producer:"P",producerDiscovery:"P＋",search:"⌕",library:"▣",settings:"⚙",diagnostics:"＋"}[id]||"•"
+  return {archive:"◇",detective:"?",gems:"◆",guide:"✦",taste:"♡",universe:"✺",producer:"P",producerDiscovery:"P＋",vocalRank:"V↑",search:"⌕",library:"▣",settings:"⚙",diagnostics:"＋"}[id]||"•"
 }
 function featureDesc37(id){
   return {
@@ -6072,6 +6317,7 @@ function featureDesc37(id){
     universe:"한 곡에서 비슷한 곡으로 확장",
     producer:"프로듀서별 곡·활동 탐색",
     producerDiscovery:"저조회수 원곡에서 덜 알려진 P 발굴",
+    vocalRank:"VOCALOID·UTAU·SynthV 보컬 종합 순위",
     search:"곡명·P명·보컬·태그 일반 검색",
     settings:"Worker 연결과 기술 설정",
     diagnostics:"멈춤·캐시·모듈 상태 확인"
@@ -6128,11 +6374,12 @@ function ensureHub37(){
         '<button class="v37-intent-card" type="button" data-v37-feature-id="guide"><b>뭘 들을지 모르겠어</b><small>입문·중급·심화 추천 코스</small></button>'+
         '<button class="v37-intent-card" type="button" data-v37-feature-id="search"><b>곡을 직접 찾기</b><small>제목·P명·보컬·태그 검색</small></button>'+
         '<button class="v37-intent-card" type="button" data-v37-feature-id="producerDiscovery"><b>새 프로듀서 찾기</b><small>숨은 P·최근 신예를 데이터로 발굴</small></button>'+
+        '<button class="v37-intent-card" type="button" data-v37-feature-id="vocalRank"><b>보컬 순위 보기</b><small>UTAU·VOCALOID 따로 또는 통합</small></button>'+
       '</div></section>'+
     '<section class="v37-hub-section"><div class="v37-hub-section-head"><b>최근 사용</b><small>기기 내 기록</small></div><div class="v37-quick-row" id="v37RecentFeatures"></div></section>'+
     '<section class="v37-hub-section"><div class="v37-hub-section-head"><b>자주 쓰는 기능</b><small>사용 횟수 기반</small></div><div class="v37-quick-row" id="v37FrequentFeatures"></div></section>'+
     '<section class="v37-hub-section"><div class="v37-hub-section-head"><b>모든 탐색 기능</b><small>발굴·추천·분석</small></div><div class="v37-hub-grid">'+
-      ["archive","detective","gems","guide","taste","universe","producerDiscovery","producer"].map(featureButton37).join("")+
+      ["archive","detective","gems","guide","taste","universe","vocalRank","producerDiscovery","producer"].map(featureButton37).join("")+
     '</div></section>'+
     '<section class="v37-hub-section"><div class="v37-hub-section-head"><b>관리</b><small>설정·문제 해결</small></div><div class="v37-hub-grid" data-kind="manage">'+
       ["settings","diagnostics"].map(featureButton37).join("")+
@@ -6293,15 +6540,15 @@ var groups={};
 function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
-  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=37.6.0","./detective-v12.js?v=37.6.0","./detective-v13.js?v=37.6.0","./detective-v14.js?v=37.6.0","./detective-v16.js?v=37.6.0"]);
-  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=37.6.0","./smart-v23.js?v=37.6.0","./playlist-v24.js?v=37.6.0"]);
-  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=37.6.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=37.6.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=37.6.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=37.6.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=37.6.0");
+  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=37.7.0","./detective-v12.js?v=37.7.0","./detective-v13.js?v=37.7.0","./detective-v14.js?v=37.7.0","./detective-v16.js?v=37.7.0"]);
+  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=37.7.0","./smart-v23.js?v=37.7.0","./playlist-v24.js?v=37.7.0"]);
+  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=37.7.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=37.7.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=37.7.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=37.7.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=37.7.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
-    return seq(["./voca-app-v33.js?v=37.6.0","./voca-app-v33-1.js?v=37.6.0","./voca-app-v33-2.js?v=37.6.0","./voca-app-v33-3.js?v=37.6.0"]);
+    return seq(["./voca-app-v33.js?v=37.7.0","./voca-app-v33-1.js?v=37.7.0","./voca-app-v33-2.js?v=37.7.0","./voca-app-v33-3.js?v=37.7.0"]);
   });
   else groups[name]=Promise.resolve(false);
   groups[name]=Promise.resolve(groups[name]).then(function(v){
