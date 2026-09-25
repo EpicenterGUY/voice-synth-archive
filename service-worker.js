@@ -1,4 +1,4 @@
-const SW_VERSION="23.0.0";
+const SW_VERSION="24.0.0";
 const CACHE_NAME="voice-synth-archive-shell-"+SW_VERSION;
 const SHELL=[
   "./",
@@ -15,7 +15,8 @@ const SHELL=[
   "./discovery-v20.js?v=20.0",
   "./organizer-v22.js?v=22.0.1",
   "./smart-v23.js?v=23.0.0",
-  "./pwa-v21.js?v=23.0.0"
+  "./playlist-v24.js?v=24.0.0",
+  "./pwa-v21.js?v=24.0.0"
 ];
 
 self.addEventListener("install",event=>{
