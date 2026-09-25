@@ -3,9 +3,9 @@
 "use strict";
 
 const META={
-  studioHome:{group:"home",title:"스튜디오 홈",short:"홈",desc:"기억 찾기부터 추천·보관·플레이리스트까지 한 번에 시작합니다.",icon:"⌂"},
-  detective:{group:"find",title:"기억 복원",short:"기억 복원",desc:"제목·가사·보컬·PV 같은 단서로 잊어버린 곡을 좁혀 찾습니다.",icon:"⌕"},
-  gems:{group:"find",title:"숨은 곡 발굴",short:"숨은 곡",desc:"낮은 조회수 속에서 반응률과 취향을 이용해 묻힌 곡을 발굴합니다.",icon:"✦"},
+  studioHome:{group:"home",title:"보카로 메뉴",short:"메뉴 홈",desc:"탐정·추천·발굴·보관 기능을 목적별로 골라 사용합니다.",icon:"⌂"},
+  detective:{group:"detective",title:"기억 복원",short:"기억 복원",desc:"제목·가사·보컬·PV 같은 단서로 잊어버린 곡을 좁혀 찾습니다.",icon:"⌕"},
+  gems:{group:"discover",title:"숨은 곡 발굴",short:"숨은 곡",desc:"낮은 조회수 속에서 반응률과 취향을 이용해 묻힌 곡을 발굴합니다.",icon:"✦"},
   guide:{group:"recommend",title:"입문 코스",short:"입문 코스",desc:"난이도와 시대를 정해 단계별로 음성합성곡을 탐색합니다.",icon:"▤"},
   taste:{group:"recommend",title:"취향 추천",short:"취향 추천",desc:"문장과 태그를 섞어 원하는 분위기의 곡을 넓게 추천받습니다.",icon:"♡"},
   smart23:{group:"recommend",title:"스마트 믹스",short:"스마트 믹스",desc:"보관함과 좋아요·제외 피드백을 학습해 자동 믹스를 만듭니다.",icon:"◈"},
@@ -13,8 +13,9 @@ const META={
   playlist24:{group:"manage",title:"플레이리스트",short:"플레이리스트",desc:"믹스를 저장하고 순서를 바꾸거나 한 곡만 교체합니다.",icon:"☷"}
 };
 const GROUPS=[
-  {id:"find",title:"찾기",desc:"기억·발굴",tools:["detective","gems"]},
+  {id:"detective",title:"탐정",desc:"잊은 곡 찾기",tools:["detective"]},
   {id:"recommend",title:"추천",desc:"코스·취향·자동 믹스",tools:["guide","taste","smart23"]},
+  {id:"discover",title:"발굴",desc:"숨은 곡 찾기",tools:["gems"]},
   {id:"manage",title:"보관",desc:"라이브러리·플레이리스트",tools:["library22","playlist24"]}
 ];
 
@@ -33,7 +34,7 @@ function buildHome(){
   sec.className="tool-view v25-home";
   sec.dataset.toolView="studioHome";
   sec.innerHTML=
-    '<div class="v25-hero"><div><span class="v25-eyebrow">VOICE SYNTH ARCHIVE</span><h2>무엇을 하고 싶어?</h2><p>기능 이름을 외울 필요 없이 목적부터 고르면 됩니다.</p></div><div class="v25-hero-badge">v25</div></div>'+
+    '<div class="v25-hero"><div><span class="v25-eyebrow">VOCALO SUPPORT MENU</span><h2>보카로 기능 메뉴</h2><p>탐정과 추천을 분리하고, 발굴·보관 기능까지 목적별로 골라 사용합니다.</p></div><div class="v25-hero-badge">v25</div></div>'+
     '<div class="v25-home-groups">'+
       GROUPS.map(function(g){
         return '<section class="v25-home-group"><div class="v25-home-head"><div><b>'+g.title+'</b><small>'+g.desc+'</small></div></div><div class="v25-home-cards">'+
@@ -92,7 +93,7 @@ function buildWorkspace(){
   const bar=document.createElement("div");
   bar.className="v25-contextbar";
   bar.id="v25Context";
-  bar.innerHTML='<div><span id="v25ContextGroup">스튜디오</span><b id="v25ContextTitle">스튜디오 홈</b><small id="v25ContextDesc">원하는 작업을 골라 시작하세요.</small></div><button class="v25-context-home" data-v25-open="studioHome">⌂ 홈</button>';
+  bar.innerHTML='<div><span id="v25ContextGroup">스튜디오</span><b id="v25ContextTitle">보카로 메뉴</b><small id="v25ContextDesc">탐정·추천·발굴·보관 기능을 선택하세요.</small></div><button class="v25-context-home" data-v25-open="studioHome">⌂ 홈</button>';
   content.appendChild(bar);
   content.appendChild(body);
   workspace.appendChild(tabs);
@@ -110,7 +111,7 @@ function updateContext(name){
   const group=document.getElementById("v25ContextGroup");
   if(title)title.textContent=m.title;
   if(desc)desc.textContent=m.desc;
-  if(group)group.textContent=name==="studioHome"?"탐색 스튜디오":groupLabel(name);
+  if(group)group.textContent=name==="studioHome"?"보카로 메뉴":groupLabel(name);
   document.querySelectorAll("#toolsTabs button").forEach(function(b){
     b.classList.toggle("active",b.dataset.tool===name);
   });
@@ -131,11 +132,11 @@ function observeActive(){
   obs.observe(tabs,{subtree:true,attributes:true,attributeFilter:["class"]});
 }
 function polishLabels(){
-  setText(".tools-title","음성합성 탐색 스튜디오");
-  setText(".tools-sub","찾기 · 추천 · 보관 · 플레이리스트를 한 곳에서");
-  setText("#openToolsBtn","탐색 스튜디오");
+  setText(".tools-title","보카로 기능 메뉴");
+  setText(".tools-sub","탐정 · 추천 · 발굴 · 보관을 서로 분리해 선택");
+  setText("#openToolsBtn","보카로 메뉴");
   const mobile=document.querySelector('#mobileSectionNav [data-action="tools"]');
-  if(mobile)mobile.textContent="스튜디오";
+  if(mobile)mobile.textContent="메뉴";
 
   setText("#detectivePanel .panel-head h2","기억 복원 탐정");
   setText("#detectivePanel .panel-head p","기억나는 단서를 조합해 후보를 만들고, 틀린 후보의 이유까지 다음 수색에 반영합니다.");
