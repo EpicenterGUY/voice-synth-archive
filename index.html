@@ -1464,7 +1464,7 @@ body.v37-ready>.app.mobile-paged>.main,body.v37-ready>.app.mobile-paged>.summary
     </details>
   </section>
 
-  <div class="footer">v37.2.0 · 기능 화면 완전 페이지화 · 라우팅 안정화 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v37.2.1 · 간헐 멈춤 수정 · 이벤트 루프 안정화 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -5127,7 +5127,14 @@ function dockForToolView37(view){
   if(view==="hub37"||view==="gems"||view==="guide"||view==="explore33"||view==="producerDetail33"||view==="archive29"||view==="universe29")return "explore";
   return null;
 }
+function healPageLocks37(){
+  const app=document.querySelector(".app");
+  if(app)app.classList.remove("mobile-paged");
+  document.body.style.removeProperty("overflow");
+  document.documentElement.style.removeProperty("overflow");
+}
 function openToolsModal(view="hub37"){
+  healPageLocks37();
   const modal=$("#toolsModal");
   if(!modal||!mountToolsPage37())return;
   modal.hidden=false;
@@ -5140,6 +5147,7 @@ function openToolsModal(view="hub37"){
   window.scrollTo({top:0,behavior:"auto"});
 }
 function closeToolsModal(){
+  healPageLocks37();
   const modal=$("#toolsModal");
   if(!modal)return;
   modal.hidden=true;
@@ -5345,6 +5353,7 @@ $("#tagIcebergBtn").onclick=()=>{
 document.querySelectorAll("#guideTabs button").forEach(btn=>{btn.addEventListener("click",()=>{state.guideLevel=btn.dataset.level;document.querySelectorAll("#guideTabs button").forEach(b=>b.classList.toggle("active",b===btn))})});
 $("#buildGuideBtn").onclick=buildGuide;
 $("#tasteRecommendBtn").onclick=recommendTaste;
+window.recommendTasteV20=recommendTaste;
 $("#tastePrompt").addEventListener("keydown",e=>{if(e.ctrlKey&&e.key==="Enter")recommendTaste()});
 document.querySelectorAll("#tasteChips .taste-chip").forEach(btn=>{btn.addEventListener("click",()=>{btn.classList.toggle("active");const term=btn.dataset.term;state.tasteTerms=btn.classList.contains("active")?[...new Set([...state.tasteTerms,term])]:state.tasteTerms.filter(x=>x!==term)})});
 
@@ -5429,7 +5438,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="37.2.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
+var VER="37.2.1",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -5597,17 +5606,21 @@ async function seq(list){for(var i=0;i<list.length;i++)await load(list[i]);retur
 var groups={};
 function ensure(name){
   if(groups[name])return groups[name];
-  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=11.5","./detective-v12.js?v=12.0","./detective-v13.js?v=37.0.2","./detective-v14.js?v=14.0","./detective-v16.js?v=19.0"]);
-  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=32.0.0","./smart-v23.js?v=23.0.0","./playlist-v24.js?v=24.0.0"]);
-  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=20.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=36.1.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=28.1.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=36.1.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=37.2.0");
+  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=37.2.1","./detective-v12.js?v=37.2.1","./detective-v13.js?v=37.2.1","./detective-v14.js?v=37.2.1","./detective-v16.js?v=37.2.1"]);
+  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=37.2.1","./smart-v23.js?v=37.2.1","./playlist-v24.js?v=37.2.1"]);
+  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=37.2.1");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=37.2.1");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=37.2.1");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=37.2.1");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=37.2.1");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
-    return seq(["./voca-app-v33.js?v=36.1.0","./voca-app-v33-1.js?v=36.1.0","./voca-app-v33-2.js?v=36.1.0","./voca-app-v33-3.js?v=37.0.1"]);
+    return seq(["./voca-app-v33.js?v=37.2.1","./voca-app-v33-1.js?v=37.2.1","./voca-app-v33-2.js?v=37.2.1","./voca-app-v33-3.js?v=37.2.1"]);
   });
   else groups[name]=Promise.resolve(false);
+  groups[name]=Promise.resolve(groups[name]).then(function(v){
+    try{if(typeof healPageLocks37==="function")healPageLocks37()}catch(_){}
+    return v
+  });
   return groups[name];
 }
 window.VSAEnsureFeatures=ensure;
