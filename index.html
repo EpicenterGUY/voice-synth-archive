@@ -2706,8 +2706,8 @@ body.v37-ready #toolsModal .tool-view:not(.active){display:none!important}
 body.v37-ready #toolsModal .tool-view.active{display:block!important}
 </style>
 <style id="v3915UniverseFix">
-/* v39.15 · mobile Universe should scroll the page instead of swallowing finger drags */
-@media(max-width:699px){
+/* v39.15 · touch devices should scroll the page instead of the graph swallowing finger drags */
+@media (pointer:coarse), (max-width:699px){
   body.v37-ready .v394-universe-panel .universe-stage,
   body.v37-ready .v394-universe-panel #universeSvg{
     touch-action:pan-y pinch-zoom!important;
