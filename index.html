@@ -1067,6 +1067,15 @@ body.v37-ready .v36-dock{display:none!important}
 .v37-dock{position:fixed;left:10px;right:10px;bottom:max(8px,env(safe-area-inset-bottom));z-index:23000;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px;padding:5px;border:1px solid #28555b;border-radius:18px;background:rgba(5,22,27,.97);box-shadow:0 18px 50px #000c;backdrop-filter:none}
 .v37-dock button{min-width:0;min-height:49px;border:0;border-radius:13px;background:transparent;color:#789d99;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:7px;font-weight:850}.v37-dock button.active{background:#103139;color:#effffc}.v37-dock i{font-style:normal;font-size:15px;line-height:1}
 body.tools-open .v37-dock,body.v331-player-open .v37-dock{display:none!important}
+body.v37-ready .tools-modal{z-index:26000!important}
+body.v37-ready .tools-backdrop{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(1,7,13,.88)!important}
+body.v37-ready .tools-body{overflow-y:auto!important;overflow-x:hidden!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:contain!important}
+body.v37-ready .tools-body>.tool-view.active:not(.detective-panel){height:auto!important;min-height:100%!important;overflow:visible!important}
+@media(max-width:699px){
+body.v37-ready .tools-modal{padding:0!important}
+body.v37-ready .tools-shell{width:100vw!important;height:100dvh!important;max-height:100dvh!important;border:0!important;border-radius:0!important}
+body.v37-ready .tools-body{height:calc(100dvh - 90px)!important;min-height:0!important}
+}
 body.v37-ready>.app.mobile-paged{min-height:100dvh!important;height:auto!important;overflow:visible!important}
 body.v37-ready>.app.mobile-paged #v37Home{display:block!important}
 body.v37-ready>.app.mobile-paged>.main,body.v37-ready>.app.mobile-paged>.summary,body.v37-ready>.app.mobile-paged .mobile-section-nav{display:none!important}
@@ -4945,6 +4954,8 @@ function closeToolsModal(){
   if(!modal)return;
   modal.hidden=true;
   document.body.classList.remove("tools-open");
+  document.body.style.removeProperty("overflow");
+  document.documentElement.style.removeProperty("overflow");
 }
 function setupToolsModal(){
   $("#openToolsBtn")?.addEventListener("click",()=>openToolsModal("studioHome"));
