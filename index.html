@@ -5408,6 +5408,7 @@ function closeToolsModal(){
   document.body.style.removeProperty("overflow");
   document.documentElement.style.removeProperty("overflow");
   if(typeof setDock==="function")setDock("home");
+  window.__VSA37_CURRENT_ROUTE="home";
   window.scrollTo({top:0,behavior:"auto"});
 }
 function setupToolsModal(){
@@ -5803,6 +5804,7 @@ function dock(){
   })
 }
 function init(){
+  window.__VSA37_CURRENT_ROUTE="home";
   document.body.classList.add("v37-ready");
   var app=document.querySelector(".app");if(app)app.classList.remove("mobile-paged");
   var h=document.querySelector(".topbar .brand h1");if(h)h.textContent="Voca Support";
