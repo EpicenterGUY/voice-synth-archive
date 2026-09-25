@@ -1,4 +1,4 @@
-/* Voca Support in-app Nico player v33.1 */
+/* VocaDive in-app Nico player v39.11 */
 (function(){
 "use strict";
 var modal=null,mini=null,frame=null,fullStage=null,miniStage=null,currentId="",currentTitle="",pushed=false,queue=[],queueIndex=-1;
@@ -32,13 +32,14 @@ function addStyle(){
     ".v331-mini-stage{width:108px;aspect-ratio:16/9;overflow:hidden;border-radius:9px;background:#000;pointer-events:none}.v331-mini-stage iframe{width:100%;height:100%;border:0}",
     ".v331-mini-copy{min-width:0}.v331-mini-copy b{display:block;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.v331-mini-copy small{display:block;margin-top:3px;font-size:7px;color:#6d928e}.v331-mini button{width:34px;height:34px;border:1px solid #2b565d;border-radius:10px;background:#0b2930;color:#dff7f3;font-size:15px}",
     "body.v331-player-open{overflow:hidden!important}body.v331-player-open .v33-dock{display:none!important}",
+    "body[data-vsa-theme='light'] .v331-player-shell,body[data-vsa-theme='light'] .v331-mini{background:rgba(249,253,252,.98);border-color:#bdd8d4;color:#17312f}body[data-vsa-theme='light'] .v331-player-head,body[data-vsa-theme='light'] .v331-player-foot{background:#eef7f5;border-color:#cfe3df}body[data-vsa-theme='light'] .v331-player-head button,body[data-vsa-theme='light'] .v331-mini button{background:#fff;border-color:#c4ddd8;color:#234744}body[data-vsa-theme='light'] .v331-mini-copy small,body[data-vsa-theme='light'] .v331-player-foot span{color:#67827e}",
     "@media(min-width:900px){.v331-mini{bottom:16px}}",
-    "@media(max-width:699px){.v331-player{padding:0;place-items:stretch}.v331-player-shell{width:100vw;height:100dvh;max-height:none;border:0;border-radius:0;grid-template-rows:auto auto 1fr}.v331-player-stage{aspect-ratio:16/9;min-height:0}.v331-player-foot{align-self:end}.v331-player-head{padding-top:max(9px,env(safe-area-inset-top))}.v331-player-head .v332-queue-nav{display:none}.v331-mini{height:66px;grid-template-columns:78px minmax(0,1fr) auto auto auto auto}.v331-mini-stage{width:78px}.v331-mini button{width:30px;height:30px;font-size:13px}}"
+    "@media(max-width:699px){.v331-player{padding:0;place-items:stretch}.v331-player-shell{width:100vw;height:100dvh;max-height:none;border:0;border-radius:0;grid-template-rows:auto auto 1fr}.v331-player-stage{aspect-ratio:16/9;min-height:0}.v331-player-foot{align-self:end}.v331-player-head{padding-top:max(9px,env(safe-area-inset-top))}.v331-player-head .v332-queue-nav{display:none}.v331-mini{left:10px;right:10px;bottom:calc(78px + env(safe-area-inset-bottom));transform:none;width:auto;height:58px;grid-template-columns:64px minmax(0,1fr) auto auto;gap:5px;padding:5px 6px;border-radius:13px}.v331-mini-stage{width:64px;border-radius:8px}.v331-mini-copy b{font-size:8px}.v331-mini-copy small{font-size:6.5px}.v331-mini #v332PrevMini,.v331-mini #v332NextMini{display:none}.v331-mini button{width:30px;height:30px;font-size:12px}}"
   ].join("");document.head.appendChild(s);
 }
 function build(){
   if(modal)return;addStyle();
-  frame=document.createElement("iframe");frame.allow="autoplay; fullscreen; picture-in-picture; encrypted-media";frame.allowFullscreen=true;frame.referrerPolicy="strict-origin-when-cross-origin";
+  frame=createFrame32();
   modal=document.createElement("div");modal.className="v331-player";modal.hidden=true;modal.innerHTML='<div class="v331-player-shell" role="dialog" aria-modal="true" aria-label="앱 내부 니코니코 플레이어"><div class="v331-player-head"><div><small>NOW PLAYING</small><b id="v331PlayerTitle">재생 준비</b></div><div class="v332-queue-nav"><button type="button" id="v332PrevFull" aria-label="이전 곡">‹</button><button type="button" id="v332NextFull" aria-label="다음 곡">›</button></div><button type="button" id="v331Collapse" aria-label="미니 플레이어로">—</button><button type="button" id="v331Close" aria-label="닫기">×</button></div><div class="v331-player-stage" id="v331FullStage"></div><div class="v331-player-foot"><span id="v331PlayerMeta">니코니코 임베드 플레이어</span><a id="v331External" href="#" target="_blank" rel="noopener">니코동에서 열기 ↗</a></div></div>';
   mini=document.createElement("div");mini.className="v331-mini";mini.hidden=true;mini.innerHTML='<div class="v331-mini-stage" id="v331MiniStage"></div><div class="v331-mini-copy"><b id="v331MiniTitle">재생 중</b><small id="v332MiniMeta">탭해서 플레이어 열기</small></div><button type="button" id="v332PrevMini" aria-label="이전 곡">‹</button><button type="button" id="v332NextMini" aria-label="다음 곡">›</button><button type="button" id="v331Expand" aria-label="펼치기">⌃</button><button type="button" id="v331MiniClose" aria-label="닫기">×</button>';
   document.body.appendChild(modal);document.body.appendChild(mini);fullStage=document.getElementById("v331FullStage");miniStage=document.getElementById("v331MiniStage");fullStage.appendChild(frame);
@@ -83,6 +84,21 @@ function updateQueueUi(){
   var m=document.getElementById("v332MiniMeta");
   if(m)m.textContent=queue.length>1?(queueIndex+1)+" / "+queue.length+" · 탭해서 펼치기":"탭해서 플레이어 열기";
 }
+function createFrame32(){
+  var f=document.createElement("iframe");
+  f.allow="autoplay; fullscreen; picture-in-picture; encrypted-media";
+  f.allowFullscreen=true;
+  f.referrerPolicy="strict-origin-when-cross-origin";
+  return f
+}
+function stopFrame32(){
+  if(!frame)return;
+  try{frame.contentWindow&&frame.contentWindow.postMessage({eventName:"command",data:{name:"pause"}},"*")}catch(e){}
+  try{frame.src="about:blank"}catch(e){}
+  try{frame.remove()}catch(e){}
+  frame=createFrame32();
+  if(fullStage)fullStage.appendChild(frame)
+}
 function loadCurrent(id,title,keepQueue){
   if(!id)return;
   currentId=id;currentTitle=title||id;
@@ -112,10 +128,17 @@ function openPlayer(id,title,items){
   mini.hidden=true;modal.hidden=false;document.body.classList.add("v331-player-open");
   if(!pushed){try{history.pushState({vsaPlayer:true},"",location.href);pushed=true}catch(e){}}
 }
+function openMiniPlayer(id,title,items){
+  openPlayer(id,title,items);
+  setTimeout(function(){if(modal&&!modal.hidden)collapsePlayer()},0)
+}
 function collapsePlayer(){if(!modal||modal.hidden)return;if(frame.parentNode!==miniStage)miniStage.appendChild(frame);modal.hidden=true;mini.hidden=false;document.body.classList.remove("v331-player-open")}
 function expandPlayer(){if(!mini||mini.hidden)return;if(frame.parentNode!==fullStage)fullStage.appendChild(frame);mini.hidden=true;modal.hidden=false;document.body.classList.add("v331-player-open")}
 function closePlayer(back){
-  if(!modal)return;modal.hidden=true;mini.hidden=true;document.body.classList.remove("v331-player-open");frame.src="about:blank";currentId="";currentTitle="";queue=[];queueIndex=-1;markPlaying();
+  if(!modal)return;
+  modal.hidden=true;mini.hidden=true;document.body.classList.remove("v331-player-open");
+  stopFrame32();
+  currentId="";currentTitle="";queue=[];queueIndex=-1;markPlaying();
   if(back&&pushed){pushed=false;try{history.back()}catch(e){}}else pushed=false;
 }
 function intercept(){
@@ -125,6 +148,6 @@ function intercept(){
     var id=videoIdFromUrl(a.href);if(!id)return;var info=findSong(id,a),items=queueFromAnchor(a,id,info.title);e.preventDefault();e.stopPropagation();openPlayer(id,info.title,items);
   },true);
 }
-function boot(){build();intercept();window.VSANicoPlayer={open:openPlayer,close:function(){closePlayer(true)},collapse:collapsePlayer,expand:expandPlayer,setQueue:setQueue,next:function(){playRelative(1)},prev:function(){playRelative(-1)},state:function(){return{currentId:currentId,queue:queue.slice(),index:queueIndex}}}}
+function boot(){build();intercept();window.VSANicoPlayer={open:openPlayer,openMini:openMiniPlayer,close:function(){closePlayer(true)},collapse:collapsePlayer,expand:expandPlayer,setQueue:setQueue,next:function(){playRelative(1)},prev:function(){playRelative(-1)},state:function(){return{currentId:currentId,queue:queue.slice(),index:queueIndex}}}}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
 })();
