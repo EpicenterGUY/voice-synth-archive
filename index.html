@@ -5733,50 +5733,124 @@ async function pickAbyss37(mode){
 }
 
 
+
 const VOCALOID_VOICEBANK_SEEDS37=[
- "初音ミク","鏡音リン","鏡音レン","巡音ルカ","MEIKO","KAITO","GUMI","神威がくぽ","IA","Lily","MAYU","VY1","VY2","Mew","CUL","SeeU","蒼姫ラピス","兎眠りおん","結月ゆかり","猫村いろは","歌愛ユキ","氷山キヨテル","SF-A2開発コードmiki","miki","音街ウナ","v_flower","flower","鳴花ヒメ","鳴花ミコト","洛天依","Oliver","YOHIOloid","DEX","DAINA","Rana","東北ずん子","杏音鳥音","ZOLA PROJECT","CYBER DIVA","CYBER SONGMAN","Sachiko","アルスロイド","Fukase","音街ウナ"
+ "初音ミク","鏡音リン","鏡音レン","巡音ルカ","MEIKO","KAITO","GUMI","神威がくぽ","IA","Lily","MAYU","VY1","VY2","Mew","CUL","SeeU","蒼姫ラピス","兎眠りおん","結月ゆかり","猫村いろは","歌愛ユキ","氷山キヨテル","miki","音街ウナ","flower","鳴花ヒメ","鳴花ミコト","洛天依","Oliver","YOHIOloid","DEX","DAINA","Rana","東北ずん子","杏音鳥音","ZOLA PROJECT","Sachiko","Fukase"
 ];
 const UTAU_VOICEBANK_SEEDS37=[
- "重音テト","デフォ子","唄音ウタ","波音リツ","桃音モモ","欲音ルコ","雪歌ユフ","春歌ナナ","健音テイ","松田っぽいよ","闇音レンリ","雨歌エル","カゼヒキ","ゲキヤク","足立レイ","ナースロボ＿タイプＴ","ナースロボ_タイプT","名前シレズ","滲音かこい","暗鳴ニュイ","櫻花アリス","薪宮風季","京音ロン","穂歌ソラ","和音マコ","天音ルナ","揺歌サユ","轟栄一","轟栄二","ルーク","ちゃろえもん","空花ルア","塩音ソル","塩音ルト","戯白メリー","逆音セシル","葛駄夜音","葛駄楼","右心フルアラ"
+ "重音テト","デフォ子","唄音ウタ","波音リツ","桃音モモ","欲音ルコ","雪歌ユフ","春歌ナナ","健音テイ","松田っぽいよ","闇音レンリ","雨歌エル","カゼヒキ","ゲキヤク","足立レイ","ナースロボ＿タイプＴ","名前シレズ","滲音かこい","暗鳴ニュイ","櫻花アリス","薪宮風季","京音ロン","穂歌ソラ","和音マコ","天音ルナ","揺歌サユ","轟栄一","轟栄二","ルーク","ちゃろえもん","空花ルア","塩音ソル","塩音ルト","戯白メリー","逆音セシル","葛駄夜音","葛駄楼","右心フルアラ"
 ];
 const SYNTHV_VOICEBANK_SEEDS37=["重音テトSV","小春六花","夏色花梨","花隈千冬","宮舞モカ","弦巻マキ","琴葉茜","琴葉葵","京町セイカ","ついなちゃん","Saki","Mai","Ryo","SOLARIA","Eleanor Forte","Kevin","Natalie","ANRI"];
 const CEVIO_VOICEBANK_SEEDS37=["可不","星界","裏命","狐子","羽累","さとうささら","ONE"];
 const VOISONA_VOICEBANK_SEEDS37=["知声","機流音","双葉湊音","MYK-IV","AiSuu"];
 const NEUTRINO_VOICEBANK_SEEDS37=["東北きりたん","めろう","ナクモ","東北ずん子","東北イタコ","No.7","四国めたん","ずんだもん"];
-const VOICEVOX_VOICEBANK_SEEDS37=["ずんだもん","四国めたん","春日部つむぎ","雨晴はう","波音リツ","玄野武宏","白上虎太郎","青山龍星","冥鳴ひまり","九州そら","もち子さん","剣崎雌雄","WhiteCUL","後鬼","No.7","櫻歌ミコ","小夜/SAYO","ナースロボ＿タイプＴ"];
-const ACE_VOICEBANK_SEEDS37=[];
+const VOICEVOX_VOICEBANK_SEEDS37=["ずんだもん","四国めたん","春日部つむぎ","雨晴はう","波音リツ","玄野武宏","白上虎太郎","青山龍星","冥鳴ひまり","九州そら","もち子さん","WhiteCUL","後鬼","No.7","櫻歌ミコ","小夜/SAYO","ナースロボ＿タイプＴ"];
 
+const VOCADB_TYPES37={
+  vocaloid:["Vocaloid"],
+  utau:["UTAU"],
+  synthv:["SynthesizerV"],
+  cevio:["CeVIO"],
+  voisona:["OtherVoiceSynthesizer"],
+  neutrino:["OtherVoiceSynthesizer"],
+  voicevox:["OtherVoiceSynthesizer"],
+  combined:["Vocaloid","UTAU","SynthesizerV","CeVIO","OtherVoiceSynthesizer"]
+};
 function uniqueNames37(xs){
-  const m=new Map();for(const x of xs){const k=normalizeSourceTag37(x);if(k&&!m.has(k))m.set(k,x)}return [...m.values()]
+  const m=new Map();for(const x of xs||[]){const k=normalizeSourceTag37(x);if(k&&!m.has(k))m.set(k,String(x).trim())}return [...m.values()]
 }
-function seedNamesFromOriginalTags37(tags){
+function fallbackVoicebanks37(family){
+  const mk=(names,engine)=>names.map(function(name,i){return{id:"fallback:"+engine+":"+normalizeSourceTag37(name),name:name,aliases:[name],engine:engine,artistType:engine,__fallback:true}});
+  if(family==="vocaloid")return mk(VOCALOID_VOICEBANK_SEEDS37,"VOCALOID");
+  if(family==="utau")return mk(UTAU_VOICEBANK_SEEDS37,"UTAU");
+  if(family==="synthv")return mk(SYNTHV_VOICEBANK_SEEDS37,"SynthV");
+  if(family==="cevio")return mk(CEVIO_VOICEBANK_SEEDS37,"CeVIO");
+  if(family==="voisona")return mk(VOISONA_VOICEBANK_SEEDS37,"VoiSona");
+  if(family==="neutrino")return mk(NEUTRINO_VOICEBANK_SEEDS37,"NEUTRINO");
+  if(family==="voicevox")return mk(VOICEVOX_VOICEBANK_SEEDS37,"VOICEVOX");
+  return [].concat(mk(VOCALOID_VOICEBANK_SEEDS37,"VOCALOID"),mk(UTAU_VOICEBANK_SEEDS37,"UTAU"),mk(SYNTHV_VOICEBANK_SEEDS37,"SynthV"),mk(CEVIO_VOICEBANK_SEEDS37,"CeVIO"),mk(VOISONA_VOICEBANK_SEEDS37,"VoiSona"),mk(NEUTRINO_VOICEBANK_SEEDS37,"NEUTRINO"),mk(VOICEVOX_VOICEBANK_SEEDS37,"VOICEVOX"))
+}
+function vocadbNames37(a){
   const out=[];
-  for(const raw of (tags||[])){
-    const m=String(raw||"").match(/^(.+?)オリジナル曲$/);
-    if(!m)continue;
-    const name=m[1].trim();
-    if(!name||/^(VOCALOID|vocaloid|UTAU|utau|ＵＴＡＵ|SynthesizerV|SynthV|CeVIO|CeVIO_AI|VoiSona|NEUTRINO|VOICEVOX|ACEStudio|ACE_Studio)$/i.test(name))continue;
-    out.push(name)
-  }
+  function add(v){v=String(v||"").trim();if(v)out.push(v)}
+  add(a?.name);add(a?.defaultName);
+  String(a?.additionalNames||"").split(/[,、]/).forEach(add);
+  for(const n of (Array.isArray(a?.names)?a.names:[]))add(n?.value||n?.name);
   return uniqueNames37(out)
 }
-function vocalRankSeed37(family){
-  if(family==="vocaloid")return uniqueNames37(VOCALOID_VOICEBANK_SEEDS37.concat(seedNamesFromOriginalTags37(ORIGINAL_TAGS)));
-  if(family==="utau")return uniqueNames37(UTAU_VOICEBANK_SEEDS37.concat(seedNamesFromOriginalTags37(UTAU_ORIGINAL_TAGS)));
-  if(family==="synthv")return uniqueNames37(SYNTHV_VOICEBANK_SEEDS37.concat(seedNamesFromOriginalTags37(SYNTHV_ORIGINAL_TAGS)));
-  if(family==="cevio")return uniqueNames37(CEVIO_VOICEBANK_SEEDS37.concat(seedNamesFromOriginalTags37(CEVIO_ORIGINAL_TAGS)));
-  if(family==="voisona")return uniqueNames37(VOISONA_VOICEBANK_SEEDS37.concat(seedNamesFromOriginalTags37(VOISONA_ORIGINAL_TAGS)));
-  if(family==="neutrino")return uniqueNames37(NEUTRINO_VOICEBANK_SEEDS37.concat(seedNamesFromOriginalTags37(NEUTRINO_ORIGINAL_TAGS)));
-  if(family==="voicevox")return uniqueNames37(VOICEVOX_VOICEBANK_SEEDS37.concat(seedNamesFromOriginalTags37(VOICEVOX_ORIGINAL_TAGS)));
-  return uniqueNames37([].concat(
-    VOCALOID_VOICEBANK_SEEDS37,seedNamesFromOriginalTags37(ORIGINAL_TAGS),
-    UTAU_VOICEBANK_SEEDS37,seedNamesFromOriginalTags37(UTAU_ORIGINAL_TAGS),
-    SYNTHV_VOICEBANK_SEEDS37,seedNamesFromOriginalTags37(SYNTHV_ORIGINAL_TAGS),
-    CEVIO_VOICEBANK_SEEDS37,seedNamesFromOriginalTags37(CEVIO_ORIGINAL_TAGS),
-    VOISONA_VOICEBANK_SEEDS37,seedNamesFromOriginalTags37(VOISONA_ORIGINAL_TAGS),
-    NEUTRINO_VOICEBANK_SEEDS37,seedNamesFromOriginalTags37(NEUTRINO_ORIGINAL_TAGS),
-    VOICEVOX_VOICEBANK_SEEDS37,seedNamesFromOriginalTags37(VOICEVOX_ORIGINAL_TAGS)
-  ))
+function engineFromVocadbArtist37(a,family){
+  const t=String(a?.artistType||family||"");
+  const tags=(Array.isArray(a?.tags)?a.tags:[]).map(function(x){return String(x?.tag?.name||x?.name||"")}).join(" ");
+  if(t==="Vocaloid")return "VOCALOID";
+  if(t==="UTAU")return "UTAU";
+  if(t==="SynthesizerV")return "SynthV";
+  if(t==="CeVIO")return "CeVIO";
+  if(/VoiSona/i.test(tags))return "VoiSona";
+  if(/NEUTRINO/i.test(tags))return "NEUTRINO";
+  if(/VOICEVOX/i.test(tags))return "VOICEVOX";
+  if(/Synthesizer\s*V/i.test(tags))return "SynthV";
+  if(family==="voisona")return "VoiSona";
+  if(family==="neutrino")return "NEUTRINO";
+  if(family==="voicevox")return "VOICEVOX";
+  return "기타 음성합성"
+}
+function familyAcceptsEngine37(family,engine){
+  if(family==="combined")return true;
+  return {vocaloid:"VOCALOID",utau:"UTAU",synthv:"SynthV",cevio:"CeVIO",voisona:"VoiSona",neutrino:"NEUTRINO",voicevox:"VOICEVOX"}[family]===engine
+}
+async function fetchVocaDBArtistType37(type){
+  const cacheKey="vsa37VocaArtists:"+type+":v2";
+  try{
+    const c=JSON.parse(localStorage.getItem(cacheKey)||"null");
+    if(c&&Date.now()-c.at<604800000&&Array.isArray(c.items))return c.items
+  }catch(_){}
+  const items=[];let start=0,total=Infinity;
+  while(start<total&&start<20000){
+    const u=new URL("https://vocadb.net/api/artists");
+    u.searchParams.set("artistType",type);
+    u.searchParams.set("start",String(start));
+    u.searchParams.set("maxResults","50");
+    u.searchParams.set("getTotalCount","true");
+    u.searchParams.set("sort","Name");
+    u.searchParams.set("fields","AdditionalNames,Names,BaseVoicebank,Tags");
+    u.searchParams.set("lang","Japanese");
+    const r=await fetch(u.toString(),{headers:{"Accept":"application/json"}});
+    if(!r.ok)throw new Error("VocaDB artist "+r.status);
+    const d=await r.json(),page=Array.isArray(d?.items)?d.items:[];
+    total=Number.isFinite(+d?.totalCount)?+d.totalCount:(page.length<50?start+page.length:Infinity);
+    items.push(...page);start+=page.length;
+    if(!page.length||page.length<50)break
+  }
+  try{localStorage.setItem(cacheKey,JSON.stringify({at:Date.now(),items:items}))}catch(_){}
+  return items
+}
+async function loadCanonicalVoicebanks37(family,status){
+  const types=VOCADB_TYPES37[family]||VOCADB_TYPES37.combined,map=new Map();
+  try{
+    for(let ti=0;ti<types.length;ti++){
+      if(status)status.textContent="VocaDB 실제 음원명 목록 불러오는 중… "+(ti+1)+"/"+types.length;
+      const items=await fetchVocaDBArtistType37(types[ti]);
+      for(const raw of items){
+        const a=raw?.artist||raw;if(!a)continue;
+        const base=a.baseVoicebank?.artist||a.baseVoicebank||null;
+        const root=base&&base.id?base:a;
+        const id=Number(root?.id||a?.id)||0;
+        const name=String(root?.name||root?.defaultName||a?.name||a?.defaultName||"").trim();
+        if(!id||!name)continue;
+        const engine=engineFromVocadbArtist37(a,family);
+        if(!familyAcceptsEngine37(family,engine))continue;
+        const key="vocadb:"+id;
+        let x=map.get(key)||{id:key,vocadbId:id,name:name,aliases:[],engine:engine,artistType:String(a.artistType||""),__fallback:false};
+        x.aliases=uniqueNames37(x.aliases.concat(vocadbNames37(a),vocadbNames37(root),[name]));
+        map.set(key,x)
+      }
+    }
+    if(map.size)return [...map.values()].sort(function(a,b){return a.name.localeCompare(b.name,"ja")})
+  }catch(e){
+    if(status)status.textContent="VocaDB 음원 목록 연결 실패 · 내장 목록으로 계속합니다.";
+    console.warn("voicebank registry fallback",e)
+  }
+  return fallbackVoicebanks37(family)
 }
 function vocalRankOriginalTags37(family){
   if(family==="vocaloid")return ORIGINAL_TAGS;
@@ -5788,32 +5862,33 @@ function vocalRankOriginalTags37(family){
   if(family==="voicevox")return VOICEVOX_ORIGINAL_TAGS;
   return [...new Set([].concat(ORIGINAL_TAGS,UTAU_ORIGINAL_TAGS,SYNTHV_ORIGINAL_TAGS,CEVIO_ORIGINAL_TAGS,VOISONA_ORIGINAL_TAGS,NEUTRINO_ORIGINAL_TAGS,VOICEVOX_ORIGINAL_TAGS))]
 }
-function engineForVocal37(name,familyHint){
-  const n=normalizeSourceTag37(name);
-  function has(list){return list.some(function(x){return normalizeSourceTag37(x)===n})}
-  if(has(UTAU_VOICEBANK_SEEDS37))return "UTAU";
-  if(has(VOCALOID_VOICEBANK_SEEDS37))return "VOCALOID";
-  if(has(SYNTHV_VOICEBANK_SEEDS37))return "SynthV";
-  if(has(CEVIO_VOICEBANK_SEEDS37))return "CeVIO";
-  if(has(VOISONA_VOICEBANK_SEEDS37))return "VoiSona";
-  if(has(NEUTRINO_VOICEBANK_SEEDS37))return "NEUTRINO";
-  if(has(VOICEVOX_VOICEBANK_SEEDS37))return "VOICEVOX";
-  return familyHint==="utau"?"UTAU":familyHint==="vocaloid"?"VOCALOID":familyHint==="synthv"?"SynthV":familyHint==="cevio"?"CeVIO":familyHint==="voisona"?"VoiSona":familyHint==="neutrino"?"NEUTRINO":familyHint==="voicevox"?"VOICEVOX":"기타"
+function rankFamilies37(family){
+  return family==="combined"?["vocaloid","utau","synthv","cevio","voisona","neutrino","voicevox"]:[family]
 }
-function vocalNamesFromSong37(song,family){
-  const tags=parseTags(song&&song.tags),seed=vocalRankSeed37(family),out=new Map();
-  for(const name of seed){
-    const n=normalizeSourceTag37(name);
-    if(tags.some(function(t){const x=normalizeSourceTag37(t);return x===n||x.startsWith(n+"オリジナル曲")||x.includes(n+"オリジナル曲")}))out.set(n,name)
+function rankAliasMap37(registry){
+  const map=new Map();
+  for(const vb of registry){
+    for(const alias of uniqueNames37([vb.name].concat(vb.aliases||[]))){
+      const n=normalizeSourceTag37(alias);if(!n)continue;
+      if(!map.has(n))map.set(n,vb);
+      const simple=n.replace(/(?:v\d+|sv|ai)$/i,"");
+      if(simple&&simple!==n&&!map.has(simple))map.set(simple,vb)
+    }
   }
-  for(const tag of tags){
-    const raw=String(tag||"").trim();
-    const m=raw.match(/^(.+?)オリジナル曲$/);
-    if(!m)continue;
-    let name=m[1].trim();
-    if(/^(VOCALOID|vocaloid|UTAU|utau|ＵＴＡＵ|SynthesizerV|SynthV|CeVIO|CeVIO_AI|VoiSona|NEUTRINO|VOICEVOX)$/i.test(name))continue;
-    if(/伝説入り|殿堂入り|神話入り/.test(name))continue;
-    if(name.length>1&&name.length<40)out.set(normalizeSourceTag37(name),name)
+  return map
+}
+function voicebankIdsFromSong37(song,aliasMap){
+  const out=new Map(),generic=/^(vocaloid|utau|ｕｔａｕ|synthesizerv|synthv|cevio|cevioai|voisona|neutrino|voicevox|acestudio)$/i;
+  for(const raw of parseTags(song&&song.tags)){
+    const tag=String(raw||"").trim();if(!tag)continue;
+    const forms=[tag];
+    const m=tag.match(/^(.+?)(?:[_\- ]?オリジナル曲)$/);
+    if(m)forms.push(m[1].trim());
+    for(const f of forms){
+      const n=normalizeSourceTag37(f);if(!n||generic.test(n))continue;
+      const vb=aliasMap.get(n);
+      if(vb)out.set(vb.id,vb)
+    }
   }
   return [...out.values()]
 }
@@ -5822,112 +5897,125 @@ function vocalPopularity37(song){
   return Math.min(1,((m+2)/(v+900))*32+((l+2)/(v+1200))*10+((c+2)/(v+900))*4)
 }
 function vocalRankScore37(x,max){
-  if(!x.sampleCount)return 0;
+  if(!x.songCount)return 0;
   const view=Math.log1p(x.views)/Math.log1p(Math.max(10,max.maxViews||1));
   const peak=Math.log1p(x.peakViews)/Math.log1p(Math.max(10,max.maxPeak||1));
   const pop=Math.min(1,x.popularity/Math.max(.001,max.maxPopularity||1));
-  const catalog=Math.log1p(x.sampleCount)/Math.log1p(Math.max(2,max.maxCount||1));
-  // UTAU는 음원 수가 매우 많아 한 곡의 대형 히트가 전체 순위를 독점하지 않도록
-  // 반응률과 확인된 원곡 수 비중을 더 높인다.
+  const catalog=Math.log1p(x.songCount)/Math.log1p(Math.max(2,max.maxCount||1));
   if(x.engine==="UTAU")return 100*(.30*view+.32*pop+.25*catalog+.13*peak);
   return 100*(.34*view+.28*pop+.22*catalog+.16*peak)
 }
-function vocalRankScanTags37(family){
-  if(family==="vocaloid")return ["VOCALOIDオリジナル曲","ミクオリジナル曲","リンオリジナル曲","レンオリジナル曲","ルカオリジナル曲","GUMIオリジナル曲","IAオリジナル曲","flowerオリジナル曲"];
-  if(family==="utau")return ["UTAUオリジナル曲","重音テトオリジナル曲","波音リツオリジナル曲","デフォ子オリジナル曲","雪歌ユフオリジナル曲","闇音レンリオリジナル曲","カゼヒキオリジナル曲","足立レイオリジナル曲"];
-  if(family==="synthv")return ["SynthesizerVオリジナル曲","重音テトSVオリジナル曲","小春六花オリジナル曲","夏色花梨オリジナル曲","花隈千冬オリジナル曲"];
-  if(family==="cevio")return ["CeVIOオリジナル曲","CeVIO_AIオリジナル曲","可不オリジナル曲","星界オリジナル曲","裏命オリジナル曲"];
-  if(family==="voisona")return ["VoiSonaオリジナル曲","知声オリジナル曲","機流音オリジナル曲","双葉湊音オリジナル曲"];
-  if(family==="neutrino")return ["NEUTRINOオリジナル曲","東北きりたんオリジナル曲","めろうオリジナル曲","ずんだもんオリジナル曲"];
-  if(family==="voicevox")return ["VOICEVOXオリジナル曲","VOICEVOXハミングオリジナル曲","ずんだもんオリジナル曲","四国めたんオリジナル曲"];
-  return ["VOCALOIDオリジナル曲","UTAUオリジナル曲","SynthesizerVオリジナル曲","CeVIOオリジナル曲","VoiSonaオリジナル曲","NEUTRINOオリジナル曲","VOICEVOXオリジナル曲"]
+async function fetchRankChunkAll37(tags,family,index,totalChunks,status,uniq){
+  const q=tags.join(" OR ");
+  const first=await fetchNico({year:"all",limit:100,offset:0,mode:"ranking",sort:"-viewCounter",applyYear:false,applyTier:false,overrideQuery:q,overrideTargets:"tagsExact"});
+  const total=Math.min(100000,+first.meta?.totalCount||0);
+  for(const song of (first.data||[]))if(song?.contentId)uniq.set(song.contentId,song);
+  let done=Math.min(100,total);
+  if(status)status.textContent="전곡 전수집계 · "+family+" 태그 묶음 "+index+"/"+totalChunks+" · "+fmt(done)+"/"+fmt(total)+"건";
+  const offsets=[];for(let off=100;off<total;off+=100)offsets.push(off);
+  const groups=chunkArray(offsets,3);
+  for(const group of groups){
+    const pages=await Promise.all(group.map(async function(off){
+      try{return await fetchNico({year:"all",limit:100,offset:off,mode:"ranking",sort:"-viewCounter",applyYear:false,applyTier:false,overrideQuery:q,overrideTargets:"tagsExact"})}catch(_){return null}
+    }));
+    for(const d of pages)for(const song of (d?.data||[]))if(song?.contentId)uniq.set(song.contentId,song);
+    done=Math.min(total,done+group.length*100);
+    if(status)status.textContent="전곡 전수집계 · "+family+" 태그 묶음 "+index+"/"+totalChunks+" · "+fmt(done)+"/"+fmt(total)+"건 · 중복제거 "+fmt(uniq.size)+"곡";
+    await new Promise(function(r){setTimeout(r,0)})
+  }
 }
-async function fetchVocalRankCorpus37(family,deep){
-  const generic=vocalRankScanTags37(family),all=vocalRankOriginalTags37(family);
-  const jobs=[],genericQ=generic.join(" OR ");
-  // 핵심 표본: 한 OR 쿼리를 여러 정렬로 가져와 호출 수를 제한한다.
-  ["-viewCounter","-mylistCounter","-commentCounter","-startTime","+viewCounter"].forEach(function(sort){jobs.push({q:genericQ,sort:sort,offset:0})});
-  if(deep)jobs.push({q:genericQ,sort:"+viewCounter",offset:100});
-  // 공통 태그가 없는 희귀 음원을 놓치지 않도록 세부 원곡 태그도 한 번씩 훑는다.
-  chunkArray([...new Set(all)],8).forEach(function(group){jobs.push({q:group.join(" OR "),sort:"-viewCounter",offset:0})});
-  const batches=await mapLimit(jobs,3,async function(job){
-    try{
-      const d=await fetchNico({year:"all",limit:100,offset:job.offset,mode:"ranking",sort:job.sort,applyYear:false,applyTier:false,overrideQuery:job.q,overrideTargets:"tagsExact"});
-      return d.data||[]
-    }catch(_){return[]}
-  });
-  const uniq=new Map();batches.flat().forEach(function(song){if(song&&song.contentId)uniq.set(song.contentId,song)});
-  let rows=[...uniq.values()];
-  rows=filterAdultRows37(rows,"vocal_rank").rows;
-  const proof=new Set(vocalRankOriginalTags37(family).map(normalizeSourceTag37));
-  rows=rows.filter(function(song){return parseTags(song.tags).map(normalizeSourceTag37).some(function(t){return proof.has(t)})});
-  return rows
+async function fetchVocalRankCorpus37(family,status){
+  const uniq=new Map(),families=rankFamilies37(family);
+  for(let fi=0;fi<families.length;fi++){
+    const fam=families[fi],tags=[...new Set(vocalRankOriginalTags37(fam))],chunks=chunkArray(tags,8);
+    for(let ci=0;ci<chunks.length;ci++){
+      try{await fetchRankChunkAll37(chunks[ci],fam,ci+1,chunks.length,status,uniq)}catch(e){console.warn("rank census chunk failed",fam,ci,e)}
+    }
+  }
+  const proof=new Set(families.flatMap(function(fam){return vocalRankOriginalTags37(fam)}).map(normalizeSourceTag37));
+  return [...uniq.values()].filter(function(song){
+    return parseTags(song.tags).map(normalizeSourceTag37).some(function(t){return proof.has(t)})
+  })
 }
-function buildVocalRankRows37(family,songs){
-  const seed=vocalRankSeed37(family),map=new Map();
-  seed.forEach(function(name){map.set(normalizeSourceTag37(name),{name:name,engine:engineForVocal37(name,family),views:0,peakViews:0,mylists:0,likes:0,comments:0,popularity:0,sampleCount:0,latest:0})});
-  songs.forEach(function(song){
-    const names=vocalNamesFromSong37(song,family),pop=vocalPopularity37(song),year=song.startTime?new Date(song.startTime).getFullYear():0;
-    names.forEach(function(name){
-      const key=normalizeSourceTag37(name);
-      let x=map.get(key)||{name:name,engine:engineForVocal37(name,family),views:0,peakViews:0,mylists:0,likes:0,comments:0,popularity:0,sampleCount:0,latest:0};
-      x.views+=+song.viewCounter||0;x.peakViews=Math.max(x.peakViews,+song.viewCounter||0);x.mylists+=+song.mylistCounter||0;x.likes+=+song.likeCounter||0;x.comments+=+song.commentCounter||0;x.popularity+=pop;x.sampleCount++;x.latest=Math.max(x.latest,year);map.set(key,x)
-    })
-  });
+function buildVocalRankRows37(family,songs,registry){
+  const aliasMap=rankAliasMap37(registry),map=new Map(),matchedSongIds=new Set(),unmatched=[];
+  for(const vb of registry)map.set(vb.id,{id:vb.id,vocadbId:vb.vocadbId||0,name:vb.name,engine:vb.engine,views:0,peakViews:0,mylists:0,likes:0,comments:0,popularity:0,songCount:0,latest:0});
+  for(const song of songs){
+    const voices=voicebankIdsFromSong37(song,aliasMap);
+    if(!voices.length){unmatched.push(song);continue}
+    matchedSongIds.add(song.contentId);
+    const pop=vocalPopularity37(song),year=song.startTime?new Date(song.startTime).getFullYear():0;
+    for(const vb of voices){
+      const x=map.get(vb.id);if(!x)continue;
+      x.views+=+song.viewCounter||0;x.peakViews=Math.max(x.peakViews,+song.viewCounter||0);x.mylists+=+song.mylistCounter||0;x.likes+=+song.likeCounter||0;x.comments+=+song.commentCounter||0;x.popularity+=pop;x.songCount++;x.latest=Math.max(x.latest,year)
+    }
+  }
   const vals=[...map.values()],max={
     maxViews:Math.max(1,...vals.map(function(x){return x.views})),
     maxPeak:Math.max(1,...vals.map(function(x){return x.peakViews})),
     maxPopularity:Math.max(.001,...vals.map(function(x){return x.popularity})),
-    maxCount:Math.max(1,...vals.map(function(x){return x.sampleCount}))
+    maxCount:Math.max(1,...vals.map(function(x){return x.songCount}))
   };
   vals.forEach(function(x){x.score=vocalRankScore37(x,max)});
-  return vals.sort(function(a,b){
-    if(!!a.sampleCount!==!!b.sampleCount)return a.sampleCount?-1:1;
+  vals.sort(function(a,b){
+    if(!!a.songCount!==!!b.songCount)return a.songCount?-1:1;
     return b.score-a.score||b.views-a.views||a.name.localeCompare(b.name,"ja")
-  })
+  });
+  return {rows:vals,matchedSongs:matchedSongIds.size,unmatchedSongs:unmatched.length}
 }
 async function runVocalRank37(){
   if(state.vocalRankBusy)return;
   if(!relayBase()){toast("먼저 Worker를 연결하세요.");return}
   const family=document.getElementById("v37VocalRankFamily")?.value||"combined";
-  const depth=document.getElementById("v37VocalRankDepth")?.value||"normal";
+  const mode=document.getElementById("v37VocalRankDepth")?.value||"cache";
   const status=document.getElementById("v37VocalRankStatus"),btn=document.getElementById("v37VocalRankRun");
-  state.vocalRankBusy=true;if(btn)btn.disabled=true;if(status)status.textContent="원곡만 수집해 보컬/음원 태그를 집계하는 중…";
+  state.vocalRankBusy=true;if(btn)btn.disabled=true;
   try{
-    const key="vsa37VocalRank:"+family+":"+depth+":"+adultFilterMode37(),cached=JSON.parse(localStorage.getItem(key)||"null");
-    let songs;
-    if(cached&&Date.now()-cached.at<21600000){songs=cached.songs||[]}else{
-      songs=await fetchVocalRankCorpus37(family,depth==="deep");
-      try{localStorage.setItem(key,JSON.stringify({at:Date.now(),songs:songs.slice(0,2500)}))}catch(_){}
+    const cacheKey="vsa37VocalCensus:"+family+":v3";
+    let cached=null;try{cached=JSON.parse(localStorage.getItem(cacheKey)||"null")}catch(_){}
+    if(mode!=="refresh"&&cached&&Date.now()-cached.at<86400000&&Array.isArray(cached.rows)){
+      state.vocalRankRows=cached.rows;state.vocalRankMeta=cached.meta||{};
+      renderVocalRank37();
+      if(status)status.textContent="24시간 전수집계 캐시 사용 · 원곡 "+fmt(state.vocalRankMeta.songs||0)+"곡 · 음원 "+fmt(state.vocalRankRows.length)+"개";
+      return
     }
-    state.vocalRankRows=buildVocalRankRows37(family,songs);
-    state.vocalRankMeta={family:family,songs:songs.length,at:Date.now(),depth:depth};
+    if(status)status.textContent="VocaDB에서 실제 음원명 전체 목록을 불러오는 중…";
+    const registry=await loadCanonicalVoicebanks37(family,status);
+    if(status)status.textContent="실제 음원 "+fmt(registry.length)+"개 확인 · 니코동 원곡 전수집계 시작…";
+    const songs=await fetchVocalRankCorpus37(family,status);
+    if(status)status.textContent="전곡 "+fmt(songs.length)+"곡 수집 완료 · 실제 음원명으로 중복 통합 중…";
+    const built=buildVocalRankRows37(family,songs,registry);
+    state.vocalRankRows=built.rows;
+    state.vocalRankMeta={family:family,songs:songs.length,matchedSongs:built.matchedSongs,unmatchedSongs:built.unmatchedSongs,voicebanks:registry.length,at:Date.now(),complete:true};
+    try{localStorage.setItem(cacheKey,JSON.stringify({at:Date.now(),rows:state.vocalRankRows,meta:state.vocalRankMeta}))}catch(_){}
     renderVocalRank37();
-    if(status)status.textContent="원곡 "+fmt(songs.length)+"곡 표본 · 등록 목록 + 실제 원곡 태그에서 검출된 보컬을 합쳐 순위를 계산했습니다.";
+    if(status)status.textContent="전수집계 완료 · 니코동 원곡 "+fmt(songs.length)+"곡 전체 · 음원 연결 "+fmt(built.matchedSongs)+"곡 · 미분류 "+fmt(built.unmatchedSongs)+"곡 · 실제 음원 "+fmt(registry.length)+"개";
   }catch(e){
-    if(status)status.textContent="순위 생성 실패: "+String(e?.message||e)
+    if(status)status.textContent="전수집계 실패: "+String(e?.message||e)
   }finally{state.vocalRankBusy=false;if(btn)btn.disabled=false}
 }
 function renderVocalRank37(){
   const list=document.getElementById("v37VocalRankList"),sum=document.getElementById("v37VocalRankSummary"),q=(document.getElementById("v37VocalRankSearch")?.value||"").trim().toLowerCase();
   if(!list)return;
   const rows=state.vocalRankRows.filter(function(x){return !q||x.name.toLowerCase().includes(q)||x.engine.toLowerCase().includes(q)});
-  const active=rows.filter(function(x){return x.sampleCount>0}),zero=rows.length-active.length;
-  if(sum)sum.innerHTML='<div><small>순위 항목</small><b>'+fmt(rows.length)+'</b></div><div><small>원곡 검출</small><b>'+fmt(active.length)+'</b></div><div><small>표본 원곡</small><b>'+fmt(state.vocalRankMeta?.songs||0)+'</b></div><div><small>표본 부족</small><b>'+fmt(zero)+'</b></div>';
+  const active=rows.filter(function(x){return x.songCount>0}),zero=rows.length-active.length;
+  if(sum)sum.innerHTML='<div><small>실제 음원</small><b>'+fmt(rows.length)+'</b></div><div><small>순위 산정</small><b>'+fmt(active.length)+'</b></div><div><small>전수 원곡</small><b>'+fmt(state.vocalRankMeta?.songs||0)+'</b></div><div><small>미분류 원곡</small><b>'+fmt(state.vocalRankMeta?.unmatchedSongs||0)+'</b></div>';
   if(!rows.length){list.innerHTML='<div class="v37-diag-card"><b>검색 결과 없음</b></div>';return}
-  list.innerHTML=rows.map(function(x,i){
-    const rank=x.sampleCount?String(i+1):"—";
-    return '<div class="v37-vocal-rank-row '+(x.sampleCount?"":"v37-vocal-unseen")+'"><div class="v37-vocal-rank-num">'+rank+'</div><div class="v37-vocal-rank-main"><b>'+esc(x.name)+'<span class="v37-engine-badge">'+esc(x.engine)+'</span></b><small>'+(x.sampleCount?('표본 '+x.sampleCount+'곡 · 누적 조회 '+fmt(x.views)+' · 최고 '+fmt(x.peakViews)+' · 최근 '+(x.latest||"-")):'등록 목록 · 현재 스캔 표본 없음')+'</small></div><div class="v37-vocal-rank-score"><b>'+x.score.toFixed(1)+'</b><small>종합점수</small></div></div>'
+  let rankNo=0;
+  list.innerHTML=rows.map(function(x){
+    if(x.songCount)rankNo++;
+    const rank=x.songCount?String(rankNo):"—";
+    return '<div class="v37-vocal-rank-row '+(x.songCount?"":"v37-vocal-unseen")+'"><div class="v37-vocal-rank-num">'+rank+'</div><div class="v37-vocal-rank-main"><b>'+esc(x.name)+'<span class="v37-engine-badge">'+esc(x.engine)+'</span></b><small>'+(x.songCount?('전곡 '+x.songCount+'곡 · 누적 조회 '+fmt(x.views)+' · 최고 '+fmt(x.peakViews)+' · 최근 '+(x.latest||"-")):'VocaDB 등록 음원 · 니코동 원곡 연결 0곡')+'</small></div><div class="v37-vocal-rank-score"><b>'+x.score.toFixed(1)+'</b><small>종합점수</small></div></div>'
   }).join("")
 }
 function ensureVocalRank37(page){
   if(!page||page.querySelector("#v37VocalRankBody"))return;
   const body=document.createElement("div");body.id="v37VocalRankBody";
-  body.innerHTML='<div class="v37-vocal-rank-note">순위는 단순 조회수 순이 아닙니다. 기본은 <b>누적 조회 34% + 반응률 28% + 확인된 원곡 수 22% + 최고 히트 16%</b>이고, UTAU는 음원 수가 많은 점을 반영해 <b>조회 30% + 반응률 32% + 원곡 수 25% + 최고 히트 13%</b>로 계산합니다. 파생/MMD/커버/歌ってみた 영상은 원곡 증거 태그가 없으면 집계하지 않습니다.</div>'+
-    '<div class="v37-vocal-rank-controls"><label>순위표<select id="v37VocalRankFamily"><option value="combined">VOCALOID + UTAU + 기타 음성합성</option><option value="vocaloid">VOCALOID</option><option value="utau">UTAU</option><option value="synthv">Synthesizer V</option><option value="cevio">CeVIO</option><option value="voisona">VoiSona</option><option value="neutrino">NEUTRINO</option></select></label>'+
-    '<label>스캔 깊이<select id="v37VocalRankDepth"><option value="normal">표준</option><option value="deep">깊게 · 더 많은 심해곡</option></select></label>'+
-    '<label>목록 검색<input id="v37VocalRankSearch" placeholder="미쿠, 테토, UTAU…"></label><button type="button" id="v37VocalRankRun">순위 생성 / 갱신</button></div>'+
-    '<div class="v37-vocal-rank-summary" id="v37VocalRankSummary"></div><div class="v37-producer-status" id="v37VocalRankStatus">원곡 표본을 수집하면 모든 등록 보컬과 스캔에서 새로 검출된 보컬을 함께 표시합니다.</div><div class="v37-vocal-rank-list" id="v37VocalRankList"></div>';
+  body.innerHTML='<div class="v37-vocal-rank-note"><b>태그명이 아니라 VocaDB의 실제 음원 엔트리명만 표시합니다.</b> 파생 버전·별칭은 VocaDB base voicebank ID로 합쳐 중복을 줄입니다. 순위 계산에는 상위 몇백 곡 표본이 아니라 선택 계열의 니코동 원곡 검색 결과를 마지막 페이지까지 전수 수집합니다. UTAU는 <b>누적 조회 30% + 반응률 32% + 전곡 수 25% + 최고 히트 13%</b>, 기타는 <b>조회 34% + 반응률 28% + 전곡 수 22% + 최고 히트 16%</b>입니다.</div>'+
+    '<div class="v37-vocal-rank-controls"><label>순위표<select id="v37VocalRankFamily"><option value="combined">음성합성 통합</option><option value="vocaloid">VOCALOID 전체</option><option value="utau">UTAU 전체</option><option value="synthv">Synthesizer V</option><option value="cevio">CeVIO</option><option value="voisona">VoiSona</option><option value="neutrino">NEUTRINO</option><option value="voicevox">VOICEVOX</option></select></label>'+
+    '<label>전수집계<select id="v37VocalRankDepth"><option value="cache">24시간 캐시 우선</option><option value="refresh">강제 전곡 재집계</option></select></label>'+
+    '<label>음원 검색<input id="v37VocalRankSearch" placeholder="初音ミク, 重音テト…"></label><button type="button" id="v37VocalRankRun">전곡 순위 생성 / 갱신</button></div>'+
+    '<div class="v37-vocal-rank-summary" id="v37VocalRankSummary"></div><div class="v37-producer-status" id="v37VocalRankStatus">첫 전수집계는 계열과 곡 수에 따라 시간이 걸립니다. 완료 뒤에는 24시간 캐시를 사용합니다.</div><div class="v37-vocal-rank-list" id="v37VocalRankList"></div>';
   page.appendChild(body);
   document.getElementById("v37VocalRankRun").onclick=runVocalRank37;
   document.getElementById("v37VocalRankSearch").addEventListener("input",renderVocalRank37)
