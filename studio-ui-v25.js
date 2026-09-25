@@ -39,7 +39,7 @@ function buildHome(){
   sec.className="tool-view v25-home";
   sec.dataset.toolView="studioHome";
   sec.innerHTML=
-    '<div class="v25-hero"><div><span class="v25-eyebrow">VOCALO SUPPORT MENU</span><h2>보카로 기능 메뉴</h2><p>탐정과 추천을 분리하고, 발굴·보관 기능까지 목적별로 골라 사용합니다.</p></div><div class="v25-hero-badge">v25</div></div>'+
+    '<div class="v25-hero"><div><span class="v25-eyebrow">VOCALO SUPPORT MENU</span><h2>보카로 기능 메뉴</h2><p>탐정과 추천을 분리하고, 발굴·보관 기능까지 목적별로 골라 사용합니다.</p></div><div class="v25-hero-badge">MENU</div></div>'+
     '<div class="v25-home-groups">'+
       GROUPS.map(function(g){
         return '<section class="v25-home-group"><div class="v25-home-head"><div><b>'+g.title+'</b><small>'+g.desc+'</small></div></div><div class="v25-home-cards">'+
