@@ -4976,7 +4976,7 @@ function setupMobileSectionNav(){
   });
   document.querySelectorAll("#mobileSectionNav button").forEach(btn=>{
     btn.addEventListener("click",()=>{
-      if(btn.dataset.action==="tools"){openToolsModal("detective");return;}
+      if(btn.dataset.action==="tools"){openToolsModal("studioHome");return;}
       const target=document.getElementById(btn.dataset.target);
       if(target) target.scrollIntoView({behavior:"smooth",block:"start"});
     });
