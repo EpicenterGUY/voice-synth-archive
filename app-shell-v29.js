@@ -29,6 +29,11 @@ function addStyle(){
     ".v29-module[data-tool-view='universe29'] #universePanel{margin-top:0!important}",
     ".v29-module[data-tool-view='settings29'] #settingsPanel{margin-top:0!important}",
     ".v29-flow-context{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:-2px 0 9px;padding:8px 10px;border:1px solid #1b3b42;border-radius:12px;background:#081d22;color:#88aaa7;font-size:8px}.v29-flow-context b{color:#dff6f2}.v29-back{margin-left:auto;min-height:30px;padding:0 9px;border:1px solid #2b565c;border-radius:9px;background:#0c2a30;color:#c8e6e2;font-size:8px;font-weight:850}",
+    "#mobileSectionNav{display:none!important}",
+    ".v30-bottom-dock{display:none}",
+    "body.v29-compact .v30-bottom-dock{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr));position:fixed;left:8px;right:8px;bottom:max(8px,env(safe-area-inset-bottom));z-index:9999;padding:5px;gap:3px;border:1px solid #28555b;border-radius:18px;background:rgba(5,22,27,.97);box-shadow:0 18px 50px #000c;backdrop-filter:blur(22px)}",
+    "body.v29-compact .v30-bottom-dock button{min-width:0;min-height:48px;border:0;border-radius:13px;background:transparent;color:#769c99;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:7px;font-weight:850}",
+    "body.v29-compact .v30-bottom-dock button.active{background:#103139;color:#effffc}body.v29-compact .v30-dock-icon{font-size:15px;line-height:1;color:#91c0bb}body.v29-compact .v30-bottom-dock button.active .v30-dock-icon{color:#77e3d8}body.v29-compact.tools-open .v30-bottom-dock{display:none!important}",
     "body.v29-compact .app{padding:0 8px calc(82px + env(safe-area-inset-bottom))!important}",
     "body.v29-compact .topbar{position:sticky!important;top:0!important;z-index:105!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;min-height:48px!important;margin:0 -8px 5px!important;padding:6px 10px!important;border:0!important;border-bottom:1px solid #17383d!important;border-radius:0!important;background:rgba(4,17,21,.96)!important;box-shadow:none!important;backdrop-filter:blur(18px)!important;overflow:hidden!important}",
     "body.v29-compact .topbar:after{display:none!important}body.v29-compact .brand{min-width:0!important;gap:7px!important}body.v29-compact .logo{width:30px!important;height:30px!important;min-width:30px!important;border-radius:9px!important;font-size:14px!important}body.v29-compact .brand h1{font-size:15px!important;line-height:1!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}body.v29-compact .brand .sub{display:none!important}",
@@ -94,10 +99,10 @@ function openRoute(view){
 }
 
 function setDockActive(view){
-  var nav=document.getElementById("mobileSectionNav");
-  if(!nav)return;
-  var buttons=nav.querySelectorAll("button[data-v29-view]");
-  for(var i=0;i<buttons.length;i++)buttons[i].classList.toggle("active",buttons[i].dataset.v29View===view);
+  var dock=document.getElementById("v30BottomDock");
+  if(!dock)return;
+  var buttons=dock.querySelectorAll("button[data-v30-view]");
+  for(var i=0;i<buttons.length;i++)buttons[i].classList.toggle("active",buttons[i].dataset.v30View===view);
 }
 function goHome(){
   try{closeToolsModal();}catch(e){}
@@ -106,37 +111,39 @@ function goHome(){
   if(home)home.scrollIntoView({behavior:"smooth",block:"start"});else window.scrollTo({top:0,behavior:"smooth"});
 }
 function routeDock(){
-  var nav=document.getElementById("mobileSectionNav");
-  if(!nav||nav.dataset.v29)return;
-  nav.dataset.v29="1";
-
-  var specs=[
-    ["⌂","홈","home29"],
-    ["⌕","검색","search29"],
-    ["◈","메뉴","studioHome"],
-    ["✦","우주","universe29"],
-    ["♡","보관","library22"]
-  ];
-  var buttons=nav.querySelectorAll("button");
-  for(var i=0;i<buttons.length;i++){
-    if(!specs[i])continue;
-    buttons[i].removeAttribute("data-target");
-    buttons[i].removeAttribute("data-action");
-    buttons[i].dataset.v29View=specs[i][2];
-    buttons[i].innerHTML='<span class="v27-dock-icon">'+specs[i][0]+'</span><span class="v27-dock-label">'+specs[i][1]+'</span>';
+  var old=document.getElementById("mobileSectionNav");
+  if(old){
+    old.hidden=true;
+    old.setAttribute("aria-hidden","true");
+    old.style.setProperty("display","none","important");
+  }
+  var dock=document.getElementById("v30BottomDock");
+  if(!dock){
+    dock=document.createElement("nav");
+    dock.id="v30BottomDock";
+    dock.className="v30-bottom-dock";
+    dock.setAttribute("aria-label","보카로 서포터 빠른 메뉴");
+    var specs=[
+      ["⌂","홈","home29"],
+      ["⌕","검색","search29"],
+      ["◈","메뉴","studioHome"],
+      ["✦","우주","universe29"],
+      ["♡","보관","library22"]
+    ];
+    dock.innerHTML=specs.map(function(x){
+      return '<button type="button" data-v30-view="'+x[2]+'"><span class="v30-dock-icon">'+x[0]+'</span><span>'+x[1]+'</span></button>';
+    }).join("");
+    document.body.appendChild(dock);
+    dock.addEventListener("click",function(e){
+      var btn=e.target.closest("button[data-v30-view]");
+      if(!btn)return;
+      var view=btn.dataset.v30View;
+      if(view==="home29"){goHome();return;}
+      setDockActive(view);
+      openRoute(view);
+    });
   }
   setDockActive("home29");
-
-  nav.addEventListener("click",function(e){
-    var btn=e.target.closest("button[data-v29-view]");
-    if(!btn)return;
-    e.preventDefault();
-    e.stopImmediatePropagation();
-    var view=btn.dataset.v29View;
-    if(view==="home29"){goHome();return;}
-    setDockActive(view);
-    openRoute(view);
-  },true);
 }
 
 
