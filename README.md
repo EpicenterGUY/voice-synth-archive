@@ -1,6 +1,6 @@
-# Voice Synth Archive
+# VocaDive
 
-니코니코 기반 **음성합성 오리지널곡 통계 + 기억 복원 탐정** 프로젝트입니다.
+니코니코 기반 **음성합성 원곡 발굴 · 추천 · 검색 · 데이터 탐색** 앱입니다.
 
 ## 현재 목표
 
@@ -33,5 +33,5 @@ worker/niconico-worker.js
 
 ## 현재 버전
 
-App: v38.0.0
+App: v38.1.0
 Worker: v10
