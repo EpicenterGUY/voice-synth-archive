@@ -1,4 +1,4 @@
-const SW_VERSION="37.0.1"
+const SW_VERSION="37.0.2"
 const CACHE_NAME="voice-synth-archive-shell-"+SW_VERSION;
 const SHELL=[
   "./",
@@ -44,6 +44,21 @@ async function networkFirst(request,fallback){
   }
 }
 
+async function cacheFirst(request){
+  const cached=await caches.match(request);
+  if(cached)return cached;
+  try{
+    const fresh=await fetch(request);
+    if(fresh&&fresh.ok){
+      const cache=await caches.open(CACHE_NAME);
+      cache.put(request,fresh.clone()).catch(()=>{});
+    }
+    return fresh;
+  }catch{
+    return Response.error();
+  }
+}
+
 self.addEventListener("fetch",event=>{
   const req=event.request;
   if(req.method!=="GET")return;
@@ -60,7 +75,12 @@ self.addEventListener("fetch",event=>{
     return;
   }
 
-  if(url.pathname.endsWith(".js")||url.pathname.endsWith(".html")){
+  if(url.pathname.endsWith(".js")){
+    event.respondWith(cacheFirst(req));
+    return;
+  }
+
+  if(url.pathname.endsWith(".html")){
     event.respondWith(networkFirst(req));
     return;
   }
