@@ -1,7 +1,7 @@
 /* Voice Synth Archive PWA v21 */
 (function(){
 "use strict";
-const APP_VERSION="39.7.0";
+const APP_VERSION="39.8.0";
 const CHECK_MS=60000;
 let deferredInstall=null;
 let registration=null;
@@ -46,10 +46,10 @@ function addStyle(){
   .pwa-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
   .pwa-mini{min-height:34px;padding:0 10px;border:1px solid #29445f;border-radius:999px;background:#0b1727cc;color:#d8ecfa;font-size:10px;font-weight:900}
   .pwa-mini:hover{border-color:#61c8f2}.pwa-mini[hidden]{display:none!important}
-  .pwa-update-bar{position:fixed;z-index:24010;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(620px,calc(100vw - 28px));display:flex;align-items:center;gap:9px;padding:11px 12px;border:1px solid rgba(119,221,211,.38);border-radius:17px;background:linear-gradient(145deg,rgba(16,54,62,.97),rgba(10,35,43,.97));box-shadow:0 18px 50px rgba(0,7,10,.42);backdrop-filter:blur(20px) saturate(1.25);-webkit-backdrop-filter:blur(20px) saturate(1.25)}
-  .pwa-update-bar[hidden]{display:none!important}.pwa-update-copy{flex:1;min-width:0}.pwa-update-copy b{display:block;font-size:12px;color:#f0fffc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pwa-update-copy span{display:block;margin-top:3px;font-size:9px;color:#9fc0bc}
-  .pwa-update-now{min-height:39px;border:0;border-radius:11px;padding:0 12px;background:linear-gradient(135deg,#72ded3,#76b7ef 52%,#8a7fff);color:#07171b;font-weight:950;font-size:10px;white-space:nowrap}
-  .pwa-update-later{min-height:39px;border:1px solid rgba(119,221,211,.24);border-radius:11px;padding:0 10px;background:#12343c;color:#b9d7d3;font-weight:850;font-size:9px;white-space:nowrap}
+  .pwa-update-bar{position:fixed;z-index:24010;right:18px;bottom:max(18px,env(safe-area-inset-bottom));width:min(430px,calc(100vw - 36px));display:flex;align-items:center;gap:8px;padding:9px 10px;border:1px solid rgba(119,221,211,.30);border-radius:15px;background:linear-gradient(145deg,rgba(16,54,62,.96),rgba(10,35,43,.96));box-shadow:0 16px 42px rgba(0,7,10,.35);backdrop-filter:blur(18px) saturate(1.2);-webkit-backdrop-filter:blur(18px) saturate(1.2)}
+  .pwa-update-bar[hidden]{display:none!important}.pwa-update-copy{flex:1;min-width:0}.pwa-update-copy b{display:block;font-size:10px;color:#f0fffc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pwa-update-copy span{display:block;margin-top:2px;font-size:7.5px;color:#9fc0bc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pwa-update-now{min-height:34px;border:0;border-radius:10px;padding:0 10px;background:linear-gradient(135deg,#72ded3,#76b7ef 52%,#8a7fff);color:#07171b;font-weight:950;font-size:8px;white-space:nowrap}
+  .pwa-update-later{min-height:34px;border:1px solid rgba(119,221,211,.20);border-radius:10px;padding:0 8px;background:#12343c;color:#b9d7d3;font-weight:850;font-size:7.5px;white-space:nowrap}
   .pwa-log-modal{position:fixed;inset:0;z-index:190;display:none;place-items:center;padding:14px}.pwa-log-modal.open{display:grid}
   .pwa-log-backdrop{position:absolute;inset:0;background:#01070dcc;backdrop-filter:blur(8px)}
   .pwa-log-sheet{position:relative;z-index:1;width:min(680px,96vw);max-height:min(760px,90dvh);overflow:auto;border:1px solid #29445f;border-radius:20px;background:#07111e;box-shadow:0 25px 80px #000a}
@@ -62,12 +62,12 @@ function addStyle(){
   @media(max-width:699px){
     .pwa-actions{gap:3px}.pwa-mini{min-height:28px;padding:0 7px;font-size:7px}
     .pwa-log-modal{padding:0;align-items:end}.pwa-log-sheet{width:100vw;max-height:88dvh;border-radius:18px 18px 0 0;border-bottom:0}
-    .pwa-update-bar{bottom:calc(88px + env(safe-area-inset-bottom));width:calc(100vw - 24px);padding:9px 10px;gap:7px}
-    .pwa-update-copy b{font-size:10px}.pwa-update-copy span{font-size:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .pwa-update-now{min-height:36px;padding:0 10px;font-size:9px}.pwa-update-later{min-height:36px;padding:0 8px;font-size:8px}
+    .pwa-update-bar{right:10px;bottom:calc(78px + env(safe-area-inset-bottom));width:min(360px,calc(100vw - 20px));padding:8px 9px;gap:6px}
+    .pwa-update-copy b{font-size:9px}.pwa-update-copy span{font-size:7px}
+    .pwa-update-now{min-height:32px;padding:0 9px;font-size:7.5px}.pwa-update-later{min-height:32px;padding:0 7px;font-size:7px}
   }
   @media(min-width:1100px){
-    body.v37-ready .pwa-update-bar{left:calc(50% + 45px);bottom:22px}
+    body.v37-ready .pwa-update-bar{right:20px;bottom:20px}
   }`;
   document.head.appendChild(style);
 }
