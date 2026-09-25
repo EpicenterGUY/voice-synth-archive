@@ -1,4 +1,4 @@
-const SW_VERSION="36.0.0"
+const SW_VERSION="36.1.0"
 const CACHE_NAME="voice-synth-archive-shell-"+SW_VERSION;
 const SHELL=[
   "./",
@@ -21,16 +21,6 @@ self.addEventListener("activate",event=>{
     const names=await caches.keys();
     await Promise.all(names.filter(n=>n.startsWith("voice-synth-archive-shell-")&&n!==CACHE_NAME).map(n=>caches.delete(n)));
     await self.clients.claim();
-    const windows=await self.clients.matchAll({type:"window",includeUncontrolled:true});
-    for(const client of windows){
-      try{
-        const u=new URL(client.url);
-        if(u.searchParams.get("appv")!==SW_VERSION){
-          u.searchParams.set("appv",SW_VERSION);
-          await client.navigate(u.href);
-        }
-      }catch{}
-    }
   })());
 });
 
