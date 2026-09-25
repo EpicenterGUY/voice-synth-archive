@@ -4,7 +4,7 @@
   "short_name": "Voca Support",
   "description": "매일 추천, 탐색, 검색, 보관함, 취향 분석과 프로듀서 허브를 한 곳에서 쓰는 음성합성곡 서포터",
   "lang": "ko-KR",
-  "start_url": "./?appv=37.3.1",
+  "start_url": "./?appv=37.4.0",
   "scope": "./",
   "display": "standalone",
   "display_override": [
