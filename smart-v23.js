@@ -122,6 +122,7 @@ function setFeedback23(id, value, song){
   saveSmart();
   syncFeedback23(id);
   renderTasteProfile23();
+  try{if(window.VSARefreshPersonal395)window.VSARefreshPersonal395()}catch(e){}
   try{
     toast(value > 0 ? "이 곡 취향을 추천에 반영합니다." : value < 0 ? "이 곡과 비슷한 요소를 줄입니다." : "취향 피드백을 해제했습니다.");
   }catch(e){}
