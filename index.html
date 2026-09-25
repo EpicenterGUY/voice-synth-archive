@@ -1339,6 +1339,28 @@ body.v37-ready .v37-search-page .results-toolbar{border:1px solid #18393e;border
 .v37-route-error h2{margin:0;color:#ffecef;font-size:17px}.v37-route-error p{margin:7px 0 12px;color:#c7a1aa;font-size:9px;line-height:1.55}
 .v37-route-error button{min-height:38px;padding:0 12px;border:1px solid #6b4a52;border-radius:10px;background:#351c23;color:#fff0f3;font-size:8px;font-weight:900}
 @media(max-width:420px){.v37-diag-summary{grid-template-columns:1fr}}
+.v37-safety-card,.v37-ice-extra,.v37-producer-controls{margin:10px 0;padding:12px;border:1px solid #21474d;border-radius:16px;background:#071c21}
+.v37-safety-head,.v37-extra-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.v37-safety-head b,.v37-extra-head b{font-size:11px;color:#e9fcf9}.v37-safety-head small,.v37-extra-head small{display:block;margin-top:3px;color:#759895;font-size:7px;line-height:1.45}
+.v37-safety-modes{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}
+.v37-safety-modes button{min-height:42px;border:1px solid #28545a;border-radius:12px;background:#09272d;color:#9dbfbc;font-size:8px;font-weight:900}
+.v37-safety-modes button.active{background:#17474d;border-color:#55a49d;color:#effffb}
+.v37-safety-note{margin-top:8px;color:#688e8a;font-size:7px;line-height:1.5}
+.v37-adult-badge{display:inline-flex;align-items:center;min-height:22px;padding:0 7px;border-radius:999px;border:1px solid #78434f;background:#2b151b;color:#f3a8b7;font-size:7px;font-weight:950}
+.v37-producer-controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) auto;gap:7px;align-items:end}
+.v37-producer-controls label{min-width:0;color:#759895;font-size:7px}.v37-producer-controls select{width:100%;min-height:40px;margin-top:4px;border:1px solid #285159;border-radius:10px;background:#06171c;color:#e9fbf7;padding:0 8px;font-size:8px}
+.v37-producer-controls button{min-height:40px;padding:0 14px;border:0;border-radius:11px;background:linear-gradient(135deg,#65d9d0,#7285f3);color:#061417;font-size:8px;font-weight:950}
+.v37-producer-status{margin:8px 0;padding:9px 10px;border:1px solid #1c3d42;border-radius:11px;background:#06171b;color:#789c98;font-size:8px}
+.v37-producer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:8px}
+.v37-producer-card{min-width:0;padding:12px;border:1px solid #21474d;border-radius:15px;background:linear-gradient(155deg,#09252b,#06191e)}
+.v37-producer-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.v37-producer-card h3{margin:0;color:#effffc;font-size:13px;overflow-wrap:anywhere}.v37-producer-card .score{flex:0 0 auto;padding:5px 7px;border-radius:9px;background:#153d43;color:#8de0d7;font-size:8px;font-weight:950}
+.v37-producer-meta{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}.v37-producer-meta span{padding:4px 6px;border:1px solid #285158;border-radius:999px;color:#8fb2ae;font-size:7px}
+.v37-producer-songs{margin-top:8px;color:#789b98;font-size:7px;line-height:1.45}.v37-producer-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}.v37-producer-actions button{min-height:32px;padding:0 9px;border:1px solid #2a555c;border-radius:9px;background:#0a2930;color:#c8e4df;font-size:7px;font-weight:900}
+.v37-ice-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}.v37-ice-actions button{min-height:36px;padding:0 11px;border:1px solid #285159;border-radius:10px;background:#09272d;color:#d8f4f0;font-size:8px;font-weight:900}
+.v37-ice-pick{margin-top:9px}.v37-ice-pick article{display:grid;grid-template-columns:84px minmax(0,1fr);gap:10px;padding:9px;border:1px solid #21464b;border-radius:13px;background:#06171b}.v37-ice-pick img{width:84px;aspect-ratio:16/9;object-fit:cover;border-radius:9px;background:#0b282d}.v37-ice-pick b{display:block;color:#eafaf7;font-size:9px}.v37-ice-pick small{display:block;margin-top:4px;color:#769a96;font-size:7px}
+@media(max-width:699px){.v37-producer-controls{grid-template-columns:1fr 1fr}.v37-producer-controls button{grid-column:1/-1}.v37-ice-pick article{grid-template-columns:72px minmax(0,1fr)}.v37-ice-pick img{width:72px}}
+@media(max-width:390px){.v37-producer-controls{grid-template-columns:1fr}}
+
 
 @media(max-width:699px){.v37-hub-grid{grid-template-columns:1fr}.v37-hub-card{min-height:80px}.v37-native-head h2{font-size:20px}}
 
@@ -1554,7 +1576,7 @@ body.v37-ready .v37-search-page .results-toolbar{border:1px solid #18393e;border
     </details>
   </section>
 
-  <div class="footer">v37.5.0 · 탐색 허브 개인화 · 최근/자주 사용 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v37.6.0 · 19금 필터 · 프로듀서 발굴 · 빙산 심해탐사 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -2555,6 +2577,51 @@ function strictFilterSourceRows37(rows,context){
 }
 
 
+
+const ADULT_FILTER_KEY37="vsa37AdultFilter";
+function adultFilterMode37(){
+  const v=localStorage.getItem(ADULT_FILTER_KEY37);
+  return v==="show"?"show":"block"
+}
+function adultContentInfo37(song){
+  const tags=parseTags(song&&song.tags);
+  const title=String(song&&song.title||"");
+  const tagText=tags.join(" ");
+  const exact=tags.find(function(t){
+    const x=String(t||"").normalize?String(t).normalize("NFKC"):String(t||"");
+    return /(^|[^a-z0-9])r\s*[-_]?\s*18(?:g)?([^a-z0-9]|$)/i.test(x)||
+      /18禁|成人向け|性的表現|アダルト|紳士向け/.test(x)
+  });
+  const titleHit=/(^|[\[【(\s])R\s*[-_]?\s*18(?:G)?([\]】)\s]|$)|18禁|成人向け/i.test(title);
+  return {adult:!!(exact||titleHit),reason:exact|| (titleHit?"제목 19+ 표기":"")}
+}
+function filterAdultRows37(rows,context){
+  const list=Array.isArray(rows)?rows:[];
+  const mode=adultFilterMode37(),kept=[],rejected=[];
+  for(const song of list){
+    const hit=adultContentInfo37(song);
+    if(mode==="block"&&hit.adult)rejected.push(song);
+    else kept.push(song)
+  }
+  const key=context||"unknown";
+  if(typeof state!=="undefined"&&state.adultRejectStats){
+    state.adultRejectStats[key]={checked:list.length,kept:kept.length,rejected:rejected.length,mode:mode,at:Date.now()}
+  }
+  return {rows:kept,rejected:rejected.length,rejectedRows:rejected,mode:mode}
+}
+function setAdultFilterMode37(mode){
+  const v=mode==="show"?"show":"block";
+  localStorage.setItem(ADULT_FILTER_KEY37,v);
+  if(typeof resetGemPool==="function")try{resetGemPool()}catch(_){}
+  if(typeof renderAdultSettings37==="function")renderAdultSettings37();
+  if(typeof refreshHub37==="function")refreshHub37();
+  try{if(window.VSAHome37&&VSAHome37.render)VSAHome37.render()}catch(_){}
+  if(typeof toast==="function")toast(v==="block"?"19금 콘텐츠를 차단합니다.":"19금 필터를 해제했습니다.")
+}
+window.VSA37AdultFilterRows=filterAdultRows37;
+window.VSA37AdultMode=adultFilterMode37;
+window.VSA37AdultInfo=adultContentInfo37;
+
 function songMatchesScope(song,scope){
   if(!scope || scope==="all") return true;
   const full=fullScopeTags(scope);
@@ -2634,6 +2701,9 @@ const state = {
   gemRankCache:new Map(),
   gemSourceRejected:0,
   sourceRejectStats:{},
+  adultRejectStats:{},
+  producerDiscovery:[],
+  producerDiscoveryBusy:false,
   guideLevel:"beginner",
   guideSongs:[],
   tasteSongs:[],
@@ -3296,7 +3366,8 @@ async function loadSongs(reset=false){
   try{
     const d=await fetchNico({tier,year:state.year,sort,limit:100,offset:state.offset,mode:"ranking",applyYear:true,applyTier:true});
     state.totalSongsInQuery=+d.meta.totalCount||0;
-    const rows=(d.data||[]).map((x,i)=>({...x,__rank:state.offset+i+1}));
+    const safeBatch=filterAdultRows37(d.data||[],"ranking");
+    const rows=safeBatch.rows.map((x,i)=>({...x,__rank:state.offset+i+1}));
     state.songs=reset?rows:state.songs.concat(rows);
     state.offset=state.songs.length;
     renderSongs();
@@ -4128,7 +4199,7 @@ async function detectiveSearch(){
       }
     }
 
-    const raw=[...uniq.values()];
+    const raw=filterAdultRows37([...uniq.values()],"detective").rows;
     let hardRejected=0,scoreRejected=0,matchRejected=0;
 
     let prelim=[];
@@ -4420,7 +4491,7 @@ async function buildGuide(){
   const level=state.guideLevel,preset=GUIDE_PRESETS[level],count=+$("#guideCount").value||12,era=eraBounds($("#guideEra").value),tag=$("#guideTag").value.trim();
   state.busy=true;$("#buildGuideBtn").disabled=true;$("#guideGrid").innerHTML='<div class="discovery-empty">추천 코스를 만드는 중…</div>';
   try{
-    const uniq=new Map();const batches=await mapLimit(preset.sorts,3,async sort=>{try{return(await fetchGuideBatch(sort,preset,tag)).data||[]}catch{return[]}});for(const s of batches.flat())if(inEra(s,era))uniq.set(s.contentId,s);let rows=strictFilterSourceRows37([...uniq.values()],"guide").rows;if(!rows.length)throw new Error("음성합성 원곡 태그가 확인된 추천곡을 찾지 못했습니다.");
+    const uniq=new Map();const batches=await mapLimit(preset.sorts,3,async sort=>{try{return(await fetchGuideBatch(sort,preset,tag)).data||[]}catch{return[]}});for(const s of batches.flat())if(inEra(s,era))uniq.set(s.contentId,s);let rows=filterAdultRows37(strictFilterSourceRows37([...uniq.values()],"guide").rows,"guide").rows;if(!rows.length)throw new Error("필터 조건을 통과한 음성합성 원곡을 찾지 못했습니다.");
     const maxV=Math.max(...rows.map(s=>+s.viewCounter||0),1),maxM=Math.max(...rows.map(s=>+s.mylistCounter||0),1),maxL=Math.max(...rows.map(s=>+s.likeCounter||0),1);
     const scored=rows.map(s=>{const V=+s.viewCounter||0,M=+s.mylistCounter||0,L=+s.likeCounter||0,C=+s.commentCounter||0;let score;if(level==="beginner")score=.58*Math.log1p(V)/Math.log1p(maxV)+.24*Math.log1p(M)/Math.log1p(maxM)+.18*Math.log1p(L)/Math.log1p(maxL);else if(level==="intermediate")score=.34*Math.log1p(V)/Math.log1p(maxV)+.30*Math.log1p(M)/Math.log1p(maxM)+.16*Math.log1p(L)/Math.log1p(maxL)+.20*clamp01((M+2)/(V+900)*45);else score=.18*Math.log1p(V)/Math.log1p(maxV)+.36*clamp01((M+2)/(V+900)*55)+.18*clamp01((C+3)/(V+900)*30)+.28*(1-Math.log1p(V)/Math.log1p(maxV));return{song:s,score}}).sort((a,b)=>b.score-a.score);
     state.guideSongs=diversifySongs(scored,count);renderGuide(preset);
@@ -4437,7 +4508,7 @@ async function fetchTasteTag(tag,min,max){const nf={viewCounter:{gte:min}};if(ma
 function tasteMatchScore(song,terms,era,fame){const raw=(String(song.title||"")+" "+parseTags(song.tags).join(" ")).toLowerCase();let matched=0,weighted=0;for(const t of terms){if(raw.includes(t.toLowerCase())){matched++;weighted+=tagWeight(t)}}const termScore=terms.length?matched/terms.length:.35,tagScore=terms.length?clamp01(weighted/(terms.length*2.5)):.35,V=+song.viewCounter||0,M=+song.mylistCounter||0,L=+song.likeCounter||0,reaction=clamp01(((M+2)/(V+900)*50)+((L+3)/(V+1200)*18)),eraScore=inEra(song,era)?1:0,fb=fameBounds(fame),fameScore=(V>=fb[0]&&(fb[1]==null||V<=fb[1]))?1:.15;return.42*termScore+.20*tagScore+.18*reaction+.10*eraScore+.10*fameScore}
 async function recommendTaste(){
   if(state.busy)return;if(!relayBase()){toast("먼저 Worker를 연결하세요.");return}const parsed=parseTastePrompt(),fame=$("#tasteFame").value,era=eraBounds($("#tasteEra").value),fb=fameBounds(fame);state.busy=true;$("#tasteRecommendBtn").disabled=true;$("#tasteGrid").innerHTML='<div class="discovery-empty">취향에 맞는 곡을 찾는 중…</div>';
-  try{const uniq=new Map();if(parsed.terms.length){const batches=await mapLimit(parsed.terms.slice(0,6),3,async t=>fetchTasteTag(t,fb[0],fb[1]));for(const s of batches.flat())uniq.set(s.contentId,s)}if(uniq.size<15){const nf={viewCounter:{gte:fb[0]}};if(fb[1]!=null)nf.viewCounter.lte=fb[1];for(const sort of["-mylistCounter","-viewCounter","-commentCounter"]){try{const d=await fetchNico({year:"all",limit:100,offset:0,mode:"ranking",sort,applyYear:false,applyTier:false,numericFilters:nf});for(const s of(d.data||[]))uniq.set(s.contentId,s)}catch{}}}let rows=strictFilterSourceRows37([...uniq.values()],"taste").rows.filter(s=>!era||inEra(s,era));if(!rows.length)throw new Error("음성합성 원곡 태그가 확인된 곡이 없습니다.");const scored=rows.map(s=>({song:s,score:tasteMatchScore(s,parsed.terms,era,fame)})).sort((a,b)=>b.score-a.score);state.tasteSongs=diversifySongs(scored,16);renderTaste(parsed)}catch(e){$("#tasteGrid").innerHTML=`<div class="discovery-empty">추천 실패<br><small>${esc(String(e?.message||e))}</small></div>`}finally{state.busy=false;$("#tasteRecommendBtn").disabled=false}
+  try{const uniq=new Map();if(parsed.terms.length){const batches=await mapLimit(parsed.terms.slice(0,6),3,async t=>fetchTasteTag(t,fb[0],fb[1]));for(const s of batches.flat())uniq.set(s.contentId,s)}if(uniq.size<15){const nf={viewCounter:{gte:fb[0]}};if(fb[1]!=null)nf.viewCounter.lte=fb[1];for(const sort of["-mylistCounter","-viewCounter","-commentCounter"]){try{const d=await fetchNico({year:"all",limit:100,offset:0,mode:"ranking",sort,applyYear:false,applyTier:false,numericFilters:nf});for(const s of(d.data||[]))uniq.set(s.contentId,s)}catch{}}}let rows=filterAdultRows37(strictFilterSourceRows37([...uniq.values()],"taste").rows,"taste").rows.filter(s=>!era||inEra(s,era));if(!rows.length)throw new Error("필터 조건을 통과한 음성합성 원곡이 없습니다.");const scored=rows.map(s=>({song:s,score:tasteMatchScore(s,parsed.terms,era,fame)})).sort((a,b)=>b.score-a.score);state.tasteSongs=diversifySongs(scored,16);renderTaste(parsed)}catch(e){$("#tasteGrid").innerHTML=`<div class="discovery-empty">추천 실패<br><small>${esc(String(e?.message||e))}</small></div>`}finally{state.busy=false;$("#tasteRecommendBtn").disabled=false}
 }
 function renderTaste(parsed){$("#tasteSummary").innerHTML=`해석한 취향: <b>${parsed.terms.length?parsed.terms.map(esc).join(" · "):"특정 태그 없음"}</b> · ${state.tasteSongs.length}곡 추천`;$("#tasteGrid").innerHTML=state.tasteSongs.map((x,i)=>{const s=x.song,tags=informativeTags(s).slice(0,4);return`<article class="discovery-card"><img src="${esc(s.thumbnailUrl||"")}" loading="lazy" onerror="this.style.visibility='hidden'"><div class="discovery-body"><a class="discovery-title" href="https://www.nicovideo.jp/watch/${encodeURIComponent(s.contentId)}" target="_blank" rel="noopener">${i+1}. ${esc(s.title||s.contentId)}</a><div class="discovery-meta"><span>취향 일치 ${(x.score*100).toFixed(1)}%</span><span>조회 ${fmt(s.viewCounter||0)}</span><span>${songYear(s)||"-"}년</span></div><div class="discovery-tags">${tags.map(t=>`<span class="discovery-tag">${esc(t)}</span>`).join("")}</div><div class="gem-actions"><button class="mini-btn" onclick="openTasteUniverse('${esc(s.contentId)}')">비슷한 곡</button><button class="mini-btn" onclick="window.open('https://www.nicovideo.jp/watch/${encodeURIComponent(s.contentId)}','_blank','noopener')">듣기</button></div></div></article>`}).join("")}
 function openTasteUniverse(id){const x=state.tasteSongs.find(x=>x.song.contentId===id);if(!x)return;openUniversePage37(x.song,false)}
@@ -4563,7 +4634,8 @@ async function buildGemCandidatePool(){
   await Promise.all(tasks);
 
   let verified=strictFilterSourceRows37([...unique.values()],"gems");
-  let pool=verified.rows.filter(s=>modeEligible(s,mode));
+  let adultChecked=filterAdultRows37(verified.rows,"gems");
+  let pool=adultChecked.rows.filter(s=>modeEligible(s,mode));
   if(!pool.length) throw new Error("음성합성 원곡 태그가 확인된 후보곡을 찾지 못했습니다.");
 
   // 여러 정렬이 같은 인기곡에 치우치는 것을 막기 위해 중간 조회수대 표본도 추가
@@ -4571,11 +4643,12 @@ async function buildGemCandidatePool(){
     const sample=await fetchGemBatch("+viewCounter",preset.minViews,maxViews,tag,useYear);
     for(const s of (sample.data||[])) unique.set(gemPoolKey(s),s);
     verified=strictFilterSourceRows37([...unique.values()],"gems");
-    pool=verified.rows.filter(s=>modeEligible(s,mode));
+    adultChecked=filterAdultRows37(verified.rows,"gems");
+    pool=adultChecked.rows.filter(s=>modeEligible(s,mode));
   }catch{}
   $("#gemProgress").style.width="82%";
 
-  return {pool,mode,maxViews,tag,useYear,rejected:verified.rejected};
+  return {pool,mode,maxViews,tag,useYear,rejected:verified.rejected,adultRejected:adultChecked.rejected};
 }
 function diverseGemSelection(scored,count,seed){
   const candidates=scored.slice(0,Math.min(90,scored.length));
@@ -4623,7 +4696,7 @@ async function findHiddenGems(reroll=false){
   try{
     if(!reroll || !state.hiddenGemPool.length){
       const result=await buildGemCandidatePool();
-      state.gemSourceRejected=result.rejected||0;
+      state.gemSourceRejected=(result.rejected||0)+(result.adultRejected||0);
       state.hiddenGemPool=scoreGemPool(result.pool,result.mode);
     }
     state.hiddenGemSeed=(state.hiddenGemSeed+Date.now()+Math.floor(Math.random()*100000))>>>0;
@@ -4831,7 +4904,8 @@ async function buildUniverse(center,force=false){
     const batches=await mapLimit(queryTags,3,tag=>fetchTagCandidates(tag,40));
     const map=new Map();
     const universeVerified=strictFilterSourceRows37(batches.flat(),"universe");
-    for(const rows of universeVerified.rows){
+    const universeSafe=filterAdultRows37(universeVerified.rows,"universe");
+    for(const rows of universeSafe.rows){
       if(rows.contentId===center.contentId) continue;
       map.set(rows.contentId,rows);
     }
@@ -5136,6 +5210,7 @@ async function freeSearch(reset=false){
       else if(sort==="-commentCounter")rawRows.sort((a,b)=>(+b.commentCounter||0)-(+a.commentCounter||0));
     }
 
+    rawRows=filterAdultRows37(rawRows,"search").rows;
     const existing=new Map(state.songs.map(x=>[x.contentId,x]));
     for(const s of rawRows){
       if(!s?.contentId)continue;
@@ -5242,6 +5317,7 @@ const VSA37_FEATURES={
   taste:{id:"taste",label:"내 취향 추천",route:"taste",dock:"taste",lazy:null},
   universe:{id:"universe",label:"보카로 우주",route:"universe29",dock:"explore",lazy:"universe"},
   producer:{id:"producer",label:"프로듀서 허브",route:"explore33",dock:"explore",lazy:"v33"},
+  producerDiscovery:{id:"producerDiscovery",label:"프로듀서 발굴",route:"producerDiscover37",dock:"explore",lazy:null},
   search:{id:"search",label:"일반 검색",route:"search29",dock:"search",lazy:null},
   library:{id:"library",label:"보관함",route:"library22",dock:"library",lazy:"personal"},
   settings:{id:"settings",label:"설정",route:"settings29",dock:"explore",lazy:null},
@@ -5318,7 +5394,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:"37.5.0",
+    version:"37.6.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -5327,6 +5403,8 @@ async function collectDiagnostics37(){
     errors:(window.__VSA37_ERRORS||[]).slice(-5),
     loader:window.VSAFeatureLoaderStatus?window.VSAFeatureLoaderStatus():null,
     sourceRejectStats:(typeof state!=="undefined"&&state.sourceRejectStats)?state.sourceRejectStats:{},
+    adultFilter:adultFilterMode37(),
+    adultRejectStats:(typeof state!=="undefined"&&state.adultRejectStats)?state.adultRejectStats:{},
     featureStats:featureStats37(),
     featureHistory:featureHistory37(),
     serviceWorker:{supported:"serviceWorker" in navigator,controlled:!!navigator.serviceWorker?.controller,script:navigator.serviceWorker?.controller?.scriptURL||""},
@@ -5356,6 +5434,7 @@ async function renderDiagnostics37(){
     '</div>'+
     '<div class="v37-diag-card"><small>CORE UI</small><b>'+(coreBad.length?"확인 필요":"정상")+'</b><p>중복 ID '+d.duplicateIds.length+'개 · 핵심 요소 누락 '+coreBad.length+'개 · 캐시 '+d.caches.length+'개</p></div>'+
     '<div class="v37-diag-card"><small>SOURCE GUARD</small><b>원곡 태그 재검증 사용 중</b><p>'+Object.entries(d.sourceRejectStats||{}).map(function(x){return x[0]+' 제외 '+(x[1].rejected||0)+'건'}).join(' · ')+'</p></div>'+
+    '<div class="v37-diag-card"><small>19+ FILTER</small><b>'+(d.adultFilter==="block"?"차단":"표시")+'</b><p>'+Object.entries(d.adultRejectStats||{}).map(function(x){return x[0]+' '+(x[1].rejected||0)+'건 차단'}).join(' · ')+'</p></div>'+
     '<div><div class="v37-diag-list">'+groupRows+'</div></div>'+
     '<div class="v37-diag-card"><small>RECENT ERRORS</small><pre class="v37-diag-pre">'+errorText.replace(/[&<>]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;"}[c]})+'</pre></div>'+
     '<div class="v37-diag-actions"><button type="button" data-v37-diag-refresh>다시 검사</button><button type="button" data-v37-diag-heal>페이지 상태 복구</button><button type="button" data-v37-diag-copy>진단 정보 복사</button></div>';
@@ -5373,6 +5452,160 @@ async function copyDiagnostics37(){
   try{await navigator.clipboard.writeText(textData);if(typeof toast==="function")toast("진단 정보를 복사했습니다.")}catch(_){
     const ta=document.createElement("textarea");ta.value=textData;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();if(typeof toast==="function")toast("진단 정보를 복사했습니다.")
   }
+}
+
+
+function ensureAdultSettings37(page){
+  if(!page||page.querySelector("#v37AdultSettings"))return;
+  const box=document.createElement("section");box.id="v37AdultSettings";box.className="v37-safety-card";
+  const panel=page.querySelector("#settingsPanel");
+  if(panel)page.insertBefore(box,panel);else page.appendChild(box);
+  renderAdultSettings37()
+}
+function renderAdultSettings37(){
+  const box=document.getElementById("v37AdultSettings");if(!box)return;
+  const mode=adultFilterMode37();
+  box.innerHTML='<div class="v37-safety-head"><div><b>19금 콘텐츠 필터</b><small>니코동의 R-18 / R18 / 18禁 / 成人向け / 紳士向け 태그와 제목 표기를 기준으로 추천·발굴·검색 결과를 거릅니다.</small></div><span class="v37-adult-badge">19+</span></div>'+
+    '<div class="v37-safety-modes"><button type="button" data-v37-adult-mode="block" class="'+(mode==="block"?"active":"")+'">차단 · 기본</button><button type="button" data-v37-adult-mode="show" class="'+(mode==="show"?"active":"")+'">필터 해제 · 표시</button></div>'+
+    '<div class="v37-safety-note">필터는 곡 목록과 추천 결과에 적용됩니다. 니코동 태그가 잘못되었거나 없는 영상은 완벽하게 판별하지 못할 수 있습니다. 빙산의 전체 통계 건수는 원본 모집단 통계를 유지합니다.</div>'
+}
+
+const PRODUCER_KNOWN37=["DECO*27","wowaka","ryo","ハチ","ピノキオピー","Neru","じん","kz","40mP","Mitchie M","みきとP","Orangestar","ナユタン星人","Ayase","Kanaria","かいりきベア","柊キライ","Chinozo","すりぃ","syudou","ツミキ","wotaku","MARETU","きくお","cosMo@暴走P","OSTER project","sasakure.UK","doriko","164","蝶々P","buzzG","トーマ","れるりり","n-buna","ぬゆり","ユリイ・カノン","Aqu3ra","R Sound Design","はるまきごはん","煮ル果実","いよわ","原口沙輔","なきそ","シャノン","柊マグネタイト","雄之助","Giga","八王子P","電ポルP","TOKOTOKO","西沢さんP","emon(Tes.)"];
+const PRODUCER_KNOWN_MAP37=new Map(PRODUCER_KNOWN37.map(function(x){return[String(x).toLowerCase(),x]}));
+const PRODUCER_EXCLUDE37=/VOCALOID|UTAU|Synthesizer|SynthV|CeVIO|VoiSona|NEUTRINO|VOICEVOX|初音ミク|鏡音|巡音|重音|GUMI|flower|可不|IA|KAITO|MEIKO|オリジナル|伝説入り|殿堂入り|神話入り|ミリオン|ランキング|メドレー|作業用|高音質|高画質|歌詞|字幕|MMD|歌ってみた|踊ってみた|演奏してみた|ニコカラ|カラオケ|プロセカ|ゲーム|アニメ|音楽|ロック|メタル|ジャズ|テクノ|トランス|ポップ|バラード|エレクトロ|かわいい|可愛い|切ない|泣ける|中毒|良曲|名曲|神曲|期待の新人|処女作|投稿祭|誕生祭|生誕祭/i;
+function producerCandidateTags37(song){
+  const out=[],seen=new Set();
+  for(const raw of parseTags(song&&song.tags)){
+    const tag=String(raw||"").trim();if(!tag||seen.has(tag)||tag.length<2||tag.length>34)continue;seen.add(tag);
+    const known=PRODUCER_KNOWN_MAP37.get(tag.toLowerCase());
+    const explicit=/([\-‐‑‒–—ー_ ]?P|Ｐ)$/.test(tag)||/ピー$/.test(tag);
+    if(PRODUCER_EXCLUDE37.test(tag)||/^\d+$/.test(tag)||/^[A-Z]{1,3}$/.test(tag))continue;
+    out.push({tag:known||tag,known:!!known,explicit:explicit})
+  }
+  return out
+}
+function producerDiscoveryScore37(x,mode){
+  const avg=x.views/Math.max(1,x.count),react=((x.mylists+2)/(x.views+900))*1000,under=1-Math.min(1,Math.log10(avg+10)/6),count=Math.min(1,x.count/5),recent=x.latest>=new Date().getFullYear()-3?1:0,conf=Math.min(1,x.confidence/12);
+  let score=.28*under+.26*Math.min(1,react/25)+.22*count+.16*conf+.08*recent;
+  if(mode==="deep")score=.45*under+.25*Math.min(1,react/25)+.18*count+.12*conf;
+  if(mode==="rookie")score=.34*recent+.25*under+.20*Math.min(1,react/25)+.12*count+.09*conf;
+  if(mode==="reaction")score=.46*Math.min(1,react/25)+.24*under+.18*count+.12*conf;
+  return Math.max(0,Math.min(1,score))*100
+}
+async function runProducerDiscovery37(){
+  if(state.producerDiscoveryBusy)return;
+  if(!relayBase()){toast("먼저 Worker를 연결하세요.");return}
+  const mode=document.getElementById("v37ProdMode")?.value||"balanced";
+  const maxViews=+document.getElementById("v37ProdMaxViews")?.value||100000;
+  const minSongs=+document.getElementById("v37ProdMinSongs")?.value||2;
+  const count=+document.getElementById("v37ProdCount")?.value||12;
+  const status=document.getElementById("v37ProducerStatus"),grid=document.getElementById("v37ProducerGrid"),btn=document.getElementById("v37ProducerRun");
+  state.producerDiscoveryBusy=true;if(btn)btn.disabled=true;
+  if(status)status.textContent="원곡 후보를 모으고 프로듀서 태그를 교차검증하는 중…";
+  if(grid)grid.innerHTML='<div class="v37-diag-card"><b>프로듀서 발굴 중…</b><p>저조회수 원곡의 반복 태그와 반응률을 비교합니다.</p></div>';
+  try{
+    const nf={viewCounter:{gte:100,lte:maxViews}};
+    const sorts=mode==="rookie"?["-startTime","-mylistCounter","-commentCounter","+viewCounter"]:["-mylistCounter","-commentCounter","+viewCounter","-startTime"];
+    const batches=await mapLimit(sorts,3,async function(sort){
+      try{return(await fetchNico({year:"all",limit:100,offset:0,mode:"ranking",sort:sort,applyYear:false,applyTier:false,numericFilters:nf})).data||[]}catch(_){return[]}
+    });
+    const uniq=new Map();
+    batches.flat().forEach(function(song){if(song&&song.contentId)uniq.set(song.contentId,song)});
+    let rows=strictFilterSourceRows37([...uniq.values()],"producer_discovery").rows;
+    rows=filterAdultRows37(rows,"producer_discovery").rows;
+    const map=new Map();
+    rows.forEach(function(song){
+      const y=song.startTime?new Date(song.startTime).getFullYear():0;
+      producerCandidateTags37(song).forEach(function(c){
+        let x=map.get(c.tag)||{tag:c.tag,count:0,views:0,mylists:0,comments:0,likes:0,latest:0,known:false,explicit:false,songs:[]};
+        x.count++;x.views+=+song.viewCounter||0;x.mylists+=+song.mylistCounter||0;x.comments+=+song.commentCounter||0;x.likes+=+song.likeCounter||0;x.latest=Math.max(x.latest,y);x.known=x.known||c.known;x.explicit=x.explicit||c.explicit;
+        x.songs.push(song);map.set(c.tag,x)
+      })
+    });
+    let candidates=[...map.values()].map(function(x){
+      x.confidence=(x.known?8:0)+(x.explicit?7:0)+Math.min(6,Math.max(0,x.count-1)*2);
+      x.avgViews=x.views/Math.max(1,x.count);
+      x.reaction=(x.mylists+2)/(x.views+900)*1000;
+      x.score=producerDiscoveryScore37(x,mode);
+      return x
+    }).filter(function(x){
+      if(x.count<minSongs)return false;
+      if(!x.known&&!x.explicit&&x.count<3)return false;
+      if(mode==="rookie"&&x.latest<new Date().getFullYear()-3)return false;
+      return x.avgViews<=maxViews
+    }).sort(function(a,b){return b.score-a.score||b.count-a.count}).slice(0,count);
+    state.producerDiscovery=candidates;
+    renderProducerDiscovery37();
+    if(status)status.textContent='원곡 '+rows.length+'곡 분석 → 프로듀서 '+candidates.length+'명 발굴 · 19금 '+(adultFilterMode37()==="block"?"차단":"표시");
+  }catch(e){
+    if(grid)grid.innerHTML='<div class="v37-diag-card"><b>발굴 실패</b><p>'+esc(String(e?.message||e))+'</p></div>';
+    if(status)status.textContent="프로듀서 발굴에 실패했습니다.";
+  }finally{state.producerDiscoveryBusy=false;if(btn)btn.disabled=false}
+}
+function renderProducerDiscovery37(){
+  const grid=document.getElementById("v37ProducerGrid");if(!grid)return;
+  if(!state.producerDiscovery.length){grid.innerHTML='<div class="v37-diag-card"><b>아직 발굴 결과가 없습니다.</b><p>조건을 정한 뒤 프로듀서 발굴 시작을 눌러주세요.</p></div>';return}
+  grid.innerHTML=state.producerDiscovery.map(function(x,i){
+    const reps=x.songs.slice().sort(function(a,b){return(+b.mylistCounter||0)-(+a.mylistCounter||0)}).slice(0,2);
+    return '<article class="v37-producer-card"><div class="v37-producer-card-head"><div><small style="color:#71d9d0;font-size:7px">DISCOVERY '+(i+1)+'</small><h3>'+esc(x.tag)+'</h3></div><span class="score">'+x.score.toFixed(1)+'</span></div>'+
+      '<div class="v37-producer-meta"><span>'+x.count+'곡 확인</span><span>평균 조회 '+fmt(Math.round(x.avgViews))+'</span><span>반응 '+x.reaction.toFixed(1)+'</span><span>최근 '+(x.latest||"-")+'</span></div>'+
+      '<div class="v37-producer-songs">'+reps.map(function(song){return '• '+esc(song.title||song.contentId)+' · '+fmt(song.viewCounter||0)+'회'}).join('<br>')+'</div>'+
+      '<div class="v37-producer-actions"><button type="button" data-v37-producer-detail="'+esc(x.tag)+'">프로듀서 상세</button><button type="button" data-v37-producer-follow="'+esc(x.tag)+'">♡ 팔로우</button><button type="button" data-v37-producer-search="'+esc(x.tag)+'">곡 검색</button></div></article>'
+  }).join("")
+}
+function ensureProducerDiscovery37(page){
+  if(!page||page.querySelector("#v37ProducerDiscoveryBody"))return;
+  const body=document.createElement("div");body.id="v37ProducerDiscoveryBody";
+  body.innerHTML='<div class="v37-producer-controls">'+
+    '<label>발굴 모드<select id="v37ProdMode"><option value="balanced">균형 발굴</option><option value="deep">심해 P</option><option value="rookie">최근 신예</option><option value="reaction">반응률 강한 P</option></select></label>'+
+    '<label>평균 조회 상한<select id="v37ProdMaxViews"><option value="10000">1만</option><option value="50000">5만</option><option value="100000" selected>10만</option><option value="300000">30만</option></select></label>'+
+    '<label>최소 확인 곡<select id="v37ProdMinSongs"><option value="2">2곡</option><option value="3">3곡</option><option value="4">4곡</option></select></label>'+
+    '<label>표시 수<select id="v37ProdCount"><option value="8">8명</option><option value="12" selected>12명</option><option value="20">20명</option></select></label>'+
+    '<button type="button" id="v37ProducerRun">프로듀서 발굴 시작</button></div>'+
+    '<div class="v37-producer-status" id="v37ProducerStatus">저조회수 음성합성 원곡에서 반복되는 P명 태그와 반응률을 분석합니다.</div><div class="v37-producer-grid" id="v37ProducerGrid"></div>';
+  page.appendChild(body);
+  document.getElementById("v37ProducerRun").onclick=runProducerDiscovery37;
+  renderProducerDiscovery37()
+}
+function followProducer37(name){
+  try{
+    const k="vsa.v33.followedProducers",a=JSON.parse(localStorage.getItem(k)||"[]"),low=String(name).toLowerCase();
+    if(!a.some(function(x){return String(x).toLowerCase()===low}))a.unshift(name);
+    localStorage.setItem(k,JSON.stringify(a.slice(0,30)));toast(name+" 팔로우에 추가했습니다.")
+  }catch(_){}
+}
+function searchProducer37(name){
+  ensureCorePages37();openToolsModal("search29");
+  const input=document.getElementById("globalSearchInput");if(input){input.value=name;setTimeout(function(){freeSearch(true)},30)}
+}
+function openDiscoveredProducer37(name){
+  if(window.VSAV33ProducerDetail){window.VSAV33ProducerDetail(name);return}
+  if(window.VSAEnsureFeatures){
+    VSAEnsureFeatures("v33").then(function(){if(window.VSAV33ProducerDetail)window.VSAV33ProducerDetail(name);else searchProducer37(name)})
+  }else searchProducer37(name)
+}
+function ensureIcebergExtras37(page){
+  if(!page||page.querySelector("#v37IceExtras"))return;
+  const box=document.createElement("section");box.id="v37IceExtras";box.className="v37-ice-extra";
+  const ice=document.getElementById("icebergPanel");
+  if(ice&&ice.parentElement===page)page.insertBefore(box,ice);else page.appendChild(box);
+  box.innerHTML='<div class="v37-extra-head"><div><b>심해 탐사</b><small>현재 모집단에서 1만 조회 이하의 원곡을 즉석에서 한 곡 골라봅니다. 19금 필터가 그대로 적용됩니다.</small></div></div>'+
+    '<div class="v37-ice-actions"><button type="button" data-v37-abyss="random">랜덤 심해 1곡</button><button type="button" data-v37-abyss="reaction">반응 좋은 심층 1곡</button></div><div class="v37-ice-pick" id="v37IcePick"></div>'
+}
+async function pickAbyss37(mode){
+  if(!relayBase()){toast("먼저 Worker를 연결하세요.");return}
+  const box=document.getElementById("v37IcePick");if(box)box.innerHTML='<div class="v37-diag-card"><b>심해 탐사 중…</b></div>';
+  try{
+    const sort=mode==="reaction"?"-mylistCounter":"+viewCounter";
+    const d=await fetchNico({year:"all",limit:100,offset:Math.floor(Math.random()*3)*100,mode:"ranking",sort:sort,applyYear:false,applyTier:false,numericFilters:{viewCounter:{gte:50,lte:9999}}});
+    let rows=strictFilterSourceRows37(d.data||[],"abyss_pick").rows;
+    rows=filterAdultRows37(rows,"abyss_pick").rows;
+    if(!rows.length)throw new Error("조건을 통과한 심해곡이 없습니다.");
+    const song=mode==="reaction"?rows.slice().sort(function(a,b){return((+b.mylistCounter||0)+2)/(+b.viewCounter||1)-(((+a.mylistCounter||0)+2)/(+a.viewCounter||1))})[0]:rows[Math.floor(Math.random()*rows.length)];
+    if(box)box.innerHTML='<article>'+(song.thumbnailUrl?'<img src="'+esc(song.thumbnailUrl)+'" loading="lazy">':'')+'<div><b>'+esc(song.title||song.contentId)+'</b><small>조회 '+fmt(song.viewCounter||0)+' · 마이리스트 '+fmt(song.mylistCounter||0)+'</small><div class="v37-producer-actions"><button type="button" onclick="window.open(\'https://www.nicovideo.jp/watch/'+encodeURIComponent(song.contentId)+'\',\'_blank\',\'noopener\')">니코동 열기</button><button type="button" data-v37-abyss-universe="'+esc(song.contentId)+'">우주 보기</button></div></div></article>';
+    if(box)box.dataset.songId=song.contentId;
+    window.__VSA37_ABYSS_SONG=song
+  }catch(e){if(box)box.innerHTML='<div class="v37-diag-card"><b>탐사 실패</b><p>'+esc(String(e?.message||e))+'</p></div>'}
 }
 
 function makeCorePage37(view,title,desc,cls){
@@ -5395,8 +5628,12 @@ function ensureCorePages37(){
   const search=makeCorePage37("search29","검색","곡명·P명·보컬·태그·sm번호를 바로 검색합니다. 탐정 시스템과 분리된 일반 검색입니다.","v37-search-page");
   const universe=makeCorePage37("universe29","보카로 우주","선택한 곡을 중심으로 비슷한 곡을 연결해 탐색합니다.","v37-universe-page");
   const settings=makeCorePage37("settings29","설정","Worker 연결과 기술 설정을 관리합니다.","v37-settings-page");
+  const producerDiscovery=makeCorePage37("producerDiscover37","프로듀서 발굴","저조회수 음성합성 원곡의 반복 P명 태그와 반응률을 분석해 덜 알려진 프로듀서를 찾습니다.","v37-producer-discovery-page");
   const diagnostics=makeCorePage37("diagnostics37","진단 센터","앱 상태·라우트·모듈·서비스워커·최근 오류를 한 번에 확인합니다.","v37-diagnostics-page");
   ensureDiagnostics37(diagnostics);
+  ensureAdultSettings37(settings);
+  ensureProducerDiscovery37(producerDiscovery);
+  ensureIcebergExtras37(archive);
   moveInto37(document.getElementById("filterControls"),archive);
   moveInto37(document.getElementById("sourceControls"),archive);
   moveInto37(document.querySelector(".app > .summary"),archive);
@@ -5404,7 +5641,7 @@ function ensureCorePages37(){
   moveInto37(document.getElementById("resultsPanel"),search);
   moveInto37(document.getElementById("universePanel"),universe);
   moveInto37(document.getElementById("settingsPanel"),settings);
-  return {archive,search,universe,settings,diagnostics}
+  return {archive,search,universe,settings,producerDiscovery,diagnostics}
 }
 function openUniversePage37(song,force){
   if(!song)return;
@@ -5463,7 +5700,7 @@ function dockForToolView37(view){
   if(view==="taste"||view==="tasteHub33"||view==="smart23"||view==="playlist24")return "taste";
   if(view==="searchHub33"||view==="search29")return "search";
   if(view==="libraryHub33"||view==="saved"||view==="history")return "library";
-  if(view==="hub37"||view==="gems"||view==="guide"||view==="explore33"||view==="producerDetail33"||view==="archive29"||view==="universe29"||view==="settings29"||view==="diagnostics37"||view==="detective"||view==="v37RouteError")return "explore";
+  if(view==="hub37"||view==="gems"||view==="guide"||view==="explore33"||view==="producerDetail33"||view==="archive29"||view==="universe29"||view==="settings29"||view==="diagnostics37"||view==="producerDiscover37"||view==="detective"||view==="v37RouteError")return "explore";
   return null;
 }
 function healPageLocks37(){
@@ -5784,7 +6021,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="37.5.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
+var VER="37.6.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -5799,7 +6036,7 @@ function reason(song,mark){if(mark==="NEW")return"최근 업로드";if(mark==="D
 function getSong(id){var f=currentFeed();for(var q of ["daily","taste","newer","hidden"]){var x=(f[q]||[]).find(function(s){return s.contentId===id});if(x)return x}return null}
 function card(x,mark){var y=x.startTime?new Date(x.startTime).getFullYear():"-";return '<article class="v37-card"><a class="v37-thumb" href="https://www.nicovideo.jp/watch/'+encodeURIComponent(x.contentId)+'" target="_blank" rel="noopener">'+(x.thumbnailUrl?'<img src="'+E(x.thumbnailUrl)+'" loading="lazy" decoding="async" alt="">':'')+'<i>▶</i></a><a class="v37-title" href="https://www.nicovideo.jp/watch/'+encodeURIComponent(x.contentId)+'" target="_blank" rel="noopener">'+E(x.title||x.contentId)+'</a><div class="v37-meta">조회 '+F(x.viewCounter||0)+' · '+y+'</div><div class="v37-reason">✦ '+E(reason(x,mark))+'</div><div class="v37-actions"><button data-v37-save="'+E(x.contentId)+'">♡ 보관</button><button data-v37-sim="'+E(x.contentId)+'">비슷한 곡</button><button class="danger" data-v37-dislike="'+E(x.contentId)+'">관심없음</button></div></article>'}
 function root(){var r=document.getElementById("v37Home");if(r)return r;r=document.createElement("main");r.id="v37Home";var top=document.querySelector(".app>.topbar"),app=document.querySelector(".app")||document.body;if(top)top.insertAdjacentElement("afterend",r);else app.prepend(r);return r}
-function render(){var r=root(),f=currentFeed(),rows=(f[k(active)]||[]).filter(Boolean),hero=rows[0]||null,list=rows.slice(hero?1:0,13),date=new Date().toLocaleDateString("ko-KR",{month:"long",day:"numeric",weekday:"short"});r.innerHTML='<div class="v37-head"><div><small>VOCALO SUPPORT v'+VER+' · '+E(date)+'</small><h1>오늘의 보카로</h1><p>추천 종류를 하나씩 골라 보는 단일 피드 홈</p></div></div><nav class="v37-tabs">'+[["DAILY","추천"],["FOR YOU","내 취향"],["NEW","신곡"],["DEEP","숨은 곡"],["PRODUCER","프로듀서"]].map(function(x){return'<button type="button" class="'+(active===x[0]?"active":"")+'" data-v37-tab="'+x[0]+'">'+x[1]+'</button>'}).join("")+'</nav>'+(hero?'<section class="v37-hero"><a href="https://www.nicovideo.jp/watch/'+encodeURIComponent(hero.contentId)+'" target="_blank" rel="noopener">'+(hero.thumbnailUrl?'<img src="'+E(hero.thumbnailUrl)+'" loading="lazy" decoding="async" alt="">':'')+'<div class="v37-shade"></div><div class="v37-hero-copy"><small>'+label(active)+' PICK</small><b>'+E(hero.title||hero.contentId)+'</b><span>조회 '+F(hero.viewCounter||0)+' · '+E(reason(hero,active))+'</span></div><span class="v37-play">▶</span></a></section>':'')+'<div class="v37-toolbar"><div><h2>'+label(active)+'</h2><small>'+sub(active)+'</small></div><button id="v37Refresh" type="button">'+(busy?"갱신 중…":"다른 곡 ↻")+'</button></div>'+(list.length?'<div class="v37-grid">'+list.map(function(x){return card(x,active)}).join("")+'</div>':'<div class="v37-empty">저장된 추천 데이터가 아직 없습니다.<br><button data-v37-refresh type="button">추천 불러오기</button></div>')}
+function render(){var r=root(),f=currentFeed(),raw=(f[k(active)]||[]).filter(Boolean),rows=window.VSA37AdultFilterRows?window.VSA37AdultFilterRows(raw,"home").rows:raw,hero=rows[0]||null,list=rows.slice(hero?1:0,13),date=new Date().toLocaleDateString("ko-KR",{month:"long",day:"numeric",weekday:"short"});r.innerHTML='<div class="v37-head"><div><small>VOCALO SUPPORT v'+VER+' · '+E(date)+'</small><h1>오늘의 보카로</h1><p>추천 종류를 하나씩 골라 보는 단일 피드 홈</p></div></div><nav class="v37-tabs">'+[["DAILY","추천"],["FOR YOU","내 취향"],["NEW","신곡"],["DEEP","숨은 곡"],["PRODUCER","프로듀서"]].map(function(x){return'<button type="button" class="'+(active===x[0]?"active":"")+'" data-v37-tab="'+x[0]+'">'+x[1]+'</button>'}).join("")+'</nav>'+(hero?'<section class="v37-hero"><a href="https://www.nicovideo.jp/watch/'+encodeURIComponent(hero.contentId)+'" target="_blank" rel="noopener">'+(hero.thumbnailUrl?'<img src="'+E(hero.thumbnailUrl)+'" loading="lazy" decoding="async" alt="">':'')+'<div class="v37-shade"></div><div class="v37-hero-copy"><small>'+label(active)+' PICK</small><b>'+E(hero.title||hero.contentId)+'</b><span>조회 '+F(hero.viewCounter||0)+' · '+E(reason(hero,active))+'</span></div><span class="v37-play">▶</span></a></section>':'')+'<div class="v37-toolbar"><div><h2>'+label(active)+'</h2><small>'+sub(active)+'</small></div><button id="v37Refresh" type="button">'+(busy?"갱신 중…":"다른 곡 ↻")+'</button></div>'+(list.length?'<div class="v37-grid">'+list.map(function(x){return card(x,active)}).join("")+'</div>':'<div class="v37-empty">저장된 추천 데이터가 아직 없습니다.<br><button data-v37-refresh type="button">추천 불러오기</button></div>')}
 function keep(id){var song=getSong(id);if(!song)return;if(window.VSAOrganizer22&&VSAOrganizer22.setSongStatus)VSAOrganizer22.setSongStatus(id,"interest",song);else{var o=L(OK,{library:{}});o.library=o.library||{};o.library[id]={status:"interest",song:song,savedAt:Date.now(),updatedAt:Date.now()};S(OK,o)}try{toast("관심곡으로 보관했습니다.")}catch(e){}}
 function dislike(id){var song=getSong(id),sm=L(SK,{feedback:{},tagPrefs:{}});sm.feedback=sm.feedback||{};sm.feedback[id]={value:-1,at:Date.now(),song:song};S(SK,sm);var f=currentFeed();["daily","taste","newer","hidden"].forEach(function(q){f[q]=(f[q]||[]).filter(function(x){return x.contentId!==id})});S(HK,f);render()}
 function similar(id){
@@ -5821,7 +6058,7 @@ async function refresh(){if(busy)return;busy=true;render();try{if(window.VSAHome
 function openView(name){if(window.VSAV33&&VSAV33.openView){VSAV33.openView(name);return}try{openToolsModal(name)}catch(e){}}
 function setDock(v){document.querySelectorAll(".v37-dock button").forEach(function(b){b.classList.toggle("active",b.dataset.v37===v)})}
 function featureIcon37(id){
-  return {archive:"◇",detective:"?",gems:"◆",guide:"✦",taste:"♡",universe:"✺",producer:"P",search:"⌕",library:"▣",settings:"⚙",diagnostics:"＋"}[id]||"•"
+  return {archive:"◇",detective:"?",gems:"◆",guide:"✦",taste:"♡",universe:"✺",producer:"P",producerDiscovery:"P＋",search:"⌕",library:"▣",settings:"⚙",diagnostics:"＋"}[id]||"•"
 }
 function featureDesc37(id){
   return {
@@ -5832,6 +6069,7 @@ function featureDesc37(id){
     taste:"분위기·장르·보컬·시대로 추천",
     universe:"한 곡에서 비슷한 곡으로 확장",
     producer:"프로듀서별 곡·활동 탐색",
+    producerDiscovery:"저조회수 원곡에서 덜 알려진 P 발굴",
     search:"곡명·P명·보컬·태그 일반 검색",
     settings:"Worker 연결과 기술 설정",
     diagnostics:"멈춤·캐시·모듈 상태 확인"
@@ -5887,11 +6125,12 @@ function ensureHub37(){
         '<button class="v37-intent-card" type="button" data-v37-feature-id="gems"><b>새로운 심해곡 찾기</b><small>조회수 아래 묻힌 원곡 발굴</small></button>'+
         '<button class="v37-intent-card" type="button" data-v37-feature-id="guide"><b>뭘 들을지 모르겠어</b><small>입문·중급·심화 추천 코스</small></button>'+
         '<button class="v37-intent-card" type="button" data-v37-feature-id="search"><b>곡을 직접 찾기</b><small>제목·P명·보컬·태그 검색</small></button>'+
+        '<button class="v37-intent-card" type="button" data-v37-feature-id="producerDiscovery"><b>새 프로듀서 찾기</b><small>숨은 P·최근 신예를 데이터로 발굴</small></button>'+
       '</div></section>'+
     '<section class="v37-hub-section"><div class="v37-hub-section-head"><b>최근 사용</b><small>기기 내 기록</small></div><div class="v37-quick-row" id="v37RecentFeatures"></div></section>'+
     '<section class="v37-hub-section"><div class="v37-hub-section-head"><b>자주 쓰는 기능</b><small>사용 횟수 기반</small></div><div class="v37-quick-row" id="v37FrequentFeatures"></div></section>'+
     '<section class="v37-hub-section"><div class="v37-hub-section-head"><b>모든 탐색 기능</b><small>발굴·추천·분석</small></div><div class="v37-hub-grid">'+
-      ["archive","detective","gems","guide","taste","universe","producer"].map(featureButton37).join("")+
+      ["archive","detective","gems","guide","taste","universe","producerDiscovery","producer"].map(featureButton37).join("")+
     '</div></section>'+
     '<section class="v37-hub-section"><div class="v37-hub-section-head"><b>관리</b><small>설정·문제 해결</small></div><div class="v37-hub-grid" data-kind="manage">'+
       ["settings","diagnostics"].map(featureButton37).join("")+
@@ -5970,6 +6209,18 @@ function init(){
       if(v==="PRODUCER"){setDock("explore");openHub37();openProducer37();return}
       active=v;localStorage.setItem(AK,v);render();return
     }
+    var adultMode=e.target.closest("[data-v37-adult-mode]");
+    if(adultMode){setAdultFilterMode37(adultMode.dataset.v37AdultMode);return}
+    var prodDetail=e.target.closest("[data-v37-producer-detail]");
+    if(prodDetail){openDiscoveredProducer37(prodDetail.dataset.v37ProducerDetail);return}
+    var prodFollow=e.target.closest("[data-v37-producer-follow]");
+    if(prodFollow){followProducer37(prodFollow.dataset.v37ProducerFollow);return}
+    var prodSearch=e.target.closest("[data-v37-producer-search]");
+    if(prodSearch){searchProducer37(prodSearch.dataset.v37ProducerSearch);return}
+    var abyss=e.target.closest("[data-v37-abyss]");
+    if(abyss){pickAbyss37(abyss.dataset.v37Abyss);return}
+    var abyssUniverse=e.target.closest("[data-v37-abyss-universe]");
+    if(abyssUniverse&&window.__VSA37_ABYSS_SONG){openUniversePage37(window.__VSA37_ABYSS_SONG,false);return}
     var featureOpen=e.target.closest("[data-v37-feature-id]");
     if(featureOpen){openFeatureById37(featureOpen.dataset.v37FeatureId);return}
     var hubOpen=e.target.closest("[data-v37-open]");
@@ -6040,15 +6291,15 @@ var groups={};
 function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
-  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=37.5.0","./detective-v12.js?v=37.5.0","./detective-v13.js?v=37.5.0","./detective-v14.js?v=37.5.0","./detective-v16.js?v=37.5.0"]);
-  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=37.5.0","./smart-v23.js?v=37.5.0","./playlist-v24.js?v=37.5.0"]);
-  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=37.5.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=37.5.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=37.5.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=37.5.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=37.5.0");
+  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=37.6.0","./detective-v12.js?v=37.6.0","./detective-v13.js?v=37.6.0","./detective-v14.js?v=37.6.0","./detective-v16.js?v=37.6.0"]);
+  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=37.6.0","./smart-v23.js?v=37.6.0","./playlist-v24.js?v=37.6.0"]);
+  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=37.6.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=37.6.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=37.6.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=37.6.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=37.6.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
-    return seq(["./voca-app-v33.js?v=37.5.0","./voca-app-v33-1.js?v=37.5.0","./voca-app-v33-2.js?v=37.5.0","./voca-app-v33-3.js?v=37.5.0"]);
+    return seq(["./voca-app-v33.js?v=37.6.0","./voca-app-v33-1.js?v=37.6.0","./voca-app-v33-2.js?v=37.6.0","./voca-app-v33-3.js?v=37.6.0"]);
   });
   else groups[name]=Promise.resolve(false);
   groups[name]=Promise.resolve(groups[name]).then(function(v){
