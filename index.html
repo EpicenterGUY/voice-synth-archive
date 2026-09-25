@@ -1606,7 +1606,7 @@ body.v37-ready .v37-search-page .results-toolbar{border:1px solid #18393e;border
     </details>
   </section>
 
-  <div class="footer">v37.9.0 · 실제 P명 검증 · 전곡 보컬 전수집계 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v37.9.1 · 추천 랜덤화 · 조회수 편향 완화 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -2113,7 +2113,7 @@ body.v37-ready .v37-search-page .results-toolbar{border:1px solid #18393e;border
     </div>
     <div class="recommend-prompt-box">
       <textarea id="guidePrompt" placeholder="예: 2010년대 초반 미쿠 록 중에서 멜로디 강하고 너무 유명한 곡만은 빼줘&#10;예: 기괴하고 실험적인데 중독성 있는 곡, 보컬은 상관없음"></textarea>
-      <button class="btn primary" id="buildGuideBtn">추천 만들기</button>
+      <button class="btn primary" id="buildGuideBtn">랜덤 추천 만들기</button>
     </div>
     <div class="recommend-chip-groups">
       <div class="recommend-chip-label">빠른 선택</div>
@@ -2129,7 +2129,7 @@ body.v37-ready .v37-search-page .results-toolbar{border:1px solid #18393e;border
       <div class="control"><label>보컬/태그 직접 입력</label><input id="guideTag" placeholder="예: 初音ミク, VOCAROCK"></div>
       <div class="control"><label>빼고 싶은 요소</label><input id="guideAvoid" placeholder="예: MMD, 너무 느린 곡"></div>
     </div>
-    <div class="taste-summary" id="guideSummary">문장 또는 여러 선택지를 조합해서 추천받을 수 있습니다.</div>
+    <div class="taste-summary" id="guideSummary">조건에 맞는 후보 풀에서 매번 다른 곡 조합을 랜덤으로 추천합니다. 같은 조건으로 다시 누르면 결과가 바뀝니다.</div>
     <div class="discovery-grid" id="guideGrid"><div class="discovery-empty">원하는 느낌을 적거나 선택한 뒤 추천을 만들어보세요.</div></div>
   </section>
 
@@ -2141,7 +2141,7 @@ body.v37-ready .v37-search-page .results-toolbar{border:1px solid #18393e;border
     <div class="taste-builder">
       <div class="taste-main taste-main-v20">
         <textarea id="tastePrompt" placeholder="예: 어둡고 빠른 록인데 멜로디가 슬프고, 2012년 전후 미쿠/린 위주, 너무 유명한 곡은 제외&#10;예: 정신없고 기괴한 전자음 + 변박 + 손그림 MV 같은 느낌"></textarea>
-        <button class="btn primary" id="tasteRecommendBtn">취향 추천</button>
+        <button class="btn primary" id="tasteRecommendBtn">취향 랜덤 추천</button>
       </div>
       <div class="taste-selects taste-selects-v20">
         <div class="control"><label>분위기</label><select id="tasteMood">
@@ -2163,7 +2163,7 @@ body.v37-ready .v37-search-page .results-toolbar{border:1px solid #18393e;border
         <button class="taste-chip" data-term="初音ミク">미쿠</button><button class="taste-chip" data-term="鏡音リン">린</button><button class="taste-chip" data-term="鏡音レン">렌</button><button class="taste-chip" data-term="巡音ルカ">루카</button><button class="taste-chip" data-term="GUMI">GUMI</button><button class="taste-chip" data-term="IA">IA</button><button class="taste-chip" data-term="flower">flower</button><button class="taste-chip" data-term="重音テト">테토</button><button class="taste-chip" data-term="可不">카후</button><button class="taste-chip" data-term="知声">치세이</button>
       </div>
     </div>
-    <div class="taste-summary" id="tasteSummary">글로 원하는 느낌을 적거나 아래 조건을 여러 개 골라주세요. 둘을 함께 써도 됩니다.</div>
+    <div class="taste-summary" id="tasteSummary">글이나 조건으로 후보를 좁힌 뒤 랜덤으로 여러 곡을 뽑습니다. 같은 조건으로 다시 누르면 다른 조합이 나옵니다.</div>
     <div class="discovery-grid" id="tasteGrid"><div class="discovery-empty">취향을 입력하고 ‘취향 추천’을 눌러보세요.</div></div>
   </section>
 
@@ -4555,15 +4555,59 @@ function eraBounds(value){
 function songYear(song){return song.startTime?new Date(song.startTime).getFullYear():0}
 function inEra(song,b){if(!b)return true;const y=songYear(song);return y>=b[0]&&y<=b[1]}
 function fameBounds(kind){if(kind==="famous")return[1000000,null];if(kind==="middle")return[10000,999999];if(kind==="hidden")return[1000,99999];if(kind==="deep")return[0,9999];return[0,null]}
+function weightedRandomIndex37(items,weightFn){
+  let total=0,weights=items.map(function(x){const w=Math.max(.0001,+weightFn(x)||0);total+=w;return w});
+  let r=Math.random()*total;
+  for(let i=0;i<weights.length;i++){r-=weights[i];if(r<=0)return i}
+  return Math.max(0,items.length-1)
+}
 function diversifySongs(scored,count){
-  const selected=[],used=new Set();
-  for(const x of scored){if(selected.length>=count)break;const song=x.song||x,id=song.contentId;if(used.has(id))continue;let sim=0;for(const y of selected)sim=Math.max(sim,weightedTagSimilarity(song,y.song||y));if(sim>.72&&selected.length<count-2)continue;used.add(id);selected.push(x)}
-  for(const x of scored){if(selected.length>=count)break;const id=(x.song||x).contentId;if(!used.has(id)){used.add(id);selected.push(x)}}
-  return selected;
+  const source=(scored||[]).filter(function(x){return x&&(x.song||x)?.contentId}),selected=[],used=new Set();
+  if(!source.length)return selected;
+  const values=source.map(function(x){return Number(x.score)||0}),hi=Math.max(...values),lo=Math.min(...values),span=Math.max(.0001,hi-lo);
+  // 점수는 "후보 자격"에만 강하게 쓰고, 실제 추천 순서는 가중 랜덤으로 뽑는다.
+  // 최상위 곡만 반복되는 것을 막기 위해 모든 적격 후보에 최소 22%의 추첨 가중치를 준다.
+  let pool=source.slice();
+  while(pool.length&&selected.length<count){
+    const idx=weightedRandomIndex37(pool,function(x){
+      const quality=(Number(x.score)||0-lo)/span;
+      let diversity=1;
+      const song=x.song||x;
+      for(const y of selected){
+        const sim=weightedTagSimilarity(song,y.song||y);
+        if(sim>.82)diversity*=.12;
+        else if(sim>.68)diversity*=.42;
+        else if(sim>.52)diversity*=.72
+      }
+      return (.22+.78*Math.pow(Math.max(0,quality),1.15))*diversity
+    });
+    const x=pool.splice(idx,1)[0],song=x.song||x,id=song.contentId;
+    if(!used.has(id)){used.add(id);selected.push(x)}
+  }
+  return selected
+}
+async function fetchRandomRecommendationBatch37(opts,extraPages=1){
+  const first=await fetchNico(Object.assign({},opts,{limit:100,offset:0}));
+  const uniq=new Map();for(const song of(first.data||[]))if(song?.contentId)uniq.set(song.contentId,song);
+  const total=Math.min(100000,Math.max(0,+first.meta?.totalCount||0));
+  const maxPage=Math.max(0,Math.floor(Math.max(0,total-1)/100));
+  const offsets=new Set();
+  for(let i=0;i<extraPages&&maxPage>0;i++){
+    // 전체 후보 공간에서 랜덤 페이지를 골라 인기 상위 100개에만 갇히지 않게 한다.
+    offsets.add((1+Math.floor(Math.random()*maxPage))*100)
+  }
+  if(offsets.size){
+    const pages=await Promise.all([...offsets].map(async function(offset){
+      try{return await fetchNico(Object.assign({},opts,{limit:100,offset:offset}))}catch(_){return null}
+    }));
+    for(const d of pages)for(const song of(d?.data||[]))if(song?.contentId)uniq.set(song.contentId,song)
+  }
+  return {data:[...uniq.values()],meta:first.meta||{}}
 }
 async function fetchGuideBatch(sort,preset,tag){
   const nf={viewCounter:{gte:preset.min}};if(preset.max!=null)nf.viewCounter.lte=preset.max;
-  const opts={year:"all",limit:100,offset:0,mode:"ranking",sort,applyYear:false,applyTier:false,numericFilters:nf};if(tag)opts.extraExactTag=tag;return fetchNico(opts);
+  const opts={year:"all",mode:"ranking",sort,applyYear:false,applyTier:false,numericFilters:nf};if(tag)opts.extraExactTag=tag;
+  return fetchRandomRecommendationBatch37(opts,1);
 }
 async function buildGuide(){
   if(state.busy)return;if(!relayBase()){toast("먼저 Worker를 연결하세요.");return}
@@ -4577,19 +4621,27 @@ async function buildGuide(){
   }catch(e){$("#guideGrid").innerHTML=`<div class="discovery-empty">추천 실패<br><small>${esc(String(e?.message||e))}</small></div>`}finally{state.busy=false;$("#buildGuideBtn").disabled=false}
 }
 function renderGuide(preset){
+  const summary=$("#guideSummary");if(summary)summary.innerHTML='<b>'+esc(preset.label)+'</b> · '+state.guideSongs.length+'곡 랜덤 추천 · 같은 조건으로 다시 누르면 다른 조합';
   $("#guideGrid").innerHTML=state.guideSongs.map((x,i)=>{const s=x.song,tags=informativeTags(s).slice(0,4);return`<article class="discovery-card"><img src="${esc(s.thumbnailUrl||"")}" loading="lazy" onerror="this.style.visibility='hidden'"><div class="discovery-body"><a class="discovery-title" href="https://www.nicovideo.jp/watch/${encodeURIComponent(s.contentId)}" target="_blank" rel="noopener">${i+1}. ${esc(s.title||s.contentId)}</a><div class="discovery-meta"><span>조회 ${fmt(s.viewCounter||0)}</span><span>${songYear(s)||"-"}년</span></div><div class="discovery-tags">${tags.map(t=>`<span class="discovery-tag">${esc(t)}</span>`).join("")}</div><div class="discovery-reason">${esc(preset.reason)}</div><div class="gem-actions"><button class="mini-btn" onclick="openGuideUniverse('${esc(s.contentId)}')">우주 보기</button><button class="mini-btn" onclick="window.open('https://www.nicovideo.jp/watch/${encodeURIComponent(s.contentId)}','_blank','noopener')">듣기</button></div></div></article>`}).join("");
 }
 function openGuideUniverse(id){const x=state.guideSongs.find(x=>x.song.contentId===id);if(!x)return;openUniversePage37(x.song,false)}
 function parseTastePrompt(){
   const prompt=$("#tastePrompt").value.trim(),terms=new Set(state.tasteTerms||[]);for(const [re,arr] of KOREAN_PROMPT_MAP){if(re.test(prompt)){arr.forEach(x=>terms.add(x));re.lastIndex=0}}const mood=$("#tasteMood").value,genre=$("#tasteGenre").value;(TASTE_MAP[mood]||[]).forEach(x=>terms.add(x));(TASTE_MAP[genre]||[]).forEach(x=>terms.add(x));const direct=$("#tasteTag").value.trim();if(direct)terms.add(direct);return{prompt,terms:[...terms].slice(0,8)};
 }
-async function fetchTasteTag(tag,min,max){const nf={viewCounter:{gte:min}};if(max!=null)nf.viewCounter.lte=max;try{const d=await fetchNico({year:"all",limit:100,offset:0,mode:"ranking",sort:"-viewCounter",applyYear:false,applyTier:false,numericFilters:nf,extraExactTag:tag});return d.data||[]}catch{return[]}}
+async function fetchTasteTag(tag,min,max){
+  const nf={viewCounter:{gte:min}};if(max!=null)nf.viewCounter.lte=max;
+  try{
+    const sort=Math.random()<.5?"-viewCounter":"-mylistCounter";
+    const d=await fetchRandomRecommendationBatch37({year:"all",mode:"ranking",sort:sort,applyYear:false,applyTier:false,numericFilters:nf,extraExactTag:tag},1);
+    return d.data||[]
+  }catch{return[]}
+}
 function tasteMatchScore(song,terms,era,fame){const raw=(String(song.title||"")+" "+parseTags(song.tags).join(" ")).toLowerCase();let matched=0,weighted=0;for(const t of terms){if(raw.includes(t.toLowerCase())){matched++;weighted+=tagWeight(t)}}const termScore=terms.length?matched/terms.length:.35,tagScore=terms.length?clamp01(weighted/(terms.length*2.5)):.35,V=+song.viewCounter||0,M=+song.mylistCounter||0,L=+song.likeCounter||0,reaction=clamp01(((M+2)/(V+900)*50)+((L+3)/(V+1200)*18)),eraScore=inEra(song,era)?1:0,fb=fameBounds(fame),fameScore=(V>=fb[0]&&(fb[1]==null||V<=fb[1]))?1:.15;return.42*termScore+.20*tagScore+.18*reaction+.10*eraScore+.10*fameScore}
 async function recommendTaste(){
   if(state.busy)return;if(!relayBase()){toast("먼저 Worker를 연결하세요.");return}const parsed=parseTastePrompt(),fame=$("#tasteFame").value,era=eraBounds($("#tasteEra").value),fb=fameBounds(fame);state.busy=true;$("#tasteRecommendBtn").disabled=true;$("#tasteGrid").innerHTML='<div class="discovery-empty">취향에 맞는 곡을 찾는 중…</div>';
-  try{const uniq=new Map();if(parsed.terms.length){const batches=await mapLimit(parsed.terms.slice(0,6),3,async t=>fetchTasteTag(t,fb[0],fb[1]));for(const s of batches.flat())uniq.set(s.contentId,s)}if(uniq.size<15){const nf={viewCounter:{gte:fb[0]}};if(fb[1]!=null)nf.viewCounter.lte=fb[1];for(const sort of["-mylistCounter","-viewCounter","-commentCounter"]){try{const d=await fetchNico({year:"all",limit:100,offset:0,mode:"ranking",sort,applyYear:false,applyTier:false,numericFilters:nf});for(const s of(d.data||[]))uniq.set(s.contentId,s)}catch{}}}let rows=filterAdultRows37(filterDiscoveryOriginalRows37([...uniq.values()],"taste").rows,"taste").rows.filter(s=>!era||inEra(s,era));if(!rows.length)throw new Error("필터 조건을 통과한 음성합성 원곡이 없습니다.");const scored=rows.map(s=>({song:s,score:tasteMatchScore(s,parsed.terms,era,fame)})).sort((a,b)=>b.score-a.score);state.tasteSongs=diversifySongs(scored,16);renderTaste(parsed)}catch(e){$("#tasteGrid").innerHTML=`<div class="discovery-empty">추천 실패<br><small>${esc(String(e?.message||e))}</small></div>`}finally{state.busy=false;$("#tasteRecommendBtn").disabled=false}
+  try{const uniq=new Map();if(parsed.terms.length){const batches=await mapLimit(parsed.terms.slice(0,6),3,async t=>fetchTasteTag(t,fb[0],fb[1]));for(const s of batches.flat())uniq.set(s.contentId,s)}if(uniq.size<15){const nf={viewCounter:{gte:fb[0]}};if(fb[1]!=null)nf.viewCounter.lte=fb[1];for(const sort of["-mylistCounter","-viewCounter","-commentCounter"]){try{const d=await fetchRandomRecommendationBatch37({year:"all",mode:"ranking",sort,applyYear:false,applyTier:false,numericFilters:nf},1);for(const s of(d.data||[]))uniq.set(s.contentId,s)}catch{}}}let rows=filterAdultRows37(filterDiscoveryOriginalRows37([...uniq.values()],"taste").rows,"taste").rows.filter(s=>!era||inEra(s,era));if(!rows.length)throw new Error("필터 조건을 통과한 음성합성 원곡이 없습니다.");const scored=rows.map(s=>({song:s,score:tasteMatchScore(s,parsed.terms,era,fame)})).sort((a,b)=>b.score-a.score),count=+$("#tasteCount").value||20;state.tasteSongs=diversifySongs(scored,count);renderTaste(parsed)}catch(e){$("#tasteGrid").innerHTML=`<div class="discovery-empty">추천 실패<br><small>${esc(String(e?.message||e))}</small></div>`}finally{state.busy=false;$("#tasteRecommendBtn").disabled=false}
 }
-function renderTaste(parsed){$("#tasteSummary").innerHTML=`해석한 취향: <b>${parsed.terms.length?parsed.terms.map(esc).join(" · "):"특정 태그 없음"}</b> · ${state.tasteSongs.length}곡 추천`;$("#tasteGrid").innerHTML=state.tasteSongs.map((x,i)=>{const s=x.song,tags=informativeTags(s).slice(0,4);return`<article class="discovery-card"><img src="${esc(s.thumbnailUrl||"")}" loading="lazy" onerror="this.style.visibility='hidden'"><div class="discovery-body"><a class="discovery-title" href="https://www.nicovideo.jp/watch/${encodeURIComponent(s.contentId)}" target="_blank" rel="noopener">${i+1}. ${esc(s.title||s.contentId)}</a><div class="discovery-meta"><span>취향 일치 ${(x.score*100).toFixed(1)}%</span><span>조회 ${fmt(s.viewCounter||0)}</span><span>${songYear(s)||"-"}년</span></div><div class="discovery-tags">${tags.map(t=>`<span class="discovery-tag">${esc(t)}</span>`).join("")}</div><div class="gem-actions"><button class="mini-btn" onclick="openTasteUniverse('${esc(s.contentId)}')">비슷한 곡</button><button class="mini-btn" onclick="window.open('https://www.nicovideo.jp/watch/${encodeURIComponent(s.contentId)}','_blank','noopener')">듣기</button></div></div></article>`}).join("")}
+function renderTaste(parsed){$("#tasteSummary").innerHTML=`해석한 취향: <b>${parsed.terms.length?parsed.terms.map(esc).join(" · "):"특정 태그 없음"}</b> · ${state.tasteSongs.length}곡 랜덤 추천 · 다시 누르면 새 조합`;$("#tasteGrid").innerHTML=state.tasteSongs.map((x,i)=>{const s=x.song,tags=informativeTags(s).slice(0,4);return`<article class="discovery-card"><img src="${esc(s.thumbnailUrl||"")}" loading="lazy" onerror="this.style.visibility='hidden'"><div class="discovery-body"><a class="discovery-title" href="https://www.nicovideo.jp/watch/${encodeURIComponent(s.contentId)}" target="_blank" rel="noopener">${i+1}. ${esc(s.title||s.contentId)}</a><div class="discovery-meta"><span>취향 일치 ${(x.score*100).toFixed(1)}%</span><span>조회 ${fmt(s.viewCounter||0)}</span><span>${songYear(s)||"-"}년</span></div><div class="discovery-tags">${tags.map(t=>`<span class="discovery-tag">${esc(t)}</span>`).join("")}</div><div class="gem-actions"><button class="mini-btn" onclick="openTasteUniverse('${esc(s.contentId)}')">비슷한 곡</button><button class="mini-btn" onclick="window.open('https://www.nicovideo.jp/watch/${encodeURIComponent(s.contentId)}','_blank','noopener')">듣기</button></div></div></article>`}).join("")}
 function openTasteUniverse(id){const x=state.tasteSongs.find(x=>x.song.contentId===id);if(!x)return;openUniversePage37(x.song,false)}
 
 const GEM_PRESETS={
@@ -5476,7 +5528,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:"37.9.0",
+    version:"37.9.1",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -6620,7 +6672,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="37.9.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
+var VER="37.9.1",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -6903,15 +6955,15 @@ var groups={};
 function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
-  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=37.9.0","./detective-v12.js?v=37.9.0","./detective-v13.js?v=37.9.0","./detective-v14.js?v=37.9.0","./detective-v16.js?v=37.9.0"]);
-  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=37.9.0","./smart-v23.js?v=37.9.0","./playlist-v24.js?v=37.9.0"]);
-  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=37.9.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=37.9.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=37.9.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=37.9.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=37.9.0");
+  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=37.9.1","./detective-v12.js?v=37.9.1","./detective-v13.js?v=37.9.1","./detective-v14.js?v=37.9.1","./detective-v16.js?v=37.9.1"]);
+  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=37.9.1","./smart-v23.js?v=37.9.1","./playlist-v24.js?v=37.9.1"]);
+  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=37.9.1");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=37.9.1");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=37.9.1");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=37.9.1");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=37.9.1");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
-    return seq(["./voca-app-v33.js?v=37.9.0","./voca-app-v33-1.js?v=37.9.0","./voca-app-v33-2.js?v=37.9.0","./voca-app-v33-3.js?v=37.9.0"]);
+    return seq(["./voca-app-v33.js?v=37.9.1","./voca-app-v33-1.js?v=37.9.1","./voca-app-v33-2.js?v=37.9.1","./voca-app-v33-3.js?v=37.9.1"]);
   });
   else groups[name]=Promise.resolve(false);
   groups[name]=Promise.resolve(groups[name]).then(function(v){
