@@ -5549,6 +5549,7 @@ async function buildUniverse(center,force=false){
   if(!force && state.universeCache.has(cacheKey)){
     state.universeData=state.universeCache.get(cacheKey);
     renderUniverse(state.universeData);
+    $("#rebuildUniverseBtn").disabled=false;
     return;
   }
 
