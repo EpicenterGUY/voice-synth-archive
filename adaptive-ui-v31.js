@@ -42,6 +42,11 @@ function addStyle(){
     ".v24-controls{grid-template-columns:minmax(0,1fr) minmax(100px,140px) minmax(80px,100px) auto!important}",
     ".v25-home-groups{grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))!important}",
     ".v25-home-card,.v25-home-group{min-width:0}",
+    ".v28-hero{grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr))!important}",
+    ".v28-hero>*{min-width:0}",
+    ".v28-cards{grid-auto-columns:clamp(185px,24vw,270px)!important}",
+    ".v28-search{grid-template-columns:minmax(0,1fr) auto auto!important}",
+    ".v28-search>*{min-width:0!important;max-width:100%!important}",
 
     /* wide desktop / large tablet */
     ".v31-wide .v25-workspace{grid-template-columns:clamp(205px,17vw,245px) minmax(0,1fr)!important}",
@@ -62,6 +67,7 @@ function addStyle(){
     ".v31-medium .v29-module-head{padding:10px 11px!important}",
     ".v31-medium .summary{grid-template-columns:repeat(2,minmax(0,1fr))!important}",
     ".v31-medium .v24-layout{grid-template-columns:1fr!important}",
+    ".v31-medium .v28-cards{grid-auto-columns:clamp(190px,32vw,250px)!important}",
     ".v31-medium .universe-layout{grid-template-columns:1fr!important}",
     ".v31-medium .universe-side{max-height:300px;overflow:auto}",
 
@@ -85,6 +91,8 @@ function addStyle(){
     ".v31-narrow .summary{grid-template-columns:repeat(2,minmax(0,1fr))!important}",
     ".v31-narrow .v24-layout,.v31-narrow .universe-layout{grid-template-columns:1fr!important}",
     ".v31-narrow .v25-home-groups{grid-template-columns:1fr 1fr!important}",
+    ".v31-narrow .v28-hero{grid-template-columns:1fr!important}",
+    ".v31-narrow .v28-cards{grid-auto-columns:min(72vw,260px)!important}",
 
     /* phone / Fold cover */
     ".v31-compact{width:100vw!important;height:100dvh!important;max-width:none!important;max-height:none!important;border-radius:0!important}",
@@ -101,6 +109,10 @@ function addStyle(){
     ".v31-compact .v24-controls input{grid-column:1/-1!important}",
     ".v31-compact .v24-sliders{grid-template-columns:1fr!important}",
     ".v31-compact .universe-layout{grid-template-columns:1fr!important}",
+    ".v31-compact .v28-hero{grid-template-columns:1fr!important}",
+    ".v31-compact .v28-search{grid-template-columns:1fr 1fr!important}",
+    ".v31-compact .v28-search input{grid-column:1/-1!important}",
+    ".v31-compact .v28-cards{grid-auto-columns:min(76vw,280px)!important}",
 
     /* generic overflow protection */
     ".v31-medium input,.v31-medium select,.v31-medium textarea,.v31-narrow input,.v31-narrow select,.v31-narrow textarea,.v31-compact input,.v31-compact select,.v31-compact textarea{max-width:100%!important;min-width:0!important}",
@@ -117,7 +129,7 @@ function addStyle(){
 function classify(width){
   if(width<560)return "compact";
   if(width<780)return "narrow";
-  if(width<1120)return "medium";
+  if(width<1240)return "medium";
   return "wide";
 }
 function apply(){
