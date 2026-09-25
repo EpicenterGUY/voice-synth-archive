@@ -134,11 +134,12 @@ async function loadFeed(force){
   try{
     if(cached&&hasFeedData(cached)){
       render(cached);showing=true;
-      if(!force&&cached.date===day())return;
+      if(!force)return;
     }else{
       var local=localFeedSnapshot();
-      if(hasFeedData(local)){render(local);showing=true}
-      else if(root&&!root.children.length)root.innerHTML='<div class="v28-empty">추천 피드를 준비하는 중…</div>';
+      if(hasFeedData(local)){render(local);showing=true;if(!force){save(CK,local);return}}
+      else if(root&&!root.children.length)root.innerHTML='<div class="v28-empty">추천 데이터가 아직 없습니다.</div>';
+      if(!force)return;
     }
 
     if(typeof relayBase==="function"&&!relayBase()){
@@ -172,6 +173,6 @@ function clicks(){document.addEventListener("click",function(e){var b=e.target.c
 function polish(){var n=document.querySelector('#mobileSectionNav [data-action="tools"] .v27-dock-label');if(n)n.textContent="메뉴";var s=document.querySelector(".brand .sub");if(s)s.textContent="매일 추천 · 취향 추천 · 곡 탐정 · 음성합성 아카이브"}
 var __booted=false;
 function boot(){if(__booted)return;__booted=true;addStyle();build();clicks();polish();loadFeed(false);setTimeout(polish,300)}
-window.VSAHome28={boot:boot,loadFeed:loadFeed};
+window.VSAHome28={boot:boot,loadFeed:loadFeed,refreshSection:refreshSection,refreshAll:refreshAll,getFeed:function(){return feed||load(CK,null)}};
 if(document.body)boot();else if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
 })();
