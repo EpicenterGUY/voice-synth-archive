@@ -2064,6 +2064,51 @@ body.v37-ready .v394-universe-panel>.panel-head{display:none!important}
   .v394-universe-panel .u39-nav{overflow-x:auto;scrollbar-width:none}.v394-universe-panel .u39-nav:before{display:none}
 }
 </style>
+<style id="v395PersonalHub">
+/* v39.5 · My VocaDive */
+.v395-personal{width:100%;max-width:1320px;margin:0 auto;padding:4px 0 28px}
+.v395-personal-hero{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:end;
+  padding:22px 22px 19px;margin-bottom:12px;border:1px solid rgba(115,211,202,.15);border-radius:23px;
+  background:radial-gradient(circle at 88% -20%,rgba(132,111,246,.18),transparent 26rem),
+    radial-gradient(circle at 8% 0%,rgba(76,217,202,.17),transparent 25rem),
+    linear-gradient(150deg,#0d3037,#082128 73%);
+  box-shadow:0 17px 44px rgba(0,8,11,.17)
+}
+.v395-personal-title small{display:block;color:#75ddd3;font-size:8px;font-weight:950;letter-spacing:.14em}
+.v395-personal-title h2{margin:5px 0 5px;color:#f3fffd;font-size:31px;letter-spacing:-.05em}
+.v395-personal-title p{margin:0;max-width:720px;color:#91afac;font-size:10px;line-height:1.55}
+.v395-personal-hero-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.v395-personal-hero-actions button{
+  min-height:39px;padding:0 12px;border:1px solid rgba(118,208,199,.18);border-radius:12px;
+  background:#10343b;color:#d8f1ed;font-size:9px;font-weight:900
+}
+.v395-personal-hero-actions button.primary{border:0;background:linear-gradient(135deg,#69d9cf,#768ff1);color:#061719}
+.v395-personal-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:0 0 12px}
+.v395-stat{min-width:0;padding:12px;border:1px solid rgba(113,205,197,.12);border-radius:15px;background:linear-gradient(155deg,#0b2a31,#071e24)}
+.v395-stat small{display:block;color:#688e8a;font-size:7px}.v395-stat b{display:block;margin-top:4px;color:#ecfbf8;font-size:18px;letter-spacing:-.03em}.v395-stat em{display:block;margin-top:3px;color:#729b97;font-size:7px;font-style:normal}
+.v395-personal-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);gap:10px;margin-bottom:14px}
+.v395-card{min-width:0;padding:14px;border:1px solid rgba(113,205,197,.12);border-radius:18px;background:linear-gradient(155deg,#0a282f,#071d23)}
+.v395-card-head{display:flex;align-items:end;justify-content:space-between;gap:10px;margin-bottom:10px}.v395-card-head h3{margin:0;color:#eafaf7;font-size:15px;letter-spacing:-.03em}.v395-card-head p{margin:3px 0 0;color:#6f938f;font-size:7px}.v395-card-head button{min-height:31px;padding:0 9px;border:1px solid rgba(115,205,197,.15);border-radius:9px;background:#0e3037;color:#a9d0cb;font-size:7px;font-weight:900}
+.v395-profile-tags{display:flex;gap:6px;flex-wrap:wrap}.v395-profile-tags button,.v395-profile-tags span{min-height:29px;padding:0 9px;border:1px solid rgba(115,205,197,.14);border-radius:999px;background:#10343a;color:#acd4cf;font-size:8px;display:inline-flex;align-items:center}.v395-profile-tags button{cursor:pointer;font-weight:900}
+.v395-profile-note{margin-top:10px;padding:9px 10px;border:1px dashed rgba(113,205,197,.15);border-radius:12px;color:#739995;font-size:8px;line-height:1.5}
+.v395-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}.v395-action{min-width:0;min-height:72px;padding:11px;border:1px solid rgba(113,205,197,.13);border-radius:14px;background:#09252b;color:#e3f7f3;text-align:left}.v395-action:hover{border-color:rgba(111,225,213,.35);background:#0d3037}.v395-action i{display:inline-grid;width:29px;height:29px;place-items:center;margin-bottom:6px;border-radius:9px;background:#123940;color:#79ddd3;font-style:normal;font-size:12px}.v395-action b{display:block;font-size:9px}.v395-action small{display:block;margin-top:3px;color:#6f9490;font-size:7px;line-height:1.4}
+.v395-section{margin-top:14px;padding-top:13px;border-top:1px solid rgba(113,201,194,.08)}.v395-section-head{display:flex;align-items:end;justify-content:space-between;gap:10px;margin:0 2px 9px}.v395-section-head h3{margin:0;color:#effbf9;font-size:17px;letter-spacing:-.035em}.v395-section-head p{margin:3px 0 0;color:#718f8c;font-size:8px}.v395-section-head button{min-height:32px;padding:0 10px;border:0;border-radius:999px;background:transparent;color:#7fd2c9;font-size:8px;font-weight:900}.v395-section-head button:hover{background:#0f3036}
+.v395-saved-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}.v395-saved{min-width:0;border:1px solid rgba(113,205,197,.12);border-radius:15px;background:#081f25;overflow:hidden}.v395-saved-thumb{position:relative;width:100%;aspect-ratio:16/9;padding:0;border:0;background:#10343b;overflow:hidden}.v395-saved-thumb img{width:100%;height:100%;object-fit:cover}.v395-saved-thumb .v39-no-thumb{height:100%}.v395-saved-body{padding:9px}.v395-saved-title{display:block;width:100%;padding:0;border:0;background:transparent;color:#e9faf7;text-align:left;font-size:9px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.v395-saved-meta{margin-top:4px;color:#6d928e;font-size:7px}.v395-status-chip{display:inline-flex;align-items:center;min-height:24px;margin-top:7px;padding:0 7px;border-radius:999px;background:#10343a;color:#8fc4be;font-size:7px}.v395-saved-actions{display:flex;gap:5px;margin-top:7px}.v395-saved-actions button{flex:1;min-width:0;min-height:30px;border:1px solid rgba(113,205,197,.13);border-radius:9px;background:#0c2b31;color:#a9ceca;font-size:7px;font-weight:900}
+.v395-activity{display:grid;grid-template-columns:1fr 1fr;gap:8px}.v395-activity-box{min-width:0;padding:10px;border:1px solid rgba(113,205,197,.11);border-radius:14px;background:#081e24}.v395-activity-box>small{display:block;margin-bottom:6px;color:#668d89;font-size:7px;font-weight:900}.v395-activity-line{width:100%;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;padding:7px 0;border:0;border-bottom:1px solid rgba(113,205,197,.07);background:transparent;color:#dff4f0;text-align:left}.v395-activity-line:last-child{border-bottom:0}.v395-activity-line b{display:block;font-size:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.v395-activity-line em{font-style:normal;color:#668d89;font-size:7px;white-space:nowrap}
+.v395-empty{min-height:95px;display:grid;place-items:center;padding:18px;border:1px dashed rgba(113,205,197,.13);border-radius:14px;color:#668d89;text-align:center;font-size:8px;line-height:1.55}
+
+/* one personal destination replaces separate library/taste dock items */
+@media(max-width:899px){.v37-dock{grid-template-columns:repeat(4,minmax(0,1fr))!important}.v395-personal-grid{grid-template-columns:1fr}.v395-saved-row{grid-template-columns:1fr 1fr}}
+@media(max-width:699px){
+  .v395-personal{padding:0 0 22px}.v395-personal-hero{grid-template-columns:1fr;padding:17px 14px 14px;border-radius:19px}.v395-personal-title h2{font-size:25px}.v395-personal-title p{font-size:9px}.v395-personal-hero-actions{justify-content:flex-start}.v395-personal-hero-actions button{flex:1}
+  .v395-personal-stats{grid-template-columns:1fr 1fr}.v395-stat{padding:10px}.v395-stat b{font-size:16px}
+  .v395-card{padding:11px;border-radius:16px}.v395-actions{grid-template-columns:1fr 1fr}.v395-action{min-height:68px;padding:9px}
+  .v395-saved-row{display:flex;overflow-x:auto;gap:8px;scroll-snap-type:x proximity;scrollbar-width:none}.v395-saved-row::-webkit-scrollbar{display:none}.v395-saved{flex:0 0 min(72vw,270px);scroll-snap-align:start}
+  .v395-activity{grid-template-columns:1fr}
+}
+@media(max-width:390px){.v395-actions{grid-template-columns:1fr}.v395-personal-stats{grid-template-columns:1fr 1fr}}
+</style>
 </head>
 <body>
 <div class="app">
@@ -2284,7 +2329,7 @@ body.v37-ready .v394-universe-panel>.panel-head{display:none!important}
     </details>
   </section>
 
-  <div class="footer">v39.4.0 · 콘텐츠 홈 · 통합검색 · 우주 2.0 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.5.0 · 콘텐츠 홈 · 통합검색 · 우주 2.0 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -6280,13 +6325,13 @@ const VSA37_FEATURES={
   detective:{id:"detective",label:"기억 복원 탐정",route:"detective",dock:"explore",lazy:"detective"},
   gems:{id:"gems",label:"숨은 곡 발굴",route:"gems",dock:"explore",lazy:null},
   guide:{id:"guide",label:"노래 추천",route:"guide",dock:"explore",lazy:null},
-  taste:{id:"taste",label:"내 취향 추천",route:"taste",dock:"taste",lazy:null},
+  taste:{id:"taste",label:"내 취향 추천",route:"taste",dock:"personal",lazy:null},
   universe:{id:"universe",label:"보카로 우주",route:"universe29",dock:"explore",lazy:"universe"},
   producer:{id:"producer",label:"프로듀서 도감",route:"explore33",dock:"explore",lazy:"v33"},
   producerDiscovery:{id:"producerDiscovery",label:"숨은 프로듀서 발굴",route:"producerDiscover37",dock:"explore",lazy:null},
   vocalRank:{id:"vocalRank",label:"음원 순위",route:"vocalRank37",dock:"explore",lazy:null},
   search:{id:"search",label:"일반 검색",route:"search29",dock:"search",lazy:null},
-  library:{id:"library",label:"보관함",route:"library22",dock:"library",lazy:"personal"},
+  library:{id:"library",label:"보관함",route:"library22",dock:"personal",lazy:"personal"},
   settings:{id:"settings",label:"설정",route:"settings29",dock:"explore",lazy:null},
   diagnostics:{id:"diagnostics",label:"진단 센터",route:"diagnostics37",dock:"explore",lazy:null}
 };
@@ -6361,7 +6406,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:"39.4.0",
+    version:"39.5.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -7257,9 +7302,8 @@ function mountToolsPage37(){
   return true;
 }
 function dockForToolView37(view){
-  if(view==="taste"||view==="tasteHub33"||view==="smart23"||view==="playlist24")return "taste";
-  if(view==="searchHub33"||view==="search29")return "search";
-  if(view==="libraryHub33"||view==="saved"||view==="history")return "library";
+  if(view==="personal395"||view==="taste"||view==="tasteHub33"||view==="smart23"||view==="playlist24"||view==="libraryHub33"||view==="library22"||view==="saved"||view==="history")return "personal";
+  if(view==="searchHub33"||view==="search29")return null;
   if(view==="hub37"||view==="gems"||view==="guide"||view==="explore33"||view==="producerDetail33"||view==="archive29"||view==="universe29"||view==="settings29"||view==="diagnostics37"||view==="producerDiscover37"||view==="vocalRank37"||view==="detective"||view==="v37RouteError")return "explore";
   return null;
 }
@@ -7594,7 +7638,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.4.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
+var VER="39.5.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -7635,8 +7679,8 @@ function render(){
     '<div class="v39-topic-chips"><button data-v39-open-explore>숨은 곡</button><button data-v39-open-universe>유사곡 우주</button><button data-v39-feature="vocalRank">음원 순위</button><button data-v39-feature="producerDiscovery">숨은 P</button><button data-v39-feature="detective">잊은 곡 찾기</button></div>'+
     shelf39("DAILY",f.daily)+shelf39("FOR YOU",f.taste)+shelf39("NEW",f.newer)+shelf39("DEEP",f.hidden);
 }
-function keep(id){var song=(typeof getAnySong39==="function"?getAnySong39(id):getSong(id));if(!song)return;if(window.VSAOrganizer22&&VSAOrganizer22.setSongStatus)VSAOrganizer22.setSongStatus(id,"interest",song);else{var o=L(OK,{library:{}});o.library=o.library||{};o.library[id]={status:"interest",song:song,savedAt:Date.now(),updatedAt:Date.now()};S(OK,o)}try{toast("관심곡으로 보관했습니다.")}catch(e){}}
-function dislike(id){var song=getSong(id),sm=L(SK,{feedback:{},tagPrefs:{}});sm.feedback=sm.feedback||{};sm.feedback[id]={value:-1,at:Date.now(),song:song};S(SK,sm);var f=currentFeed();["daily","taste","newer","hidden"].forEach(function(q){f[q]=(f[q]||[]).filter(function(x){return x.contentId!==id})});S(HK,f);render()}
+function keep(id){var song=(typeof getAnySong39==="function"?getAnySong39(id):getSong(id));if(!song)return;if(window.VSAOrganizer22&&VSAOrganizer22.setSongStatus)VSAOrganizer22.setSongStatus(id,"interest",song);else{var o=L(OK,{library:{}});o.library=o.library||{};o.library[id]={status:"interest",song:song,savedAt:Date.now(),updatedAt:Date.now()};S(OK,o)}if(typeof renderPersonalHub395==="function")renderPersonalHub395();try{toast("관심곡으로 보관했습니다.")}catch(e){}}
+function dislike(id){var song=getSong(id),sm=L(SK,{feedback:{},tagPrefs:{}});sm.feedback=sm.feedback||{};sm.feedback[id]={value:-1,at:Date.now(),song:song};S(SK,sm);var f=currentFeed();["daily","taste","newer","hidden"].forEach(function(q){f[q]=(f[q]||[]).filter(function(x){return x.contentId!==id})});S(HK,f);render();if(typeof renderPersonalHub395==="function")renderPersonalHub395()}
 function similar(id){
   var song=getSong(id);if(!song)return;
   if(typeof buildUniverse==="function"&&typeof openUniversePage37==="function"){
@@ -7750,6 +7794,100 @@ function ensureTopSearch39(){
   var status=top.querySelector(".status");if(status)top.insertBefore(form,status);else top.appendChild(form);
   form.addEventListener("submit",function(e){e.preventDefault();openGlobalSearch39(form.querySelector("input").value)})
 }
+function genericPersonalTag395(t){
+  t=String(t||"");
+  try{if(typeof isGenericTag==="function"&&isGenericTag(t))return true}catch(e){}
+  return /^(VOCALOID|UTAU|Synthesizer V|SynthV|CeVIO|VoiSona|NEUTRINO|VOICEVOX|音楽|オリジナル曲)$/i.test(t)||/伝説入り|殿堂入り|神話入り|ミリオン|ランキング|歌詞|字幕/.test(t)
+}
+function personalSnapshot395(){
+  var org=L(OK,{library:{},recentViews:[],recentSearches:[],cases:[]}),sm=L(SK,{feedback:{},lastMix:[]}),lib=Object.entries(org.library||{}),fb=Object.entries(sm.feedback||{});
+  var counts={saved:lib.length,favorite:0,interest:0,investigate:0,heard:0,liked:0,disliked:0};
+  var weights=new Map(),signals=0;
+  function addSong(song,w){
+    if(!song||!w)return;signals++;
+    tags(song).forEach(function(t){if(!t||t.length<2||genericPersonalTag395(t))return;weights.set(t,(weights.get(t)||0)+w)})
+  }
+  lib.forEach(function(pair){
+    var x=pair[1]||{},w=x.status==="favorite"?3.2:x.status==="interest"?2.1:x.status==="investigate"?1.1:x.status==="heard"?.35:0;
+    if(counts[x.status]!=null)counts[x.status]++;addSong(x.song,w)
+  });
+  fb.forEach(function(pair){var x=pair[1]||{},v=Number(x.value)||0;if(v>0)counts.liked++;if(v<0)counts.disliked++;addSong(x.song,v*3.5)});
+  var top=[...weights.entries()].filter(function(x){return x[1]>.3}).sort(function(a,b){return b[1]-a[1]}).slice(0,10);
+  var saved=lib.map(function(pair){var id=pair[0],x=pair[1]||{};return{id:id,status:x.status||"interest",song:x.song||{contentId:id,title:id},updatedAt:x.updatedAt||x.savedAt||0}}).sort(function(a,b){return b.updatedAt-a.updatedAt});
+  return {org:org,sm:sm,counts:counts,top:top,signals:signals,saved:saved,feed:currentFeed()}
+}
+function personalStatusLabel395(s){return s==="favorite"?"★ 최애":s==="interest"?"♡ 관심곡":s==="investigate"?"⌕ 나중에 조사":s==="heard"?"✓ 들어봄":s||"보관"}
+function personalSavedCard395(x){
+  var s=x.song||{contentId:x.id,title:x.id},year=s.startTime?new Date(s.startTime).getFullYear():"-";
+  return '<article class="v395-saved">'+
+    '<button type="button" class="v395-saved-thumb" data-v39-song="'+E(x.id)+'">'+(s.thumbnailUrl?'<img src="'+E(s.thumbnailUrl)+'" loading="lazy" alt="">':'<span class="v39-no-thumb">♪</span>')+'</button>'+
+    '<div class="v395-saved-body"><button type="button" class="v395-saved-title" data-v39-song="'+E(x.id)+'">'+E(s.title||x.id)+'</button>'+
+    '<div class="v395-saved-meta">조회 '+F(s.viewCounter||0)+' · '+year+'</div><span class="v395-status-chip">'+E(personalStatusLabel395(x.status))+'</span>'+
+    '<div class="v395-saved-actions"><button type="button" data-v39-song="'+E(x.id)+'">상세</button><button type="button" data-v395-universe="'+E(x.id)+'">우주</button></div></div></article>'
+}
+function personalActivityHtml395(snap){
+  var views=(snap.org.recentViews||[]).slice(0,5),searches=(snap.org.recentSearches||[]).slice(0,5);
+  function when(ts){var d=Date.now()-(+ts||0);if(d<60000)return"방금";if(d<3600000)return Math.floor(d/60000)+"분 전";if(d<86400000)return Math.floor(d/3600000)+"시간 전";return new Date(ts).toLocaleDateString("ko-KR")}
+  return '<div class="v395-activity"><div class="v395-activity-box"><small>최근 본 곡</small>'+
+    (views.length?views.map(function(x){return'<button type="button" class="v395-activity-line" data-v39-song="'+E(x.id)+'"><b>'+E(x.title||x.id)+'</b><em>'+E(when(x.viewedAt))+'</em></button>'}).join(""):'<div class="v395-empty">아직 최근 본 곡이 없습니다.</div>')+
+    '</div><div class="v395-activity-box"><small>최근 검색</small>'+
+    (searches.length?searches.map(function(x){return'<button type="button" class="v395-activity-line" data-v395-search-query="'+E(x.query)+'"><b>'+E(x.query)+'</b><em>'+E(when(x.searchedAt))+'</em></button>'}).join(""):'<div class="v395-empty">아직 검색 기록이 없습니다.</div>')+
+    '</div></div>'
+}
+function ensurePersonalHub395(){
+  var body=document.querySelector("#toolsModal .tools-body");if(!body)return null;
+  var p=body.querySelector('[data-tool-view="personal395"]');if(p)return p;
+  p=document.createElement("section");p.className="tool-view v395-personal";p.dataset.toolView="personal395";body.prepend(p);return p
+}
+function renderPersonalHub395(){
+  var p=document.querySelector('[data-tool-view="personal395"]');if(!p)return;
+  var snap=personalSnapshot395(),c=snap.counts,recs=(snap.feed.taste||[]).filter(Boolean).slice(0,8),saved=snap.saved.slice(0,8);
+  p.innerHTML='<div class="v395-personal-hero"><div class="v395-personal-title"><small>MY VOCADIVE</small><h2>내 음악</h2><p>보관함과 취향 피드백을 따로 관리하지 않고, 저장한 곡·취향 신호·개인 추천을 한 화면에서 이어서 봅니다.</p></div>'+
+    '<div class="v395-personal-hero-actions"><button type="button" data-v395-open="library">전체 보관함</button><button type="button" class="primary" data-v395-open="smart">스마트 믹스</button></div></div>'+
+    '<div class="v395-personal-stats"><div class="v395-stat"><small>보관한 곡</small><b>'+F(c.saved)+'</b><em>상태를 지정한 전체 곡</em></div><div class="v395-stat"><small>최애</small><b>'+F(c.favorite)+'</b><em>추천에 가장 강하게 반영</em></div><div class="v395-stat"><small>관심곡</small><b>'+F(c.interest)+'</b><em>다시 찾아볼 곡</em></div><div class="v395-stat"><small>취향 신호</small><b>'+F(snap.signals)+'</b><em>보관 + 직접 피드백</em></div></div>'+
+    '<div class="v395-personal-grid"><section class="v395-card"><div class="v395-card-head"><div><h3>내 취향 프로필</h3><p>최애·관심곡·좋아요/관심없음을 합쳐 자동 계산</p></div><button type="button" data-v395-open="taste">직접 조건 추천</button></div>'+
+      '<div class="v395-profile-tags">'+(snap.top.length?snap.top.map(function(x){return'<button type="button" data-v395-search-query="'+E(x[0])+'">'+E(x[0])+'</button>'}).join(""):'<span>아직 취향 데이터가 적어요</span>')+'</div>'+
+      '<div class="v395-profile-note">최애와 관심곡을 보관하거나 추천 카드에 취향 피드백을 남길수록 이 프로필과 개인 추천이 함께 바뀝니다. 관심없음 '+F(c.disliked)+'곡도 제외 신호로 반영됩니다.</div></section>'+
+    '<section class="v395-card"><div class="v395-card-head"><div><h3>바로가기</h3><p>예전 보관함·내 취향 기능을 한 곳으로 모음</p></div></div><div class="v395-actions">'+
+      '<button type="button" class="v395-action" data-v395-open="library"><i>▣</i><b>보관함 관리</b><small>최애·관심·조사·들어봄·관심없음 정리</small></button>'+
+      '<button type="button" class="v395-action" data-v395-open="smart"><i>◈</i><b>스마트 믹스</b><small>취향 신호로 자동 플레이리스트 만들기</small></button>'+
+      '<button type="button" class="v395-action" data-v395-open="playlist"><i>☷</i><b>플레이리스트</b><small>저장한 믹스와 곡 순서 관리</small></button>'+
+      '<button type="button" class="v395-action" data-v395-open="taste"><i>♡</i><b>조건 추천</b><small>분위기·보컬·장르를 직접 골라 추천</small></button>'+
+      '<button type="button" class="v395-action" data-v395-open="recent"><i>↺</i><b>최근 기록</b><small>최근 본 곡과 검색 기록 다시 보기</small></button>'+
+      '<button type="button" class="v395-action" data-v395-open="cases"><i>?</i><b>저장한 탐정</b><small>곡 탐정 사건과 후보 기록 복원</small></button>'+
+    '</div></section></div>'+
+    '<section class="v395-section"><div class="v395-section-head"><div><h3>최근 보관</h3><p>최근 상태를 바꾼 곡부터</p></div><button type="button" data-v395-open="library">모두 보기</button></div>'+
+      (saved.length?'<div class="v395-saved-row">'+saved.map(personalSavedCard395).join("")+'</div>':'<div class="v395-empty">아직 보관한 곡이 없습니다.<br>홈이나 검색에서 마음에 드는 곡을 보관해보세요.</div>')+'</section>'+
+    '<section class="v395-section"><div class="v395-section-head"><div><h3>내 취향 추천</h3><p>보관함과 피드백을 반영한 현재 추천 피드</p></div><button type="button" data-v395-refresh-rec>'+(busy&&active==="FOR YOU"?"갱신 중…":"다른 추천 ↻")+'</button></div>'+
+      (recs.length?'<div class="v39-media-grid">'+recs.map(function(x){return mediaCard39(x,"FOR YOU")}).join("")+'</div>':'<div class="v395-empty">아직 개인 추천 데이터가 없습니다.<br>추천 갱신을 눌러 후보를 불러올 수 있습니다.</div>')+'</section>'+
+    '<section class="v395-section"><div class="v395-section-head"><div><h3>최근 활동</h3><p>보던 곡과 검색어로 바로 돌아가기</p></div></div>'+personalActivityHtml395(snap)+'</section>'
+}
+function openPersonalRoute395(kind){
+  kind=String(kind||"");
+  if(kind==="taste"){openToolsModal("taste");return}
+  if(!window.VSAEnsureFeatures){return}
+  if(kind==="library"){
+    Promise.all([VSAEnsureFeatures("personal"),VSAEnsureFeatures("v33")]).then(function(){
+      if(window.VSA332Library&&VSA332Library.open)VSA332Library.open();
+      else if(window.VSAOrganizer22&&VSAOrganizer22.openLibrary)VSAOrganizer22.openLibrary("saved")
+    });return
+  }
+  if(kind==="smart"||kind==="playlist"){
+    VSAEnsureFeatures("personal").then(function(){openToolsModal(kind==="smart"?"smart23":"playlist24")});return
+  }
+  if(kind==="recent"||kind==="cases"){
+    VSAEnsureFeatures("personal").then(function(){
+      if(window.VSAOrganizer22&&VSAOrganizer22.openLibrary)VSAOrganizer22.openLibrary(kind==="recent"?"recent":"cases")
+    })
+  }
+}
+function openPersonal395(){
+  ensurePersonalHub395();renderPersonalHub395();openToolsModal("personal395");setDock("personal");
+  if(window.VSAEnsureFeatures)Promise.allSettled([VSAEnsureFeatures("personal"),VSAEnsureFeatures("v33")]).then(function(){renderPersonalHub395()})
+}
+window.VSAOpenPersonal395=openPersonal395;
+window.VSARefreshPersonal395=renderPersonalHub395;
+
 window.VSAOpenSong39=openSongDetail39;
 window.VSAGlobalSearch39=openGlobalSearch39;
 
@@ -7788,9 +7926,7 @@ function openFeatureById37(id){
     if(window.VSAEnsureFeatures)window.VSAEnsureFeatures("universe");
     return
   }
-  if(id==="library"){
-    const btn=document.querySelector('.v37-dock button[data-v37="library"]');if(btn)btn.click();return
-  }
+  if(id==="library"){openPersonalRoute395("library");return}
   openToolsModal(f.route)
 }
 function quickChip37(id,label,meta){
@@ -7856,32 +7992,22 @@ function dockIcon38(id){
     search:'<svg '+c+'><circle cx="10.5" cy="10.5" r="5.5"/><path d="m14.7 14.7 5 5M8.5 10.5h4"/></svg>',
     universe:'<svg '+c+'><circle cx="12" cy="12" r="2.3"/><ellipse cx="12" cy="12" rx="8.5" ry="3.5" transform="rotate(-25 12 12)"/><ellipse cx="12" cy="12" rx="8.5" ry="3.5" transform="rotate(35 12 12)"/><circle cx="18.4" cy="8" r="1"/></svg>',
     library:'<svg '+c+'><rect x="5" y="4" width="12" height="15" rx="2"/><path d="M8 7h6M8 10h6M8 13h4M17 7h2a1 1 0 0 1 1 1v11H9"/></svg>',
-    taste:'<svg '+c+'><path d="M12 20s-7-4.2-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.8-7 10-7 10z"/><path d="M8.2 12h2l1.1-2.3 1.6 4.8 1.2-2.5h1.8"/></svg>'
+    taste:'<svg '+c+'><path d="M12 20s-7-4.2-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.8-7 10-7 10z"/><path d="M8.2 12h2l1.1-2.3 1.6 4.8 1.2-2.5h1.8"/></svg>',
+    personal:'<svg '+c+'><path d="M12 20s-6.7-4-6.7-9.6A3.8 3.8 0 0 1 12 8a3.8 3.8 0 0 1 6.7 2.4C18.7 16 12 20 12 20z"/><path d="M8.3 4.8h7.4M9.5 7.2h5"/></svg>'
   };return x[id]||""
 }
 function dock(){
   if(document.querySelector(".v37-dock"))return;
   var d=document.createElement("nav");d.className="v37-dock";
   d.innerHTML='<div class="v38-rail-brand"><img src="./icons/app-icon.svg" alt=""><small>VocaDive</small></div>'+
-    [["home","홈"],["explore","탐색"],["universe","우주"],["library","보관함"],["taste","내 취향"]].map(function(x){return'<button type="button" data-v37="'+x[0]+'" aria-label="'+x[1]+'"><i>'+dockIcon38(x[0])+'</i><span>'+x[1]+'</span></button>'}).join("");
+    [["home","홈"],["explore","탐색"],["universe","우주"],["personal","MY"]].map(function(x){return'<button type="button" data-v37="'+x[0]+'" aria-label="'+x[1]+'"><i>'+dockIcon38(x[0])+'</i><span>'+x[1]+'</span></button>'}).join("");
   document.body.appendChild(d);setDock("home");
   d.addEventListener("click",function(e){
     var b=e.target.closest("button[data-v37]");if(!b)return;var v=b.dataset.v37;setDock(v);
     if(v==="home"){try{closeToolsModal()}catch(e){}document.getElementById("v37Home")?.scrollIntoView({block:"start"});return}
     if(v==="explore"){openHub37();return}
     if(v==="universe"){ensureCorePages37();openToolsModal("universe29");if(window.VSAEnsureFeatures)window.VSAEnsureFeatures("universe");ensureUniverseToolbar39();return}
-    if(v==="library"){
-      if(window.VSA332Library&&VSA332Library.open){VSA332Library.open();return}
-      if(window.VSAOrganizer22&&VSAOrganizer22.openLibrary){VSAOrganizer22.openLibrary("saved");return}
-      var hub=ensureHub37();openToolsModal("hub37");var st=document.getElementById("v37HubStatus");
-      if(st)st.textContent="보관함 기능을 불러오는 중… 탐색 기능은 계속 사용할 수 있습니다.";
-      if(window.VSAEnsureFeatures)Promise.all([VSAEnsureFeatures("personal"),VSAEnsureFeatures("v33")]).then(function(){
-        if(window.VSA332Library&&VSA332Library.open)VSA332Library.open();
-        else if(window.VSAOrganizer22&&VSAOrganizer22.openLibrary)VSAOrganizer22.openLibrary("saved");
-        else if(st)st.textContent="보관함을 불러오지 못했습니다."
-      });return
-    }
-    if(v==="taste"){openToolsModal("taste");return}
+    if(v==="personal"){openPersonal395();return}
   })
 }
 function init(){
@@ -7907,6 +8033,10 @@ function init(){
     if(shelfRefresh){refreshMark39(shelfRefresh.dataset.v39RefreshSection);return}
     if(e.target.closest("[data-v39-open-explore]")){setDock("explore");openHub37();return}
     if(e.target.closest("[data-v39-open-universe]")){setDock("universe");ensureCorePages37();openToolsModal("universe29");if(window.VSAEnsureFeatures)window.VSAEnsureFeatures("universe");ensureUniverseToolbar39();return}
+    var p395=e.target.closest("[data-v395-open]");if(p395){openPersonalRoute395(p395.dataset.v395Open);return}
+    if(e.target.closest("[data-v395-refresh-rec]")){Promise.resolve(refreshMark39("FOR YOU")).then(function(){renderPersonalHub395()});return}
+    var pu395=e.target.closest("[data-v395-universe]");if(pu395){var ps395=getAnySong39(pu395.dataset.v395Universe);if(ps395)openUniversePage37(ps395,false);return}
+    var pq395=e.target.closest("[data-v395-search-query]");if(pq395){openGlobalSearch39(pq395.dataset.v395SearchQuery);return}
     var f39=e.target.closest("[data-v39-feature]");if(f39){openFeatureById37(f39.dataset.v39Feature);return}
     var save39=e.target.closest("[data-v39-detail-save]");if(save39){keep(save39.dataset.v39DetailSave);return}
     var uni39=e.target.closest("[data-v39-detail-universe]");if(uni39){var us=getAnySong39(uni39.dataset.v39DetailUniverse);if(us)openUniversePage37(us,false);return}
@@ -8019,15 +8149,15 @@ var groups={};
 function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
-  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.4.0","./detective-v12.js?v=39.4.0","./detective-v13.js?v=39.4.0","./detective-v14.js?v=39.4.0","./detective-v16.js?v=39.4.0"]);
-  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.4.0","./smart-v23.js?v=39.4.0","./playlist-v24.js?v=39.4.0"]);
-  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.4.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.4.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.4.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.4.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.4.0");
+  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.5.0","./detective-v12.js?v=39.5.0","./detective-v13.js?v=39.5.0","./detective-v14.js?v=39.5.0","./detective-v16.js?v=39.5.0"]);
+  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.5.0","./smart-v23.js?v=39.5.0","./playlist-v24.js?v=39.5.0"]);
+  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.5.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.5.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.5.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.5.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.5.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
-    return seq(["./voca-app-v33.js?v=39.4.0","./voca-app-v33-1.js?v=39.4.0","./voca-app-v33-2.js?v=39.4.0","./voca-app-v33-3.js?v=39.4.0"]);
+    return seq(["./voca-app-v33.js?v=39.5.0","./voca-app-v33-1.js?v=39.5.0","./voca-app-v33-2.js?v=39.5.0","./voca-app-v33-3.js?v=39.5.0"]);
   });
   else groups[name]=Promise.resolve(false);
   groups[name]=Promise.resolve(groups[name]).then(function(v){
