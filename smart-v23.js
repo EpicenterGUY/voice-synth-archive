@@ -644,7 +644,8 @@ function patchTasteButton23(){
     current.parentNode.replaceChild(fresh,current);
 
     fresh.addEventListener("click", async function(){
-      if(!window.recommendTasteV20) return;
+      const run = window.recommendTasteV20 || window.recommendTaste;
+      if(typeof run!=="function") return;
       const tag = document.getElementById("tasteTag");
       const auto = document.getElementById("v23TasteAuto");
       const old = tag ? tag.value : "";
@@ -653,7 +654,7 @@ function patchTasteButton23(){
         if(learned.length) tag.value = uniq23([old].concat(learned)).filter(Boolean).join(", ");
       }
       try{
-        await window.recommendTasteV20();
+        await run();
       }finally{
         if(tag) tag.value = old;
       }
