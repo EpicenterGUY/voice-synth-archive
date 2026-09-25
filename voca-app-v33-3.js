@@ -26,7 +26,12 @@ function renderFollow(rows){
   grid.innerHTML=rows&&rows.length?rows.slice(0,16).map(songCard).join(""):'<div class="v333-empty">최근 곡을 찾지 못했습니다.</div>';
 }
 async function fetchForProducer(name){
-  try{var d=await fetchNico({year:"all",limit:35,offset:0,mode:"ranking",sort:"-startTime",applyYear:false,applyTier:false,extraExactTag:name,numericFilters:{viewCounter:{gte:0}}});return(d.data||[]).map(function(song){return{song:song,producer:name}})}catch(e){return[]}
+  try{
+    var d=await fetchNico({year:"all",limit:35,offset:0,mode:"ranking",sort:"-startTime",applyYear:false,applyTier:false,extraExactTag:name,numericFilters:{viewCounter:{gte:0}}});
+    var rows=d.data||[];
+    if(window.VSA37AdultFilterRows)rows=window.VSA37AdultFilterRows(rows,"followed_producer").rows;
+    return rows.map(function(song){return{song:song,producer:name}})
+  }catch(e){return[]}
 }
 async function refreshFollow(force){
   ensureFollowUi();var btn=document.getElementById("v333FollowRefresh"),cache=load(CACHE_KEY,null),fs=followed();
