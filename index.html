@@ -1250,6 +1250,28 @@ body.v37-ready>.app.mobile-paged>.main,body.v37-ready>.app.mobile-paged>.summary
 .v37-hub-copy{min-width:0;flex:1}.v37-hub-copy b{display:block;font-size:13px}.v37-hub-copy small{display:block;margin-top:4px;color:#86a8a4;font-size:8px;line-height:1.45}
 .v37-hub-arrow{color:#6aa39f;font-size:18px}
 .v37-hub-status{margin-top:10px;min-height:34px;padding:9px 11px;border:1px solid #1f4247;border-radius:12px;background:#071b20;color:#88aaa6;font-size:8px;line-height:1.5}
+.v37-core-page{width:100%;max-width:1160px;margin:0 auto;padding:8px 0 24px;box-sizing:border-box}
+.v37-core-page>.v37-native-head{margin-bottom:10px}
+body.v37-ready .v37-archive-page #filterControls{display:grid!important;margin:0 0 9px!important}
+body.v37-ready .v37-archive-page #sourceControls{display:grid!important;margin:0 0 9px!important}
+body.v37-ready .v37-archive-page>.summary{display:grid!important;margin:0 0 9px!important}
+body.v37-ready .v37-archive-page #icebergPanel{display:block!important;width:100%!important;margin:0!important}
+body.v37-ready .v37-search-page #resultsPanel{display:block!important;width:100%!important;margin:0!important;min-height:0!important}
+body.v37-ready .v37-search-page #resultsPanel>.panel-head{display:none!important}
+body.v37-ready .v37-universe-page #universePanel{display:block!important;width:100%!important;margin:0!important}
+body.v37-ready .v37-settings-page #settingsPanel{display:block!important;width:100%!important;margin:0!important}
+body.v37-ready .v37-search-page .free-search{border:1px solid #18393e;border-radius:15px;background:#071b20;margin-bottom:9px}
+body.v37-ready .v37-search-page .results-toolbar{border:1px solid #18393e;border-radius:13px;background:#071b20;margin-bottom:7px}
+@media(max-width:699px){
+  body.v37-ready .v37-archive-page #filterControls,
+  body.v37-ready .v37-archive-page #sourceControls{grid-template-columns:1fr!important}
+  body.v37-ready .v37-archive-page>.summary{grid-template-columns:1fr 1fr!important}
+  body.v37-ready .v37-search-page .search-row{grid-template-columns:1fr!important}
+  body.v37-ready .v37-search-page .search-row>*{grid-column:1!important;width:100%!important}
+}
+@media(max-width:390px){
+  body.v37-ready .v37-archive-page>.summary{grid-template-columns:1fr!important}
+}
 @media(max-width:699px){.v37-hub-grid{grid-template-columns:1fr}.v37-hub-card{min-height:80px}.v37-native-head h2{font-size:20px}}
 
 </style>
@@ -1464,7 +1486,7 @@ body.v37-ready>.app.mobile-paged>.main,body.v37-ready>.app.mobile-paged>.summary
     </details>
   </section>
 
-  <div class="footer">v37.2.1 · 간헐 멈춤 수정 · 이벤트 루프 안정화 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v37.3.0 · 검색/탐정 분리 · 빙산/우주 페이지 복구 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -4209,15 +4231,7 @@ function excludeDetective(id){
   state.detectiveCandidates=state.detectiveCandidates.filter(x=>x.song.contentId!==id);
   renderDetectiveResults(collectDetectiveClues());
 }
-function detectiveSimilar(id){
-  const x=state.detectiveCandidates.find(x=>x.song.contentId===id);
-  if(!x)return;
-  closeToolsModal();
-  setTimeout(()=>{
-    $("#universePanel")?.scrollIntoView({behavior:"smooth",block:"start"});
-    buildUniverse(x.song,false);
-  },120);
-}
+function detectiveSimilar(id){const x=state.detectiveCandidates.find(x=>x.song.contentId===id);if(!x)return;openUniversePage37(x.song,false)}
 function resetDetective(){
   [
     "detectiveWords","detectiveProducer","detectiveVisual","detectiveExcludeTerms"
@@ -4302,7 +4316,7 @@ async function buildGuide(){
 function renderGuide(preset){
   $("#guideGrid").innerHTML=state.guideSongs.map((x,i)=>{const s=x.song,tags=informativeTags(s).slice(0,4);return`<article class="discovery-card"><img src="${esc(s.thumbnailUrl||"")}" loading="lazy" onerror="this.style.visibility='hidden'"><div class="discovery-body"><a class="discovery-title" href="https://www.nicovideo.jp/watch/${encodeURIComponent(s.contentId)}" target="_blank" rel="noopener">${i+1}. ${esc(s.title||s.contentId)}</a><div class="discovery-meta"><span>조회 ${fmt(s.viewCounter||0)}</span><span>${songYear(s)||"-"}년</span></div><div class="discovery-tags">${tags.map(t=>`<span class="discovery-tag">${esc(t)}</span>`).join("")}</div><div class="discovery-reason">${esc(preset.reason)}</div><div class="gem-actions"><button class="mini-btn" onclick="openGuideUniverse('${esc(s.contentId)}')">우주 보기</button><button class="mini-btn" onclick="window.open('https://www.nicovideo.jp/watch/${encodeURIComponent(s.contentId)}','_blank','noopener')">듣기</button></div></div></article>`}).join("");
 }
-function openGuideUniverse(id){const x=state.guideSongs.find(x=>x.song.contentId===id);if(!x)return;$("#universePanel").scrollIntoView({behavior:"smooth",block:"start"});buildUniverse(x.song,false)}
+function openGuideUniverse(id){const x=state.guideSongs.find(x=>x.song.contentId===id);if(!x)return;openUniversePage37(x.song,false)}
 function parseTastePrompt(){
   const prompt=$("#tastePrompt").value.trim(),terms=new Set(state.tasteTerms||[]);for(const [re,arr] of KOREAN_PROMPT_MAP){if(re.test(prompt)){arr.forEach(x=>terms.add(x));re.lastIndex=0}}const mood=$("#tasteMood").value,genre=$("#tasteGenre").value;(TASTE_MAP[mood]||[]).forEach(x=>terms.add(x));(TASTE_MAP[genre]||[]).forEach(x=>terms.add(x));const direct=$("#tasteTag").value.trim();if(direct)terms.add(direct);return{prompt,terms:[...terms].slice(0,8)};
 }
@@ -4313,7 +4327,7 @@ async function recommendTaste(){
   try{const uniq=new Map();if(parsed.terms.length){const batches=await mapLimit(parsed.terms.slice(0,6),3,async t=>fetchTasteTag(t,fb[0],fb[1]));for(const s of batches.flat())uniq.set(s.contentId,s)}if(uniq.size<15){const nf={viewCounter:{gte:fb[0]}};if(fb[1]!=null)nf.viewCounter.lte=fb[1];for(const sort of["-mylistCounter","-viewCounter","-commentCounter"]){try{const d=await fetchNico({year:"all",limit:100,offset:0,mode:"ranking",sort,applyYear:false,applyTier:false,numericFilters:nf});for(const s of(d.data||[]))uniq.set(s.contentId,s)}catch{}}}let rows=[...uniq.values()].filter(s=>!era||inEra(s,era));if(!rows.length)throw new Error("조건에 맞는 곡이 없습니다.");const scored=rows.map(s=>({song:s,score:tasteMatchScore(s,parsed.terms,era,fame)})).sort((a,b)=>b.score-a.score);state.tasteSongs=diversifySongs(scored,16);renderTaste(parsed)}catch(e){$("#tasteGrid").innerHTML=`<div class="discovery-empty">추천 실패<br><small>${esc(String(e?.message||e))}</small></div>`}finally{state.busy=false;$("#tasteRecommendBtn").disabled=false}
 }
 function renderTaste(parsed){$("#tasteSummary").innerHTML=`해석한 취향: <b>${parsed.terms.length?parsed.terms.map(esc).join(" · "):"특정 태그 없음"}</b> · ${state.tasteSongs.length}곡 추천`;$("#tasteGrid").innerHTML=state.tasteSongs.map((x,i)=>{const s=x.song,tags=informativeTags(s).slice(0,4);return`<article class="discovery-card"><img src="${esc(s.thumbnailUrl||"")}" loading="lazy" onerror="this.style.visibility='hidden'"><div class="discovery-body"><a class="discovery-title" href="https://www.nicovideo.jp/watch/${encodeURIComponent(s.contentId)}" target="_blank" rel="noopener">${i+1}. ${esc(s.title||s.contentId)}</a><div class="discovery-meta"><span>취향 일치 ${(x.score*100).toFixed(1)}%</span><span>조회 ${fmt(s.viewCounter||0)}</span><span>${songYear(s)||"-"}년</span></div><div class="discovery-tags">${tags.map(t=>`<span class="discovery-tag">${esc(t)}</span>`).join("")}</div><div class="gem-actions"><button class="mini-btn" onclick="openTasteUniverse('${esc(s.contentId)}')">비슷한 곡</button><button class="mini-btn" onclick="window.open('https://www.nicovideo.jp/watch/${encodeURIComponent(s.contentId)}','_blank','noopener')">듣기</button></div></div></article>`}).join("")}
-function openTasteUniverse(id){const x=state.tasteSongs.find(x=>x.song.contentId===id);if(!x)return;$("#universePanel").scrollIntoView({behavior:"smooth",block:"start"});buildUniverse(x.song,false)}
+function openTasteUniverse(id){const x=state.tasteSongs.find(x=>x.song.contentId===id);if(!x)return;openUniversePage37(x.song,false)}
 
 const GEM_PRESETS={
   smart:{label:"알아서 발굴",minViews:500,sorts:["-mylistCounter","-commentCounter","-startTime","+viewCounter","-viewCounter"]},
@@ -4570,9 +4584,7 @@ async function calculateGemRank(id){
 function openGemUniverse(id){
   const song=getGemSong(id);
   if(!song)return;
-  closeToolsModal();
-  document.querySelector("#universePanel").scrollIntoView({behavior:"smooth",block:"start"});
-  buildUniverse(song,false);
+  openUniversePage37(song,false)
 }
 function resetGemPool(){
   state.hiddenGemPool=[];
@@ -5101,10 +5113,50 @@ function queueRankById(id){
 function openUniverseById(id){
   const song=state.songs.find(x=>x.contentId===id);
   if(!song)return;
-  document.querySelector("#universePanel").scrollIntoView({behavior:"smooth",block:"start"});
-  buildUniverse(song,false);
+  openUniversePage37(song,false)
 }
 
+
+function makeCorePage37(view,title,desc,cls){
+  const body=document.querySelector("#toolsModal .tools-body");
+  if(!body)return null;
+  let page=body.querySelector('[data-tool-view="'+view+'"]');
+  if(page)return page;
+  page=document.createElement("section");
+  page.className="tool-view v37-core-page "+(cls||"");
+  page.dataset.toolView=view;
+  page.innerHTML='<div class="v37-native-head"><small>VOCALO SUPPORT</small><h2>'+title+'</h2><p>'+desc+'</p></div>';
+  body.appendChild(page);
+  return page
+}
+function moveInto37(node,page){
+  if(node&&page&&node.parentElement!==page)page.appendChild(node)
+}
+function ensureCorePages37(){
+  const archive=makeCorePage37("archive29","빙산 · 통계","조회수 층과 모집단을 직접 설정해 음성합성곡 분포를 탐색합니다.","v37-archive-page");
+  const search=makeCorePage37("search29","검색","곡명·P명·보컬·태그·sm번호를 바로 검색합니다. 탐정 시스템과 분리된 일반 검색입니다.","v37-search-page");
+  const universe=makeCorePage37("universe29","보카로 우주","선택한 곡을 중심으로 비슷한 곡을 연결해 탐색합니다.","v37-universe-page");
+  const settings=makeCorePage37("settings29","설정","Worker 연결과 기술 설정을 관리합니다.","v37-settings-page");
+  moveInto37(document.getElementById("filterControls"),archive);
+  moveInto37(document.getElementById("sourceControls"),archive);
+  moveInto37(document.querySelector(".app > .summary"),archive);
+  moveInto37(document.getElementById("icebergPanel"),archive);
+  moveInto37(document.getElementById("resultsPanel"),search);
+  moveInto37(document.getElementById("universePanel"),universe);
+  moveInto37(document.getElementById("settingsPanel"),settings);
+  return {archive,search,universe,settings}
+}
+function openUniversePage37(song,force){
+  if(!song)return;
+  ensureCorePages37();
+  openToolsModal("universe29");
+  requestAnimationFrame(function(){
+    try{buildUniverse(song,!!force)}catch(e){
+      const empty=document.getElementById("universeEmpty");
+      if(empty)empty.textContent="우주 보기를 불러오지 못했습니다."
+    }
+  })
+}
 
 function setToolView(name){
   document.querySelectorAll("#toolsTabs button").forEach(b=>b.classList.toggle("active",b.dataset.tool===name));
@@ -5122,9 +5174,9 @@ function mountToolsPage37(){
 }
 function dockForToolView37(view){
   if(view==="taste"||view==="tasteHub33"||view==="smart23"||view==="playlist24")return "taste";
-  if(view==="detective"||view==="searchHub33"||view==="search29")return "search";
+  if(view==="searchHub33"||view==="search29")return "search";
   if(view==="libraryHub33"||view==="saved"||view==="history")return "library";
-  if(view==="hub37"||view==="gems"||view==="guide"||view==="explore33"||view==="producerDetail33"||view==="archive29"||view==="universe29")return "explore";
+  if(view==="hub37"||view==="gems"||view==="guide"||view==="explore33"||view==="producerDetail33"||view==="archive29"||view==="universe29"||view==="settings29"||view==="detective")return "explore";
   return null;
 }
 function healPageLocks37(){
@@ -5438,7 +5490,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="37.2.1",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
+var VER="37.3.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -5458,14 +5510,8 @@ function keep(id){var song=getSong(id);if(!song)return;if(window.VSAOrganizer22&
 function dislike(id){var song=getSong(id),sm=L(SK,{feedback:{},tagPrefs:{}});sm.feedback=sm.feedback||{};sm.feedback[id]={value:-1,at:Date.now(),song:song};S(SK,sm);var f=currentFeed();["daily","taste","newer","hidden"].forEach(function(q){f[q]=(f[q]||[]).filter(function(x){return x.contentId!==id})});S(HK,f);render()}
 function similar(id){
   var song=getSong(id);if(!song)return;
-  if(typeof buildUniverse==="function"){
-    try{
-      var p=document.getElementById("universePanel");
-      if(p){p.style.display="block";p.classList.add("v37-inline-universe")}
-      buildUniverse(song,false);
-      if(p)p.scrollIntoView({block:"start"});
-      return
-    }catch(e){}
+  if(typeof buildUniverse==="function"&&typeof openUniversePage37==="function"){
+    try{openUniversePage37(song,false);return}catch(e){}
   }
   if(typeof openHub37==="function")openHub37();
   var st=document.getElementById("v37HubStatus");
@@ -5491,11 +5537,14 @@ function ensureHub37(){
   v.innerHTML=
     '<div class="v37-native-head"><small>VOCALO SUPPORT</small><h2>탐색</h2><p>원하는 작업을 바로 엽니다. 무거운 기능 묶음을 먼저 불러오지 않습니다.</p></div>'+
     '<div class="v37-hub-grid">'+
+      '<button class="v37-hub-card" type="button" data-v37-open="archive29"><span class="v37-hub-icon">◇</span><span class="v37-hub-copy"><b>빙산 · 통계</b><small>조회수 층과 모집단 통계 탐색</small></span><span class="v37-hub-arrow">›</span></button>'+
+      '<button class="v37-hub-card" type="button" data-v37-open="detective"><span class="v37-hub-icon">?</span><span class="v37-hub-copy"><b>기억 복원 탐정</b><small>가사·PV·시기 같은 기억으로 잊은 곡 찾기</small></span><span class="v37-hub-arrow">›</span></button>'+
       '<button class="v37-hub-card" type="button" data-v37-open="gems"><span class="v37-hub-icon">◆</span><span class="v37-hub-copy"><b>숨은 곡 발굴</b><small>조회수 아래 묻힌 반응 좋은 곡 찾기</small></span><span class="v37-hub-arrow">›</span></button>'+
       '<button class="v37-hub-card" type="button" data-v37-open="guide"><span class="v37-hub-icon">✦</span><span class="v37-hub-copy"><b>노래 추천</b><small>입문부터 깊은 발굴까지 조건을 섞어 추천</small></span><span class="v37-hub-arrow">›</span></button>'+
       '<button class="v37-hub-card" type="button" data-v37-open="taste"><span class="v37-hub-icon">♡</span><span class="v37-hub-copy"><b>내 취향 추천</b><small>분위기·장르·보컬·시대 조건으로 추천</small></span><span class="v37-hub-arrow">›</span></button>'+
-      '<button class="v37-hub-card" type="button" data-v37-open="detective"><span class="v37-hub-icon">?</span><span class="v37-hub-copy"><b>기억 복원 탐정</b><small>가사·PV·시기 같은 기억으로 잊은 곡 찾기</small></span><span class="v37-hub-arrow">›</span></button>'+
-      '<button class="v37-hub-card" type="button" data-v37-advanced="producer"><span class="v37-hub-icon">P</span><span class="v37-hub-copy"><b>프로듀서 허브</b><small>필요할 때만 고급 모듈을 불러옵니다</small></span><span class="v37-hub-arrow">›</span></button>'+
+      '<button class="v37-hub-card" type="button" data-v37-open="universe29"><span class="v37-hub-icon">✺</span><span class="v37-hub-copy"><b>보카로 우주</b><small>한 곡을 중심으로 비슷한 곡 연결</small></span><span class="v37-hub-arrow">›</span></button>'+
+      '<button class="v37-hub-card" type="button" data-v37-advanced="producer"><span class="v37-hub-icon">P</span><span class="v37-hub-copy"><b>프로듀서 허브</b><small>프로듀서별 탐색과 팔로우</small></span><span class="v37-hub-arrow">›</span></button>'+
+      '<button class="v37-hub-card" type="button" data-v37-open="settings29"><span class="v37-hub-icon">⚙</span><span class="v37-hub-copy"><b>설정</b><small>Worker 연결과 기술 설정</small></span><span class="v37-hub-arrow">›</span></button>'+
     '</div><div class="v37-hub-status" id="v37HubStatus">탐색 메뉴는 즉시 사용할 수 있습니다.</div>';
   body.prepend(v);
   return v
@@ -5534,7 +5583,7 @@ function dock(){
       document.getElementById("v37Home")?.scrollIntoView({block:"start"});return
     }
     if(v==="explore"){openHub37();return}
-    if(v==="search"){openToolsModal("detective");return}
+    if(v==="search"){ensureCorePages37();openToolsModal("search29");return}
     if(v==="library"){
       if(window.VSA332Library&&VSA332Library.open){VSA332Library.open();return}
       if(window.VSAOrganizer22&&VSAOrganizer22.openLibrary){VSAOrganizer22.openLibrary("saved");return}
@@ -5556,7 +5605,7 @@ function init(){
   var app=document.querySelector(".app");if(app)app.classList.remove("mobile-paged");
   var h=document.querySelector(".topbar .brand h1");if(h)h.textContent="Voca Support";
   var subh=document.querySelector(".topbar .brand .sub");if(subh)subh.textContent="추천 · 탐색 · 검색 · 보관 · 취향";
-  render();dock();ensureHub37();mountToolsPage37();
+  render();dock();ensureCorePages37();ensureHub37();mountToolsPage37();
   document.addEventListener("click",function(e){
     var t=e.target.closest("[data-v37-tab]");
     if(t){
@@ -5565,7 +5614,11 @@ function init(){
       active=v;localStorage.setItem(AK,v);render();return
     }
     var hubOpen=e.target.closest("[data-v37-open]");
-    if(hubOpen){openToolsModal(hubOpen.dataset.v37Open);return}
+    if(hubOpen){ensureCorePages37();openToolsModal(hubOpen.dataset.v37Open);return}
+    var tierOpen=e.target.closest("#iceberg .tier,#songsBtn");
+    if(tierOpen){setTimeout(function(){ensureCorePages37();openToolsModal("search29")},40)}
+    var tagIce=e.target.closest("#tagIcebergBtn");
+    if(tagIce){setTimeout(function(){ensureCorePages37();openToolsModal("archive29")},40)}
     var adv=e.target.closest("[data-v37-advanced]");
     if(adv&&adv.dataset.v37Advanced==="producer"){openProducer37();return}
     if(e.target.id==="v37Refresh"||e.target.closest("[data-v37-refresh]")){refresh();return}
@@ -5606,15 +5659,15 @@ async function seq(list){for(var i=0;i<list.length;i++)await load(list[i]);retur
 var groups={};
 function ensure(name){
   if(groups[name])return groups[name];
-  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=37.2.1","./detective-v12.js?v=37.2.1","./detective-v13.js?v=37.2.1","./detective-v14.js?v=37.2.1","./detective-v16.js?v=37.2.1"]);
-  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=37.2.1","./smart-v23.js?v=37.2.1","./playlist-v24.js?v=37.2.1"]);
-  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=37.2.1");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=37.2.1");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=37.2.1");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=37.2.1");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=37.2.1");
+  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=37.3.0","./detective-v12.js?v=37.3.0","./detective-v13.js?v=37.3.0","./detective-v14.js?v=37.3.0","./detective-v16.js?v=37.3.0"]);
+  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=37.3.0","./smart-v23.js?v=37.3.0","./playlist-v24.js?v=37.3.0"]);
+  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=37.3.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=37.3.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=37.3.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=37.3.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=37.3.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
-    return seq(["./voca-app-v33.js?v=37.2.1","./voca-app-v33-1.js?v=37.2.1","./voca-app-v33-2.js?v=37.2.1","./voca-app-v33-3.js?v=37.2.1"]);
+    return seq(["./voca-app-v33.js?v=37.3.0","./voca-app-v33-1.js?v=37.3.0","./voca-app-v33-2.js?v=37.3.0","./voca-app-v33-3.js?v=37.3.0"]);
   });
   else groups[name]=Promise.resolve(false);
   groups[name]=Promise.resolve(groups[name]).then(function(v){
