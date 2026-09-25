@@ -224,7 +224,8 @@ async function fetchTag23(term, minViews, maxViews, sort){
       numericFilters:filters,
       extraExactTag:term
     });
-    return data.data || [];
+    const rows = data.data || [];
+    return window.VSA37AdultFilterRows ? window.VSA37AdultFilterRows(rows,"smart_tag").rows : rows;
   }catch(e){
     return [];
   }
@@ -243,7 +244,8 @@ async function fetchBroad23(minViews, maxViews, sort){
       applyTier:false,
       numericFilters:filters
     });
-    return data.data || [];
+    const rows = data.data || [];
+    return window.VSA37AdultFilterRows ? window.VSA37AdultFilterRows(rows,"smart_broad").rows : rows;
   }catch(e){
     return [];
   }
@@ -380,6 +382,7 @@ async function generateMix23(reroll){
       songs = songs.filter(function(song){
         return !(org.library && org.library[song.contentId] && org.library[song.contentId].status === "heard");
       });
+      if(window.VSA37AdultFilterRows) songs = window.VSA37AdultFilterRows(songs,"smart_mix").rows;
 
       mixPool = songs.map(function(song){
         return {song:song, score:scoreSong23(song, profile, mode, terms)};
