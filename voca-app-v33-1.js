@@ -118,6 +118,7 @@ function observeHome(){
   var root=document.getElementById("v28Home");if(!root)return;
   new MutationObserver(function(){requestAnimationFrame(installHomeTabs)}).observe(root,{childList:true});
 }
-function boot(){addStyle();ensureProducerView();buildPresetSheet();renderPresets();installHomeTabs();observeHome();bind();window.VSAV33ProducerDetail=openProducer;setTimeout(function(){renderPresets();installHomeTabs()},500)}
-if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
+var __booted=false;
+function boot(){if(__booted)return;__booted=true;addStyle();ensureProducerView();buildPresetSheet();renderPresets();installHomeTabs();observeHome();bind();window.VSAV33ProducerDetail=openProducer;setTimeout(function(){renderPresets();installHomeTabs()},500)}
+if(document.body)boot();else if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
 })();
