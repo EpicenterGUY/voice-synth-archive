@@ -1066,43 +1066,49 @@ body.v37-ready .v36-dock{display:none!important}
 
 .v37-dock{position:fixed;left:10px;right:10px;bottom:max(8px,env(safe-area-inset-bottom));z-index:23000;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px;padding:5px;border:1px solid #28555b;border-radius:18px;background:rgba(5,22,27,.97);box-shadow:0 18px 50px #000c;backdrop-filter:none}
 .v37-dock button{min-width:0;min-height:49px;border:0;border-radius:13px;background:transparent;color:#789d99;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:7px;font-weight:850}.v37-dock button.active{background:#103139;color:#effffc}.v37-dock i{font-style:normal;font-size:15px;line-height:1}
-/* v37.1: 기능 화면도 홈과 같은 앱 셸 안에서 보이게 한다. */
+/* v37.2: 기능 화면을 오버레이가 아닌 실제 앱 페이지로 사용 */
 body.v331-player-open .v37-dock{display:none!important}
+body.v37-ready.tools-open{
+  overflow-y:auto!important;overflow-x:hidden!important;
+  touch-action:pan-y!important;overscroll-behavior-y:auto!important
+}
 body.v37-ready.tools-open .v37-dock{display:grid!important}
+body.v37-ready.tools-open #v37Home{display:none!important}
 body.v37-ready .tools-modal{
-  position:fixed!important;top:52px!important;right:0!important;
-  bottom:calc(70px + env(safe-area-inset-bottom))!important;left:0!important;
-  z-index:170!important;display:block;padding:0!important;
-  background:#041115!important;overflow:hidden!important
+  position:static!important;inset:auto!important;z-index:auto!important;
+  display:block!important;width:100%!important;min-height:calc(100dvh - 58px)!important;
+  padding:0!important;margin:0!important;background:#041115!important;
+  overflow:visible!important
 }
 body.v37-ready .tools-modal[hidden]{display:none!important}
 body.v37-ready .tools-backdrop,
 body.v37-ready .tools-header,
 body.v37-ready .tools-tabs{display:none!important}
 body.v37-ready .tools-shell{
-  width:min(1180px,100vw)!important;height:100%!important;max-height:none!important;
-  margin:0 auto!important;border:0!important;border-radius:0!important;
-  background:#041115!important;box-shadow:none!important;overflow:hidden!important
+  position:static!important;z-index:auto!important;
+  width:100%!important;height:auto!important;min-height:calc(100dvh - 58px)!important;
+  max-height:none!important;margin:0!important;border:0!important;border-radius:0!important;
+  background:#041115!important;box-shadow:none!important;overflow:visible!important
 }
 body.v37-ready .tools-body{
-  width:100%!important;height:100%!important;min-height:0!important;
-  padding:8px 10px 24px!important;box-sizing:border-box!important;
-  overflow-y:auto!important;overflow-x:hidden!important;
-  touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;
-  overscroll-behavior-y:contain!important
+  width:100%!important;height:auto!important;min-height:0!important;
+  padding:8px 2px calc(92px + env(safe-area-inset-bottom))!important;
+  box-sizing:border-box!important;overflow:visible!important;
+  touch-action:pan-y!important;-webkit-overflow-scrolling:auto!important;
+  overscroll-behavior:visible!important
 }
+body.v37-ready .tools-body>.tool-view{display:none!important}
 body.v37-ready .tools-body>.tool-view.active{
-  width:100%!important;max-width:1160px!important;min-width:0!important;
-  margin:0 auto!important;box-sizing:border-box!important
-}
-body.v37-ready .tools-body>.tool-view.active:not(.detective-panel){
-  height:auto!important;min-height:100%!important;overflow:visible!important
+  display:block!important;width:100%!important;max-width:1160px!important;
+  min-width:0!important;height:auto!important;min-height:0!important;
+  margin:0 auto!important;box-sizing:border-box!important;overflow:visible!important
 }
 body.v37-ready .tools-body>.panel{
   margin:0!important;border:0!important;border-radius:0!important;
   background:transparent!important;box-shadow:none!important
 }
 body.v37-ready .tools-body .panel-head{
+  display:flex!important;align-items:flex-start!important;
   margin:0 0 10px!important;padding:12px 2px 10px!important;
   border:0!important;border-bottom:1px solid #18393e!important;
   background:transparent!important
@@ -1121,10 +1127,44 @@ body.v37-ready .tools-body .panel-head .pill{
 body.v37-ready .tools-body :is(.recommend-prompt-box,.taste-builder,.discovery-controls,.gem-controls,.detective-controlbar){
   max-width:100%!important;min-width:0!important;box-sizing:border-box!important
 }
+
+/* old full-screen detective assumptions must not lock the new page */
+body.v37-ready .detective-panel{height:auto!important;min-height:0!important;overflow:visible!important}
+body.v37-ready .detective-controlbar{
+  height:auto!important;max-height:none!important;overflow:visible!important
+}
+body.v37-ready .detective-questionnaire{
+  height:auto!important;min-height:0!important;overflow:visible!important
+}
+body.v37-ready .detective-questionnaire .detective-section.mobile-active{
+  height:auto!important;min-height:0!important
+}
+body.v37-ready .detective-questionnaire .detective-section-body{
+  height:auto!important;max-height:none!important;overflow:visible!important
+}
+body.v37-ready .detective-results{
+  height:auto!important;max-height:none!important;overflow:visible!important
+}
+body.v37-ready .detective-sticky-actions{
+  position:sticky!important;bottom:calc(74px + env(safe-area-inset-bottom))!important;z-index:40!important
+}
+
+/* discovery/taste/gems keep natural document scroll */
+body.v37-ready .recommend-chips{max-height:none!important}
+body.v37-ready #tastePanel .taste-builder,
+body.v37-ready #guidePanel .recommend-prompt-box,
+body.v37-ready #gemPanel .recommend-prompt-box{
+  border:1px solid #18393e!important;border-radius:15px!important;background:#071b20!important
+}
+body.v37-ready #tastePanel .taste-chips,
+body.v37-ready #guidePanel .recommend-chips,
+body.v37-ready #gemPanel .gem-quick-chips{
+  width:100%!important;max-width:100%!important;box-sizing:border-box!important
+}
 body.v37-ready #gemPanel .gem-quick-chips{
   display:flex!important;flex-wrap:nowrap!important;gap:7px!important;
-  width:100%!important;max-width:100%!important;overflow-x:auto!important;
-  overflow-y:hidden!important;padding:2px 0 9px!important;scrollbar-width:none!important
+  overflow-x:auto!important;overflow-y:hidden!important;padding:2px 0 9px!important;
+  scrollbar-width:none!important
 }
 body.v37-ready #gemPanel .gem-quick-chips::-webkit-scrollbar{display:none!important}
 body.v37-ready #gemPanel .gem-quick-chips .taste-chip{flex:0 0 auto!important}
@@ -1133,28 +1173,64 @@ body.v37-ready #gemPanel .gem-controls-v20{
   gap:8px!important;padding:10px!important;border:1px solid #18393e!important;
   border-radius:15px!important;background:#071b20!important
 }
-body.v37-ready #gemPanel .recommend-prompt-box{
-  padding:10px!important;border:1px solid #18393e!important;border-radius:15px!important;
-  background:#071b20!important
-}
 body.v37-ready #gemPanel textarea,
 body.v37-ready #gemPanel input,
-body.v37-ready #gemPanel select{
+body.v37-ready #gemPanel select,
+body.v37-ready #tastePanel textarea,
+body.v37-ready #tastePanel input,
+body.v37-ready #tastePanel select{
   max-width:100%!important;min-width:0!important;box-sizing:border-box!important
 }
-body.v37-ready #gemPanel .gem-status{max-width:100%!important;min-width:0!important}
+body.v37-ready #gemPanel .gem-status,
 body.v37-ready #gemPanel .gem-grid{max-width:100%!important;min-width:0!important}
+
 @media(max-width:699px){
-  body.v37-ready .tools-modal{
-    top:52px!important;bottom:calc(70px + env(safe-area-inset-bottom))!important
-  }
-  body.v37-ready .tools-shell{width:100%!important;height:100%!important}
-  body.v37-ready .tools-body{padding:7px 10px 18px!important}
-  body.v37-ready .tools-body .panel-head{padding-top:9px!important}
+  body.v37-ready .tools-modal,
+  body.v37-ready .tools-shell{min-height:calc(100dvh - 54px)!important}
+  body.v37-ready .tools-body{padding:5px 0 calc(90px + env(safe-area-inset-bottom))!important}
+  body.v37-ready .tools-body .panel-head{padding:10px 2px!important}
   body.v37-ready .tools-body .panel-head h2{font-size:19px!important}
+  body.v37-ready .tools-body .panel-head .pill{font-size:7px!important}
+
+  body.v37-ready .detective-controlbar{
+    display:grid!important;grid-template-columns:1fr auto!important;
+    gap:6px!important;padding:8px!important;max-height:none!important
+  }
+  body.v37-ready .detective-clue-meter{grid-column:1/-1!important}
+  body.v37-ready .detective-questionnaire{
+    padding:7px 0!important;height:auto!important;overflow:visible!important
+  }
+  body.v37-ready .detective-questionnaire .detective-section.mobile-active{
+    display:block!important;height:auto!important;margin:0 0 8px!important
+  }
+  body.v37-ready .detective-questionnaire .detective-section.mobile-active .detective-section-body{
+    display:block!important;height:auto!important;overflow:visible!important
+  }
+  body.v37-ready .detective-mobile-steps{
+    position:sticky!important;top:53px!important;z-index:35!important;
+    background:#07171c!important;border:1px solid #18393e!important;border-radius:12px!important;
+    margin:0 0 8px!important;padding:5px!important
+  }
+  body.v37-ready .detective-results{padding:0 0 12px!important}
+  body.v37-ready .detective-empty{min-height:180px!important}
+
+  body.v37-ready #tastePanel .taste-main-v20{grid-template-columns:1fr!important}
+  body.v37-ready #tastePanel .taste-selects-v20{grid-template-columns:1fr 1fr!important}
+  body.v37-ready #tastePanel .taste-selects-v20 .control:nth-last-child(-n+2){grid-column:1/-1!important}
+  body.v37-ready #tastePanel .taste-chips{
+    display:flex!important;flex-wrap:wrap!important;overflow:visible!important;gap:6px!important
+  }
+  body.v37-ready #guidePanel .recommend-chips{
+    display:flex!important;flex-wrap:wrap!important;overflow:visible!important;gap:6px!important
+  }
 }
-@media(max-width:340px){
-  body.v37-ready #gemPanel .gem-controls-v20{grid-template-columns:1fr!important}
+@media(max-width:420px){
+  body.v37-ready #tastePanel .taste-selects-v20,
+  body.v37-ready #gemPanel .gem-controls-v20,
+  body.v37-ready #guidePanel .discovery-controls-v20{grid-template-columns:1fr!important}
+  body.v37-ready #tastePanel .taste-selects-v20 .control,
+  body.v37-ready #gemPanel .gem-controls-v20 .control,
+  body.v37-ready #guidePanel .discovery-controls-v20 .control{grid-column:1!important}
 }
 body.v37-ready>.app.mobile-paged{min-height:100dvh!important;height:auto!important;overflow:visible!important}
 body.v37-ready>.app.mobile-paged #v37Home{display:block!important}
@@ -1388,12 +1464,12 @@ body.v37-ready>.app.mobile-paged>.main,body.v37-ready>.app.mobile-paged>.summary
     </details>
   </section>
 
-  <div class="footer">v37.1.1 · 탐색 멈춤 수정 · 즉시 전환 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v37.2.0 · 기능 화면 완전 페이지화 · 라우팅 안정화 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
   <div class="tools-backdrop" id="toolsBackdrop"></div>
-  <div class="tools-shell" role="dialog" aria-modal="true" aria-label="음성합성곡 탐색 도구">
+  <div class="tools-shell" role="region" aria-label="음성합성곡 탐색 페이지">
     <div class="tools-header">
       <div>
         <div class="tools-title">음성합성곡 탐색 도구</div>
@@ -5033,15 +5109,35 @@ function openUniverseById(id){
 function setToolView(name){
   document.querySelectorAll("#toolsTabs button").forEach(b=>b.classList.toggle("active",b.dataset.tool===name));
   document.querySelectorAll("#toolsModal .tool-view").forEach(v=>v.classList.toggle("active",v.dataset.toolView===name));
-  const body=$("#toolsModal .tools-body");
-  if(body)body.scrollTop=0;
 }
-function openToolsModal(view="studioHome"){
+function mountToolsPage37(){
+  const modal=$("#toolsModal"), app=document.querySelector(".app"), top=app?.querySelector(":scope > .topbar");
+  if(!modal||!app)return false;
+  if(modal.parentElement!==app){
+    if(top)top.insertAdjacentElement("afterend",modal);
+    else app.prepend(modal);
+  }
+  modal.dataset.v37Mounted="1";
+  return true;
+}
+function dockForToolView37(view){
+  if(view==="taste"||view==="tasteHub33"||view==="smart23"||view==="playlist24")return "taste";
+  if(view==="detective"||view==="searchHub33"||view==="search29")return "search";
+  if(view==="libraryHub33"||view==="saved"||view==="history")return "library";
+  if(view==="hub37"||view==="gems"||view==="guide"||view==="explore33"||view==="producerDetail33"||view==="archive29"||view==="universe29")return "explore";
+  return null;
+}
+function openToolsModal(view="hub37"){
   const modal=$("#toolsModal");
-  if(!modal)return;
+  if(!modal||!mountToolsPage37())return;
   modal.hidden=false;
   document.body.classList.add("tools-open");
+  document.body.style.removeProperty("overflow");
+  document.documentElement.style.removeProperty("overflow");
   setToolView(view);
+  const dockView=dockForToolView37(view);
+  if(dockView&&typeof setDock==="function")setDock(dockView);
+  window.scrollTo({top:0,behavior:"auto"});
 }
 function closeToolsModal(){
   const modal=$("#toolsModal");
@@ -5050,9 +5146,11 @@ function closeToolsModal(){
   document.body.classList.remove("tools-open");
   document.body.style.removeProperty("overflow");
   document.documentElement.style.removeProperty("overflow");
+  if(typeof setDock==="function")setDock("home");
+  window.scrollTo({top:0,behavior:"auto"});
 }
 function setupToolsModal(){
-  $("#openToolsBtn")?.addEventListener("click",()=>openToolsModal("studioHome"));
+  $("#openToolsBtn")?.addEventListener("click",()=>openToolsModal("hub37"));
   $("#closeToolsBtn")?.addEventListener("click",closeToolsModal);
   $("#toolsBackdrop")?.addEventListener("click",closeToolsModal);
   document.querySelectorAll("#toolsTabs button").forEach(btn=>{
@@ -5137,7 +5235,7 @@ function setupMobileSectionNav(){
   });
   document.querySelectorAll("#mobileSectionNav button").forEach(btn=>{
     btn.addEventListener("click",()=>{
-      if(btn.dataset.action==="tools"){openToolsModal("studioHome");return;}
+      if(btn.dataset.action==="tools"){openToolsModal("hub37");return;}
       const target=document.getElementById(btn.dataset.target);
       if(target) target.scrollIntoView({behavior:"smooth",block:"start"});
     });
@@ -5331,7 +5429,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="37.1.1",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
+var VER="37.2.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -5429,7 +5527,7 @@ function init(){
   var app=document.querySelector(".app");if(app)app.classList.remove("mobile-paged");
   var h=document.querySelector(".topbar .brand h1");if(h)h.textContent="Voca Support";
   var subh=document.querySelector(".topbar .brand .sub");if(subh)subh.textContent="추천 · 탐색 · 검색 · 보관 · 취향";
-  render();dock();ensureHub37();
+  render();dock();ensureHub37();mountToolsPage37();
   document.addEventListener("click",function(e){
     var t=e.target.closest("[data-v37-tab]");
     if(t){
@@ -5485,7 +5583,7 @@ function ensure(name){
   else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=36.1.0");
   else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=28.1.0");
   else if(name==="player")groups[name]=load("./nico-player-v32.js?v=36.1.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=37.1.1");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=37.2.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
     return seq(["./voca-app-v33.js?v=36.1.0","./voca-app-v33-1.js?v=36.1.0","./voca-app-v33-2.js?v=36.1.0","./voca-app-v33-3.js?v=37.0.1"]);
   });
