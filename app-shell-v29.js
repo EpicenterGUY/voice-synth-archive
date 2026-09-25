@@ -203,7 +203,8 @@ function ensureViews(){
   compactMode();
 }
 
-function boot(){
+var __booted=false;
+function boot(){if(__booted)return;__booted=true;
   addStyle();
   ensureViews();
   setTimeout(ensureViews,150);
@@ -211,5 +212,5 @@ function boot(){
   window.addEventListener("resize",function(){requestAnimationFrame(compactMode)},{passive:true});
   if(window.visualViewport)window.visualViewport.addEventListener("resize",function(){requestAnimationFrame(compactMode)},{passive:true});
 }
-if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
+if(document.body)boot();else if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
 })();
