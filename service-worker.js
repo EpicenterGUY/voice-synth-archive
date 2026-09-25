@@ -1,36 +1,12 @@
-const SW_VERSION="34.0.1"
+const SW_VERSION="35.0.0"
 const CACHE_NAME="voice-synth-archive-shell-"+SW_VERSION;
 const SHELL=[
   "./",
   "./index.html",
   "./manifest.webmanifest",
-  "./changelog.json",
   "./icons/app-icon.svg",
-  "./icons/app-icon-maskable.svg",
-  "./detective-v11.js?v=11.5",
-  "./detective-v12.js?v=12.0",
-  "./detective-v13.js?v=13.0",
-  "./detective-v14.js?v=14.0",
-  "./detective-v16.js?v=19.0",
-  "./discovery-v20.js?v=20.0",
-  "./organizer-v22.js?v=32.0.0",
-  "./smart-v23.js?v=23.0.0",
-  "./playlist-v24.js?v=24.0.0",
-  "./studio-ui-v25.js?v=31.2.0",
-  "./main-ui-v26.js?v=26.0.1",
-  "./pwa-v21.js?v=34.0.1",
-  "./responsive-ui-v27.js?v=27.0.0",
-  "./vocalo-home-v28.js?v=34.0.1",
-  "./universe-search-v28.js?v=28.1.0",
-  "./app-shell-v29.js?v=34.0.0",
-  "./adaptive-ui-v31.js?v=31.2.0",
-  "./nico-player-v32.js?v=33.2.0",
-  "./voca-app-v33.js?v=34.0.0",
-  "./voca-app-v33-1.js?v=34.0.0",
-  "./voca-app-v33-2.js?v=34.0.0",
-  "./voca-app-v33-3.js?v=34.0.0",
-  "./voca-shell-v34.js?v=34.0.0"
-];
+  "./icons/app-icon-maskable.svg"
+]
 
 self.addEventListener("install",event=>{
   event.waitUntil((async()=>{
