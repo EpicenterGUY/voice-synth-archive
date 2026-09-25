@@ -1773,6 +1773,22 @@ body.v37-ready :is(.recommend-prompt-box,.taste-builder,.discovery-controls,.gem
  .v37-hub-grid[data-kind="find"]{grid-template-columns:repeat(2,minmax(0,1fr))!important}.v37-hub-grid[data-kind="discover"],.v37-hub-grid[data-kind="data"]{grid-template-columns:repeat(3,minmax(0,1fr))!important}
 }
 @media(min-width:1500px){.v37-dock{left:30px!important;width:100px!important}body.v37-ready>.app{margin-left:158px!important;width:calc(100% - 194px)!important}body.v37-ready .tools-modal{margin-left:158px!important;width:calc(100% - 158px)!important}}
+</style><style id="v382UniverseAndRank">
+/* Native option popup fallback: avoid white-on-white items on dark theme. */
+body.v37-ready select option,body.v37-ready select optgroup{background:#0b252c!important;color:#eaf9f6!important}
+.universe-density-control{display:grid;gap:5px;min-width:250px}
+.universe-density-control>span{font-size:8px;font-weight:850;color:#8fb2ae}
+.universe-density-segments{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:4px;border:1px solid rgba(117,210,201,.2);border-radius:12px;background:#09242a}
+.universe-density-segments button{min-width:0;min-height:34px;border:1px solid transparent;border-radius:9px;background:transparent;color:#83a7a3;font-size:8px;font-weight:900;white-space:nowrap}
+.universe-density-segments button.active{background:linear-gradient(135deg,rgba(79,186,177,.38),rgba(105,119,211,.34));border-color:rgba(117,222,211,.38);color:#effffb;box-shadow:0 4px 12px rgba(0,8,11,.14)}
+.v37-rank-persist{min-height:40px;padding:6px 9px;border:1px solid rgba(121,206,199,.24);border-radius:10px;background:#08242a;display:flex;flex-direction:column;justify-content:center}
+.v37-rank-persist small{font-size:7px;color:#759a96}.v37-rank-persist b{margin-top:2px;font-size:9px;color:#dff6f2}
+@media(max-width:699px){
+ .universe-head-actions{grid-template-columns:1fr!important}
+ .universe-density-control{grid-column:1/-1;min-width:0}
+ .universe-density-segments button{min-height:39px;font-size:9px}
+ .v37-rank-persist{min-height:48px}
+}
 </style></head>
 <body>
 <div class="app">
@@ -1928,11 +1944,21 @@ body.v37-ready :is(.recommend-prompt-box,.taste-builder,.discovery-controls,.gem
           <option value="20" selected>20곡</option>
           <option value="32">32곡</option>
         </select>
-        <select id="universeDensity" aria-label="연결 밀도">
-          <option value="minimal" selected>간단 연결</option>
-          <option value="balanced">보통 연결</option>
-          <option value="dense">촘촘 연결</option>
-        </select>
+        <div class="universe-density-control" aria-label="연결 밀도">
+          <span>연결 밀도</span>
+          <div class="universe-density-segments" role="radiogroup" aria-label="우주 연결 밀도">
+            <button type="button" class="active" data-universe-density="minimal" aria-pressed="true">간단</button>
+            <button type="button" data-universe-density="balanced" aria-pressed="false">보통</button>
+            <button type="button" data-universe-density="dense" aria-pressed="false">촘촘</button>
+            <button type="button" data-universe-density="very_dense" aria-pressed="false">매우 촘촘</button>
+          </div>
+          <select id="universeDensity" aria-hidden="true" tabindex="-1" hidden>
+            <option value="minimal" selected>간단 연결</option>
+            <option value="balanced">보통 연결</option>
+            <option value="dense">촘촘 연결</option>
+            <option value="very_dense">매우 촘촘 연결</option>
+          </select>
+        </div>
         <button class="btn" id="rebuildUniverseBtn" disabled>우주 다시 만들기</button>
       </div>
     </div>
@@ -1983,7 +2009,7 @@ body.v37-ready :is(.recommend-prompt-box,.taste-builder,.discovery-controls,.gem
     </details>
   </section>
 
-  <div class="footer">v38.1.0 · VocaDive 브랜딩 · 탐색 재배치 · PC 레일 수정 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v38.2.0 · 순위 자동복원 · 우주 검색 · 밀도 UI 수정 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -5348,6 +5374,7 @@ function weightedTagSimilarity(a,b){
 
 function universeDensityConfig(){
   const mode=$("#universeDensity")?.value || "minimal";
+  if(mode==="very_dense") return {mode, maxNeighborLinksPerNode:5, similarityThreshold:0.22, globalCap:150};
   if(mode==="dense") return {mode, maxNeighborLinksPerNode:3, similarityThreshold:0.30, globalCap:80};
   if(mode==="balanced") return {mode, maxNeighborLinksPerNode:2, similarityThreshold:0.38, globalCap:36};
   return {mode, maxNeighborLinksPerNode:1, similarityThreshold:0.48, globalCap:14};
@@ -5905,7 +5932,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:"38.1.0",
+    version:"38.2.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -6410,23 +6437,54 @@ function buildVocalRankRows37(family,songs,registry){
   });
   return {rows:vals,matchedSongs:matchedSongIds.size,unmatchedSongs:unmatched.length}
 }
+const VOCAL_RANK_LAST_FAMILY_KEY37="vsa37VocalRankLastFamily";
+function vocalRankCacheKey37(family){return "vsa37VocalCensus:"+String(family||"combined")+":v3"}
+function vocalRankAgeText37(at){
+  const ms=Math.max(0,Date.now()-(+at||0));
+  if(ms<60000)return "방금";
+  if(ms<3600000)return Math.floor(ms/60000)+"분 전";
+  if(ms<86400000)return Math.floor(ms/3600000)+"시간 전";
+  return Math.floor(ms/86400000)+"일 전"
+}
+function readSavedVocalRank37(family){
+  try{
+    const c=JSON.parse(localStorage.getItem(vocalRankCacheKey37(family))||"null");
+    return c&&Array.isArray(c.rows)?c:null
+  }catch(_){return null}
+}
+function loadSavedVocalRank37(family){
+  const cached=readSavedVocalRank37(family),status=document.getElementById("v37VocalRankStatus"),persist=document.getElementById("v37VocalRankPersist");
+  if(!cached)return false;
+  state.vocalRankRows=cached.rows;
+  state.vocalRankMeta=cached.meta||{};
+  renderVocalRank37();
+  const age=vocalRankAgeText37(cached.at||state.vocalRankMeta.at);
+  if(status)status.textContent="저장된 전수집계 자동 복원 · 마지막 갱신 "+age+" · 원곡 "+fmt(state.vocalRankMeta.songs||0)+"곡 · 필요할 때만 갱신하세요.";
+  if(persist)persist.textContent="자동 복원 · "+age;
+  return true
+}
+function restoreVocalRank37(){
+  const sel=document.getElementById("v37VocalRankFamily"),status=document.getElementById("v37VocalRankStatus"),persist=document.getElementById("v37VocalRankPersist");
+  if(!sel)return;
+  let family=localStorage.getItem(VOCAL_RANK_LAST_FAMILY_KEY37)||sel.value||"combined";
+  if(![...sel.options].some(function(o){return o.value===family}))family=sel.value||"combined";
+  sel.value=family;
+  if(!loadSavedVocalRank37(family)){
+    state.vocalRankRows=[];state.vocalRankMeta=null;renderVocalRank37();
+    if(status)status.textContent="이 순위표의 저장 데이터가 없습니다. 처음 한 번만 전곡 데이터를 받아주세요.";
+    if(persist)persist.textContent="저장 데이터 없음"
+  }
+}
 async function runVocalRank37(){
   if(state.vocalRankBusy)return;
   if(!relayBase()){toast("먼저 Worker를 연결하세요.");return}
   const family=document.getElementById("v37VocalRankFamily")?.value||"combined";
-  const mode=document.getElementById("v37VocalRankDepth")?.value||"cache";
   const status=document.getElementById("v37VocalRankStatus"),btn=document.getElementById("v37VocalRankRun");
   state.vocalRankBusy=true;if(btn)btn.disabled=true;
+  localStorage.setItem(VOCAL_RANK_LAST_FAMILY_KEY37,family);
   try{
-    const cacheKey="vsa37VocalCensus:"+family+":v3";
-    let cached=null;try{cached=JSON.parse(localStorage.getItem(cacheKey)||"null")}catch(_){}
-    if(mode!=="refresh"&&cached&&Date.now()-cached.at<86400000&&Array.isArray(cached.rows)){
-      state.vocalRankRows=cached.rows;state.vocalRankMeta=cached.meta||{};
-      renderVocalRank37();
-      if(status)status.textContent="24시간 전수집계 캐시 사용 · 원곡 "+fmt(state.vocalRankMeta.songs||0)+"곡 · 음원 "+fmt(state.vocalRankRows.length)+"개";
-      return
-    }
-    if(status)status.textContent="VocaDB에서 실제 음원명 전체 목록을 불러오는 중…";
+    const cacheKey=vocalRankCacheKey37(family);
+    if(status)status.textContent="새 전곡 데이터로 갱신 중… VocaDB 실제 음원 목록을 불러옵니다.";
     const registry=await loadCanonicalVoicebanks37(family,status);
     if(status)status.textContent="실제 음원 "+fmt(registry.length)+"개 확인 · 니코동 원곡 전수집계 시작…";
     const songs=await fetchVocalRankCorpus37(family,status);
@@ -6436,7 +6494,8 @@ async function runVocalRank37(){
     state.vocalRankMeta={family:family,songs:songs.length,matchedSongs:built.matchedSongs,unmatchedSongs:built.unmatchedSongs,voicebanks:registry.length,at:Date.now(),complete:true};
     try{localStorage.setItem(cacheKey,JSON.stringify({at:Date.now(),rows:state.vocalRankRows,meta:state.vocalRankMeta}))}catch(_){}
     renderVocalRank37();
-    if(status)status.textContent="전수집계 완료 · 니코동 원곡 "+fmt(songs.length)+"곡 전체 · 음원 연결 "+fmt(built.matchedSongs)+"곡 · 미분류 "+fmt(built.unmatchedSongs)+"곡 · 실제 음원 "+fmt(registry.length)+"개";
+    const persist=document.getElementById("v37VocalRankPersist");if(persist)persist.textContent="자동 복원 · 방금";
+    if(status)status.textContent="전수집계 완료 · 기기에 자동 저장됨 · 니코동 원곡 "+fmt(songs.length)+"곡 전체 · 음원 연결 "+fmt(built.matchedSongs)+"곡 · 미분류 "+fmt(built.unmatchedSongs)+"곡 · 실제 음원 "+fmt(registry.length)+"개";
   }catch(e){
     if(status)status.textContent="전수집계 실패: "+String(e?.message||e)
   }finally{state.vocalRankBusy=false;if(btn)btn.disabled=false}
@@ -6460,12 +6519,17 @@ function ensureVocalRank37(page){
   const body=document.createElement("div");body.id="v37VocalRankBody";
   body.innerHTML='<div class="v37-vocal-rank-note"><b>태그명이 아니라 VocaDB의 실제 음원 엔트리명만 표시합니다.</b> 파생 버전·별칭은 VocaDB base voicebank ID로 합쳐 중복을 줄입니다. 순위 계산에는 상위 몇백 곡 표본이 아니라 선택 계열의 니코동 원곡 검색 결과를 마지막 페이지까지 전수 수집합니다. UTAU는 <b>누적 조회 30% + 반응률 32% + 전곡 수 25% + 최고 히트 13%</b>, 기타는 <b>조회 34% + 반응률 28% + 전곡 수 22% + 최고 히트 16%</b>입니다.</div>'+
     '<div class="v37-vocal-rank-controls"><label>순위표<select id="v37VocalRankFamily"><option value="combined">음성합성 통합</option><option value="vocaloid">VOCALOID 전체</option><option value="utau">UTAU 전체</option><option value="synthv">Synthesizer V</option><option value="cevio">CeVIO</option><option value="voisona">VoiSona</option><option value="neutrino">NEUTRINO</option><option value="voicevox">VOICEVOX</option></select></label>'+
-    '<label>전수집계<select id="v37VocalRankDepth"><option value="cache">24시간 캐시 우선</option><option value="refresh">강제 전곡 재집계</option></select></label>'+
-    '<label>음원 검색<input id="v37VocalRankSearch" placeholder="初音ミク, 重音テト…"></label><button type="button" id="v37VocalRankRun">전곡 순위 생성 / 갱신</button></div>'+
-    '<div class="v37-vocal-rank-summary" id="v37VocalRankSummary"></div><div class="v37-producer-status" id="v37VocalRankStatus">첫 전수집계는 계열과 곡 수에 따라 시간이 걸립니다. 완료 뒤에는 24시간 캐시를 사용합니다.</div><div class="v37-vocal-rank-list" id="v37VocalRankList"></div>';
+    '<div class="v37-rank-persist"><small>저장 상태</small><b id="v37VocalRankPersist">확인 중…</b></div>'+
+    '<label>음원 검색<input id="v37VocalRankSearch" placeholder="初音ミク, 重音テト…"></label><button type="button" id="v37VocalRankRun">전곡 데이터 갱신</button></div>'+
+    '<div class="v37-vocal-rank-summary" id="v37VocalRankSummary"></div><div class="v37-producer-status" id="v37VocalRankStatus">저장된 전수집계가 있으면 페이지 진입 즉시 자동 복원합니다.</div><div class="v37-vocal-rank-list" id="v37VocalRankList"></div>';
   page.appendChild(body);
   document.getElementById("v37VocalRankRun").onclick=runVocalRank37;
-  document.getElementById("v37VocalRankSearch").addEventListener("input",renderVocalRank37)
+  document.getElementById("v37VocalRankSearch").addEventListener("input",renderVocalRank37);
+  document.getElementById("v37VocalRankFamily").addEventListener("change",function(){
+    localStorage.setItem(VOCAL_RANK_LAST_FAMILY_KEY37,this.value);
+    restoreVocalRank37()
+  });
+  restoreVocalRank37()
 }
 
 function icebergReactionScore37(song){
@@ -6675,6 +6739,7 @@ function openUniversePage37(song,force){
   if(!song)return;
   ensureCorePages37();
   openToolsModal("universe29");
+  if(window.VSAEnsureFeatures)window.VSAEnsureFeatures("universe");
   requestAnimationFrame(function(){
     try{buildUniverse(song,!!force)}catch(e){
       const empty=document.getElementById("universeEmpty");
@@ -6752,6 +6817,7 @@ function openToolsModal(view="hub37"){
   }else setToolView(view);
   const featureId=featureIdForRoute37(view);if(featureId)markFeatureUse37(featureId);
   if(view==="diagnostics37")setTimeout(renderDiagnostics37,0);
+  if(view==="universe29"&&window.VSAEnsureFeatures)window.VSAEnsureFeatures("universe");
   const dockView=dockForToolView37(view);
   if(dockView&&typeof setDock==="function")setDock(dockView);
   window.scrollTo({top:0,behavior:"auto"});
@@ -6990,6 +7056,18 @@ $("#gemApplyYear").addEventListener("change",resetGemPool);
 $("#rebuildUniverseBtn").onclick=()=>{if(state.universeCenter)buildUniverse(state.universeCenter,true)};
 $("#universeSize").addEventListener("change",()=>{if(state.universeCenter)buildUniverse(state.universeCenter,true)});
 $("#universeDensity").addEventListener("change",()=>{if(state.universeCenter)buildUniverse(state.universeCenter,true)});
+document.querySelectorAll("[data-universe-density]").forEach(function(btn){
+  btn.addEventListener("click",function(){
+    const mode=btn.dataset.universeDensity,sel=$("#universeDensity");
+    if(!sel||sel.value===mode)return;
+    sel.value=mode;
+    document.querySelectorAll("[data-universe-density]").forEach(function(b){
+      const active=b.dataset.universeDensity===mode;
+      b.classList.toggle("active",active);b.setAttribute("aria-pressed",active?"true":"false")
+    });
+    sel.dispatchEvent(new Event("change",{bubbles:true}))
+  })
+});
 $("#refreshBtn").onclick=refreshStats;
 $("#songsBtn").onclick=()=>loadSongs(true);
 $("#apiSearchBtn").onclick=()=>freeSearch(true);
@@ -7049,7 +7127,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="38.1.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
+var VER="38.2.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -7114,6 +7192,11 @@ function openFeatureById37(id){
   ensureCorePages37();
   if(id==="detective"){openDetective37();return}
   if(id==="producer"){openProducer37();return}
+  if(id==="universe"){
+    openToolsModal(f.route);
+    if(window.VSAEnsureFeatures)window.VSAEnsureFeatures("universe");
+    return
+  }
   if(id==="library"){
     const btn=document.querySelector('.v37-dock button[data-v37="library"]');if(btn)btn.click();return
   }
@@ -7320,15 +7403,15 @@ var groups={};
 function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
-  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=38.1.0","./detective-v12.js?v=38.1.0","./detective-v13.js?v=38.1.0","./detective-v14.js?v=38.1.0","./detective-v16.js?v=38.1.0"]);
-  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=38.1.0","./smart-v23.js?v=38.1.0","./playlist-v24.js?v=38.1.0"]);
-  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=38.1.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=38.1.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=38.1.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=38.1.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=38.1.0");
+  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=38.2.0","./detective-v12.js?v=38.2.0","./detective-v13.js?v=38.2.0","./detective-v14.js?v=38.2.0","./detective-v16.js?v=38.2.0"]);
+  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=38.2.0","./smart-v23.js?v=38.2.0","./playlist-v24.js?v=38.2.0"]);
+  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=38.2.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=38.2.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=38.2.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=38.2.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=38.2.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
-    return seq(["./voca-app-v33.js?v=38.1.0","./voca-app-v33-1.js?v=38.1.0","./voca-app-v33-2.js?v=38.1.0","./voca-app-v33-3.js?v=38.1.0"]);
+    return seq(["./voca-app-v33.js?v=38.2.0","./voca-app-v33-1.js?v=38.2.0","./voca-app-v33-2.js?v=38.2.0","./voca-app-v33-3.js?v=38.2.0"]);
   });
   else groups[name]=Promise.resolve(false);
   groups[name]=Promise.resolve(groups[name]).then(function(v){
