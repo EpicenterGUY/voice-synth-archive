@@ -1,4 +1,4 @@
-/* Voice Synth Archive Universe Search v28.1 */
+/* VocaDive Universe Search v28.2 */
 (function(){
 "use strict";
 var recentKey="vsa.universe.search.v28";
@@ -85,7 +85,10 @@ function merge(a,b){
   a.concat(b).forEach(function(song){
     if(song&&song.contentId&&!map.has(song.contentId))map.set(song.contentId,song);
   });
-  return Array.from(map.values()).slice(0,24);
+  var rows=Array.from(map.values());
+  try{if(window.VSA37DiscoveryOriginalRows)rows=window.VSA37DiscoveryOriginalRows(rows,"universe_search").rows}catch(e){}
+  try{if(window.VSA37AdultFilterRows)rows=window.VSA37AdultFilterRows(rows,"universe_search").rows}catch(e){}
+  return rows.slice(0,24);
 }
 function renderRecent(){
   var box=document.getElementById("universeRecent");
@@ -158,11 +161,11 @@ function addStyle(){
   var style=document.createElement("style");
   style.id="universeSearchStyle";
   style.textContent=[
-    ".universe-search{display:grid;grid-template-columns:minmax(0,.9fr) minmax(360px,1.1fr);gap:10px;padding:11px;border-top:1px solid #17383e;border-bottom:1px solid #17383e;background:linear-gradient(135deg,#081e23,#07161c)}",
+    ".universe-search{display:grid;grid-template-columns:minmax(0,.88fr) minmax(360px,1.12fr);gap:12px;margin:0 0 12px;padding:12px;border:1px solid rgba(113,209,200,.16);border-radius:16px;background:linear-gradient(145deg,rgba(15,49,57,.86),rgba(8,31,37,.86));box-shadow:0 10px 28px rgba(0,8,11,.12)}",
     ".us-main{min-width:0}.us-title b{display:block;font-size:12px}.us-title small{display:block;margin-top:2px;color:#769a97;font-size:8px}",
-    ".us-row{display:grid;grid-template-columns:minmax(0,1fr) 150px auto;gap:6px;margin-top:9px}.us-row input,.us-row select{min-width:0}.us-row button{min-height:42px;padding:0 14px;border:0;border-radius:11px;background:linear-gradient(135deg,#72e7dc,#78a8fb);color:#061316;font-size:9px;font-weight:950}",
+    ".us-row{display:grid;grid-template-columns:minmax(0,1fr) 160px auto;gap:7px;margin-top:9px}.us-row input,.us-row select{min-width:0;min-height:42px;border:1px solid rgba(121,206,199,.24);border-radius:11px;background:#08242a;color:#effbf9;padding:0 10px}.us-row select option{background:#0b252c;color:#eaf9f6}.us-row button{min-height:42px;padding:0 15px;border:0;border-radius:11px;background:linear-gradient(135deg,#72e7dc,#78a8fb);color:#061316;font-size:9px;font-weight:950}",
     ".us-recent{display:flex;gap:4px;align-items:center;flex-wrap:wrap;margin-top:7px;min-height:24px}.us-recent:before{content:'최근';font-size:7px;color:#547b78;margin-right:2px}.us-recent button{min-height:24px;border:1px solid #24484e;border-radius:999px;padding:0 7px;background:#0a262c;color:#8fb9b5;font-size:7px}.us-recent span{font-size:7px;color:#557875}.us-status{margin-top:5px;font-size:8px;color:#6f9491}",
-    ".us-results{display:grid;grid-template-columns:1fr 1fr;gap:5px;max-height:220px;overflow:auto;padding-right:2px}.us-result{min-width:0;display:grid;grid-template-columns:66px minmax(0,1fr) auto;gap:7px;align-items:center;padding:5px;border:1px solid #1f4147;border-radius:11px;background:#092127;color:#dff5f1;text-align:left}.us-result:hover{border-color:#4a7a7e;background:#0d2b31}.us-result img,.us-noimg{width:66px;aspect-ratio:16/9;object-fit:cover;border-radius:7px;background:#123037;display:grid;place-items:center}.us-copy{min-width:0}.us-copy b{display:block;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.us-copy small,.us-copy i{display:block;margin-top:2px;font-size:7px;color:#719492;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-style:normal}.us-result strong{font-size:7px;color:#75ded4;white-space:nowrap}.us-empty{grid-column:1/-1;min-height:90px;display:grid;place-items:center;text-align:center;color:#678b88;font-size:8px;border:1px dashed #24464c;border-radius:11px}",
+    ".us-results{display:grid;grid-template-columns:1fr 1fr;gap:6px;max-height:260px;overflow:auto;padding-right:2px}.us-result{min-width:0;display:grid;grid-template-columns:66px minmax(0,1fr) auto;gap:8px;align-items:center;padding:6px;border:1px solid rgba(112,205,197,.17);border-radius:12px;background:#0b2930;color:#dff5f1;text-align:left}.us-result:hover{border-color:rgba(111,225,213,.42);background:#10343b}.us-result img,.us-noimg{width:66px;aspect-ratio:16/9;object-fit:cover;border-radius:7px;background:#123037;display:grid;place-items:center}.us-copy{min-width:0}.us-copy b{display:block;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.us-copy small,.us-copy i{display:block;margin-top:2px;font-size:7px;color:#719492;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-style:normal}.us-result strong{font-size:7px;color:#75ded4;white-space:nowrap}.us-empty{grid-column:1/-1;min-height:90px;display:grid;place-items:center;text-align:center;color:#678b88;font-size:8px;border:1px dashed #24464c;border-radius:11px}",
     "@media(max-width:850px){.universe-search{grid-template-columns:1fr}.us-results{max-height:250px}}",
     "@media(max-width:699px){.universe-search{padding:8px;gap:8px}.us-row{grid-template-columns:1fr 1fr}.us-row input{grid-column:1/-1}.us-row select,.us-row button{min-height:38px}.us-results{grid-template-columns:1fr;max-height:280px}.us-result{grid-template-columns:62px minmax(0,1fr)}.us-result img,.us-noimg{width:62px}.us-result strong{grid-column:2;margin-top:-2px}.us-title small{font-size:7px}}"
   ].join("");
@@ -176,11 +179,11 @@ function inject(){
   wrap.id="universeSearchBar";
   wrap.className="universe-search";
   wrap.innerHTML=
-    '<div class="us-main"><div class="us-title"><b>우주 중심곡 검색</b><small>곡을 직접 찾아 바로 중심으로 설정할 수 있습니다.</small></div>'+
+    '<div class="us-main"><div class="us-title"><b>우주 안에서 곡 검색</b><small>음성합성 원곡을 검색해 원하는 곡을 바로 우주의 중심으로 바꿉니다.</small></div>'+
     '<div class="us-row"><input id="universeSearchInput" placeholder="곡명 · P명 · 보컬 · 태그 · sm번호">'+
-    '<select id="universeSearchScope"><option value="all_voice_synth">음성합성 전체</option><option value="vocaloid">VOCALOID</option><option value="utau">UTAU</option><option value="synthv">Synthesizer V</option><option value="all">니코동 전체</option></select>'+
+    '<select id="universeSearchScope"><option value="all_voice_synth">음성합성 전체</option><option value="vocaloid">VOCALOID</option><option value="utau">UTAU</option><option value="synthv">Synthesizer V</option><option value="cevio">CeVIO</option><option value="voisona">VoiSona</option><option value="neutrino">NEUTRINO</option><option value="voicevox">VOICEVOX</option></select>'+
     '<button type="button" id="universeSearchBtn">검색</button></div>'+
-    '<div class="us-recent" id="universeRecent"></div><div class="us-status" id="universeSearchStatus">중심곡을 검색해 우주를 바로 생성하세요.</div></div>'+
+    '<div class="us-recent" id="universeRecent"></div><div class="us-status" id="universeSearchStatus">곡명·P명·보컬·태그·sm번호로 중심곡을 검색할 수 있습니다.</div></div>'+
     '<div class="us-results" id="universeSearchResults"><div class="us-empty">검색하면 후보곡이 여기에 표시됩니다.</div></div>';
   panel.insertBefore(wrap,layout);
   renderRecent();
