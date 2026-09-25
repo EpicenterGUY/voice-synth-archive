@@ -1,11 +1,27 @@
 {
   "current": {
-    "version": "39.13.0",
+    "version": "39.14.0",
     "releasedAt": "2026-09-26",
-    "title": "Watch 1.3 · 실제 빈칸 채우기",
-    "summary": "Watch 화면의 이중 좌측 오프셋과 사이드 메뉴 잘림을 수정하고, Watch 상태에서 다른 메뉴를 눌러도 같은 화면이 남는 간헐적 라우팅 문제까지 함께 보강했습니다."
+    "title": "Watch 1.4 · 메뉴 이동 원자화",
+    "summary": "Watch에서 다른 메뉴를 누를 때 플레이어부터 꺼져 화면만 검게 남던 문제를 수정했습니다. 대상 화면을 먼저 활성화한 뒤 Watch 재생을 정지하고, 비활성 tool-view는 강제로 숨기도록 라우팅을 원자화했습니다."
   },
   "entries": [
+    {
+      "version": "39.14.0",
+      "date": "2026-09-26",
+      "title": "Watch 1.4 · 메뉴 이동 원자화",
+      "changes": [
+        "Watch에서 홈·탐색·우주·MY를 누를 때 플레이어를 먼저 제거하던 순서를 변경해 대상 화면이 실제 활성화된 뒤에만 Watch 재생을 정지",
+        "목적지 tool-view가 없으면 기존 Watch 화면과 재생 상태를 유지해 검은 화면만 남는 실패 상태 방지",
+        "setToolView가 모든 비활성 tool-view에 hidden과 display:none을 함께 적용하도록 변경",
+        "활성 target에는 hidden 해제와 display 복원을 동시에 적용해 Watch가 화면에 남아 덮는 현상 방지",
+        "forceDockRoute도 동일한 원자적 활성화 방식으로 통일",
+        "홈 이동 시 toolsModal을 먼저 숨긴 뒤 Watch iframe을 제거하도록 순서 수정",
+        "inactive tool-view를 절대 표시하지 않는 CSS 안전장치 추가",
+        "v39.13의 Watch 빈칸 채우기·사이드 메뉴 잘림 수정은 그대로 유지",
+        "PWA/서비스워커/강제 새 버전 적용 페이지를 v39.14.0으로 동기화"
+      ]
+    },
     {
       "version": "39.13.0",
       "date": "2026-09-26",
