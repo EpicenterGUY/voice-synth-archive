@@ -107,7 +107,11 @@
     if(!sections.length)return;
     mobileStep=Math.max(0,Math.min(sections.length-1,Number(i)||0));
     const target=sections[mobileStep];
-    if(target)target.open=true;
+    sections.forEach(function(section,idx){
+      const active=idx===mobileStep;
+      section.classList.toggle("mobile-active",active);
+      if(active)section.open=true;
+    });
     document.querySelectorAll("#detectiveMobileSteps button").forEach(function(b,idx){
       b.classList.toggle("active",idx===mobileStep);
     });
