@@ -28,6 +28,14 @@ function addStyle(){
     ".v29-module[data-tool-view='search29'] #resultsPanel{width:100%;max-width:none;min-height:620px!important}",
     ".v29-module[data-tool-view='universe29'] #universePanel{margin-top:0!important}",
     ".v29-module[data-tool-view='settings29'] #settingsPanel{margin-top:0!important}",
+    ".v29-flow-context{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:-2px 0 9px;padding:8px 10px;border:1px solid #1b3b42;border-radius:12px;background:#081d22;color:#88aaa7;font-size:8px}.v29-flow-context b{color:#dff6f2}.v29-back{margin-left:auto;min-height:30px;padding:0 9px;border:1px solid #2b565c;border-radius:9px;background:#0c2a30;color:#c8e6e2;font-size:8px;font-weight:850}",
+    "body.v29-compact .app{padding:0 8px calc(82px + env(safe-area-inset-bottom))!important}",
+    "body.v29-compact .topbar{position:sticky!important;top:0!important;z-index:105!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;min-height:48px!important;margin:0 -8px 5px!important;padding:6px 10px!important;border:0!important;border-bottom:1px solid #17383d!important;border-radius:0!important;background:rgba(4,17,21,.96)!important;box-shadow:none!important;backdrop-filter:blur(18px)!important;overflow:hidden!important}",
+    "body.v29-compact .topbar:after{display:none!important}body.v29-compact .brand{min-width:0!important;gap:7px!important}body.v29-compact .logo{width:30px!important;height:30px!important;min-width:30px!important;border-radius:9px!important;font-size:14px!important}body.v29-compact .brand h1{font-size:15px!important;line-height:1!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}body.v29-compact .brand .sub{display:none!important}",
+    "body.v29-compact .status{width:auto!important;max-width:none!important;display:block!important;padding:0!important}body.v29-compact .status>.pill:first-child{width:26px!important;height:26px!important;display:grid!important;place-items:center!important;padding:0!important;border-radius:50%!important;font-size:0!important;background:#0a292c!important}body.v29-compact .status>.pill:first-child #statusText{display:none!important}body.v29-compact .status>.pill:first-child .dot{margin:0!important}body.v29-compact .status>#snapshotLabel,body.v29-compact .status>#openToolsBtn,body.v29-compact .status>.pwa-actions{display:none!important}",
+    "body.v29-compact .mobile-section-nav{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;position:fixed!important;left:8px!important;right:8px!important;bottom:max(8px,env(safe-area-inset-bottom))!important;top:auto!important;z-index:115!important;margin:0!important;padding:5px!important;gap:3px!important;border:1px solid #245057!important;border-radius:18px!important;background:rgba(5,22,27,.97)!important;box-shadow:0 18px 50px #000b!important;backdrop-filter:blur(20px)!important;overflow:visible!important}",
+    "body.v29-compact .mobile-section-nav button{min-width:0!important;min-height:48px!important;padding:4px 2px!important;border:0!important;border-radius:13px!important;background:transparent!important;color:#759a98!important;font-size:7px!important;font-weight:850!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:2px!important}body.v29-compact .mobile-section-nav button.active{background:#103139!important;color:#e9fffb!important}body.v29-compact .v27-dock-icon{font-size:15px!important;line-height:1!important}body.v29-compact .v27-dock-label{font-size:7px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;max-width:100%}",
+    "body.v29-compact.tools-open #mobileSectionNav{display:none!important}body.v29-compact .v28-home{margin-top:0!important}body.v29-compact .v28-hero{border-radius:0 0 16px 16px!important;border-top:0!important;padding-top:12px!important}",
     "body.v29-feed-home>.app>.main{display:none!important}",
     "body.v29-feed-home>.app>#universePanel,body.v29-feed-home>.app>#settingsPanel{display:none!important}",
     "body.v29-feed-home>.app>.summary,body.v29-feed-home>.app>.v26-filter-shell{display:none!important}",
@@ -58,6 +66,14 @@ function buildModules(){
   var search=makeView("search29","곡 검색","곡명·P명·보컬·태그·sm번호를 검색하고 결과를 관리합니다.");
   var universe=makeView("universe29","보카로 우주","중심곡을 검색하고 비슷한 곡의 관계를 별자리처럼 탐색합니다.");
   var settings=makeView("settings29","앱 설정","Worker 연결, 설치 상태, 업데이트와 기술 설정을 관리합니다.");
+  if(search&&!search.querySelector(".v29-flow-context")){
+    var ctx=document.createElement("div");
+    ctx.className="v29-flow-context";
+    ctx.id="v29SearchContext";
+    ctx.innerHTML='<span>현재 조건</span><b>자유 검색</b><button type="button" class="v29-back" data-v29-back="archive29">← 빙산 설정</button>';
+    var head=search.querySelector(".v29-module-head");
+    if(head)head.insertAdjacentElement("afterend",ctx);
+  }
 
   moveNode(document.querySelector(".v26-filter-shell"),archive);
   moveNode(document.querySelector(".summary"),archive);
@@ -123,6 +139,44 @@ function routeDock(){
   },true);
 }
 
+
+function compactMode(){
+  var vv=window.visualViewport;
+  var w=Math.min(window.innerWidth||9999,vv&&vv.width||9999);
+  var h=Math.max(window.innerHeight||0,vv&&vv.height||0);
+  var coarse=window.matchMedia&&window.matchMedia("(pointer:coarse)").matches;
+  var portrait=h>=w;
+  document.body.classList.toggle("v29-compact",portrait&&(w<=980||coarse));
+}
+function searchContext(){
+  var box=document.getElementById("v29SearchContext");
+  if(!box)return;
+  var label="자유 검색";
+  try{
+    var tier=typeof TIERS!=="undefined"?TIERS.find(function(x){return x.id===state.tier;}):null;
+    var year=state.year==="all"?"전체 연도":state.year+"년";
+    var source=typeof sourceDefinition==="function"?sourceDefinition().label:"음성합성 전체";
+    label=year+" · "+(tier?tier.name+" "+tier.range:"전체 구간")+" · "+source;
+  }catch(e){}
+  var b=box.querySelector("b");
+  if(b)b.textContent=label;
+}
+function bindArchiveFlow(){
+  if(document.body.dataset.v29Flow)return;
+  document.body.dataset.v29Flow="1";
+  document.addEventListener("click",function(e){
+    var back=e.target.closest&&e.target.closest("[data-v29-back]");
+    if(back){e.preventDefault();openRoute(back.dataset.v29Back);return;}
+    var tier=e.target.closest&&e.target.closest("#iceberg .tier");
+    var songs=e.target.closest&&e.target.closest("#songsBtn");
+    if(tier||songs){
+      setTimeout(function(){
+        searchContext();
+        openRoute("search29");
+      },30);
+    }
+  });
+}
 function routeLegacyRequests(){
   window.VSAOpenArchive=function(){openRoute("archive29");};
   window.VSAOpenSearch=function(){openRoute("search29");};
@@ -134,6 +188,8 @@ function ensureViews(){
   buildModules();
   routeDock();
   routeLegacyRequests();
+  bindArchiveFlow();
+  compactMode();
 }
 
 function boot(){
@@ -141,6 +197,8 @@ function boot(){
   ensureViews();
   setTimeout(ensureViews,150);
   setTimeout(ensureViews,500);
+  window.addEventListener("resize",function(){requestAnimationFrame(compactMode)},{passive:true});
+  if(window.visualViewport)window.visualViewport.addEventListener("resize",function(){requestAnimationFrame(compactMode)},{passive:true});
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
 })();
