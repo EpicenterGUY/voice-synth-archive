@@ -140,6 +140,10 @@ function routeDock(){
       var view=btn.dataset.v30View;
       if(view==="home29"){goHome();return;}
       setDockActive(view);
+      if(view==="library22"&&window.VSAOrganizer22&&window.VSAOrganizer22.openLibrary){
+        window.VSAOrganizer22.openLibrary("saved");
+        return;
+      }
       openRoute(view);
     });
   }
