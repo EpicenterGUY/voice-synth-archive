@@ -1,7 +1,7 @@
 /* Voice Synth Archive PWA v21 */
 (function(){
 "use strict";
-const APP_VERSION="21.0.0";
+const APP_VERSION="21.0.1";
 const CHECK_MS=60000;
 let deferredInstall=null;
 let registration=null;
@@ -41,7 +41,7 @@ function addStyle(){
   .pwa-log-body{padding:12px}.pwa-log-version{padding:12px;border:1px solid #203a55;border-radius:14px;background:#091624;margin-bottom:9px}
   .pwa-log-version.current{border-color:#437b73;background:#0b2424}.pwa-log-title{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}.pwa-log-title strong{font-size:13px}.pwa-log-title span{font-size:9px;color:#83a1b9}
   .pwa-log-version ul{margin:8px 0 0;padding-left:18px;color:#a9c2d7;font-size:10px;line-height:1.65}
-  .pwa-install-help{margin:8px 0 0;font-size:9px;color:#7f9bb3;line-height:1.5}
+  .pwa-install-help{margin:8px 0 0;font-size:9px;color:#7f9bb3;line-height:1.5}\n  .pwa-install-hint{flex-basis:100%;font-size:9px;color:#89a8bf;line-height:1.45;padding:2px 4px 0}
   @media(max-width:699px){
     .pwa-actions{gap:3px}.pwa-mini{min-height:28px;padding:0 7px;font-size:7px}
     .pwa-log-modal{padding:0;align-items:end}.pwa-log-sheet{width:100vw;max-height:88dvh;border-radius:18px 18px 0 0;border-bottom:0}
@@ -55,7 +55,7 @@ function buildUi(){
   const status=document.querySelector(".status")||document.querySelector(".topbar")||document.body;
   const actions=document.createElement("div");
   actions.className="pwa-actions";
-  actions.innerHTML='<button class="pwa-mini" id="pwaInstallBtn">앱 설치</button><button class="pwa-mini" id="pwaLogBtn">v'+APP_VERSION+' · 업데이트 로그</button>';
+  actions.innerHTML='<button class="pwa-mini" id="pwaInstallBtn" disabled>설치 확인 중…</button><button class="pwa-mini" id="pwaLogBtn">v'+APP_VERSION+' · 업데이트 로그</button><div class="pwa-install-hint" id="pwaInstallHint" hidden></div>';
   status.appendChild(actions);
 
   const bar=document.createElement("div");
@@ -77,6 +77,20 @@ function buildUi(){
   if(standalone()){
     const b=document.getElementById("pwaInstallBtn");
     b.textContent="설치됨";b.disabled=true;
+  }else{
+    window.setTimeout(()=>{
+      if(deferredInstall||standalone())return;
+      showInstallFallback();
+    },1800);
+  }
+}
+function showInstallFallback(){
+  const b=document.getElementById("pwaInstallBtn");
+  const h=document.getElementById("pwaInstallHint");
+  if(b){b.disabled=false;b.textContent="⋮ 메뉴에서 설치";}
+  if(h){
+    h.hidden=false;
+    h.textContent="자동 설치 버튼이 아직 준비되지 않았습니다. 브라우저 메뉴(⋮)에서 ‘앱 설치’ 또는 ‘홈 화면에 추가’를 선택하면 설치할 수 있습니다.";
   }
 }
 function closeLog(){document.getElementById("pwaLogModal")?.classList.remove("open")}
@@ -141,24 +155,30 @@ async function applyUpdate(){
 async function installApp(){
   if(standalone())return;
   if(deferredInstall){
-    deferredInstall.prompt();
-    try{await deferredInstall.userChoice}catch{}
+    const promptEvent=deferredInstall;
     deferredInstall=null;
+    promptEvent.prompt();
+    let choice=null;
+    try{choice=await promptEvent.userChoice}catch{}
+    if(choice?.outcome!=="accepted")showInstallFallback();
     return;
   }
-  const android=/Android/i.test(navigator.userAgent);
-  alert(android
-    ?"설치 창이 아직 준비되지 않았습니다. 브라우저 메뉴(⋮)에서 ‘앱 설치’ 또는 ‘홈 화면에 추가’를 선택해 주세요."
-    :"브라우저의 ‘홈 화면에 추가/앱 설치’ 기능을 사용해 주세요.");
+  showInstallFallback();
 }
 
 window.addEventListener("beforeinstallprompt",e=>{
   e.preventDefault();deferredInstall=e;
-  const b=document.getElementById("pwaInstallBtn");if(b){b.hidden=false;b.disabled=false;b.textContent="앱 설치"}
+  const b=document.getElementById("pwaInstallBtn");
+  const h=document.getElementById("pwaInstallHint");
+  if(b){b.hidden=false;b.disabled=false;b.textContent="앱 설치"}
+  if(h)h.hidden=true;
 });
 window.addEventListener("appinstalled",()=>{
   deferredInstall=null;
-  const b=document.getElementById("pwaInstallBtn");if(b){b.textContent="설치됨";b.disabled=true}
+  const b=document.getElementById("pwaInstallBtn");
+  const h=document.getElementById("pwaInstallHint");
+  if(b){b.textContent="설치됨";b.disabled=true}
+  if(h)h.hidden=true;
 });
 navigator.serviceWorker?.addEventListener("controllerchange",()=>{
   if(reloading)return;reloading=true;location.reload();
