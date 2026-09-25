@@ -1807,7 +1807,92 @@ body.v37-ready>.app>.topbar{display:grid!important;grid-template-columns:auto mi
 @media(max-width:1099px){body.v37-ready>.app>.topbar{grid-template-columns:1fr!important}.v39-global-search{order:3;width:100%}.topbar .status{order:2}.v39-media-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.v39-detail-top{grid-template-columns:1fr}.v39-detail-art{max-width:760px}}
 @media(max-width:699px){.v39-home-head{align-items:flex-start;padding:14px 1px 8px}.v39-home-head h1{font-size:25px}.v39-home-head p{font-size:10px}.v39-home-actions{display:none}.v39-global-search{height:44px;padding-left:10px}.v39-global-search button{padding:0 12px}.v39-media-grid{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none}.v39-media-grid::-webkit-scrollbar{display:none}.v39-media-card{flex:0 0 min(78vw,310px);scroll-snap-align:start}.v39-shelf{padding-bottom:18px}.v39-shelf-head h2{font-size:17px}.v39-detail-top{padding:0;gap:16px}.v39-detail-copy h2{font-size:23px}.v39-detail-related .v39-media-card{flex-basis:min(76vw,300px)}}
 @media(min-width:1500px){.v39-media-grid{grid-template-columns:repeat(5,minmax(0,1fr))}}
-</style></head>
+</style><style id="v392SearchDetailOverhaul">
+/* v39.2: compact app header + single-surface search + song detail 2.0 */
+.v39-global-search{
+  min-width:0!important;width:100%!important;height:50px!important;
+  display:grid!important;grid-template-columns:22px minmax(0,1fr) auto!important;
+  align-items:center!important;gap:2px!important;padding:5px 5px 5px 14px!important;
+  border:1px solid rgba(121,206,199,.24)!important;border-radius:16px!important;
+  background:linear-gradient(180deg,rgba(7,30,36,.98),rgba(6,25,31,.98))!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 8px 22px rgba(0,8,11,.10)!important;
+}
+.v39-global-search:focus-within{border-color:rgba(105,224,212,.55)!important;box-shadow:0 0 0 4px rgba(91,216,204,.08),0 10px 26px rgba(0,8,11,.12)!important}
+.v39-search-icon{width:22px;height:22px;display:grid;place-items:center;color:#81aaa6!important}
+.v39-search-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+body.v37-ready .v39-global-search input{
+  width:100%!important;min-width:0!important;height:38px!important;min-height:38px!important;
+  border:0!important;border-radius:0!important;background:transparent!important;
+  padding:0 9px!important;box-shadow:none!important;color:#eefbf8!important;font-size:13px!important;
+}
+body.v37-ready .v39-global-search input:focus{border:0!important;box-shadow:none!important}
+.v39-global-search button{
+  height:40px!important;min-width:72px!important;padding:0 16px!important;border:0!important;
+  border-radius:12px!important;background:linear-gradient(135deg,#1c5960,#17444c)!important;
+  color:#f0fffc!important;font-size:11px!important;font-weight:900!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05)!important;
+}
+.v39-global-search button:active{transform:scale(.98)}
+
+.v39-detail-top{align-items:start!important}
+.v39-detail-copy{min-width:0}
+.v392-detail-kicker{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:7px}
+.v392-detail-kicker span{display:inline-flex;align-items:center;min-height:25px;padding:0 8px;border-radius:999px;background:#0d3036;color:#83bbb5;font-size:8px;font-weight:900}
+.v392-detail-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:15px}
+.v392-detail-stat{min-width:0;padding:10px 11px;border:1px solid rgba(113,205,197,.14);border-radius:13px;background:#09252b}
+.v392-detail-stat small{display:block;color:#6f9692;font-size:7px}.v392-detail-stat b{display:block;margin-top:3px;color:#eafbf8;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v392-detail-info{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.v392-detail-block{min-width:0;padding:11px 12px;border:1px solid rgba(113,205,197,.14);border-radius:14px;background:linear-gradient(155deg,#0b2b31,#082229)}
+.v392-detail-block>small{display:block;color:#6f9995;font-size:7px;font-weight:900;letter-spacing:.05em}
+.v392-detail-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px;min-height:28px;align-items:center}
+.v392-detail-chips button,.v392-detail-chips span{min-height:27px;padding:0 9px;border:1px solid rgba(115,207,198,.15);border-radius:999px;background:#10343a;color:#a9d3ce;font-size:8px;display:inline-flex;align-items:center}
+.v392-detail-chips button{cursor:pointer;font-weight:900}
+.v392-detail-section{margin-top:23px;padding-top:17px;border-top:1px solid rgba(113,201,194,.10)}
+.v392-detail-section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:10px}
+.v392-detail-section-head h3{margin:0;color:#effbf9;font-size:17px;letter-spacing:-.03em}
+.v392-detail-section-head p{margin:3px 0 0;color:#759995;font-size:8px}
+.v392-detail-home{min-height:35px!important;padding:0 11px!important;border-radius:10px!important;background:#0d2f35!important}
+
+@media(max-width:1099px){
+  body.v37-ready>.app>.topbar{
+    grid-template-columns:minmax(0,1fr) auto!important;
+    grid-template-areas:"brand status" "search search"!important;
+    align-items:center!important;gap:9px 12px!important;
+  }
+  body.v37-ready>.app>.topbar>.brand{grid-area:brand!important;min-width:0!important}
+  body.v37-ready>.app>.topbar>.status{grid-area:status!important;min-width:0!important;justify-content:flex-end!important}
+  body.v37-ready>.app>.topbar>.v39-global-search{grid-area:search!important;order:initial!important}
+}
+@media(max-width:699px){
+  body.v37-ready>.app>.topbar{
+    margin:4px -2px 10px!important;padding:11px!important;border-radius:18px!important;
+    grid-template-columns:minmax(0,1fr) auto!important;gap:9px 8px!important;
+  }
+  body.v37-ready .topbar .brand{gap:9px!important}
+  body.v37-ready .topbar .brand .sub{display:none!important}
+  body.v37-ready .topbar .status{gap:0!important}
+  body.v37-ready .topbar .status>.pill:not(:first-child){display:none!important}
+  body.v37-ready .topbar .status>.pill:first-child{
+    min-height:32px!important;padding:0 9px!important;font-size:8px!important;white-space:nowrap!important;
+  }
+  .v39-global-search{height:48px!important;padding:4px 4px 4px 12px!important;border-radius:14px!important}
+  body.v37-ready .v39-global-search input{height:38px!important;min-height:38px!important;font-size:12px!important;padding:0 7px!important}
+  .v39-global-search button{height:38px!important;min-width:62px!important;padding:0 12px!important;border-radius:11px!important;font-size:10px!important}
+  .v39-search-icon svg{width:17px;height:17px}
+  .v392-detail-stats{grid-template-columns:1fr 1fr}
+  .v392-detail-info{grid-template-columns:1fr}
+  .v39-detail-actions{display:grid!important;grid-template-columns:1fr 1fr!important}
+  .v39-detail-actions button{min-width:0!important}
+  .v39-detail-actions .primary{grid-column:1/-1}
+}
+@media(max-width:390px){
+  body.v37-ready>.app>.topbar{padding:10px!important}
+  body.v37-ready .topbar .brand h1{font-size:17px!important}
+  body.v37-ready .topbar .status>.pill:first-child{padding:0 8px!important;font-size:7px!important}
+  .v39-global-search button{min-width:58px!important;padding:0 10px!important}
+}
+</style>
+</head>
 <body>
 <div class="app">
   <div class="topbar">
@@ -2027,7 +2112,7 @@ body.v37-ready>.app>.topbar{display:grid!important;grid-template-columns:auto mi
     </details>
   </section>
 
-  <div class="footer">v39.0.0 · 콘텐츠 홈 · 통합검색 · 우주 2.0 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.2.0 · 콘텐츠 홈 · 통합검색 · 우주 2.0 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -6057,7 +6142,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:"39.0.0",
+    version:"39.2.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -7252,7 +7337,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.0.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
+var VER="39.2.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -7347,16 +7432,48 @@ function ensureSongDetail39(){
   var p=body.querySelector('[data-tool-view="songDetail39"]');if(p)return p;
   p=document.createElement("section");p.className="tool-view v39-song-detail";p.dataset.toolView="songDetail39";body.appendChild(p);return p
 }
+function norm39(v){return String(v||"").normalize("NFKC").toLowerCase().replace(/[\\s・･_\\-]/g,"")}
+function vocalTags39(song){
+  var bank=[];
+  try{bank=[].concat(VOCALOID_VOICEBANK_SEEDS37,UTAU_VOICEBANK_SEEDS37,SYNTHV_VOICEBANK_SEEDS37,CEVIO_VOICEBANK_SEEDS37,VOISONA_VOICEBANK_SEEDS37,NEUTRINO_VOICEBANK_SEEDS37,VOICEVOX_VOICEBANK_SEEDS37)}catch(e){}
+  var map=new Map();bank.forEach(function(x){map.set(norm39(x),String(x))});
+  var out=[];
+  tags(song).forEach(function(t){var n=norm39(t),name=map.get(n);if(name&&!out.includes(name))out.push(name)});
+  return out.slice(0,5)
+}
 function renderSongDetail39(song){
   var p=ensureSongDetail39();if(!p||!song)return;
-  var ts=tags(song).slice(0,12),rel=relatedSongs39(song),year=song.startTime?new Date(song.startTime).toLocaleDateString("ko-KR"):"-";
+  var ts=tags(song).slice(0,14),rel=relatedSongs39(song),vocals=vocalTags39(song);
+  var date=song.startTime?new Date(song.startTime).toLocaleDateString("ko-KR"):"-";
+  var year=song.startTime?new Date(song.startTime).getFullYear():"-";
   p.innerHTML='<div class="v39-detail-top">'+
     '<div class="v39-detail-art">'+(song.thumbnailUrl?'<img src="'+E(song.thumbnailUrl)+'" alt="">':'<div class="v39-no-thumb">♪</div>')+'</div>'+
-    '<div class="v39-detail-copy"><small>SONG</small><h2>'+E(song.title||song.contentId)+'</h2><p>'+E(song.contentId)+' · 조회 '+F(song.viewCounter||0)+' · '+E(year)+'</p>'+
-      '<div class="v39-detail-actions"><button data-v39-detail-save="'+E(song.contentId)+'">♡ 보관</button><button class="primary" data-v39-detail-universe="'+E(song.contentId)+'">✦ 보카로 우주</button><button data-v39-detail-nico="'+E(song.contentId)+'">니코동 열기</button></div>'+
+    '<div class="v39-detail-copy">'+
+      '<div class="v392-detail-kicker"><span>SONG</span><span>'+E(String(year))+'</span><span>'+E(song.contentId||"")+'</span></div>'+
+      '<h2>'+E(song.title||song.contentId)+'</h2><p>'+E(date)+' · 니코니코 원곡 데이터</p>'+
+      '<div class="v39-detail-actions"><button type="button" class="v392-detail-home" data-v39-detail-home>← 홈</button><button type="button" data-v39-detail-save="'+E(song.contentId)+'">♡ 보관</button><button type="button" class="primary" data-v39-detail-universe="'+E(song.contentId)+'">✦ 이 곡으로 우주 만들기</button><button type="button" data-v39-detail-nico="'+E(song.contentId)+'">니코동에서 듣기</button></div>'+
+      '<div class="v392-detail-stats">'+
+        '<div class="v392-detail-stat"><small>조회</small><b>'+F(song.viewCounter||0)+'</b></div>'+
+        '<div class="v392-detail-stat"><small>마이리스트</small><b>'+F(song.mylistCounter||0)+'</b></div>'+
+        '<div class="v392-detail-stat"><small>댓글</small><b>'+F(song.commentCounter||0)+'</b></div>'+
+        '<div class="v392-detail-stat"><small>좋아요</small><b>'+F(song.likeCounter||0)+'</b></div>'+
+      '</div>'+
+      '<div class="v392-detail-info">'+
+        '<div class="v392-detail-block"><small>PRODUCER · VocaDB 정확 PV 매칭</small><div class="v392-detail-chips" data-v39-producer-credit><span>확인 중…</span></div></div>'+
+        '<div class="v392-detail-block"><small>VOCAL · 등록 태그 기준</small><div class="v392-detail-chips">'+(vocals.length?vocals.map(function(v){return'<button type="button" data-v39-search-tag="'+E(v)+'">'+E(v)+'</button>'}).join(""):'<span>보컬 태그 정보 없음</span>')+'</div></div>'+
+      '</div>'+
       '<div class="v39-detail-tags">'+ts.map(function(t){return'<button type="button" data-v39-search-tag="'+E(t)+'">'+E(t)+'</button>'}).join("")+'</div>'+
     '</div></div>'+
-    '<section class="v39-detail-related"><div class="v39-shelf-head"><div><h2>이어 듣기</h2><p>현재 곡과 태그가 가까운 곡</p></div></div><div class="v39-media-grid">'+rel.map(function(x){return mediaCard39(x,"DAILY")}).join("")+'</div></section>'
+    '<section class="v392-detail-section"><div class="v392-detail-section-head"><div><h3>이 곡에서 이어 듣기</h3><p>현재 불러온 곡 중 태그 유사도가 높은 순서</p></div></div>'+
+      (rel.length?'<div class="v39-media-grid">'+rel.map(function(x){return mediaCard39(x,"DAILY")}).join("")+'</div>':'<div class="v39-shelf-empty">연결할 관련곡 데이터가 아직 없습니다.</div>')+
+    '</section>';
+  var box=p.querySelector("[data-v39-producer-credit]");
+  if(box&&typeof resolveSongProducers37==="function"){
+    Promise.resolve(resolveSongProducers37(song)).then(function(ps){
+      if(!box.isConnected)return;
+      box.innerHTML=ps&&ps.length?ps.map(function(x){return'<button type="button" data-v39-search-producer="'+E(x.name)+'">'+E(x.name)+'</button>'}).join(""):'<span>VocaDB에서 P 크레딧을 찾지 못했습니다.</span>'
+    }).catch(function(){if(box.isConnected)box.innerHTML='<span>P 크레딧 확인 실패</span>'})
+  }else if(box){box.innerHTML='<span>P 크레딧 정보 없음</span>'}
 }
 function openSongDetail39(id){
   var song=getAnySong39(id);if(!song)return;
@@ -7372,7 +7489,7 @@ function openGlobalSearch39(q){
 function ensureTopSearch39(){
   var top=document.querySelector(".app>.topbar");if(!top||top.querySelector(".v39-global-search"))return;
   var form=document.createElement("form");form.className="v39-global-search";
-  form.innerHTML='<span class="v39-search-icon">⌕</span><input type="search" id="v39GlobalSearch" autocomplete="off" placeholder="곡명 · P명 · 보컬 · 태그 · sm번호 검색"><button type="submit">검색</button>';
+  form.innerHTML='<span class="v39-search-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="5.8"></circle><path d="m15 15 4.5 4.5"></path></svg></span><input type="search" id="v39GlobalSearch" autocomplete="off" enterkeyhint="search" placeholder="곡명 · P명 · 보컬 · 태그 · sm번호 검색"><button type="submit">검색</button>';
   var status=top.querySelector(".status");if(status)top.insertBefore(form,status);else top.appendChild(form);
   form.addEventListener("submit",function(e){e.preventDefault();openGlobalSearch39(form.querySelector("input").value)})
 }
@@ -7539,6 +7656,8 @@ function init(){
     var uni39=e.target.closest("[data-v39-detail-universe]");if(uni39){var us=getAnySong39(uni39.dataset.v39DetailUniverse);if(us)openUniversePage37(us,false);return}
     var nico39=e.target.closest("[data-v39-detail-nico]");if(nico39){window.open("https://www.nicovideo.jp/watch/"+encodeURIComponent(nico39.dataset.v39DetailNico),"_blank","noopener");return}
     var tag39=e.target.closest("[data-v39-search-tag]");if(tag39){openGlobalSearch39(tag39.dataset.v39SearchTag);return}
+    var prod39=e.target.closest("[data-v39-search-producer]");if(prod39){openGlobalSearch39(prod39.dataset.v39SearchProducer);return}
+    if(e.target.closest("[data-v39-detail-home]")){try{closeToolsModal()}catch(_){ }setDock("home");document.getElementById("v37Home")?.scrollIntoView({block:"start"});return}
     if(e.target.closest("[data-u39-back]")){navigateUniverseHistory39(-1);return}
     if(e.target.closest("[data-u39-forward]")){navigateUniverseHistory39(1);return}
     if(e.target.closest("[data-u39-warp]")){randomUniverseWarp39();return}
@@ -7644,15 +7763,15 @@ var groups={};
 function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
-  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.0.0","./detective-v12.js?v=39.0.0","./detective-v13.js?v=39.0.0","./detective-v14.js?v=39.0.0","./detective-v16.js?v=39.0.0"]);
-  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.0.0","./smart-v23.js?v=39.0.0","./playlist-v24.js?v=39.0.0"]);
-  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.0.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.0.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.0.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.0.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.0.0");
+  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.2.0","./detective-v12.js?v=39.2.0","./detective-v13.js?v=39.2.0","./detective-v14.js?v=39.2.0","./detective-v16.js?v=39.2.0"]);
+  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.2.0","./smart-v23.js?v=39.2.0","./playlist-v24.js?v=39.2.0"]);
+  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.2.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.2.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.2.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.2.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.2.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
-    return seq(["./voca-app-v33.js?v=39.0.0","./voca-app-v33-1.js?v=39.0.0","./voca-app-v33-2.js?v=39.0.0","./voca-app-v33-3.js?v=39.0.0"]);
+    return seq(["./voca-app-v33.js?v=39.2.0","./voca-app-v33-1.js?v=39.2.0","./voca-app-v33-2.js?v=39.2.0","./voca-app-v33-3.js?v=39.2.0"]);
   });
   else groups[name]=Promise.resolve(false);
   groups[name]=Promise.resolve(groups[name]).then(function(v){
