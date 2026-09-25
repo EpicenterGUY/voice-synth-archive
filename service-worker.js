@@ -1,4 +1,4 @@
-const SW_VERSION="26.0.0";
+const SW_VERSION="26.0.1";
 const CACHE_NAME="voice-synth-archive-shell-"+SW_VERSION;
 const SHELL=[
   "./",
@@ -17,8 +17,8 @@ const SHELL=[
   "./smart-v23.js?v=23.0.0",
   "./playlist-v24.js?v=24.0.0",
   "./studio-ui-v25.js?v=25.0.0",
-  "./main-ui-v26.js?v=26.0.0",
-  "./pwa-v21.js?v=26.0.0"
+  "./main-ui-v26.js?v=26.0.1",
+  "./pwa-v21.js?v=26.0.1"
 ];
 
 self.addEventListener("install",event=>{
