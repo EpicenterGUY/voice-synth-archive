@@ -1,12 +1,15 @@
 /* Voice Synth Archive PWA v21 */
 (function(){
 "use strict";
-const APP_VERSION="39.0.0";
+const APP_VERSION="39.7.0";
 const CHECK_MS=60000;
 let deferredInstall=null;
 let registration=null;
 let latestMeta=null;
 let reloading=false;
+let applyingUpdate=false;
+const DISMISS_KEY="vsa.pwa.dismissedUpdate";
+const RUNNING_KEY="vsa.pwa.runningVersion";
 
 function semver(v){return String(v||"0").split(".").map(x=>parseInt(x,10)||0)}
 function newer(a,b){
@@ -22,6 +25,19 @@ function escPwa(s){
 }
 function standalone(){
   return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone===true;
+}
+function dismissedVersion(){
+  try{return localStorage.getItem(DISMISS_KEY)||""}catch(e){return""}
+}
+function setDismissedVersion(v){
+  try{if(v)localStorage.setItem(DISMISS_KEY,String(v));else localStorage.removeItem(DISMISS_KEY)}catch(e){}
+}
+function updateIsReal(version){
+  return !!version && newer(version,APP_VERSION);
+}
+function hideUpdate(){
+  const bar=document.getElementById("pwaUpdateBar");
+  if(bar)bar.hidden=true;
 }
 
 function addStyle(){
@@ -79,7 +95,11 @@ function buildUi(){
   document.getElementById("pwaLogClose").addEventListener("click",closeLog);
   document.getElementById("pwaLogBackdrop").addEventListener("click",closeLog);
   document.getElementById("pwaUpdateNow").addEventListener("click",applyUpdate);
-  document.getElementById("pwaUpdateLater").addEventListener("click",()=>{bar.hidden=true});
+  document.getElementById("pwaUpdateLater").addEventListener("click",()=>{
+    const version=bar.dataset.version||latestMeta?.current?.version||"";
+    if(updateIsReal(version))setDismissedVersion(version);
+    bar.hidden=true;
+  });
 
   if(standalone()){
     const b=document.getElementById("pwaInstallBtn");
@@ -124,10 +144,18 @@ async function loadLog(force=false){
 }
 function showUpdate(version,title){
   const bar=document.getElementById("pwaUpdateBar");
-  if(!bar)return;
-  document.getElementById("pwaUpdateTitle").textContent="새 업데이트 v"+(version||"")+(title?" · "+title:"");
-  document.getElementById("pwaUpdateText").textContent="작업 중인 입력은 저장한 뒤 적용하는 것을 권장합니다.";
+  if(!bar)return false;
+  version=String(version||"").trim();
+  if(!updateIsReal(version)||dismissedVersion()===version){
+    bar.dataset.version="";
+    bar.hidden=true;
+    return false;
+  }
+  bar.dataset.version=version;
+  document.getElementById("pwaUpdateTitle").textContent="새 업데이트 v"+version+(title?" · "+title:"");
+  document.getElementById("pwaUpdateText").textContent="새 버전이 실제로 확인됐을 때만 이 알림이 표시됩니다.";
   bar.hidden=false;
+  return true;
 }
 async function checkUpdate(){
   try{
@@ -135,19 +163,29 @@ async function checkUpdate(){
     if(r.ok){
       latestMeta=await r.json();
       const cur=latestMeta?.current||{};
-      if(newer(cur.version,APP_VERSION))showUpdate(cur.version,cur.title);
+      if(updateIsReal(cur.version))showUpdate(cur.version,cur.title);
+      else hideUpdate();
     }
     if(registration){
       await registration.update();
       if(registration.waiting){
-        showUpdate(latestMeta?.current?.version||"",latestMeta?.current?.title||"");
+        const v=latestMeta?.current?.version||"";
+        if(updateIsReal(v)){
+          showUpdate(v,latestMeta?.current?.title||"");
+        }else{
+          // 같은 앱 버전의 SW만 대기 중이면 오래된 업데이트 알림을 띄우지 않고 조용히 활성화한다.
+          registration.waiting.postMessage({type:"SKIP_WAITING"});
+        }
       }
     }
   }catch{}
 }
 async function applyUpdate(){
   const btn=document.getElementById("pwaUpdateNow");
+  const bar=document.getElementById("pwaUpdateBar");
   if(btn){btn.disabled=true;btn.textContent="업데이트 중…"}
+  applyingUpdate=true;
+  setDismissedVersion("");
   try{
     if(registration)await registration.update();
     if(registration?.waiting){
@@ -157,6 +195,9 @@ async function applyUpdate(){
     location.reload();
   }catch{
     location.reload();
+  }finally{
+    if(!registration?.waiting&&btn){btn.disabled=false;btn.textContent="업데이트"}
+    if(bar&&!registration?.waiting)bar.hidden=true;
   }
 }
 async function installApp(){
@@ -188,22 +229,33 @@ window.addEventListener("appinstalled",()=>{
   if(h)h.hidden=true;
 });
 navigator.serviceWorker?.addEventListener("controllerchange",()=>{
-  if(reloading)return;reloading=true;
-  setTimeout(()=>{reloading=false;showUpdate(APP_VERSION,"업데이트 적용 준비 완료")},300);
+  if(reloading)return;
+  reloading=true;
+  hideUpdate();
+  if(applyingUpdate){
+    setTimeout(()=>location.reload(),120);
+  }else{
+    // 백그라운드에서 같은 버전 SW가 교체된 경우 팝업을 다시 띄우지 않는다.
+    setTimeout(()=>{reloading=false},300);
+  }
 });
 
 async function boot(){
+  try{
+    localStorage.setItem(RUNNING_KEY,APP_VERSION);
+    if(dismissedVersion()&&!newer(dismissedVersion(),APP_VERSION))setDismissedVersion("");
+  }catch(e){}
   buildUi();
   if("serviceWorker" in navigator){
     try{
       registration=await navigator.serviceWorker.register("./service-worker.js",{scope:"./",updateViaCache:"none"});
-      if(registration.waiting)showUpdate("", "");
       registration.addEventListener("updatefound",()=>{
         const worker=registration.installing;
         if(!worker)return;
         worker.addEventListener("statechange",()=>{
           if(worker.state==="installed"&&navigator.serviceWorker.controller){
-            showUpdate(latestMeta?.current?.version||"",latestMeta?.current?.title||"");
+            // 설치 이벤트만으로 업데이트라고 단정하지 않고 메타 버전을 다시 확인한다.
+            setTimeout(checkUpdate,80);
           }
         });
       });
