@@ -103,6 +103,8 @@ function labelMain(){
   const listSub=document.getElementById("listSub");
   if(listTitle)listTitle.textContent="곡 탐색 결과";
   if(listSub)listSub.textContent="빙산 층이나 검색 조건을 기준으로 곡을 찾고, 전체 순위와 상위 비율을 확인합니다.";
+  const fold=document.getElementById("foldFilterToggle");if(fold)fold.textContent="탐색 조건 열기";
+  const nav=document.querySelectorAll("#mobileSectionNav button");if(nav.length>=5){nav[0].textContent="빙산 지도";nav[1].textContent="곡 검색";nav[2].textContent="스튜디오";nav[3].textContent="관계도";nav[4].textContent="설정";}
 }
 function observeIceberg(){
   const ice=document.getElementById("iceberg");
