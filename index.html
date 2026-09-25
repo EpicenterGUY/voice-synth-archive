@@ -1021,8 +1021,9 @@ body.tools-open{overflow:hidden}
 <style id="v37CriticalStyle">
 html,body{overflow-x:hidden!important}
 body.v37-ready{background:#041115!important;color:#eafaf7!important}
+body.v37-ready:not(.tools-open):not(.v331-player-open){overflow-y:auto!important;touch-action:pan-y!important;overscroll-behavior-y:auto!important}
 body.v37-ready>.app{max-width:1180px!important;min-height:100dvh!important;margin:0 auto!important;padding:0 10px calc(84px + env(safe-area-inset-bottom))!important;background:#041115!important}
-body.v37-ready>.app>.topbar{position:sticky!important;top:0!important;z-index:180!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;gap:8px!important;margin:0 -10px 6px!important;padding:8px 12px!important;border:0!important;border-bottom:1px solid #18393e!important;border-radius:0!important;background:rgba(4,17,21,.97)!important;backdrop-filter:blur(18px)!important;box-shadow:none!important}
+body.v37-ready>.app>.topbar{position:sticky!important;top:0!important;z-index:180!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;gap:8px!important;margin:0 -10px 6px!important;padding:8px 12px!important;border:0!important;border-bottom:1px solid #18393e!important;border-radius:0!important;background:rgba(4,17,21,.97)!important;backdrop-filter:none!important;box-shadow:none!important}
 body.v37-ready .topbar .brand{min-width:0!important;display:flex!important;align-items:center!important;gap:8px!important}
 body.v37-ready .topbar .logo{width:36px!important;height:36px!important;min-width:36px!important;border-radius:11px!important;background:linear-gradient(145deg,#cffff8,#6fe3d8 46%,#78a8ff)!important;color:#061316!important;font-size:15px!important}
 body.v37-ready .topbar .brand h1{margin:0!important;font-size:17px!important;line-height:1!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
@@ -1063,9 +1064,12 @@ body.v37-ready .v36-dock{display:none!important}
 .v37-actions{display:flex;gap:5px;margin-top:7px}.v37-actions button{min-height:31px;border:1px solid #285159;border-radius:10px;background:#0a262c;color:#9fc4bf;font-size:7px;font-weight:850;padding:0 9px}.v37-actions .danger{border-color:#573943;background:#261b1f;color:#dfadb4}
 .v37-empty{padding:48px 14px;text-align:center;border:1px dashed #285159;border-radius:16px;color:#729592;font-size:9px;line-height:1.6}.v37-empty button{margin-top:10px;min-height:36px;border:1px solid #2b565d;border-radius:10px;background:#0b2930;color:#c6e5e1;font-size:8px;font-weight:900;padding:0 12px}
 
-.v37-dock{position:fixed;left:10px;right:10px;bottom:max(8px,env(safe-area-inset-bottom));z-index:23000;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px;padding:5px;border:1px solid #28555b;border-radius:18px;background:rgba(5,22,27,.97);box-shadow:0 18px 50px #000c;backdrop-filter:blur(22px)}
+.v37-dock{position:fixed;left:10px;right:10px;bottom:max(8px,env(safe-area-inset-bottom));z-index:23000;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px;padding:5px;border:1px solid #28555b;border-radius:18px;background:rgba(5,22,27,.97);box-shadow:0 18px 50px #000c;backdrop-filter:none}
 .v37-dock button{min-width:0;min-height:49px;border:0;border-radius:13px;background:transparent;color:#789d99;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:7px;font-weight:850}.v37-dock button.active{background:#103139;color:#effffc}.v37-dock i{font-style:normal;font-size:15px;line-height:1}
 body.tools-open .v37-dock,body.v331-player-open .v37-dock{display:none!important}
+body.v37-ready>.app.mobile-paged{min-height:100dvh!important;height:auto!important;overflow:visible!important}
+body.v37-ready>.app.mobile-paged #v37Home{display:block!important}
+body.v37-ready>.app.mobile-paged>.main,body.v37-ready>.app.mobile-paged>.summary,body.v37-ready>.app.mobile-paged .mobile-section-nav{display:none!important}
 @media(max-width:699px){.v37-head p{display:none}.v37-grid{grid-template-columns:1fr}.v37-hero{min-height:225px}.v37-title{font-size:11px}}
 @media(min-width:700px) and (max-width:1100px){.v37-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(min-width:900px){.v37-dock{left:50%;right:auto;width:540px;transform:translateX(-50%)}}
@@ -1281,7 +1285,7 @@ body.tools-open .v37-dock,body.v331-player-open .v37-dock{display:none!important
     </details>
   </section>
 
-  <div class="footer">v37.0.0 · 인라인 단일 홈 · UI 충돌 차단 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v37.0.1 · 모바일 스크롤 멈춤 수정 · 인라인 단일 홈 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -5222,7 +5226,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="37.0.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
+var VER="37.0.1",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -5245,14 +5249,14 @@ async function refresh(){if(busy)return;busy=true;render();try{if(window.VSAHome
 function openView(name){if(window.VSAV33&&VSAV33.openView){VSAV33.openView(name);return}try{openToolsModal(name)}catch(e){}}
 function setDock(v){document.querySelectorAll(".v37-dock button").forEach(function(b){b.classList.toggle("active",b.dataset.v37===v)})}
 function dock(){if(document.querySelector(".v37-dock"))return;var d=document.createElement("nav");d.className="v37-dock";d.innerHTML=[["home","⌂","홈"],["explore","✦","탐색"],["search","⌕","검색"],["library","▣","보관함"],["taste","♡","내 취향"]].map(function(x){return'<button type="button" data-v37="'+x[0]+'"><i>'+x[1]+'</i><span>'+x[2]+'</span></button>'}).join("");document.body.appendChild(d);setDock("home");d.addEventListener("click",function(e){var b=e.target.closest("button[data-v37]");if(!b)return;var v=b.dataset.v37;setDock(v);if(v==="home"){try{closeToolsModal()}catch(e){}document.getElementById("v37Home")?.scrollIntoView({block:"start"});return}if(v==="explore"){openView(window.VSAV33?"explore33":"gems");return}if(v==="search"){openView(window.VSAV33?"searchHub33":"detective");return}if(v==="library"){if(window.VSA332Library&&VSA332Library.open)VSA332Library.open();else if(window.VSAOrganizer22&&VSAOrganizer22.openLibrary)VSAOrganizer22.openLibrary("saved");else openView("library22");return}if(v==="taste")openView(window.VSAV33?"tasteHub33":"taste")})}
-function init(){document.body.classList.add("v37-ready");var h=document.querySelector(".topbar .brand h1");if(h)h.textContent="Voca Support";var subh=document.querySelector(".topbar .brand .sub");if(subh)subh.textContent="추천 · 탐색 · 검색 · 보관 · 취향";render();dock();document.addEventListener("click",function(e){var t=e.target.closest("[data-v37-tab]");if(t){var v=t.dataset.v37Tab;if(v==="PRODUCER"){openView(window.VSAV33?"explore33":"gems");return}active=v;localStorage.setItem(AK,v);render();return}if(e.target.id==="v37Refresh"){refresh();return}var a=e.target.closest("[data-v37-save]");if(a){keep(a.dataset.v37Save);return}var d=e.target.closest("[data-v37-dislike]");if(d){dislike(d.dataset.v37Dislike);return}var q=e.target.closest("[data-v37-sim]");if(q){similar(q.dataset.v37Sim);return}},true)}
+function init(){document.body.classList.add("v37-ready");var app=document.querySelector(".app");if(app)app.classList.remove("mobile-paged");var h=document.querySelector(".topbar .brand h1");if(h)h.textContent="Voca Support";var subh=document.querySelector(".topbar .brand .sub");if(subh)subh.textContent="추천 · 탐색 · 검색 · 보관 · 취향";render();dock();document.addEventListener("click",function(e){var t=e.target.closest("[data-v37-tab]");if(t){var v=t.dataset.v37Tab;if(v==="PRODUCER"){openView(window.VSAV33?"explore33":"gems");return}active=v;localStorage.setItem(AK,v);render();return}if(e.target.id==="v37Refresh"){refresh();return}var a=e.target.closest("[data-v37-save]");if(a){keep(a.dataset.v37Save);return}var d=e.target.closest("[data-v37-dislike]");if(d){dislike(d.dataset.v37Dislike);return}var q=e.target.closest("[data-v37-sim]");if(q){similar(q.dataset.v37Sim);return}},true)}
 init();
 window.VSAHome37={render:render,refresh:refresh};
 })();
 </script>
 <script src="./detective-v11.js?v=11.5"></script>
 <script src="./detective-v12.js?v=12.0"></script>
-<script src="./detective-v13.js?v=13.0"></script>
+<script src="./detective-v13.js?v=37.0.1"></script>
 <script src="./detective-v14.js?v=14.0"></script>
 <script src="./detective-v16.js?v=19.0"></script>
 <script src="./discovery-v20.js?v=20.0"></script>
@@ -5260,13 +5264,13 @@ window.VSAHome37={render:render,refresh:refresh};
 <script src="./smart-v23.js?v=23.0.0"></script>
 <script src="./playlist-v24.js?v=24.0.0"></script>
 <script src="./studio-ui-v25.js?v=31.2.0"></script>
-<script src="./pwa-v21.js?v=36.1.0"></script>
+<script src="./pwa-v21.js?v=37.0.1"></script>
 <script src="./vocalo-home-v28.js?v=36.1.0"></script>
 <script src="./universe-search-v28.js?v=28.1.0"></script>
 <script src="./nico-player-v32.js?v=36.1.0"></script>
 <script src="./voca-app-v33.js?v=36.1.0"></script>
 <script src="./voca-app-v33-1.js?v=36.1.0"></script>
 <script src="./voca-app-v33-2.js?v=36.1.0"></script>
-<script src="./voca-app-v33-3.js?v=36.1.0"></script>
+<script src="./voca-app-v33-3.js?v=37.0.1"></script>
 </body>
 </html>
