@@ -1277,6 +1277,25 @@ body.v37-ready>.app.mobile-paged>.main,body.v37-ready>.app.mobile-paged>.summary
 .v37-hub-copy{min-width:0;flex:1}.v37-hub-copy b{display:block;font-size:13px}.v37-hub-copy small{display:block;margin-top:4px;color:#86a8a4;font-size:8px;line-height:1.45}
 .v37-hub-arrow{color:#6aa39f;font-size:18px}
 .v37-hub-status{margin-top:10px;min-height:34px;padding:9px 11px;border:1px solid #1f4247;border-radius:12px;background:#071b20;color:#88aaa6;font-size:8px;line-height:1.5}
+.v37-hub-section{margin-top:12px}
+.v37-hub-section-head{display:flex;align-items:end;justify-content:space-between;gap:10px;margin:0 2px 7px}
+.v37-hub-section-head b{font-size:11px;color:#e5faf7;letter-spacing:-.02em}
+.v37-hub-section-head small{font-size:7px;color:#668d89}
+.v37-intent-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+.v37-intent-card{min-width:0;min-height:66px;padding:9px 10px;border:1px solid #1f4c51;border-radius:14px;background:#08272c;color:#e8fbf8;text-align:left}
+.v37-intent-card b{display:block;font-size:10px}.v37-intent-card small{display:block;margin-top:3px;color:#7fa5a1;font-size:7px;line-height:1.4}
+.v37-quick-row{display:flex;gap:7px;overflow-x:auto;overflow-y:hidden;padding:1px 0 5px;scrollbar-width:none}
+.v37-quick-row::-webkit-scrollbar{display:none}
+.v37-quick-chip{flex:0 0 auto;min-height:34px;max-width:210px;padding:0 11px;border:1px solid #244f54;border-radius:999px;background:#09262b;color:#d9f5f1;display:flex;align-items:center;gap:7px;font-size:8px;font-weight:900}
+.v37-quick-chip i{font-style:normal;color:#6fe1d4}.v37-quick-chip small{font-size:7px;color:#789c98;font-weight:700}
+.v37-hub-grid[data-kind="manage"]{grid-template-columns:repeat(2,minmax(0,1fr))}
+.v37-hub-card[data-feature-id] .v37-use-badge{display:none;margin-left:5px;padding:2px 5px;border-radius:999px;background:#133d42;color:#83d9cf;font-size:6px;font-weight:900;vertical-align:1px}
+.v37-hub-card[data-frequent="1"] .v37-use-badge{display:inline-flex}
+@media(max-width:699px){
+  .v37-intent-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .v37-intent-card{min-height:62px}
+}
+
 .v37-core-page{width:100%;max-width:1160px;margin:0 auto;padding:8px 0 24px;box-sizing:border-box}
 .v37-core-page>.v37-native-head{margin-bottom:10px}
 body.v37-ready .v37-archive-page #filterControls{display:grid!important;margin:0 0 9px!important}
@@ -1535,7 +1554,7 @@ body.v37-ready .v37-search-page .results-toolbar{border:1px solid #18393e;border
     </details>
   </section>
 
-  <div class="footer">v37.4.1 · 발굴 원곡 검증 · 무관 영상 차단 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v37.5.0 · 탐색 허브 개인화 · 최근/자주 사용 · 설치형 웹앱 · 자동 업데이트 · 업데이트 로그 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -5243,10 +5262,30 @@ window.addEventListener("unhandledrejection",function(e){
 });
 function markFeatureUse37(id){
   try{
-    const key="vsa37FeatureHistory",now=Date.now(),old=JSON.parse(localStorage.getItem(key)||"[]");
+    const now=Date.now(),historyKey="vsa37FeatureHistory",statsKey="vsa37FeatureStats";
+    const old=JSON.parse(localStorage.getItem(historyKey)||"[]");
     const next=[{id:id,at:now}].concat(old.filter(function(x){return x&&x.id!==id})).slice(0,12);
-    localStorage.setItem(key,JSON.stringify(next))
+    localStorage.setItem(historyKey,JSON.stringify(next));
+    const stats=JSON.parse(localStorage.getItem(statsKey)||"{}");
+    const prev=stats[id]||{count:0,last:0};
+    stats[id]={count:(+prev.count||0)+1,last:now};
+    localStorage.setItem(statsKey,JSON.stringify(stats));
+    if(typeof refreshHub37==="function")refreshHub37()
   }catch(_){}
+}
+function featureHistory37(){
+  try{return JSON.parse(localStorage.getItem("vsa37FeatureHistory")||"[]").filter(function(x){return x&&VSA37_FEATURES[x.id]})}catch(_){return[]}
+}
+function featureStats37(){
+  try{return JSON.parse(localStorage.getItem("vsa37FeatureStats")||"{}")}catch(_){return{}}
+}
+function frequentFeatures37(limit){
+  const stats=featureStats37();
+  return Object.keys(stats).filter(function(id){return VSA37_FEATURES[id]&&!["settings","diagnostics"].includes(id)})
+    .sort(function(a,b){
+      const A=stats[a]||{},B=stats[b]||{};
+      return (+B.count||0)-(+A.count||0)||(+B.last||0)-(+A.last||0)
+    }).slice(0,limit||4)
 }
 function featureIdForRoute37(view){
   const hit=Object.values(VSA37_FEATURES).find(function(x){return x.route===view});
@@ -5279,7 +5318,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:"37.4.0",
+    version:"37.5.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -5288,6 +5327,8 @@ async function collectDiagnostics37(){
     errors:(window.__VSA37_ERRORS||[]).slice(-5),
     loader:window.VSAFeatureLoaderStatus?window.VSAFeatureLoaderStatus():null,
     sourceRejectStats:(typeof state!=="undefined"&&state.sourceRejectStats)?state.sourceRejectStats:{},
+    featureStats:featureStats37(),
+    featureHistory:featureHistory37(),
     serviceWorker:{supported:"serviceWorker" in navigator,controlled:!!navigator.serviceWorker?.controller,script:navigator.serviceWorker?.controller?.scriptURL||""},
     caches:[]
   };
@@ -5743,7 +5784,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="37.4.1",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
+var VER="37.5.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -5779,32 +5820,90 @@ function similar(id){
 async function refresh(){if(busy)return;busy=true;render();try{if(window.VSAHome28&&VSAHome28.refreshSection)await VSAHome28.refreshSection(active);else if(typeof fetchNico==="function"){var opts=active==="NEW"?{year:"all",limit:24,offset:0,mode:"ranking",sort:"-startTime"}:active==="DEEP"?{year:"all",limit:80,offset:0,mode:"ranking",sort:"+viewCounter",numericFilters:{viewCounter:{gte:100,lte:50000}}}:{year:"all",limit:40,offset:0,mode:"ranking",sort:"-viewCounter"};var d=await fetchNico(opts),f=currentFeed(),arr=(d.data||[]).sort(function(){return Math.random()-.5}).slice(0,12);f[k(active)]=arr;S(HK,f)}}catch(e){}busy=false;render()}
 function openView(name){if(window.VSAV33&&VSAV33.openView){VSAV33.openView(name);return}try{openToolsModal(name)}catch(e){}}
 function setDock(v){document.querySelectorAll(".v37-dock button").forEach(function(b){b.classList.toggle("active",b.dataset.v37===v)})}
+function featureIcon37(id){
+  return {archive:"◇",detective:"?",gems:"◆",guide:"✦",taste:"♡",universe:"✺",producer:"P",search:"⌕",library:"▣",settings:"⚙",diagnostics:"＋"}[id]||"•"
+}
+function featureDesc37(id){
+  return {
+    archive:"조회수 층과 모집단 통계 탐색",
+    detective:"가사·PV·시기 기억으로 잊은 곡 찾기",
+    gems:"묻힌 반응 좋은 원곡 발굴",
+    guide:"입문부터 심화까지 추천 코스",
+    taste:"분위기·장르·보컬·시대로 추천",
+    universe:"한 곡에서 비슷한 곡으로 확장",
+    producer:"프로듀서별 곡·활동 탐색",
+    search:"곡명·P명·보컬·태그 일반 검색",
+    settings:"Worker 연결과 기술 설정",
+    diagnostics:"멈춤·캐시·모듈 상태 확인"
+  }[id]||""
+}
+function featureButton37(id){
+  const f=VSA37_FEATURES[id];if(!f)return"";
+  const adv=id==="producer"?' data-v37-advanced="producer"':' data-v37-open="'+f.route+'"';
+  return '<button class="v37-hub-card" type="button" data-feature-id="'+id+'"'+adv+'><span class="v37-hub-icon">'+featureIcon37(id)+'</span><span class="v37-hub-copy"><b>'+f.label+'<span class="v37-use-badge">자주 사용</span></b><small>'+featureDesc37(id)+'</small></span><span class="v37-hub-arrow">›</span></button>'
+}
+function openFeatureById37(id){
+  const f=VSA37_FEATURES[id];if(!f)return;
+  ensureCorePages37();
+  if(id==="detective"){openDetective37();return}
+  if(id==="producer"){openProducer37();return}
+  if(id==="library"){
+    const btn=document.querySelector('.v37-dock button[data-v37="library"]');if(btn)btn.click();return
+  }
+  openToolsModal(f.route)
+}
+function quickChip37(id,label,meta){
+  const f=VSA37_FEATURES[id];if(!f)return"";
+  return '<button type="button" class="v37-quick-chip" data-v37-feature-id="'+id+'"><i>'+featureIcon37(id)+'</i><span>'+label+'</span>'+(meta?'<small>'+meta+'</small>':'')+'</button>'
+}
+function refreshHub37(){
+  const v=document.querySelector('[data-tool-view="hub37"]');if(!v)return;
+  const recentBox=v.querySelector("#v37RecentFeatures"),freqBox=v.querySelector("#v37FrequentFeatures");
+  const history=featureHistory37().filter(function(x){return !["settings","diagnostics"].includes(x.id)}).slice(0,5);
+  const stats=featureStats37(),freq=frequentFeatures37(4);
+  if(recentBox)recentBox.innerHTML=history.length?history.map(function(x){
+    const f=VSA37_FEATURES[x.id];return quickChip37(x.id,f.label,"최근")
+  }).join(""):'<span style="font-size:8px;color:#6c918d">기능을 사용하면 최근 기록이 여기에 표시됩니다.</span>';
+  if(freqBox)freqBox.innerHTML=freq.length?freq.map(function(id){
+    const f=VSA37_FEATURES[id],n=(stats[id]&&stats[id].count)||0;return quickChip37(id,f.label,n+"회")
+  }).join(""):'<span style="font-size:8px;color:#6c918d">사용 횟수가 쌓이면 자주 쓰는 기능을 자동으로 보여줍니다.</span>';
+  v.querySelectorAll(".v37-hub-card[data-feature-id]").forEach(function(card){
+    card.dataset.frequent=freq.includes(card.dataset.featureId)?"1":"0"
+  })
+}
 function ensureHub37(){
   var body=document.querySelector("#toolsModal .tools-body");
   if(!body)return null;
   var v=body.querySelector('[data-tool-view="hub37"]');
-  if(v)return v;
+  if(v){refreshHub37();return v}
   v=document.createElement("section");
   v.className="tool-view v37-native-hub";
   v.dataset.toolView="hub37";
   v.innerHTML=
-    '<div class="v37-native-head"><small>VOCALO SUPPORT</small><h2>탐색</h2><p>원하는 작업을 바로 엽니다. 무거운 기능 묶음을 먼저 불러오지 않습니다.</p></div>'+
-    '<div class="v37-hub-grid">'+
-      '<button class="v37-hub-card" type="button" data-v37-open="archive29"><span class="v37-hub-icon">◇</span><span class="v37-hub-copy"><b>빙산 · 통계</b><small>조회수 층과 모집단 통계 탐색</small></span><span class="v37-hub-arrow">›</span></button>'+
-      '<button class="v37-hub-card" type="button" data-v37-open="detective"><span class="v37-hub-icon">?</span><span class="v37-hub-copy"><b>기억 복원 탐정</b><small>가사·PV·시기 같은 기억으로 잊은 곡 찾기</small></span><span class="v37-hub-arrow">›</span></button>'+
-      '<button class="v37-hub-card" type="button" data-v37-open="gems"><span class="v37-hub-icon">◆</span><span class="v37-hub-copy"><b>숨은 곡 발굴</b><small>조회수 아래 묻힌 반응 좋은 곡 찾기</small></span><span class="v37-hub-arrow">›</span></button>'+
-      '<button class="v37-hub-card" type="button" data-v37-open="guide"><span class="v37-hub-icon">✦</span><span class="v37-hub-copy"><b>노래 추천</b><small>입문부터 깊은 발굴까지 조건을 섞어 추천</small></span><span class="v37-hub-arrow">›</span></button>'+
-      '<button class="v37-hub-card" type="button" data-v37-open="taste"><span class="v37-hub-icon">♡</span><span class="v37-hub-copy"><b>내 취향 추천</b><small>분위기·장르·보컬·시대 조건으로 추천</small></span><span class="v37-hub-arrow">›</span></button>'+
-      '<button class="v37-hub-card" type="button" data-v37-open="universe29"><span class="v37-hub-icon">✺</span><span class="v37-hub-copy"><b>보카로 우주</b><small>한 곡을 중심으로 비슷한 곡 연결</small></span><span class="v37-hub-arrow">›</span></button>'+
-      '<button class="v37-hub-card" type="button" data-v37-advanced="producer"><span class="v37-hub-icon">P</span><span class="v37-hub-copy"><b>프로듀서 허브</b><small>프로듀서별 탐색과 팔로우</small></span><span class="v37-hub-arrow">›</span></button>'+
-      '<button class="v37-hub-card" type="button" data-v37-open="settings29"><span class="v37-hub-icon">⚙</span><span class="v37-hub-copy"><b>설정</b><small>Worker 연결과 기술 설정</small></span><span class="v37-hub-arrow">›</span></button>'+
-      '<button class="v37-hub-card" type="button" data-v37-open="diagnostics37"><span class="v37-hub-icon">＋</span><span class="v37-hub-copy"><b>진단 센터</b><small>멈춤·빈 화면·캐시·모듈 상태 확인</small></span><span class="v37-hub-arrow">›</span></button>'+
-    '</div><div class="v37-hub-status" id="v37HubStatus">탐색 메뉴는 즉시 사용할 수 있습니다.</div>';
+    '<div class="v37-native-head"><small>VOCALO SUPPORT</small><h2>탐색</h2><p>하고 싶은 일부터 고르거나, 최근·자주 쓰는 기능으로 바로 이동하세요.</p></div>'+
+    '<section class="v37-hub-section"><div class="v37-hub-section-head"><b>지금 뭐 하고 싶어?</b><small>목적별 바로가기</small></div>'+
+      '<div class="v37-intent-grid">'+
+        '<button class="v37-intent-card" type="button" data-v37-feature-id="detective"><b>잊은 곡 찾기</b><small>기억나는 장면·가사·시기로 추적</small></button>'+
+        '<button class="v37-intent-card" type="button" data-v37-feature-id="gems"><b>새로운 심해곡 찾기</b><small>조회수 아래 묻힌 원곡 발굴</small></button>'+
+        '<button class="v37-intent-card" type="button" data-v37-feature-id="guide"><b>뭘 들을지 모르겠어</b><small>입문·중급·심화 추천 코스</small></button>'+
+        '<button class="v37-intent-card" type="button" data-v37-feature-id="search"><b>곡을 직접 찾기</b><small>제목·P명·보컬·태그 검색</small></button>'+
+      '</div></section>'+
+    '<section class="v37-hub-section"><div class="v37-hub-section-head"><b>최근 사용</b><small>기기 내 기록</small></div><div class="v37-quick-row" id="v37RecentFeatures"></div></section>'+
+    '<section class="v37-hub-section"><div class="v37-hub-section-head"><b>자주 쓰는 기능</b><small>사용 횟수 기반</small></div><div class="v37-quick-row" id="v37FrequentFeatures"></div></section>'+
+    '<section class="v37-hub-section"><div class="v37-hub-section-head"><b>모든 탐색 기능</b><small>발굴·추천·분석</small></div><div class="v37-hub-grid">'+
+      ["archive","detective","gems","guide","taste","universe","producer"].map(featureButton37).join("")+
+    '</div></section>'+
+    '<section class="v37-hub-section"><div class="v37-hub-section-head"><b>관리</b><small>설정·문제 해결</small></div><div class="v37-hub-grid" data-kind="manage">'+
+      ["settings","diagnostics"].map(featureButton37).join("")+
+    '</div></section>'+
+    '<div class="v37-hub-status" id="v37HubStatus">탐색 메뉴는 즉시 사용할 수 있습니다.</div>';
   body.prepend(v);
+  refreshHub37();
   return v
 }
 function openHub37(){
   ensureHub37();
+  refreshHub37();
   openToolsModal("hub37")
 }
 function openProducer37(){
@@ -5871,6 +5970,8 @@ function init(){
       if(v==="PRODUCER"){setDock("explore");openHub37();openProducer37();return}
       active=v;localStorage.setItem(AK,v);render();return
     }
+    var featureOpen=e.target.closest("[data-v37-feature-id]");
+    if(featureOpen){openFeatureById37(featureOpen.dataset.v37FeatureId);return}
     var hubOpen=e.target.closest("[data-v37-open]");
     if(hubOpen){
       ensureCorePages37();
@@ -5939,15 +6040,15 @@ var groups={};
 function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
-  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=37.4.1","./detective-v12.js?v=37.4.1","./detective-v13.js?v=37.4.1","./detective-v14.js?v=37.4.1","./detective-v16.js?v=37.4.1"]);
-  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=37.4.1","./smart-v23.js?v=37.4.1","./playlist-v24.js?v=37.4.1"]);
-  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=37.4.1");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=37.4.1");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=37.4.1");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=37.4.1");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=37.4.1");
+  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=37.5.0","./detective-v12.js?v=37.5.0","./detective-v13.js?v=37.5.0","./detective-v14.js?v=37.5.0","./detective-v16.js?v=37.5.0"]);
+  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=37.5.0","./smart-v23.js?v=37.5.0","./playlist-v24.js?v=37.5.0"]);
+  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=37.5.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=37.5.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=37.5.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=37.5.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=37.5.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
-    return seq(["./voca-app-v33.js?v=37.4.1","./voca-app-v33-1.js?v=37.4.1","./voca-app-v33-2.js?v=37.4.1","./voca-app-v33-3.js?v=37.4.1"]);
+    return seq(["./voca-app-v33.js?v=37.5.0","./voca-app-v33-1.js?v=37.5.0","./voca-app-v33-2.js?v=37.5.0","./voca-app-v33-3.js?v=37.5.0"]);
   });
   else groups[name]=Promise.resolve(false);
   groups[name]=Promise.resolve(groups[name]).then(function(v){
