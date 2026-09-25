@@ -2700,6 +2700,11 @@ body[data-vsa-theme="light"] .v3911-theme-toggle{background:#fff!important;borde
   body.v37-ready .tools-modal[data-current-view="songDetail39"] .v399-watch-info h2{font-size:40px!important}
 }
 </style>
+<style id="v3914RouteSafety">
+body.v37-ready #toolsModal .tool-view[hidden],
+body.v37-ready #toolsModal .tool-view:not(.active){display:none!important}
+body.v37-ready #toolsModal .tool-view.active{display:block!important}
+</style>
 </head>
 <body>
 <div class="app">
@@ -2920,7 +2925,7 @@ body[data-vsa-theme="light"] .v3911-theme-toggle{background:#fff!important;borde
     </details>
   </section>
 
-  <div class="footer">v39.13.0 · Home 3.0 · Search 4.0 · Watch 1.3 · Nav fix · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.14.0 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -6997,7 +7002,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:"39.13.0",
+    version:"39.14.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -7878,25 +7883,28 @@ function openDetective37(){
 
 function setToolView(name){
   var prev=window.__VSA37_CURRENT_ROUTE,modal=document.getElementById("toolsModal");
-  if(prev==="songDetail39"&&name!=="songDetail39")stopWatchInline399(false);
+  var views=Array.from(document.querySelectorAll("#toolsModal .tool-view")),target=views.find(function(v){return v.dataset.toolView===name})||null;
+  if(!target)return false;
+
   document.querySelectorAll("#toolsTabs button").forEach(function(b){b.classList.toggle("active",b.dataset.tool===name)});
-  var views=Array.from(document.querySelectorAll("#toolsModal .tool-view")),target=null;
   views.forEach(function(v){
-    var on=v.dataset.toolView===name;
+    var on=v===target;
     v.classList.toggle("active",on);
-    if(on)target=v
+    v.hidden=!on;
+    if(on)v.style.removeProperty("display");
+    else v.style.setProperty("display","none","important");
   });
+
   if(modal){
     modal.hidden=false;
     modal.dataset.currentView=name;
   }
   window.__VSA37_CURRENT_ROUTE=name;
-  if(target){
-    target.hidden=false;
-    target.style.removeProperty("display");
-  }
+
+  // Stop Watch only after the destination is already visible.
+  if(prev==="songDetail39"&&name!=="songDetail39")stopWatchInline399(false);
   if(name==="songDetail39")setTimeout(ensureWatch399,0);
-  return !!target
+  return true
 }
 function mountToolsPage37(){
   const modal=$("#toolsModal"), app=document.querySelector(".app"), top=app?.querySelector(":scope > .topbar");
@@ -7942,11 +7950,12 @@ function openToolsModal(view="hub37"){
 }
 function closeToolsModal(){
   healPageLocks37();
-  if(window.__VSA37_CURRENT_ROUTE==="songDetail39")stopWatchInline399(false);
+  const wasWatch=window.__VSA37_CURRENT_ROUTE==="songDetail39";
   const modal=$("#toolsModal");
   if(!modal)return;
   modal.hidden=true;
   document.body.classList.remove("tools-open");
+  if(wasWatch)stopWatchInline399(false);
   document.body.style.removeProperty("overflow");
   document.documentElement.style.removeProperty("overflow");
   if(typeof setDock==="function")setDock("home");
@@ -8246,7 +8255,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.13.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
+var VER="39.14.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -9126,13 +9135,19 @@ function initTheme3911(){
 function forceDockRoute3913(view){
   var modal=document.getElementById("toolsModal"),target=document.querySelector('#toolsModal .tool-view[data-tool-view="'+view+'"]');
   if(!modal||!target)return false;
+  var prev=window.__VSA37_CURRENT_ROUTE;
+  document.querySelectorAll("#toolsModal .tool-view").forEach(function(v){
+    var on=v===target;
+    v.classList.toggle("active",on);
+    v.hidden=!on;
+    if(on)v.style.removeProperty("display");
+    else v.style.setProperty("display","none","important");
+  });
   modal.hidden=false;
   document.body.classList.add("tools-open");
-  document.querySelectorAll("#toolsModal .tool-view").forEach(function(v){v.classList.toggle("active",v===target)});
-  target.hidden=false;
-  target.style.removeProperty("display");
   modal.dataset.currentView=view;
   window.__VSA37_CURRENT_ROUTE=view;
+  if(prev==="songDetail39"&&view!=="songDetail39")stopWatchInline399(false);
   window.scrollTo({top:0,behavior:"auto"});
   return true
 }
@@ -9155,32 +9170,29 @@ function dock(){
     var b=e.target.closest("button[data-v37]");if(!b)return;
     e.preventDefault();e.stopPropagation();
     var v=b.dataset.v37;
-    if(window.__VSA37_CURRENT_ROUTE==="songDetail39")stopWatchInline399(false);
 
     if(v==="home"){
-      try{closeToolsModal()}catch(_){
-        var m=document.getElementById("toolsModal");if(m)m.hidden=true;
-        document.body.classList.remove("tools-open");
-        window.__VSA37_CURRENT_ROUTE="home";
-      }
+      var m=document.getElementById("toolsModal");
+      var wasWatch=window.__VSA37_CURRENT_ROUTE==="songDetail39";
+      if(m)m.hidden=true;
+      document.body.classList.remove("tools-open");
+      window.__VSA37_CURRENT_ROUTE="home";
+      if(wasWatch)stopWatchInline399(false);
       setDock("home");
       document.getElementById("v37Home")?.scrollIntoView({block:"start"});
       return
     }
 
     if(v==="explore"){
-      try{ensureHub37()}catch(_){}
-      openToolsModal("hub37");
-      forceDockRoute3913("hub37");
-      try{refreshHub37()}catch(_){}
+      try{ensureHub37();refreshHub37()}catch(_){}
+      if(!forceDockRoute3913("hub37")){try{openToolsModal("hub37")}catch(_){}}
       setDock("explore");verifyDockRoute3913("hub37","explore");
       return
     }
 
     if(v==="universe"){
       try{ensureCorePages37()}catch(_){}
-      openToolsModal("universe29");
-      forceDockRoute3913("universe29");
+      if(!forceDockRoute3913("universe29")){try{openToolsModal("universe29")}catch(_){}}
       setDock("universe");
       if(window.VSAEnsureFeatures)Promise.resolve(VSAEnsureFeatures("universe")).catch(function(){});
       try{ensureUniverseToolbar39()}catch(_){}
@@ -9190,8 +9202,7 @@ function dock(){
 
     if(v==="personal"){
       try{ensurePersonalHub395();renderPersonalHub395()}catch(_){}
-      openToolsModal("personal395");
-      forceDockRoute3913("personal395");
+      if(!forceDockRoute3913("personal395")){try{openToolsModal("personal395")}catch(_){}}
       setDock("personal");
       if(window.VSAEnsureFeatures)Promise.allSettled([VSAEnsureFeatures("personal"),VSAEnsureFeatures("v33")]).then(function(){try{renderPersonalHub395()}catch(_){}});
       verifyDockRoute3913("personal395","personal");
@@ -9361,15 +9372,15 @@ var groups={};
 function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
-  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.13.0","./detective-v12.js?v=39.13.0","./detective-v13.js?v=39.13.0","./detective-v14.js?v=39.13.0","./detective-v16.js?v=39.13.0"]);
-  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.13.0","./smart-v23.js?v=39.13.0","./playlist-v24.js?v=39.13.0"]);
-  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.13.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.13.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.13.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.13.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.13.0");
+  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.14.0","./detective-v12.js?v=39.14.0","./detective-v13.js?v=39.14.0","./detective-v14.js?v=39.14.0","./detective-v16.js?v=39.14.0"]);
+  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.14.0","./smart-v23.js?v=39.14.0","./playlist-v24.js?v=39.14.0"]);
+  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.14.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.14.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.14.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.14.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.14.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
-    return seq(["./voca-app-v33.js?v=39.13.0","./voca-app-v33-1.js?v=39.13.0","./voca-app-v33-2.js?v=39.13.0","./voca-app-v33-3.js?v=39.13.0"]);
+    return seq(["./voca-app-v33.js?v=39.14.0","./voca-app-v33-1.js?v=39.14.0","./voca-app-v33-2.js?v=39.14.0","./voca-app-v33-3.js?v=39.14.0"]);
   });
   else groups[name]=Promise.resolve(false);
   groups[name]=Promise.resolve(groups[name]).then(function(v){
