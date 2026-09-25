@@ -1,4 +1,4 @@
-/* Voice Synth Archive Organizer v22
+/* Voice Synth Archive Organizer v22.0.1
  * Library, recent history, detective cases and candidate comparison.
  */
 (function(){
@@ -551,6 +551,8 @@ function bindUi(){
     const t=e.target.closest?e.target.closest("button,a"):null;
     if(!t)return;
     if(t.id==="apiSearchBtn")recordSearch();
+    if(t.matches('#toolsTabs [data-tool="library22"]')){e.preventDefault();setToolView("library22");renderLibrary();return}
+    if(t.dataset.v22Libview){e.preventDefault();currentLibraryView=t.dataset.v22Libview;setToolView("library22");renderLibrary();return}
     if(t.matches(".v22-compare-btn")){e.preventDefault();toggleCompare(t.dataset.songId);return}
     if(t.dataset.v22Open){e.preventDefault();openSong(t.dataset.v22Open);return}
     if(t.dataset.v22Universe){e.preventDefault();openSavedUniverse(t.dataset.v22Universe);return}
