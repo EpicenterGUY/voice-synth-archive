@@ -1,7 +1,7 @@
 /* Voice Synth Archive Voca Support Home v28 */
 (function(){
 "use strict";
-var CK="vsa.home.v28",OK="vsa.organizer.v22",SK="vsa.smart.v23",REFRESH_KEY="vsa.home.refresh.v31",feed=null,busy=false;
+var CK="vsa.home.v28",OK="vsa.organizer.v22",SK="vsa.smart.v23",REFRESH_KEY="vsa.home.refresh.v31",feed=null,busy=false,busySince=0;
 function esc(v){return String(v==null?"":v).replace(/[&<>"\']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","\'":"&#39;"}[m]})}
 function fmt(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function day(){var d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
@@ -114,10 +114,60 @@ async function refreshAll(){
   if(btn){btn.disabled=true;btn.textContent="전체 갱신 중…"}
   try{bumpAll();await loadFeed(true)}finally{var b=document.getElementById("v28Refresh");if(b){b.disabled=false;b.textContent="전체 새로고침"}}
 }
-function bindLocal(){var a=document.getElementById("v28SearchBtn");if(a)a.onclick=search;var i=document.getElementById("v28SearchInput");if(i)i.onkeydown=function(e){if(e.key==="Enter")search()};var m=document.getElementById("v28MenuBtn");if(m)m.onclick=menu;var o=document.getElementById("v28OpenMenu");if(o)o.onclick=menu;var r=document.getElementById("v28Refresh");if(r){r.textContent="전체 새로고침";r.onclick=refreshAll}document.querySelectorAll("[data-v28-refresh]").forEach(function(b){b.onclick=function(){refreshSection(b.dataset.v28Refresh)}})}
+function bindLocal(){var a=document.getElementById("v28SearchBtn");if(a)a.onclick=search;var i=document.getElementById("v28SearchInput");if(i)i.onkeydown=function(e){if(e.key==="Enter")search()};var m=document.getElementById("v28MenuBtn");if(m)m.onclick=menu;var o=document.getElementById("v28OpenMenu");if(o)o.onclick=menu;var r=document.getElementById("v28Refresh");if(r){r.textContent="전체 새로고침";r.onclick=refreshAll}var retry=document.getElementById("v28Retry");if(retry)retry.onclick=function(){loadFeed(true)};document.querySelectorAll("[data-v28-refresh]").forEach(function(b){b.onclick=function(){refreshSection(b.dataset.v28Refresh)}})}
 function addStyle(){var s=document.createElement("style");s.id="v28Style";s.textContent="\n.v28-home{margin:10px 0 14px}.v28-hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(340px,.95fr);gap:12px;padding:14px;border:1px solid #1f464b;border-radius:24px;background:radial-gradient(circle at 15% 0,rgba(111,229,219,.13),transparent 34%),linear-gradient(135deg,#0a2429,#08191f 65%,#0a1721);box-shadow:0 22px 65px #0005}.v28-hero-copy{padding:14px 12px}.v28-kicker{font-size:8px;font-weight:950;letter-spacing:.14em;color:#72ddd4}.v28-hero h2{margin:8px 0 5px;font-size:clamp(26px,4vw,44px);letter-spacing:-.05em}.v28-hero p{margin:0;color:#88aaa7;font-size:11px}.v28-search{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:7px;margin-top:17px}.v28-search button,.v28-homebar button{min-height:42px;border:1px solid #2d5960;border-radius:12px;padding:0 13px;background:linear-gradient(135deg,#70e6dc,#79aafa);color:#061316;font-weight:900}.v28-search .secondary,.v28-homebar button{background:#0d2b31;color:#d9f4f0}.v28-signals{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px;font-size:8px;color:#719592}.v28-signals span{padding:4px 7px;border:1px solid #255057;border-radius:999px;background:#0a252b;color:#9dccca}\n.v28-pick{position:relative;min-height:230px;border-radius:18px;overflow:hidden;background:#07161b;color:#fff;text-decoration:none}.v28-pick img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}.v28-pick-shade{position:absolute;inset:0;background:linear-gradient(180deg,transparent 28%,rgba(2,10,13,.88) 100%)}.v28-pick-copy{position:absolute;left:15px;right:15px;bottom:14px}.v28-pick-copy small{display:block;font-size:8px;color:#86e4db;font-weight:900}.v28-pick-copy b{display:block;margin-top:4px;font-size:18px}.v28-pick-copy span{display:block;margin-top:4px;font-size:8px;color:#acc7c4}.v28-pick-empty{display:grid;place-items:center;color:#7fa19e;text-align:center}\n.v28-homebar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:13px 2px 8px}.v28-homebar>b{font-size:18px}.v28-homebar>div{display:flex;gap:5px}.v28-homebar button{min-height:34px;font-size:8px;padding:0 10px}.v28-rail{margin:8px 0 16px}.v28-rail-head{display:flex;justify-content:space-between;align-items:flex-end;margin:0 3px 7px}.v28-rail-head h3{margin:0;font-size:16px}.v28-rail-head p{margin:3px 0 0;color:#739794;font-size:8px}.v28-rail-mark{font-size:7px;font-weight:950;letter-spacing:.14em;color:#69cfc7}.v32-rail-actions{display:flex;align-items:center;gap:6px}.v32-refresh{min-height:30px;padding:0 9px;border:1px solid #285159;border-radius:9px;background:#0d2b31;color:#bfe5df;font-size:7px;font-weight:900}.v32-refresh:disabled{opacity:.55}.v28-cards{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(190px,1fr);gap:9px;overflow-x:auto;padding:2px 2px 7px;scroll-snap-type:x proximity}.v28-card{scroll-snap-align:start;min-width:0}.v28-thumb{display:block;position:relative;aspect-ratio:16/9;border-radius:13px;overflow:hidden;background:#0b252b}.v28-thumb img{width:100%;height:100%;object-fit:cover}.v28-play{position:absolute;right:8px;bottom:7px;width:31px;height:31px;display:grid;place-items:center;border-radius:50%;background:#e8fffb;color:#082027;font-size:10px}.v28-card-body{padding:7px 3px}.v28-title{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:#eaf9f6;text-decoration:none;font-size:10px;font-weight:850;line-height:1.35;min-height:27px}.v28-meta{margin-top:4px;font-size:7px;color:#70918f}.v28-tags{display:flex;gap:4px;margin-top:5px;overflow:hidden}.v28-tags span{font-size:6px;padding:3px 5px;border-radius:999px;background:#0d292f;color:#83b6b1;white-space:nowrap}.v28-card-actions{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}.v28-card-actions button{min-height:28px;border:1px solid #254a50;border-radius:8px;background:#0a2227;color:#9fc5c1;font-size:7px;padding:0 7px}.v28-card-actions .v28-dislike{border-color:#503740;color:#cfa7ad;background:#25171b}.v28-empty{min-height:120px;display:grid;place-items:center;color:#6f9290;font-size:9px;border:1px dashed #24474d;border-radius:13px;text-align:center;padding:12px}\n@media(min-width:1100px){.v28-cards{grid-auto-columns:calc((100% - 45px)/6)}}@media(max-width:699px){.v28-home{margin:7px 0 10px}.v28-hero{grid-template-columns:1fr;padding:10px;border-radius:18px}.v28-hero-copy{padding:8px 5px 2px}.v28-hero h2{font-size:27px}.v28-hero p{font-size:9px}.v28-search{grid-template-columns:1fr auto;margin-top:12px}.v28-search input{grid-column:1/-1}.v28-search button{min-height:40px;font-size:9px}.v28-pick{min-height:190px}.v28-homebar>b{font-size:15px}.v28-cards{grid-auto-columns:72vw}.v28-rail-head h3{font-size:14px}.v28-rail-head p{font-size:7px}}\n";document.head.appendChild(s)}
 function build(){if(document.getElementById("v28Home"))return;var r=document.createElement("section");r.id="v28Home";r.className="v28-home";r.innerHTML='<div class="v28-empty">오늘의 보카로 피드를 준비하는 중…</div>';var a=document.querySelector(".v26-filter-shell")||document.getElementById("foldFilterToggle")||document.querySelector(".summary");if(a)a.parentNode.insertBefore(r,a);else{var app=document.querySelector(".app");if(app)app.appendChild(r)}}
-async function loadFeed(force){if(busy)return;busy=true;var root=document.getElementById("v28Home");if(force&&root)root.innerHTML='<div class="v28-empty">추천 피드를 새로 계산하는 중…</div>';try{var c=load(CK,null);if(!force&&c&&c.date===day()){render(c);return}if(typeof relayBase==="function"&&!relayBase()){var p=pool(),pages=refreshState(),pm=pref(),sortedNew=p.filter(function(s){return s.startTime}).sort(function(a,b){return new Date(b.startTime)-new Date(a.startTime)}),newStart=(pages.newer*12)%Math.max(1,sortedNew.length),localNew=sortedNew.slice(newStart,newStart+12);if(localNew.length<12)localNew=localNew.concat(sortedNew.slice(0,12-localNew.length));var f={date:day(),at:Date.now(),daily:shuffle(p,hash(day()+"-daily-local-"+pages.daily)).slice(0,12),taste:shuffle(p.slice().sort(function(a,b){return tasteScore(b,pm)-tasteScore(a,pm)}).slice(0,72),hash(day()+"-taste-local-"+pages.taste)).slice(0,12),newer:localNew,hidden:shuffle(p.filter(function(s){return s.viewCounter>0&&s.viewCounter<=50000}).sort(function(a,b){return hiddenScore(b)-hiddenScore(a)}).slice(0,72),hash(day()+"-hidden-local-"+pages.hidden)).slice(0,12),signals:pm.slice(0,8).map(function(x){return x[0]}),refresh:pages};save(CK,f);render(f);return}render(await gather())}catch(e){if(root)root.innerHTML='<div class="v28-empty">추천 피드를 만들지 못했습니다.</div>'}finally{busy=false}}
+function localFeedSnapshot(){
+  var p=pool(),pages=refreshState(),pm=pref(),sortedNew=p.filter(function(s){return s.startTime}).sort(function(a,b){return new Date(b.startTime)-new Date(a.startTime)}),newStart=(pages.newer*12)%Math.max(1,sortedNew.length),localNew=sortedNew.slice(newStart,newStart+12);
+  if(localNew.length<12)localNew=localNew.concat(sortedNew.slice(0,12-localNew.length));
+  return{date:day(),at:Date.now(),daily:shuffle(p,hash(day()+"-daily-local-"+pages.daily)).slice(0,12),taste:shuffle(p.slice().sort(function(a,b){return tasteScore(b,pm)-tasteScore(a,pm)}).slice(0,72),hash(day()+"-taste-local-"+pages.taste)).slice(0,12),newer:localNew,hidden:shuffle(p.filter(function(s){return s.viewCounter>0&&s.viewCounter<=50000}).sort(function(a,b){return hiddenScore(b)-hiddenScore(a)}).slice(0,72),hash(day()+"-hidden-local-"+pages.hidden)).slice(0,12),signals:pm.slice(0,8).map(function(x){return x[0]}),refresh:pages};
+}
+function hasFeedData(x){return !!(x&&(["daily","taste","newer","hidden"].some(function(k){return Array.isArray(x[k])&&x[k].length})))}
+function withTimeout(promise,ms){
+  return Promise.race([promise,new Promise(function(_,reject){setTimeout(function(){reject(new Error("timeout"))},ms)})]);
+}
+async function loadFeed(force){
+  var now=Date.now();
+  if(busy&&now-busySince<9000)return;
+  busy=true;busySince=now;
+  var root=document.getElementById("v28Home"),cached=load(CK,null),showing=false;
+  try{
+    if(cached&&hasFeedData(cached)){
+      render(cached);showing=true;
+      if(!force&&cached.date===day())return;
+    }else{
+      var local=localFeedSnapshot();
+      if(hasFeedData(local)){render(local);showing=true}
+      else if(root&&!root.children.length)root.innerHTML='<div class="v28-empty">추천 피드를 준비하는 중…</div>';
+    }
+
+    if(typeof relayBase==="function"&&!relayBase()){
+      var fallback=localFeedSnapshot();
+      if(hasFeedData(fallback)){save(CK,fallback);render(fallback)}
+      return;
+    }
+
+    var fresh=await withTimeout(gather(),6500);
+    if(hasFeedData(fresh)){save(CK,fresh);render(fresh);return}
+
+    if(!showing){
+      var again=localFeedSnapshot();
+      if(hasFeedData(again)){save(CK,again);render(again);return}
+      if(root)root.innerHTML='<div class="v28-empty">추천 데이터를 아직 불러오지 못했습니다.<br><button class="v32-refresh" id="v28Retry" type="button">다시 시도</button></div>';
+    }
+  }catch(e){
+    var backup=load(CK,null);
+    if(backup&&hasFeedData(backup)){render(backup);try{toast("네트워크가 느려 저장된 추천을 먼저 표시합니다.")}catch(_){}}
+    else{
+      var local2=localFeedSnapshot();
+      if(hasFeedData(local2)){save(CK,local2);render(local2)}
+      else if(root)root.innerHTML='<div class="v28-empty">추천 피드 연결이 지연되고 있습니다.<br><button class="v32-refresh" id="v28Retry" type="button">다시 시도</button></div>';
+    }
+  }finally{
+    busy=false;busySince=0;
+    var retry=document.getElementById("v28Retry");if(retry)retry.onclick=function(){loadFeed(true)};
+  }
+}
 function clicks(){document.addEventListener("click",function(e){var b=e.target.closest?e.target.closest("button"):null;if(!b)return;if(b.dataset.save){keep(b.dataset.save);return}if(b.dataset.sim){similar(b.dataset.sim);return}if(b.dataset.dislike){dislike(b.dataset.dislike);return}})}
 function polish(){var n=document.querySelector('#mobileSectionNav [data-action="tools"] .v27-dock-label');if(n)n.textContent="메뉴";var s=document.querySelector(".brand .sub");if(s)s.textContent="매일 추천 · 취향 추천 · 곡 탐정 · 음성합성 아카이브"}
 var __booted=false;
