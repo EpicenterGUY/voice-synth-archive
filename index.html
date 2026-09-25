@@ -5444,10 +5444,30 @@ function reason(song,mark){if(mark==="NEW")return"최근 업로드";if(mark==="D
 function getSong(id){var f=currentFeed();for(var q of ["daily","taste","newer","hidden"]){var x=(f[q]||[]).find(function(s){return s.contentId===id});if(x)return x}return null}
 function card(x,mark){var y=x.startTime?new Date(x.startTime).getFullYear():"-";return '<article class="v37-card"><a class="v37-thumb" href="https://www.nicovideo.jp/watch/'+encodeURIComponent(x.contentId)+'" target="_blank" rel="noopener">'+(x.thumbnailUrl?'<img src="'+E(x.thumbnailUrl)+'" loading="lazy" decoding="async" alt="">':'')+'<i>▶</i></a><a class="v37-title" href="https://www.nicovideo.jp/watch/'+encodeURIComponent(x.contentId)+'" target="_blank" rel="noopener">'+E(x.title||x.contentId)+'</a><div class="v37-meta">조회 '+F(x.viewCounter||0)+' · '+y+'</div><div class="v37-reason">✦ '+E(reason(x,mark))+'</div><div class="v37-actions"><button data-v37-save="'+E(x.contentId)+'">♡ 보관</button><button data-v37-sim="'+E(x.contentId)+'">비슷한 곡</button><button class="danger" data-v37-dislike="'+E(x.contentId)+'">관심없음</button></div></article>'}
 function root(){var r=document.getElementById("v37Home");if(r)return r;r=document.createElement("main");r.id="v37Home";var top=document.querySelector(".app>.topbar"),app=document.querySelector(".app")||document.body;if(top)top.insertAdjacentElement("afterend",r);else app.prepend(r);return r}
-function render(){var r=root(),f=currentFeed(),rows=(f[k(active)]||[]).filter(Boolean),hero=rows[0]||null,list=rows.slice(hero?1:0,13),date=new Date().toLocaleDateString("ko-KR",{month:"long",day:"numeric",weekday:"short"});r.innerHTML='<div class="v37-head"><div><small>VOCALO SUPPORT v'+VER+' · '+E(date)+'</small><h1>오늘의 보카로</h1><p>추천 종류를 하나씩 골라 보는 단일 피드 홈</p></div></div><nav class="v37-tabs">'+[["DAILY","추천"],["FOR YOU","내 취향"],["NEW","신곡"],["DEEP","숨은 곡"],["PRODUCER","프로듀서"]].map(function(x){return'<button type="button" class="'+(active===x[0]?"active":"")+'" data-v37-tab="'+x[0]+'">'+x[1]+'</button>'}).join("")+'</nav>'+(hero?'<section class="v37-hero"><a href="https://www.nicovideo.jp/watch/'+encodeURIComponent(hero.contentId)+'" target="_blank" rel="noopener">'+(hero.thumbnailUrl?'<img src="'+E(hero.thumbnailUrl)+'" loading="lazy" decoding="async" alt="">':'')+'<div class="v37-shade"></div><div class="v37-hero-copy"><small>'+label(active)+' PICK</small><b>'+E(hero.title||hero.contentId)+'</b><span>조회 '+F(hero.viewCounter||0)+' · '+E(reason(hero,active))+'</span></div><span class="v37-play">▶</span></a></section>':'')+'<div class="v37-toolbar"><div><h2>'+label(active)+'</h2><small>'+sub(active)+'</small></div><button id="v37Refresh" type="button">'+(busy?"갱신 중…":"다른 곡 ↻")+'</button></div>'+(list.length?'<div class="v37-grid">'+list.map(function(x){return card(x,active)}).join("")+'</div>':'<div class="v37-empty">저장된 추천 데이터가 아직 없습니다.<br><button id="v37Refresh" type="button">추천 불러오기</button></div>')}
+function render(){var r=root(),f=currentFeed(),rows=(f[k(active)]||[]).filter(Boolean),hero=rows[0]||null,list=rows.slice(hero?1:0,13),date=new Date().toLocaleDateString("ko-KR",{month:"long",day:"numeric",weekday:"short"});r.innerHTML='<div class="v37-head"><div><small>VOCALO SUPPORT v'+VER+' · '+E(date)+'</small><h1>오늘의 보카로</h1><p>추천 종류를 하나씩 골라 보는 단일 피드 홈</p></div></div><nav class="v37-tabs">'+[["DAILY","추천"],["FOR YOU","내 취향"],["NEW","신곡"],["DEEP","숨은 곡"],["PRODUCER","프로듀서"]].map(function(x){return'<button type="button" class="'+(active===x[0]?"active":"")+'" data-v37-tab="'+x[0]+'">'+x[1]+'</button>'}).join("")+'</nav>'+(hero?'<section class="v37-hero"><a href="https://www.nicovideo.jp/watch/'+encodeURIComponent(hero.contentId)+'" target="_blank" rel="noopener">'+(hero.thumbnailUrl?'<img src="'+E(hero.thumbnailUrl)+'" loading="lazy" decoding="async" alt="">':'')+'<div class="v37-shade"></div><div class="v37-hero-copy"><small>'+label(active)+' PICK</small><b>'+E(hero.title||hero.contentId)+'</b><span>조회 '+F(hero.viewCounter||0)+' · '+E(reason(hero,active))+'</span></div><span class="v37-play">▶</span></a></section>':'')+'<div class="v37-toolbar"><div><h2>'+label(active)+'</h2><small>'+sub(active)+'</small></div><button id="v37Refresh" type="button">'+(busy?"갱신 중…":"다른 곡 ↻")+'</button></div>'+(list.length?'<div class="v37-grid">'+list.map(function(x){return card(x,active)}).join("")+'</div>':'<div class="v37-empty">저장된 추천 데이터가 아직 없습니다.<br><button data-v37-refresh type="button">추천 불러오기</button></div>')}
 function keep(id){var song=getSong(id);if(!song)return;if(window.VSAOrganizer22&&VSAOrganizer22.setSongStatus)VSAOrganizer22.setSongStatus(id,"interest",song);else{var o=L(OK,{library:{}});o.library=o.library||{};o.library[id]={status:"interest",song:song,savedAt:Date.now(),updatedAt:Date.now()};S(OK,o)}try{toast("관심곡으로 보관했습니다.")}catch(e){}}
 function dislike(id){var song=getSong(id),sm=L(SK,{feedback:{},tagPrefs:{}});sm.feedback=sm.feedback||{};sm.feedback[id]={value:-1,at:Date.now(),song:song};S(SK,sm);var f=currentFeed();["daily","taste","newer","hidden"].forEach(function(q){f[q]=(f[q]||[]).filter(function(x){return x.contentId!==id})});S(HK,f);render()}
-function similar(id){var song=getSong(id);if(!song)return;if(window.VSAV33&&VSAV33.openView)VSAV33.openView("universe29");else try{openToolsModal("universe29")}catch(e){}setTimeout(function(){try{if(typeof buildUniverse==="function")buildUniverse(song,false)}catch(e){}},40)}
+function similar(id){
+  var song=getSong(id);if(!song)return;
+  if(typeof buildUniverse==="function"){
+    try{
+      var p=document.getElementById("universePanel");
+      if(p){p.style.display="block";p.classList.add("v37-inline-universe")}
+      buildUniverse(song,false);
+      if(p)p.scrollIntoView({block:"start"});
+      return
+    }catch(e){}
+  }
+  if(typeof openHub37==="function")openHub37();
+  var st=document.getElementById("v37HubStatus");
+  if(st)st.textContent="비슷한 곡 기능을 불러오는 중…";
+  if(window.VSAEnsureFeatures){
+    Promise.all([VSAEnsureFeatures("universe"),VSAEnsureFeatures("v33")]).then(function(){
+      if(window.VSAV33&&VSAV33.openView)VSAV33.openView("explore33");
+      if(st)st.textContent="보카로 우주 기능이 준비되었습니다. 탐색에서 보카로 우주를 열어주세요."
+    })
+  }
+}
 async function refresh(){if(busy)return;busy=true;render();try{if(window.VSAHome28&&VSAHome28.refreshSection)await VSAHome28.refreshSection(active);else if(typeof fetchNico==="function"){var opts=active==="NEW"?{year:"all",limit:24,offset:0,mode:"ranking",sort:"-startTime"}:active==="DEEP"?{year:"all",limit:80,offset:0,mode:"ranking",sort:"+viewCounter",numericFilters:{viewCounter:{gte:100,lte:50000}}}:{year:"all",limit:40,offset:0,mode:"ranking",sort:"-viewCounter"};var d=await fetchNico(opts),f=currentFeed(),arr=(d.data||[]).sort(function(){return Math.random()-.5}).slice(0,12);f[k(active)]=arr;S(HK,f)}}catch(e){}busy=false;render()}
 function openView(name){if(window.VSAV33&&VSAV33.openView){VSAV33.openView(name);return}try{openToolsModal(name)}catch(e){}}
 function setDock(v){document.querySelectorAll(".v37-dock button").forEach(function(b){b.classList.toggle("active",b.dataset.v37===v)})}
@@ -5539,7 +5559,7 @@ function init(){
     if(hubOpen){openToolsModal(hubOpen.dataset.v37Open);return}
     var adv=e.target.closest("[data-v37-advanced]");
     if(adv&&adv.dataset.v37Advanced==="producer"){openProducer37();return}
-    if(e.target.id==="v37Refresh"){refresh();return}
+    if(e.target.id==="v37Refresh"||e.target.closest("[data-v37-refresh]")){refresh();return}
     var a=e.target.closest("[data-v37-save]");if(a){keep(a.dataset.v37Save);return}
     var d=e.target.closest("[data-v37-dislike]");if(d){dislike(d.dataset.v37Dislike);return}
     var q=e.target.closest("[data-v37-sim]");if(q){similar(q.dataset.v37Sim);return}
