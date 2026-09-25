@@ -383,6 +383,13 @@
   let mainMobileView="icebergPanel";
   function setMainMobileView(id){
     const app=document.querySelector(".app");
+    if(document.body.classList.contains("v37-ready")){
+      if(app)app.classList.remove("mobile-paged");
+      ["icebergPanel","resultsPanel","universePanel","settingsPanel"].forEach(function(pid){
+        const el=document.getElementById(pid);if(el)el.classList.remove("mobile-main-active");
+      });
+      return;
+    }
     if(!app||!isMobile())return;
     mainMobileView=id||"icebergPanel";
     app.classList.add("mobile-paged");
@@ -397,6 +404,10 @@
   }
 
   function wireMainMobilePager(){
+    if(document.body.classList.contains("v37-ready")){
+      const app=document.querySelector(".app");if(app)app.classList.remove("mobile-paged");
+      return;
+    }
     const nav=document.getElementById("mobileSectionNav");
     if(!nav)return;
     Array.from(nav.querySelectorAll("button")).forEach(function(old){
@@ -453,6 +464,10 @@
 
     wireMainMobilePager();
     window.addEventListener("resize",function(){
+      if(document.body.classList.contains("v37-ready")){
+        const app=document.querySelector(".app");if(app)app.classList.remove("mobile-paged");
+        return;
+      }
       if(isMobile()){
         setMobileStep(mobileStep,false);
         setMainMobileView(mainMobileView);
