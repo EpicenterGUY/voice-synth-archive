@@ -201,10 +201,11 @@ async function boot(){
       });
     }catch(e){console.warn("PWA service worker registration failed",e)}
   }
-  await checkUpdate();
+  // 첫 화면 로딩을 방해하지 않도록 업데이트 확인은 뒤로 미룹니다.
+  setTimeout(checkUpdate,8000);
   setInterval(checkUpdate,CHECK_MS);
-  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")checkUpdate()});
-  window.addEventListener("online",checkUpdate);
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")setTimeout(checkUpdate,1200)});
+  window.addEventListener("online",()=>setTimeout(checkUpdate,1200));
 }
 boot();
 })();
