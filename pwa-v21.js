@@ -1,7 +1,7 @@
 /* Voice Synth Archive PWA v21 */
 (function(){
 "use strict";
-const APP_VERSION="37.0.0";
+const APP_VERSION="37.0.1";
 const CHECK_MS=60000;
 let deferredInstall=null;
 let registration=null;
@@ -181,7 +181,8 @@ window.addEventListener("appinstalled",()=>{
   if(h)h.hidden=true;
 });
 navigator.serviceWorker?.addEventListener("controllerchange",()=>{
-  if(reloading)return;reloading=true;location.reload();
+  if(reloading)return;reloading=true;
+  setTimeout(()=>{reloading=false;showUpdate("37.0.1","업데이트 적용 준비 완료")},300);
 });
 
 async function boot(){
