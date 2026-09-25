@@ -1791,6 +1791,8 @@ body.v37-ready select option,body.v37-ready select optgroup{background:#0b252c!i
 }
 </style><style id="v39ContentShell">
 /* v39: content-first shell */
+body.v37-ready .mobile-section-nav,body.v37-ready .fold-settings-toggle{display:none!important}
+body.v37-ready #openToolsBtn{display:none!important}
 body.v37-ready>.app>.topbar{display:grid!important;grid-template-columns:auto minmax(320px,720px) auto!important;align-items:center!important;gap:18px!important}
 .v39-global-search{min-width:0;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;height:46px;padding:4px 5px 4px 13px;border:1px solid rgba(121,206,199,.22);border-radius:999px;background:rgba(7,29,35,.86);box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}
 .v39-search-icon{color:#7fa8a3;font-size:18px}.v39-global-search input{height:36px!important;min-height:36px!important;border:0!important;background:transparent!important;box-shadow:none!important;padding:0 9px!important;font-size:13px!important}.v39-global-search button{height:36px;padding:0 16px;border:0;border-radius:999px;background:#16464d;color:#eafffb;font-weight:900}
@@ -7290,7 +7292,7 @@ function render(){
     '<div class="v39-topic-chips"><button data-v39-open-explore>숨은 곡</button><button data-v39-open-universe>유사곡 우주</button><button data-v39-feature="vocalRank">보컬 순위</button><button data-v39-feature="producerDiscovery">숨은 P</button><button data-v39-feature="detective">잊은 곡 찾기</button></div>'+
     shelf39("DAILY",f.daily)+shelf39("FOR YOU",f.taste)+shelf39("NEW",f.newer)+shelf39("DEEP",f.hidden);
 }
-function keep(id){var song=getSong(id);if(!song)return;if(window.VSAOrganizer22&&VSAOrganizer22.setSongStatus)VSAOrganizer22.setSongStatus(id,"interest",song);else{var o=L(OK,{library:{}});o.library=o.library||{};o.library[id]={status:"interest",song:song,savedAt:Date.now(),updatedAt:Date.now()};S(OK,o)}try{toast("관심곡으로 보관했습니다.")}catch(e){}}
+function keep(id){var song=(typeof getAnySong39==="function"?getAnySong39(id):getSong(id));if(!song)return;if(window.VSAOrganizer22&&VSAOrganizer22.setSongStatus)VSAOrganizer22.setSongStatus(id,"interest",song);else{var o=L(OK,{library:{}});o.library=o.library||{};o.library[id]={status:"interest",song:song,savedAt:Date.now(),updatedAt:Date.now()};S(OK,o)}try{toast("관심곡으로 보관했습니다.")}catch(e){}}
 function dislike(id){var song=getSong(id),sm=L(SK,{feedback:{},tagPrefs:{}});sm.feedback=sm.feedback||{};sm.feedback[id]={value:-1,at:Date.now(),song:song};S(SK,sm);var f=currentFeed();["daily","taste","newer","hidden"].forEach(function(q){f[q]=(f[q]||[]).filter(function(x){return x.contentId!==id})});S(HK,f);render()}
 function similar(id){
   var song=getSong(id);if(!song)return;
