@@ -5259,8 +5259,8 @@ function similar(id){var song=getSong(id);if(!song)return;if(window.VSAV33&&VSAV
 async function refresh(){if(busy)return;busy=true;render();try{if(window.VSAHome28&&VSAHome28.refreshSection)await VSAHome28.refreshSection(active);else if(typeof fetchNico==="function"){var opts=active==="NEW"?{year:"all",limit:24,offset:0,mode:"ranking",sort:"-startTime"}:active==="DEEP"?{year:"all",limit:80,offset:0,mode:"ranking",sort:"+viewCounter",numericFilters:{viewCounter:{gte:100,lte:50000}}}:{year:"all",limit:40,offset:0,mode:"ranking",sort:"-viewCounter"};var d=await fetchNico(opts),f=currentFeed(),arr=(d.data||[]).sort(function(){return Math.random()-.5}).slice(0,12);f[k(active)]=arr;S(HK,f)}}catch(e){}busy=false;render()}
 function openView(name){if(window.VSAV33&&VSAV33.openView){VSAV33.openView(name);return}try{openToolsModal(name)}catch(e){}}
 function setDock(v){document.querySelectorAll(".v37-dock button").forEach(function(b){b.classList.toggle("active",b.dataset.v37===v)})}
-function dock(){if(document.querySelector(".v37-dock"))return;var d=document.createElement("nav");d.className="v37-dock";d.innerHTML=[["home","⌂","홈"],["explore","✦","탐색"],["search","⌕","검색"],["library","▣","보관함"],["taste","♡","내 취향"]].map(function(x){return'<button type="button" data-v37="'+x[0]+'"><i>'+x[1]+'</i><span>'+x[2]+'</span></button>'}).join("");document.body.appendChild(d);setDock("home");d.addEventListener("click",function(e){var b=e.target.closest("button[data-v37]");if(!b)return;var v=b.dataset.v37;setDock(v);if(v==="home"){try{closeToolsModal()}catch(e){}document.getElementById("v37Home")?.scrollIntoView({block:"start"});return}if(v==="explore"){openView(window.VSAV33?"explore33":"gems");return}if(v==="search"){openView(window.VSAV33?"searchHub33":"detective");return}if(v==="library"){if(window.VSA332Library&&VSA332Library.open){VSA332Library.open();return}if(window.VSAOrganizer22&&VSAOrganizer22.openLibrary){VSAOrganizer22.openLibrary("saved");return}try{toast("보관함 기능 준비 중…")}catch(e){}if(window.VSAFeatureReadyPromise)window.VSAFeatureReadyPromise.then(function(){if(window.VSA332Library&&VSA332Library.open)VSA332Library.open();else if(window.VSAOrganizer22&&VSAOrganizer22.openLibrary)VSAOrganizer22.openLibrary("saved")});return}if(v==="taste")openView(window.VSAV33?"tasteHub33":"taste")})}
-function init(){document.body.classList.add("v37-ready");var app=document.querySelector(".app");if(app)app.classList.remove("mobile-paged");var h=document.querySelector(".topbar .brand h1");if(h)h.textContent="Voca Support";var subh=document.querySelector(".topbar .brand .sub");if(subh)subh.textContent="추천 · 탐색 · 검색 · 보관 · 취향";render();dock();document.addEventListener("click",function(e){var t=e.target.closest("[data-v37-tab]");if(t){var v=t.dataset.v37Tab;if(v==="PRODUCER"){openView(window.VSAV33?"explore33":"gems");return}active=v;localStorage.setItem(AK,v);render();return}if(e.target.id==="v37Refresh"){refresh();return}var a=e.target.closest("[data-v37-save]");if(a){keep(a.dataset.v37Save);return}var d=e.target.closest("[data-v37-dislike]");if(d){dislike(d.dataset.v37Dislike);return}var q=e.target.closest("[data-v37-sim]");if(q){similar(q.dataset.v37Sim);return}},true)}
+function dock(){if(document.querySelector(".v37-dock"))return;var d=document.createElement("nav");d.className="v37-dock";d.innerHTML=[["home","⌂","홈"],["explore","✦","탐색"],["search","⌕","검색"],["library","▣","보관함"],["taste","♡","내 취향"]].map(function(x){return'<button type="button" data-v37="'+x[0]+'"><i>'+x[1]+'</i><span>'+x[2]+'</span></button>'}).join("");document.body.appendChild(d);setDock("home");d.addEventListener("click",function(e){var b=e.target.closest("button[data-v37]");if(!b)return;var v=b.dataset.v37;setDock(v);if(v==="home"){try{closeToolsModal()}catch(e){}document.getElementById("v37Home")?.scrollIntoView({block:"start"});return}if(v==="explore"){openView(window.VSAV33?"explore33":"gems");if(window.VSAEnsureFeatures&&!window.VSAV33)VSAEnsureFeatures("v33").then(function(){if(window.VSAV33)openView("explore33")});return}if(v==="search"){openView(window.VSAV33?"searchHub33":"detective");if(window.VSAEnsureFeatures)VSAEnsureFeatures("detective");return}if(v==="library"){if(window.VSA332Library&&VSA332Library.open){VSA332Library.open();return}if(window.VSAOrganizer22&&VSAOrganizer22.openLibrary){VSAOrganizer22.openLibrary("saved");return}if(window.VSAPrepareView)VSAPrepareView("보관함 준비");if(window.VSAEnsureFeatures)Promise.all([VSAEnsureFeatures("personal"),VSAEnsureFeatures("v33")]).then(function(){if(window.VSA332Library&&VSA332Library.open)VSA332Library.open();else if(window.VSAOrganizer22&&VSAOrganizer22.openLibrary)VSAOrganizer22.openLibrary("saved")});return}if(v==="taste"){openView(window.VSAV33?"tasteHub33":"taste");if(window.VSAEnsureFeatures&&!window.VSAV33)VSAEnsureFeatures("v33").then(function(){if(window.VSAV33)openView("tasteHub33")});return}})}
+function init(){document.body.classList.add("v37-ready");var app=document.querySelector(".app");if(app)app.classList.remove("mobile-paged");var h=document.querySelector(".topbar .brand h1");if(h)h.textContent="Voca Support";var subh=document.querySelector(".topbar .brand .sub");if(subh)subh.textContent="추천 · 탐색 · 검색 · 보관 · 취향";render();dock();document.addEventListener("click",function(e){var t=e.target.closest("[data-v37-tab]");if(t){var v=t.dataset.v37Tab;if(v==="PRODUCER"){openView(window.VSAV33?"explore33":"gems");if(window.VSAEnsureFeatures&&!window.VSAV33)VSAEnsureFeatures("v33").then(function(){if(window.VSAV33)openView("explore33")});return}active=v;localStorage.setItem(AK,v);render();return}if(e.target.id==="v37Refresh"){refresh();return}var a=e.target.closest("[data-v37-save]");if(a){keep(a.dataset.v37Save);return}var d=e.target.closest("[data-v37-dislike]");if(d){dislike(d.dataset.v37Dislike);return}var q=e.target.closest("[data-v37-sim]");if(q){similar(q.dataset.v37Sim);return}},true)}
 init();
 window.VSAHome37={render:render,refresh:refresh};
 })();
@@ -5268,36 +5268,62 @@ window.VSAHome37={render:render,refresh:refresh};
 <script id="v37FeatureLoader">
 (function(){
 "use strict";
+var jobs={};
 function load(src){
-  return new Promise(function(resolve){
-    var s=document.createElement("script");
-    s.src=src;s.async=false;
-    s.onload=function(){resolve(true)};
-    s.onerror=function(){console.warn("feature load failed",src);resolve(false)};
-    document.body.appendChild(s);
+  if(jobs[src])return jobs[src];
+  jobs[src]=new Promise(function(resolve){
+    var el=document.createElement("script");
+    el.src=src;el.async=false;
+    el.onload=function(){resolve(true)};
+    el.onerror=function(){console.warn("feature load failed",src);resolve(false)};
+    document.body.appendChild(el);
   });
+  return jobs[src];
 }
-async function seq(list){for(var i=0;i<list.length;i++)await load(list[i])}
-function start(){
-  var detective=seq(["./detective-v11.js?v=11.5","./detective-v12.js?v=12.0","./detective-v13.js?v=37.0.2","./detective-v14.js?v=14.0","./detective-v16.js?v=19.0"]);
-  var personal=seq(["./organizer-v22.js?v=32.0.0","./smart-v23.js?v=23.0.0","./playlist-v24.js?v=24.0.0"]);
-  var support=Promise.all([
-    load("./discovery-v20.js?v=20.0"),
-    load("./pwa-v21.js?v=37.0.2"),
-    load("./vocalo-home-v28.js?v=36.1.0"),
-    load("./universe-search-v28.js?v=28.1.0"),
-    load("./nico-player-v32.js?v=36.1.0")
-  ]);
-  window.VSAFeatureReadyPromise=Promise.all([detective,personal,support]).then(function(){
+async function seq(list){for(var i=0;i<list.length;i++)await load(list[i]);return true}
+var groups={};
+function ensure(name){
+  if(groups[name])return groups[name];
+  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=11.5","./detective-v12.js?v=12.0","./detective-v13.js?v=37.0.2","./detective-v14.js?v=14.0","./detective-v16.js?v=19.0"]);
+  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=32.0.0","./smart-v23.js?v=23.0.0","./playlist-v24.js?v=24.0.0"]);
+  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=20.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=36.1.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=28.1.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=36.1.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=37.0.2");
+  else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
     return seq(["./voca-app-v33.js?v=36.1.0","./voca-app-v33-1.js?v=36.1.0","./voca-app-v33-2.js?v=36.1.0","./voca-app-v33-3.js?v=37.0.1"]);
-  }).then(function(){
-    window.VSA_FEATURES_READY=true;
-    window.dispatchEvent(new Event("vsa-features-ready"));
-    return true;
   });
+  else groups[name]=Promise.resolve(false);
+  return groups[name];
 }
-if(document.readyState==="complete")setTimeout(start,80);
-else window.addEventListener("load",function(){setTimeout(start,80)},{once:true});
+window.VSAEnsureFeatures=ensure;
+
+function prep(title){
+  var body=document.querySelector("#toolsModal .tools-body");
+  if(!body)return;
+  var v=body.querySelector('[data-tool-view="v37Preparing"]');
+  if(!v){v=document.createElement("section");v.className="tool-view";v.dataset.toolView="v37Preparing";body.prepend(v)}
+  v.innerHTML='<div style="min-height:55dvh;display:grid;place-items:center;padding:24px;text-align:center"><div><div style="font-size:16px;font-weight:950">'+title+'</div><div style="margin-top:7px;color:#789c98;font-size:9px">기능을 여는 중… 홈은 계속 정상 동작합니다.</div></div></div>';
+  try{openToolsModal("v37Preparing")}catch(e){}
+}
+window.VSAPrepareView=prep;
+
+// Internal player is loaded only when a song is actually tapped.
+document.addEventListener("click",function(e){
+  if(window.VSANicoPlayer)return;
+  var a=e.target.closest&&e.target.closest('a[href*="nicovideo.jp/watch/"]');
+  if(!a||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;
+  var m=a.href.match(/\/watch\/([^?/#]+)/);if(!m)return;
+  e.preventDefault();e.stopPropagation();
+  var id=decodeURIComponent(m[1]),card=a.closest(".v37-card,.v37-hero,.song,.v331-song"),t=card&&card.querySelector(".v37-title,.v37-hero-copy b,.song-title,.v331-song b");
+  try{toast("플레이어 준비 중…")}catch(_){}
+  ensure("player").then(function(){if(window.VSANicoPlayer)window.VSANicoPlayer.open(id,t?t.textContent.trim():id);else window.open(a.href,"_blank","noopener")});
+},true);
+
+// Keep install/update work completely out of the first-paint path.
+if("requestIdleCallback" in window)requestIdleCallback(function(){ensure("pwa")},{timeout:15000});
+else setTimeout(function(){ensure("pwa")},12000);
 })();
 </script>
 </body>
