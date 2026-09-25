@@ -2705,6 +2705,16 @@ body.v37-ready #toolsModal .tool-view[hidden],
 body.v37-ready #toolsModal .tool-view:not(.active){display:none!important}
 body.v37-ready #toolsModal .tool-view.active{display:block!important}
 </style>
+<style id="v3915UniverseFix">
+/* v39.15 · mobile Universe should scroll the page instead of swallowing finger drags */
+@media(max-width:699px){
+  body.v37-ready .v394-universe-panel .universe-stage,
+  body.v37-ready .v394-universe-panel #universeSvg{
+    touch-action:pan-y pinch-zoom!important;
+    overscroll-behavior-y:auto!important;
+  }
+}
+</style>
 </head>
 <body>
 <div class="app">
@@ -2925,7 +2935,7 @@ body.v37-ready #toolsModal .tool-view.active{display:block!important}
     </details>
   </section>
 
-  <div class="footer">v39.14.0 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.15.0 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -6439,7 +6449,7 @@ function ensureUniverseToolbar39(){
       else if(window.VSAEnsureFeatures){VSAEnsureFeatures("universe").then(function(){setTimeout(function(){const x=document.getElementById("universeSearchInput");if(x){x.focus();x.scrollIntoView({behavior:"smooth",block:"center"})}},80)})}
     });
     header.querySelector("[data-u394-center-detail]").addEventListener("click",function(){
-      if(state.universeCenter&&window.VSAOpenSong39)window.VSAOpenSong39(state.universeCenter.contentId)
+      if(state.universeCenter&&window.VSAOpenSong39)window.VSAOpenSong39(state.universeCenter.contentId,true)
     })
   }
   let bar=document.getElementById("v39UniverseJourney");
@@ -6601,6 +6611,8 @@ function renderUniverse(data){
   let drag=null;
   nodeEls.forEach((g,i)=>{
     g.addEventListener("pointerdown",ev=>{
+      // Touch gestures belong to page scrolling; node dragging is mouse/pen only.
+      if(ev.pointerType==="touch")return;
       drag=i; g.setPointerCapture(ev.pointerId); nodes[i].fixed=true;
     });
     g.addEventListener("pointermove",ev=>{
@@ -6609,7 +6621,9 @@ function renderUniverse(data){
       const pt=p.matrixTransform(svg.getScreenCTM().inverse());
       nodes[i].x=pt.x;nodes[i].y=pt.y;
     });
-    g.addEventListener("pointerup",()=>{if(i!==0)nodes[i].fixed=false;drag=null});
+    const finishDrag=()=>{if(i!==0)nodes[i].fixed=false;drag=null};
+    g.addEventListener("pointerup",finishDrag);
+    g.addEventListener("pointercancel",finishDrag);
   });
 
   let frames=0;
@@ -6682,7 +6696,7 @@ function universeSelectedHtml394(n,index,data,neighbors){
     '<div class="u394-actions">'+
       (index?'<button type="button" class="primary" onclick="centerUniverseOnId39(\''+esc(n.contentId)+'\')">이 곡을 새 중심으로</button>':'')+
       '<button type="button" onclick="toggleUniversePin39(\''+esc(n.contentId)+'\')">'+(pinned?"핀 해제":"핀 고정")+'</button>'+
-      '<button type="button" onclick="if(window.VSAOpenSong39)VSAOpenSong39(\''+esc(n.contentId)+'\')">곡 상세</button>'+
+      '<button type="button" onclick="if(window.VSAOpenSong39)VSAOpenSong39(\''+esc(n.contentId)+'\',true)">곡 상세</button>'+
       '<button type="button" onclick="window.open(\'https://www.nicovideo.jp/watch/'+encodeURIComponent(n.contentId)+'\',\'_blank\',\'noopener\')">니코동</button>'+
     '</div></div>'+universeNeighborListHtml(neighbors,n.contentId)
 }
@@ -7002,7 +7016,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:"39.14.0",
+    version:"39.15.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -8255,7 +8269,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.14.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
+var VER="39.15.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -8427,6 +8441,13 @@ async function refreshMark39(mark){
 async function refresh(){return refreshMark39(active||"DAILY")}
 function openView(name){if(window.VSAV33&&VSAV33.openView){VSAV33.openView(name);return}try{openToolsModal(name)}catch(e){}}function getAnySong39(id){
   var x=getSong(id);if(x)return x;
+  try{
+    if(state.universeCenter&&state.universeCenter.contentId===id)return state.universeCenter;
+    if(state.universeData&&Array.isArray(state.universeData.nodes)){
+      var u39=state.universeData.nodes.find(function(s){return s&&s.contentId===id});
+      if(u39)return u39;
+    }
+  }catch(e){}
   try{
     var groups=[state.songs,state.tasteSongs,state.guideSongs,state.hiddenGems,state.hiddenGemPool,state.detectiveCandidates];
     for(var g of groups){if(!Array.isArray(g))continue;for(var item of g){var sng=item&&item.song?item.song:item;if(sng&&sng.contentId===id)return sng}}
@@ -9372,15 +9393,15 @@ var groups={};
 function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
-  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.14.0","./detective-v12.js?v=39.14.0","./detective-v13.js?v=39.14.0","./detective-v14.js?v=39.14.0","./detective-v16.js?v=39.14.0"]);
-  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.14.0","./smart-v23.js?v=39.14.0","./playlist-v24.js?v=39.14.0"]);
-  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.14.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.14.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.14.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.14.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.14.0");
+  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.15.0","./detective-v12.js?v=39.15.0","./detective-v13.js?v=39.15.0","./detective-v14.js?v=39.15.0","./detective-v16.js?v=39.15.0"]);
+  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.15.0","./smart-v23.js?v=39.15.0","./playlist-v24.js?v=39.15.0"]);
+  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.15.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.15.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.15.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.15.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.15.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
-    return seq(["./voca-app-v33.js?v=39.14.0","./voca-app-v33-1.js?v=39.14.0","./voca-app-v33-2.js?v=39.14.0","./voca-app-v33-3.js?v=39.14.0"]);
+    return seq(["./voca-app-v33.js?v=39.15.0","./voca-app-v33-1.js?v=39.15.0","./voca-app-v33-2.js?v=39.15.0","./voca-app-v33-3.js?v=39.15.0"]);
   });
   else groups[name]=Promise.resolve(false);
   groups[name]=Promise.resolve(groups[name]).then(function(v){
