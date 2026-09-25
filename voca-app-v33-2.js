@@ -78,10 +78,10 @@ function updateStatus(id,status){
     if(window.VSAOrganizer22&&window.VSAOrganizer22.setSongStatus)window.VSAOrganizer22.setSongStatus(id,status,song);
     else{var org=load(OK,{library:{}});org.library=org.library||{};org.library[id]={status:status,song:song,savedAt:Date.now(),updatedAt:Date.now()};save(OK,org)}
   }
-  render();try{if(window.VSAV33&&window.VSAV33.refreshTaste)window.VSAV33.refreshTaste()}catch(e){}
+  render();try{if(window.VSAV33&&window.VSAV33.refreshTaste)window.VSAV33.refreshTaste()}catch(e){}try{if(window.VSARefreshPersonal395)window.VSARefreshPersonal395()}catch(e){}
 }
 function removeItem(id){
-  var org=load(OK,{library:{}}),sm=load(SK,{feedback:{},tagPrefs:{}});if(org.library)delete org.library[id];if(sm.feedback)delete sm.feedback[id];save(OK,org);save(SK,sm);if(window.VSAOrganizer22&&window.VSAOrganizer22.reload)window.VSAOrganizer22.reload();selected.delete(id);render();
+  var org=load(OK,{library:{}}),sm=load(SK,{feedback:{},tagPrefs:{}});if(org.library)delete org.library[id];if(sm.feedback)delete sm.feedback[id];save(OK,org);save(SK,sm);if(window.VSAOrganizer22&&window.VSAOrganizer22.reload)window.VSAOrganizer22.reload();selected.delete(id);render();try{if(window.VSARefreshPersonal395)window.VSARefreshPersonal395()}catch(e){}
 }
 function visibleQueue(){return records().map(function(x){return{id:x.id,title:x.song&&x.song.title||x.id}})}
 function play(id){
