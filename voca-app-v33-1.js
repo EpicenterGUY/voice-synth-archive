@@ -15,19 +15,52 @@ function ensureProducerView(){
   el.innerHTML='<div class="v33-view-body" id="v331ProducerBody"></div>';
   body.prepend(el);return el;
 }
+function producerAliases(tag){
+  var raw=String(tag||"").trim(),a=[raw];
+  try{if(window.VSAProducerAliasVariants37)a=window.VSAProducerAliasVariants37(raw)||a}catch(e){}
+  return Array.from(new Set(a.map(function(x){return String(x||"").trim()}).filter(Boolean))).slice(0,4)
+}
+function producerNorm(v){
+  try{return String(v||"").normalize("NFKC").toLowerCase().replace(/[\s・･_\-]/g,"")}catch(e){return String(v||"").toLowerCase().replace(/[\s・･_\-]/g,"")}
+}
+function producerMention(song,aliases){
+  aliases=aliases||[];
+  var tags=Array.isArray(song&&song.tags)?song.tags:String(song&&song.tags||"").split(/[\s,、]+/),tagSet=new Set(tags.map(producerNorm));
+  if(aliases.some(function(a){return tagSet.has(producerNorm(a))}))return true;
+  var title=String(song&&song.title||""),desc=String(song&&song.description||"").replace(/<br\s*\/?\s*>/gi,"\n").replace(/<[^>]+>/g," ");
+  var lines=desc.split(/[\r\n]+/),joined=producerNorm(title+"\n"+desc);
+  return aliases.some(function(alias){
+    var n=producerNorm(alias);if(!n)return false;
+    if(/prod(?:uced)?\.?\s*(?:by\s*)?[:：]?/i.test(title)&&producerNorm(title).includes(n))return true;
+    if(lines.some(function(line){
+      var p=String(line||"").match(/^([^:：]{1,48})[:：]\s*(.+)$/);if(!p)return false;
+      return /(music|composer|producer|prod\.?|作曲|作詞作曲|作編曲|曲|音楽|詞曲)/i.test(p[1])&&producerNorm(p[2]).includes(n)
+    }))return true;
+    return n.length>=4&&joined.includes(n)
+  })
+}
 function localProducerSongs(tag){
   var a=api();if(!a||!a.localPool)return[];
-  var low=String(tag).toLowerCase();
-  return a.localPool().filter(function(s){
-    var r=Array.isArray(s.tags)?s.tags:String(s.tags||"").split(/[\s,、]+/);
-    return r.some(function(t){return String(t).toLowerCase()===low});
-  });
+  var aliases=producerAliases(tag);
+  return a.localPool().filter(function(s){return producerMention(s,aliases)});
 }
 async function fetchProducerRows(tag,sort,filter){
-  try{
-    var d=await fetchNico({year:"all",limit:100,offset:0,mode:"ranking",sort:sort,applyYear:false,applyTier:false,numericFilters:filter||{},extraExactTag:tag});
-    return d.data||[];
-  }catch(e){return[]}
+  var aliases=producerAliases(tag),packs=await Promise.all(aliases.map(function(alias){
+    return fetchNico({
+      year:"all",limit:100,offset:0,mode:"free",query:alias,scope:"all",
+      queryTargets:"title,description,tags",sort:sort,applyYear:false,applyTier:false,
+      numericFilters:filter||{}
+    }).then(function(d){return d.data||[]}).catch(function(){return[]})
+  }));
+  var rows=uniq(packs.flat());
+  if(window.VSA37AdultFilterRows)rows=window.VSA37AdultFilterRows(rows,"producer_detail").rows;
+  if(window.VSA37DiscoveryOriginalRows){
+    try{
+      var verified=window.VSA37DiscoveryOriginalRows(rows,"producer_detail","all_voice_synth_union").rows;
+      if(verified&&verified.length)rows=verified
+    }catch(e){}
+  }
+  return rows.filter(function(song){return producerMention(song,aliases)})
 }
 function uniq(rows){var m=new Map();(rows||[]).forEach(function(s){if(s&&s.contentId&&!m.has(s.contentId))m.set(s.contentId,s)});return Array.from(m.values())}
 function songCard(s){
@@ -35,7 +68,7 @@ function songCard(s){
   return '<article class="v331-song"><a href="https://www.nicovideo.jp/watch/'+encodeURIComponent(s.contentId)+'" target="_blank" rel="noopener"><div class="v331-song-thumb">'+(s.thumbnailUrl?'<img src="'+esc(s.thumbnailUrl)+'" loading="lazy" alt="">':'')+'<i>▶</i></div><b>'+esc(s.title||s.contentId)+'</b><small>조회 '+fmt(s.viewCounter)+' · '+y+'</small></a></article>';
 }
 function section(title,sub,rows){
-  return '<section class="v331-section"><div class="v331-section-head"><h3>'+title+'</h3><small>'+sub+'</small></div><div class="v331-songgrid">'+(rows.length?rows.slice(0,8).map(songCard).join(""):'<div class="v33-card-body">표시할 곡이 없습니다.</div>')+'</div></section>';
+  return '<section class="v331-section"><div class="v331-section-head"><h3>'+title+'</h3><small>'+sub+'</small></div><div class="v331-songgrid">'+(rows.length?rows.slice(0,8).map(songCard).join(""):'<div class="v33-card-body">니코니코 메타데이터에서 표시할 곡을 찾지 못했습니다.</div>')+'</div></section>';
 }
 function followed(tag){var a=load(K_FOLLOW,[]);return a.indexOf(tag)>=0}
 function toggleFollow(tag){
@@ -49,7 +82,8 @@ async function openProducer(tag){
   var a=api();if(!a)return;
   ensureProducerView();a.openView("producerDetail33");
   var root=document.getElementById("v331ProducerBody");if(!root)return;
-  root.innerHTML='<div class="v331-producer-hero"><small>PRODUCER HUB · 태그 기반 추정</small><h2>'+esc(tag)+'</h2><p>대표곡과 최근곡을 불러오는 중…</p></div>';
+  var aliases=producerAliases(tag),searchName=aliases[0]||tag;
+  root.innerHTML='<div class="v331-producer-hero"><small>PRODUCER HUB · 멀티소스 검색</small><h2>'+esc(tag)+'</h2><p>니코니코의 태그·제목·설명과 알려진 P명 별칭을 함께 검색하는 중…</p></div>';
   var local=localProducerSongs(tag);
   var packs=await Promise.all([
     fetchProducerRows(tag,"-viewCounter"),
@@ -60,9 +94,9 @@ async function openProducer(tag){
       recent=uniq(packs[1].concat(local)).filter(function(x){return x.startTime}).sort(function(x,y){return new Date(y.startTime)-new Date(x.startTime)}),
       deep=uniq(packs[2].concat(local)).filter(function(x){var v=Number(x.viewCounter)||0;return v>0&&v<=50000}).sort(function(x,y){var xv=(Number(x.mylistCounter)||0)/(Math.max(1,Number(x.viewCounter)||1)),yv=(Number(y.mylistCounter)||0)/(Math.max(1,Number(y.viewCounter)||1));return yv-xv}),
       all=uniq(popular.concat(recent,deep)),views=all.reduce(function(n,x){return n+(Number(x.viewCounter)||0)},0);
-  root.innerHTML='<div class="v331-producer-hero"><small>PRODUCER HUB · 태그 기반 추정</small><h2>'+esc(tag)+'</h2><p>니코니코 태그가 프로듀서명으로 쓰인 곡을 중심으로 정리합니다.</p><div class="v331-producer-actions"><button class="primary" data-v331-search="'+esc(tag)+'">전체 곡 검색</button><button data-v331-follow="'+esc(tag)+'">'+(followed(tag)?"팔로우 해제":"♡ 취향에 추가")+'</button></div></div>'+
+  root.innerHTML='<div class="v331-producer-hero"><small>PRODUCER HUB · 멀티소스 검색</small><h2>'+esc(tag)+'</h2><p>니코니코 태그·제목·설명에서 P명을 찾고, 별칭이 있으면 '+esc(aliases.join(" · "))+'까지 함께 조회합니다.</p><div class="v331-producer-actions"><button class="primary" data-v331-search="'+esc(searchName)+'">전체 곡 검색</button><button data-v331-follow="'+esc(tag)+'">'+(followed(tag)?"팔로우 해제":"♡ 취향에 추가")+'</button></div></div>'+
     '<div class="v331-producer-stats"><div class="v331-producer-stat"><small>확인 곡</small><b>'+all.length+'</b></div><div class="v331-producer-stat"><small>누적 조회</small><b>'+fmt(views)+'</b></div><div class="v331-producer-stat"><small>최신 활동</small><b>'+(recent[0]&&recent[0].startTime?new Date(recent[0].startTime).getFullYear():"-")+'</b></div></div>'+
-    section("대표곡","조회수 중심",popular)+section("최근곡","최근 등록순",recent)+section("숨은 곡","5만 조회 이하 반응률 중심",deep);
+    section("대표곡","조회수 중심 · 태그/제목/설명",popular)+section("최근곡","최근 등록순",recent)+section("숨은 곡","5만 조회 이하 반응률 중심",deep);
 }
 function defaultPresets(){
   var y=String(new Date().getFullYear());
