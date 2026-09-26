@@ -12,7 +12,7 @@ function followed(){return load(FOLLOW_KEY,[]).filter(Boolean).slice(0,12)}
 function badSet(){var sm=load("vsa.smart.v23",{feedback:{}}),set=new Set();Object.entries(sm.feedback||{}).forEach(function(x){if(Number(x[1].value)<0)set.add(x[0])});return set}
 function ensureFollowUi(){
   var root=document.querySelector('[data-tool-view="explore33"] .v33-view-body');if(!root||root.querySelector(".v333-follow-card"))return;
-  var box=document.createElement("section");box.className="v333-follow-card";box.innerHTML='<div class="v333-follow-head"><div><b>팔로우한 P의 새 곡</b><small>취향에 추가한 프로듀서의 최근 업로드</small></div><button type="button" id="v333FollowRefresh">새로고침 ↻</button></div><div class="v333-follow-grid" id="v333FollowGrid"><div class="v333-empty">불러오는 중…</div></div>';
+  var box=document.createElement("section");box.className="v333-follow-card";box.innerHTML='<div class="v333-follow-head"><div><b>팔로우한 P의 새 곡</b><small>팔로우한 프로듀서의 새 곡을 모아봐요.</small></div><button type="button" id="v333FollowRefresh">새로고침 ↻</button></div><div class="v333-follow-grid" id="v333FollowGrid"><div class="v333-empty">불러오는 중…</div></div>';
   root.appendChild(box);document.getElementById("v333FollowRefresh").onclick=function(){refreshFollow(true)};
 }
 function songCard(row){
@@ -22,8 +22,8 @@ function songCard(row){
 function renderFollow(rows){
   ensureFollowUi();var grid=document.getElementById("v333FollowGrid");if(!grid)return;
   var fs=followed();
-  if(!fs.length){grid.innerHTML='<div class="v333-empty">아직 팔로우한 프로듀서가 없습니다.<br>프로듀서 상세에서 <b>♡ 취향에 추가</b>를 눌러보세요.<br><button type="button" data-v333-open-producers>프로듀서 찾기</button></div>';return}
-  grid.innerHTML=rows&&rows.length?rows.slice(0,16).map(songCard).join(""):'<div class="v333-empty">최근 곡을 찾지 못했습니다.</div>';
+  if(!fs.length){grid.innerHTML='<div class="v333-empty">아직 팔로우한 프로듀서가 없어요.<br>프로듀서 상세에서 <b>♡ 취향에 추가</b>를 눌러보세요.<br><button type="button" data-v333-open-producers>P 찾기</button></div>';return}
+  grid.innerHTML=rows&&rows.length?rows.slice(0,16).map(songCard).join(""):'<div class="v333-empty">새 곡을 찾지 못했어요.</div>';
 }
 async function fetchForProducer(name){
   try{
