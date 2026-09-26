@@ -3345,7 +3345,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.38.0 · Mini Return · Universe Handoff · Universe Search 3.1 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.39.0 · Mini Return · Universe Handoff · Universe Search 3.1 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -7604,7 +7604,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:"39.38.0",
+    version:"39.39.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -7799,6 +7799,61 @@ function inferNicoProducerCredits37(song){
   });
   return [...out.values()].sort(function(a,b){return b.priority-a.priority})
 }
+function producerFamilySignature37(song){
+  var t=String(song&&song.title||"").normalize("NFKC").toLowerCase();
+  t=t.replace(/[【\[（(][^】\]）)]{0,40}[】\]）)]/g," ");
+  t=t.replace(/(?:オリジナル|original|デモ|demo|仮|test|short\s*ver\.?|full\s*ver\.?|feat\.?|ft\.?)/gi," ");
+  t=t.replace(/(?:初音ミク|鏡音リン|鏡音レン|巡音ルカ|重音テト|gumi|flower|可不|kaito|meiko|ia|vocaloid|utau|synthesizer\s*v|synthv)/gi," ");
+  t=t.replace(/[^\p{L}\p{N}]+/gu,"").trim();
+  return t.length>=4?t:""
+}
+function producerFamilyCacheKey37(song){
+  var sig=producerFamilySignature37(song);return sig?"vsa37ProducerFamily:"+sig+":v1":""
+}
+function rememberProducerFamily37(song,producers){
+  var key=producerFamilyCacheKey37(song);if(!key||!Array.isArray(producers)||!producers.length)return;
+  try{localStorage.setItem(key,JSON.stringify({at:Date.now(),producers:producers.slice(0,4)}))}catch(_){}
+}
+function cachedProducerFamily37(song){
+  var key=producerFamilyCacheKey37(song);if(!key)return[];
+  try{var x=JSON.parse(localStorage.getItem(key)||"null");if(x&&Date.now()-x.at<15552000000&&Array.isArray(x.producers))return x.producers}catch(_){}
+  return[]
+}
+function producerFamilyQuery37(song){
+  var t=String(song&&song.title||"").normalize("NFKC");
+  t=t.replace(/[【\[（(][^】\]）)]{0,40}[】\]）)]/g," ");
+  t=t.replace(/(?:オリジナル|original|デモ|demo|仮|test|short\s*ver\.?|full\s*ver\.?)/gi," ");
+  return t.replace(/[\s　]+/g," ").trim().split(" ").filter(function(x){return x.length>=2}).slice(0,5).join(" ")
+}
+function producerFamilySimilarity37(a,b){
+  var A=producerFamilySignature37(a),B=producerFamilySignature37(b);if(!A||!B)return 0;
+  if(A===B)return 1;
+  var at=new Set(String(a&&a.title||"").normalize("NFKC").toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(function(x){return x.length>=2}));
+  var bt=new Set(String(b&&b.title||"").normalize("NFKC").toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(function(x){return x.length>=2}));
+  var hit=0;at.forEach(function(x){if(bt.has(x))hit++});
+  return hit/Math.max(1,Math.min(at.size,bt.size))
+}
+async function inferProducerFromSibling37(song){
+  if(typeof fetchNico!=="function")return[];
+  var q=producerFamilyQuery37(song);if(!q)return[];
+  try{
+    var d=await fetchNico({year:"all",limit:30,offset:0,mode:"free",query:q,scope:"all",queryTargets:"title,description,tags",sort:"-startTime",applyYear:false,applyTier:false});
+    var rows=(d.data||[]).filter(function(x){
+      if(!x||x.contentId===song.contentId)return false;
+      var sim=producerFamilySimilarity37(song,x);if(sim<.78)return false;
+      var a=song.startTime?new Date(song.startTime).getTime():0,b=x.startTime?new Date(x.startTime).getTime():0;
+      return !a||!b||Math.abs(a-b)<=400*86400000
+    }).sort(function(a,b){return producerFamilySimilarity37(song,b)-producerFamilySimilarity37(song,a)});
+    for(var i=0;i<Math.min(rows.length,8);i++){
+      var ps=inferNicoProducerCredits37(rows[i]);
+      if(ps&&ps.length){
+        ps=ps.map(function(p){return Object.assign({},p,{source:"니코동 형제곡 · "+(p.source||"메타데이터"),role:p.role||"same producer"})});
+        rememberProducerFamily37(song,ps);rememberProducerFamily37(rows[i],ps);return ps
+      }
+    }
+  }catch(_){}
+  return[]
+}
 function producerResolveCacheKey37(id){return "vsa37ProducerPV:"+String(id||"").toLowerCase()+":v3"}
 async function fetchExactNicoSong37(song){
   const id=String(song?.contentId||"").trim();
@@ -7817,7 +7872,12 @@ async function resolveSongProducers37(song){
   if(id){
     try{
       const cached=JSON.parse(localStorage.getItem(key)||"null"),age=cached?Date.now()-cached.at:Infinity;
-      if(cached&&Array.isArray(cached.producers)&&((cached.producers.length&&age<2592000000)||(!cached.producers.length&&age<10800000)))return cached.producers
+      if(cached&&Array.isArray(cached.producers)&&cached.producers.length&&age<2592000000){
+        rememberProducerFamily37(song,cached.producers);return cached.producers
+      }
+      if(cached&&Array.isArray(cached.producers)&&!cached.producers.length&&age<10800000){
+        var famCached=cachedProducerFamily37(song);if(famCached.length)return famCached
+      }
     }catch(_){}
   }
   const nicoSong=await fetchExactNicoSong37(song);
@@ -7836,10 +7896,18 @@ async function resolveSongProducers37(song){
       }
     }catch(_){}
   }
-  const producers=[...merged.values()].sort(function(a,b){
+  let producers=[...merged.values()].sort(function(a,b){
     const an=a.nicoName?1:0,bn=b.nicoName?1:0;
     return bn-an||(Number(b.priority)||0)-(Number(a.priority)||0)
   }).slice(0,4);
+
+  if(!producers.length){
+    var fam=cachedProducerFamily37(nicoSong);if(fam.length)producers=fam;
+  }
+  if(!producers.length){
+    producers=await inferProducerFromSibling37(nicoSong);
+  }
+  if(producers.length)rememberProducerFamily37(nicoSong,producers);
   try{if(id)localStorage.setItem(key,JSON.stringify({at:Date.now(),producers:producers}))}catch(_){}
   return producers
 }
@@ -8734,6 +8802,7 @@ function healPageLocks37(){
   document.documentElement.style.removeProperty("overflow");
 }
 function openToolsModal(view="hub37"){
+  var routeBeforeOpen=window.__VSA37_CURRENT_ROUTE||"home";
   healPageLocks37();
   if(view==="detective")syncDetectiveStep37(document.querySelector("#detectiveMobileSteps button.active")?.dataset.dstep||0);
   const modal=$("#toolsModal");
@@ -8749,6 +8818,7 @@ function openToolsModal(view="hub37"){
   const featureId=featureIdForRoute37(view);if(featureId)markFeatureUse37(featureId);
   if(view==="diagnostics37")setTimeout(renderDiagnostics37,0);
   if(view==="universe29"&&window.VSAEnsureFeatures)window.VSAEnsureFeatures("universe");
+  if(view==="search29"&&routeBeforeOpen==="home"&&!window.__VSA_PENDING_SEARCH397)setTimeout(clearStaleSearch397,0);
   if(view==="settings29"&&window.VSAEnsureFeatures)window.VSAEnsureFeatures("deviceSync").then(function(){try{if(window.VSADeviceTransfer3938)VSADeviceTransfer3938.open()}catch(_){}});
   const dockView=dockForToolView37(view);
   if(dockView&&typeof setDock==="function")setDock(dockView);
@@ -9075,7 +9145,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.38.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
+var VER="39.39.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -9720,7 +9790,7 @@ function renderSongDetail39(song,autoplay){
     Promise.resolve(resolveSongProducers37(song)).then(function(ps){
       if(!box.isConnected)return;
       box.innerHTML=ps&&ps.length?ps.map(function(x){
-        var display=x.nicoName||x.name,tip=(x.nicoName?"니코동 표기명":"출처: "+(x.source||"메타데이터"))+(x.role?(" · "+x.role):"");
+        var display=x.nicoName||x.name,tip=(String(x.source||"").includes("형제곡")?"같은 곡 계열의 니코동 표기에서 보완":x.nicoName?"니코동 표기명":"출처: "+(x.source||"메타데이터"))+(x.role?(" · "+x.role):"");
         return '<button type="button" data-v39-search-producer="'+E(display)+'" title="'+E(tip)+'">'+E(display)+'</button>'
       }).join(""):'<span>P 정보를 찾지 못했어요.</span>';
       if(window.VSAI18n)window.VSAI18n.refresh()
@@ -9861,7 +9931,12 @@ function ensureSearch397(){
   setSearchMode397(searchMode397);
   var input=document.getElementById("globalSearchInput");
   if(input&&!input.dataset.v397){
-    input.dataset.v397="1";input.addEventListener("input",function(){renderSearchAssist397(input.value)});input.addEventListener("focus",function(){renderSearchAssist397(input.value)})
+    input.dataset.v397="1";
+    input.addEventListener("input",function(){
+      var top=document.getElementById("v39GlobalSearch");if(top&&top.value!==input.value)top.value=input.value;
+      renderSearchAssist397(input.value)
+    });
+    input.addEventListener("focus",function(){renderSearchAssist397(input.value)})
   }
   if(panel&&!panel.dataset.v397){
     panel.dataset.v397="1";
@@ -9883,10 +9958,43 @@ function patchSearchResults397(){
     var box=card.querySelector(".rankbox");if(box&&!card.querySelector(".v397-result-badges")){var b=homeStatusBadges396(id);if(b)box.insertAdjacentHTML("afterend",'<div class="v397-result-badges">'+b+'</div>')}
   })
 }
+function syncSearchInputs397(q,opts){
+  opts=opts||{};q=String(q==null?"":q);
+  var inner=document.getElementById("globalSearchInput"),top=document.getElementById("v39GlobalSearch");
+  if(inner&&inner.value!==q)inner.value=q;
+  if(top&&opts.top!==false&&top.value!==q)top.value=q;
+  if(opts.render!==false)try{renderSearchAssist397(q)}catch(_){}
+  return inner
+}
+function clearStaleSearch397(){
+  syncSearchInputs397("",{top:false,render:true});
+  try{
+    state.freeQuery="";state.songs=[];state.offset=0;state.freeFetchOffset=0;
+    var list=document.getElementById("songList");if(list)list.innerHTML="";
+    var title=document.getElementById("listTitle");if(title)title.textContent="검색 결과";
+    var sub=document.getElementById("listSub");if(sub)sub.textContent="검색어를 입력하면 결과가 표시됩니다."
+  }catch(_){}
+}
 function executeSearch397(q,mode){
-  q=String(q||"").trim();if(!q)return;setSearchMode397(mode||searchMode397);rememberSearch397(q,searchMode397);ensureSearch397();ensureSearch398();openToolsModal("search29");
-  var input=document.getElementById("globalSearchInput");if(input)input.value=q;var scope=document.getElementById("searchScope");if(scope&&scope.querySelector('option[value="all_voice_synth"]')&&scope.value==="all")scope.value="all_voice_synth";
-  renderSearchAssist397(q);setTimeout(function(){try{freeSearch(true)}catch(e){}},30)
+  q=String(q||"").trim();if(!q)return;
+  window.__VSA_PENDING_SEARCH397=q;
+  setSearchMode397(mode||searchMode397);
+  rememberSearch397(q,searchMode397);
+  ensureSearch397();ensureSearch398();
+  openToolsModal("search29");
+
+  function apply(){
+    syncSearchInputs397(q,{top:true,render:true});
+    try{state.freeQuery=q}catch(_){}
+  }
+  apply();
+  requestAnimationFrame(apply);
+  setTimeout(apply,35);
+  setTimeout(function(){
+    apply();
+    try{freeSearch(true)}catch(e){}
+    setTimeout(function(){if(window.__VSA_PENDING_SEARCH397===q)window.__VSA_PENDING_SEARCH397=""},120)
+  },75)
 }
 function chooseSuggestion397(type,value,id){
   if(type==="song"&&id&&window.VSAOpenSong39){window.VSAOpenSong39(id);return}
@@ -9923,7 +10031,12 @@ function ensureTopSearch39(){
   form.innerHTML='<span class="v39-search-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="5.8"></circle><path d="m15 15 4.5 4.5"></path></svg></span><input type="search" id="v39GlobalSearch" autocomplete="off" enterkeyhint="search" placeholder="곡명 · P명 · 보컬 · 태그 · sm번호 검색"><button type="submit">검색</button>';
   var status=top.querySelector(".status");if(status)top.insertBefore(form,status);else top.appendChild(form);
   attachTopSuggest397(form);
-  form.addEventListener("submit",function(e){e.preventDefault();form.classList.remove("v397-suggest-open");openGlobalSearch39(form.querySelector("input").value)})
+  form.addEventListener("submit",function(e){
+    e.preventDefault();form.classList.remove("v397-suggest-open");
+    var q=form.querySelector("input").value.trim();if(!q)return;
+    syncSearchInputs397(q,{top:true,render:false});
+    openGlobalSearch39(q)
+  })
 }
 var SEARCH398_FILTER_KEY="vsa398.search.filters";
 function loadSearchFilters398(){
@@ -10562,16 +10675,16 @@ var groups={};
 function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
-  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.38.0","./detective-v12.js?v=39.38.0","./detective-v13.js?v=39.38.0","./detective-v14.js?v=39.38.0","./detective-v16.js?v=39.38.0"]);
-  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.38.0","./smart-v23.js?v=39.38.0","./playlist-v24.js?v=39.38.0"]);
-  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.38.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.38.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.38.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.38.0");
-  else if(name==="deviceSync")groups[name]=load("./device-sync-v3938.js?v=39.38.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.38.0");
+  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.39.0","./detective-v12.js?v=39.39.0","./detective-v13.js?v=39.39.0","./detective-v14.js?v=39.39.0","./detective-v16.js?v=39.39.0"]);
+  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.39.0","./smart-v23.js?v=39.39.0","./playlist-v24.js?v=39.39.0"]);
+  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.39.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.39.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.39.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.39.0");
+  else if(name==="deviceSync")groups[name]=load("./device-sync-v3938.js?v=39.39.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.39.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
-    return seq(["./voca-app-v33.js?v=39.38.0","./voca-app-v33-1.js?v=39.38.0","./voca-app-v33-2.js?v=39.38.0","./voca-app-v33-3.js?v=39.38.0"]);
+    return seq(["./voca-app-v33.js?v=39.39.0","./voca-app-v33-1.js?v=39.39.0","./voca-app-v33-2.js?v=39.39.0","./voca-app-v33-3.js?v=39.39.0"]);
   });
   else groups[name]=Promise.resolve(false);
   groups[name]=Promise.resolve(groups[name]).then(function(v){
@@ -10615,4 +10728,4 @@ if("requestIdleCallback" in window)requestIdleCallback(function(){ensure("pwa")}
 else setTimeout(function(){ensure("pwa")},12000);
 })();
 </script>
-<script src="./i18n-v3918.js?v=39.38.0"></script>\n</body>\n</html>
+<script src="./i18n-v3918.js?v=39.39.0"></script>\n</body>\n</html>
