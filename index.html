@@ -3349,7 +3349,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.42.0 · Mini Return · Universe Handoff · Universe Search 3.1 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.43.0 · Mini Return · Universe Handoff · Universe Search 3.1 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -7608,7 +7608,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:"39.42.0",
+    version:"39.43.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -9193,7 +9193,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.42.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
+var VER="39.43.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -9211,9 +9211,28 @@ function pageRows3941(mark,rows){
     return pageRand3941(a&&a.contentId,mark)-pageRand3941(b&&b.contentId,mark)
   })
 }
+function balanceHomeViews3943(rows,bands,salt,count){
+  rows=(rows||[]).filter(Boolean);bands=bands||[];count=Math.max(1,Number(count)||12);
+  var buckets=bands.map(function(r,i){
+    return pageRows3941(String(salt||"mix")+"_"+i,rows.filter(function(s){var v=Number(s&&s.viewCounter)||0;return v>=r[0]&&v<=r[1]}))
+  }),out=[],used=new Set(),cursor=0;
+  while(out.length<count&&cursor<64){
+    var added=false;
+    for(var i=0;i<buckets.length&&out.length<count;i++){
+      var s=buckets[i][cursor];
+      if(s&&s.contentId&&!used.has(s.contentId)){used.add(s.contentId);out.push(s);added=true}
+    }
+    if(!added&&cursor>=Math.max.apply(null,buckets.map(function(x){return x.length}).concat([0])))break;
+    cursor++
+  }
+  if(out.length<count){
+    pageRows3941(String(salt||"mix")+"_rest",rows).forEach(function(s){if(out.length<count&&s&&s.contentId&&!used.has(s.contentId)){used.add(s.contentId);out.push(s)}})
+  }
+  return out.slice(0,count)
+}
 function k(mark){return mark==="DAILY"?"daily":mark==="FOR YOU"?"taste":mark==="NEW"?"newer":"hidden"}
 function label(mark){return mark==="DAILY"?"추천":mark==="FOR YOU"?"내 취향":mark==="NEW"?"신곡":mark==="CONTINUE"?"이어보기":"숨은 곡"}
-function sub(mark){return mark==="DAILY"?"오늘 골라볼 만한 곡":mark==="FOR YOU"?"보관함과 피드백을 반영":mark==="NEW"?"최근 올라온 음성합성곡":mark==="CONTINUE"?"최근에 보던 곡으로 돌아가기":"조회수 아래 묻힌 곡"}
+function sub(mark){return mark==="DAILY"?"오늘 골라볼 만한 곡":mark==="FOR YOU"?"보관함과 피드백을 반영":mark==="NEW"?"최근 올라온 음성합성곡":mark==="CONTINUE"?"최근에 보던 곡으로 돌아가기":"100~5만 조회수를 구간별로 섞어 발굴"}
 function reason(song,mark){
   if(mark==="NEW")return"최근 업로드";
   if(mark==="DEEP")return"낮은 조회수에서 발견";
@@ -9365,12 +9384,22 @@ async function refreshMark39(mark){
   try{
     if(window.VSAHome28&&VSAHome28.refreshSection)await VSAHome28.refreshSection(mark);
     else if(typeof fetchNico==="function"){
-      var pageBase=Math.floor(pageRand3941(mark+"_fetch","offset")*5);
-      var opts=mark==="NEW"?{year:"all",limit:60,offset:pageBase*20,mode:"ranking",sort:"-startTime"}:
-        mark==="DEEP"?{year:"all",limit:100,offset:pageBase*100,mode:"ranking",sort:"+viewCounter",numericFilters:{viewCounter:{gte:100,lte:50000}}}:
-        mark==="FOR YOU"?{year:"all",limit:90,offset:pageBase*60,mode:"ranking",sort:"-mylistCounter"}:
-        {year:"all",limit:90,offset:pageBase*60,mode:"ranking",sort:["-viewCounter","-mylistCounter","-commentCounter"][PAGE_SEED3941%3]};
-      var d=await fetchNico(opts),f=currentFeed(),raw=(d.data||[]).sort(function(){return Math.random()-.5}),arr=preferOriginal399(raw,12);
+      var f=currentFeed(),arr=[];
+      if(mark==="DEEP"){
+        var bands=[[100,499],[500,1999],[2000,9999],[10000,50000]];
+        var groups=await Promise.all(bands.map(function(r,i){
+          return fetchNico({year:"all",limit:80,offset:((PAGE_SEED3941+i)%4)*80,mode:"ranking",sort:i%2?"-commentCounter":"-mylistCounter",applyYear:false,applyTier:false,numericFilters:{viewCounter:{gte:r[0],lte:r[1]}}})
+        }));
+        var m=new Map();groups.forEach(function(g){(g&&g.data||[]).forEach(function(s){if(s&&s.contentId)m.set(s.contentId,s)})});
+        arr=balanceHomeViews3943(preferOriginal399([...m.values()]),bands,"deep",12)
+      }else{
+        var pageBase=Math.floor(pageRand3941(mark+"_fetch","offset")*5);
+        var opts=mark==="NEW"?{year:"all",limit:60,offset:pageBase*20,mode:"ranking",sort:"-startTime"}:
+          mark==="FOR YOU"?{year:"all",limit:90,offset:pageBase*60,mode:"ranking",sort:"-mylistCounter"}:
+          {year:"all",limit:90,offset:pageBase*60,mode:"ranking",sort:["-viewCounter","-mylistCounter","-commentCounter"][PAGE_SEED3941%3]};
+        var d=await fetchNico(opts),raw=(d.data||[]).sort(function(){return Math.random()-.5});
+        arr=preferOriginal399(raw,12)
+      }
       f[k(mark)]=arr;S(HK,f)
     }
   }catch(e){}
@@ -10749,16 +10778,16 @@ var groups={};
 function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
-  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.42.0","./detective-v12.js?v=39.42.0","./detective-v13.js?v=39.42.0","./detective-v14.js?v=39.42.0","./detective-v16.js?v=39.42.0"]);
-  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.42.0","./smart-v23.js?v=39.42.0","./playlist-v24.js?v=39.42.0"]);
-  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.42.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.42.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.42.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.42.0");
-  else if(name==="deviceSync")groups[name]=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.42.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.42.0");
+  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.43.0","./detective-v12.js?v=39.43.0","./detective-v13.js?v=39.43.0","./detective-v14.js?v=39.43.0","./detective-v16.js?v=39.43.0"]);
+  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.43.0","./smart-v23.js?v=39.43.0","./playlist-v24.js?v=39.43.0"]);
+  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.43.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.43.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.43.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.43.0");
+  else if(name==="deviceSync")groups[name]=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.43.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.43.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
-    return seq(["./voca-app-v33.js?v=39.42.0","./voca-app-v33-1.js?v=39.42.0","./voca-app-v33-2.js?v=39.42.0","./voca-app-v33-3.js?v=39.42.0"]);
+    return seq(["./voca-app-v33.js?v=39.43.0","./voca-app-v33-1.js?v=39.43.0","./voca-app-v33-2.js?v=39.43.0","./voca-app-v33-3.js?v=39.43.0"]);
   });
   else groups[name]=Promise.resolve(false);
   groups[name]=Promise.resolve(groups[name]).then(function(v){
@@ -10802,4 +10831,4 @@ if("requestIdleCallback" in window)requestIdleCallback(function(){ensure("pwa")}
 else setTimeout(function(){ensure("pwa")},12000);
 })();
 </script>
-<script src="./device-sync-v3938.js?v=39.42.0"></script>\n<script src="./i18n-v3918.js?v=39.42.0"></script>\n</body>\n</html>
+<script src="./device-sync-v3938.js?v=39.43.0"></script>\n<script src="./i18n-v3918.js?v=39.43.0"></script>\n</body>\n</html>
