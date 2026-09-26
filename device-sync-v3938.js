@@ -1,8 +1,8 @@
-/* VocaDive Device Transfer v39.41 */
+/* VocaDive Device Transfer v39.42 */
 (function(){
 "use strict";
 
-var VERSION="39.41.0";
+var VERSION="39.42.0";
 var ORG="vsa.organizer.v22",SMART="vsa.smart.v23",PLAYLISTS="vsa.playlists.v24";
 var SIMPLE_KEYS=[
   "vsa.v33.followedProducers","vsa.v33.filters","vsa.v33.producerMode",
@@ -162,9 +162,44 @@ async function cloudSession(){
 function cloudEmailLabel(session){
   var email=session&&session.user&&session.user.email;return email?email:"로그인 안 됨"
 }
+function cloudRedirectUrl(){
+  try{
+    var u=new URL(window.location.href);
+    u.hash="";u.search="";
+    if(/\/[^/]+\.[a-z0-9]+$/i.test(u.pathname))u.pathname=u.pathname.replace(/[^/]+$/,"");
+    return u.toString()
+  }catch(_){return window.location.origin+window.location.pathname}
+}
+function cloudFriendlyError(e,kind){
+  var m=String(e&&e.message||e||"");
+  if(/security purposes.*after\s+(\d+)\s+seconds/i.test(m)){
+    var s=(m.match(/after\s+(\d+)\s+seconds/i)||[])[1]||"잠시";
+    return "요청을 너무 빨리 반복했어요. "+s+"초 뒤에 다시 시도해 주세요."
+  }
+  if(/already registered|user already registered/i.test(m))return "이미 가입된 이메일입니다. ‘로그인’을 눌러주세요.";
+  if(/invalid.*email|validate email address|email.*invalid/i.test(m))return "이메일 주소 형식을 확인해 주세요.";
+  if(/email not confirmed/i.test(m))return "이메일 인증이 아직 끝나지 않았어요. 받은 메일의 인증 링크를 먼저 눌러주세요.";
+  if(/invalid login credentials/i.test(m))return "이메일 또는 비밀번호가 맞지 않습니다.";
+  return (kind==="signup"?"가입 실패 · ":kind==="login"?"로그인 실패 · ":"오류 · ")+m
+}
+function startSignupCooldown(sec){
+  sec=Math.max(1,Number(sec)||30);
+  var btn=document.getElementById("v3938CloudSignup");if(!btn)return;
+  var left=sec;btn.disabled=true;
+  var original="처음이면 가입";
+  btn.textContent="재요청 "+left+"초";
+  var timer=setInterval(function(){
+    left--;if(!btn.isConnected||left<=0){clearInterval(timer);if(btn&&btn.isConnected){btn.disabled=false;btn.textContent=original}return}
+    btn.textContent="재요청 "+left+"초"
+  },1000)
+}
 async function cloudSignUp(email,password){
   var sb=await cloudClient();
-  var r=await sb.auth.signUp({email:email,password:password});
+  var r=await sb.auth.signUp({
+    email:email,
+    password:password,
+    options:{emailRedirectTo:cloudRedirectUrl()}
+  });
   if(r.error)throw r.error;
   return r.data
 }
@@ -215,7 +250,7 @@ function scheduleCloudSync(delay){
 async function refreshCloudUi(){
   var session=await cloudSession();
   var st=document.getElementById("v3938CloudStatus"),auth=document.getElementById("v3938CloudAuth"),on=document.getElementById("v3938CloudOn");
-  if(st)st.textContent=session?"로그인됨 · "+cloudEmailLabel(session)+" · 이 계정으로 기기 간 자동 병합":"로그인하면 같은 계정의 휴대폰·컴퓨터 기록이 합쳐집니다.";
+  if(st)st.textContent=session?"로그인됨 · "+cloudEmailLabel(session)+" · 이 계정으로 기기 간 자동 병합":"로그인하면 같은 계정의 휴대폰·컴퓨터 기록이 합쳐집니다. 가입 메일 인증 후 이 앱으로 돌아오면 로그인하세요.";
   if(auth)auth.hidden=!!session;
   if(on)on.hidden=!session;
   if(session)scheduleCloudSync(900)
@@ -227,7 +262,7 @@ function ensureUi(){
   var sec=document.createElement("section");sec.id="v3938DeviceTransfer";sec.className="v3938-device-transfer";
   sec.innerHTML='<div class="v3938-sync-head"><div><small>DEVICE SYNC</small><h3>기기 간 기록 동기화</h3><p>휴대폰 ↔ 컴퓨터에서 같은 계정으로 로그인하면 보관함, 최근 본 곡, 검색 기록, 취향 반응과 플레이리스트를 병합합니다. 파일 백업도 그대로 사용할 수 있습니다.</p></div><span class="v3938-local-badge">Cloud + File</span></div>'+
     '<div class="v3938-cloud-box"><div class="v3938-cloud-head"><div><b>클라우드 동기화</b><small>Supabase 서울 리전 · 사용자별 RLS 분리</small></div></div>'+
-      '<div id="v3938CloudAuth" class="v3938-cloud-auth"><input id="v3938CloudEmail" type="email" autocomplete="email" placeholder="이메일"><input id="v3938CloudPassword" type="password" autocomplete="current-password" placeholder="비밀번호 (6자 이상)"><button type="button" id="v3938CloudLogin">로그인</button><button type="button" id="v3938CloudSignup">처음이면 가입</button></div>'+
+      '<div id="v3938CloudAuth" class="v3938-cloud-auth"><label class="v3938-auth-field"><span>이메일 주소</span><input id="v3938CloudEmail" type="email" inputmode="email" autocomplete="email" placeholder="name@example.com"></label><label class="v3938-auth-field"><span>비밀번호</span><input id="v3938CloudPassword" type="password" autocomplete="current-password" placeholder="6자 이상"></label><button type="button" id="v3938CloudLogin">로그인</button><button type="button" id="v3938CloudSignup">처음이면 가입</button></div>'+
       '<div id="v3938CloudOn" class="v3938-cloud-on" hidden><button type="button" class="primary" id="v3938CloudSync">지금 동기화</button><button type="button" id="v3938CloudLogout">로그아웃</button></div>'+
       '<div class="v3938-sync-status" id="v3938CloudStatus">클라우드 상태 확인 중…</div></div>'+
     '<div class="v3938-file-title"><b>파일 백업</b><small>계정 없이도 직접 옮길 수 있습니다.</small></div>'+
@@ -236,7 +271,7 @@ function ensureUi(){
     '<div class="v3938-sync-note"><b>동기화·가져오기는 덮어쓰기보다 병합 우선</b><span>곡 보관 상태·최근 기록·피드백은 더 최신 항목을 남기고, 플레이리스트와 팔로우 P는 합칩니다. Worker 주소와 API 캐시는 공유하지 않습니다.</span></div>';
   page.appendChild(sec);
   var st=document.createElement("style");st.id="v3938DeviceTransferStyle";st.textContent=
-    ".v3938-device-transfer{margin-top:14px;padding:15px;border:1px solid rgba(113,205,197,.16);border-radius:18px;background:#071d23}.v3938-sync-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.v3938-sync-head small{color:#66d1c7;font-size:7px;font-weight:950;letter-spacing:.12em}.v3938-sync-head h3{margin:4px 0 5px;font-size:18px}.v3938-sync-head p{margin:0;max-width:720px;color:#7fa29e;font-size:9px;line-height:1.65}.v3938-local-badge{flex:0 0 auto;padding:6px 8px;border-radius:999px;background:#0d3036;color:#8fd4cd;font-size:7px;font-weight:900}.v3938-sync-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px}.v3938-sync-actions button{min-height:38px;padding:0 12px;border:1px solid #2a565d;border-radius:11px;background:#0b2930;color:#dff7f3;font-size:8px;font-weight:900}.v3938-sync-actions button.primary{background:#17464c;border-color:#3c8f88}.v3938-sync-status{margin-top:10px;padding:10px;border-radius:11px;background:#05181d;color:#89aaa6;font-size:8px}.v3938-sync-note{display:grid;gap:3px;margin-top:9px;padding:10px;border:1px dashed rgba(113,205,197,.14);border-radius:11px}.v3938-sync-note b{font-size:8px}.v3938-sync-note span{color:#6f918d;font-size:7px;line-height:1.55}.v3938-cloud-box{margin-top:13px;padding:12px;border:1px solid rgba(113,205,197,.16);border-radius:14px;background:#06191f}.v3938-cloud-head{display:flex;justify-content:space-between;gap:8px}.v3938-cloud-head b{font-size:10px}.v3938-cloud-head small{display:block;margin-top:3px;color:#739591;font-size:7px}.v3938-cloud-auth{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto auto;gap:7px;margin-top:10px}.v3938-cloud-auth input{min-width:0;min-height:38px}.v3938-cloud-auth button,.v3938-cloud-on button{min-height:38px;padding:0 12px;border:1px solid #2a565d;border-radius:11px;background:#0b2930;color:#dff7f3;font-size:8px;font-weight:900}.v3938-cloud-on{display:flex;gap:7px;margin-top:10px}.v3938-cloud-on .primary{background:#17464c;border-color:#3c8f88}.v3938-file-title{display:flex;justify-content:space-between;align-items:end;margin-top:14px}.v3938-file-title b{font-size:10px}.v3938-file-title small{font-size:7px;color:#6f918d}@media(max-width:699px){.v3938-sync-head{display:grid}.v3938-local-badge{justify-self:start}.v3938-cloud-auth{grid-template-columns:1fr 1fr}.v3938-cloud-auth input{grid-column:1/-1}.v3938-sync-actions{display:grid;grid-template-columns:1fr 1fr}.v3938-sync-actions .primary{grid-column:1/-1}}";
+    ".v3938-device-transfer{margin-top:14px;padding:15px;border:1px solid rgba(113,205,197,.16);border-radius:18px;background:#071d23}.v3938-sync-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.v3938-sync-head small{color:#66d1c7;font-size:7px;font-weight:950;letter-spacing:.12em}.v3938-sync-head h3{margin:4px 0 5px;font-size:18px}.v3938-sync-head p{margin:0;max-width:720px;color:#7fa29e;font-size:9px;line-height:1.65}.v3938-local-badge{flex:0 0 auto;padding:6px 8px;border-radius:999px;background:#0d3036;color:#8fd4cd;font-size:7px;font-weight:900}.v3938-sync-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px}.v3938-sync-actions button{min-height:38px;padding:0 12px;border:1px solid #2a565d;border-radius:11px;background:#0b2930;color:#dff7f3;font-size:8px;font-weight:900}.v3938-sync-actions button.primary{background:#17464c;border-color:#3c8f88}.v3938-sync-status{margin-top:10px;padding:10px;border-radius:11px;background:#05181d;color:#89aaa6;font-size:8px}.v3938-sync-note{display:grid;gap:3px;margin-top:9px;padding:10px;border:1px dashed rgba(113,205,197,.14);border-radius:11px}.v3938-sync-note b{font-size:8px}.v3938-sync-note span{color:#6f918d;font-size:7px;line-height:1.55}.v3938-cloud-box{margin-top:13px;padding:12px;border:1px solid rgba(113,205,197,.16);border-radius:14px;background:#06191f}.v3938-cloud-head{display:flex;justify-content:space-between;gap:8px}.v3938-cloud-head b{font-size:10px}.v3938-cloud-head small{display:block;margin-top:3px;color:#739591;font-size:7px}.v3938-cloud-auth{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto auto;gap:7px;margin-top:10px;align-items:end}.v3938-auth-field{display:grid;gap:4px}.v3938-auth-field span{font-size:7px;color:#83aaa6;font-weight:900}.v3938-cloud-auth input{min-width:0;min-height:38px}.v3938-cloud-auth button,.v3938-cloud-on button{min-height:38px;padding:0 12px;border:1px solid #2a565d;border-radius:11px;background:#0b2930;color:#dff7f3;font-size:8px;font-weight:900}.v3938-cloud-on{display:flex;gap:7px;margin-top:10px}.v3938-cloud-on .primary{background:#17464c;border-color:#3c8f88}.v3938-file-title{display:flex;justify-content:space-between;align-items:end;margin-top:14px}.v3938-file-title b{font-size:10px}.v3938-file-title small{font-size:7px;color:#6f918d}@media(max-width:699px){.v3938-sync-head{display:grid}.v3938-local-badge{justify-self:start}.v3938-cloud-auth{grid-template-columns:1fr 1fr}.v3938-cloud-auth input{grid-column:1/-1}.v3938-sync-actions{display:grid;grid-template-columns:1fr 1fr}.v3938-sync-actions .primary{grid-column:1/-1}}";
   document.head.appendChild(st);
 
   var payload=exportData(),status=document.getElementById("v3938SyncStatus");
@@ -245,16 +280,21 @@ function ensureUi(){
   var cloudStatus=document.getElementById("v3938CloudStatus");
   document.getElementById("v3938CloudLogin").onclick=function(){
     var email=document.getElementById("v3938CloudEmail").value.trim(),pw=document.getElementById("v3938CloudPassword").value;
-    if(!email||pw.length<6){if(cloudStatus)cloudStatus.textContent="이메일과 6자 이상 비밀번호를 입력해 주세요.";return}
-    cloudSignIn(email,pw).then(function(){refreshCloudUi();cloudSyncNow(false)}).catch(function(e){if(cloudStatus)cloudStatus.textContent="로그인 실패 · "+String(e&&e.message||e)})
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){if(cloudStatus)cloudStatus.textContent="이메일 주소를 name@example.com 형식으로 입력해 주세요.";return}
+    if(pw.length<6){if(cloudStatus)cloudStatus.textContent="비밀번호는 6자 이상 입력해 주세요.";return}
+    if(cloudStatus)cloudStatus.textContent="로그인 중…";
+    cloudSignIn(email,pw).then(function(){refreshCloudUi();cloudSyncNow(false)}).catch(function(e){if(cloudStatus)cloudStatus.textContent=cloudFriendlyError(e,"login")})
   };
   document.getElementById("v3938CloudSignup").onclick=function(){
     var email=document.getElementById("v3938CloudEmail").value.trim(),pw=document.getElementById("v3938CloudPassword").value;
-    if(!email||pw.length<6){if(cloudStatus)cloudStatus.textContent="이메일과 6자 이상 비밀번호를 입력해 주세요.";return}
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){if(cloudStatus)cloudStatus.textContent="이메일 주소를 name@example.com 형식으로 입력해 주세요.";return}
+    if(pw.length<6){if(cloudStatus)cloudStatus.textContent="비밀번호는 6자 이상 입력해 주세요.";return}
+    if(cloudStatus)cloudStatus.textContent="가입 요청 중…";
+    startSignupCooldown(30);
     cloudSignUp(email,pw).then(function(data){
       if(data&&data.session){refreshCloudUi();cloudSyncNow(false)}
-      else if(cloudStatus)cloudStatus.textContent="가입 메일을 확인한 뒤 같은 이메일·비밀번호로 로그인해 주세요."
-    }).catch(function(e){if(cloudStatus)cloudStatus.textContent="가입 실패 · "+String(e&&e.message||e)})
+      else if(cloudStatus)cloudStatus.textContent="인증 메일을 보냈습니다. 메일의 링크을 누른 뒤 VOCADive로 돌아와 ‘로그인’을 눌러주세요."
+    }).catch(function(e){if(cloudStatus)cloudStatus.textContent=cloudFriendlyError(e,"signup")})
   };
   document.getElementById("v3938CloudSync").onclick=function(){cloudSyncNow(false)};
   document.getElementById("v3938CloudLogout").onclick=function(){cloudSignOut()};
