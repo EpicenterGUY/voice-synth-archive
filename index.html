@@ -2715,6 +2715,36 @@ body.v37-ready #toolsModal .tool-view.active{display:block!important}
   }
 }
 </style>
+<style id="v3919HomeExplore">
+/* v39.19 · Home 3.1 / Explore 2.0 */
+.v3919-explore-hero{padding-bottom:18px!important}
+.v3919-intent-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:16px}
+.v3919-intent{min-width:0;min-height:92px;display:grid;grid-template-columns:38px minmax(0,1fr) 14px;gap:9px;align-items:center;padding:12px;border:1px solid rgba(116,210,201,.14);border-radius:16px;background:rgba(5,26,31,.62);color:#e9faf7;text-align:left;box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}
+.v3919-intent:hover{background:#0d3036;border-color:rgba(116,210,201,.28)}
+.v3919-intent>i{width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:#10363c;color:#78ddd4;font-style:normal}
+.v3919-intent>i svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7}
+.v3919-intent b{display:block;font-size:10px;line-height:1.3}.v3919-intent small{display:block;margin-top:4px;color:#759a96;font-size:7px;line-height:1.4}
+.v3919-intent em{font-style:normal;color:#5b8581;font-size:18px}
+.v3919-deeper{margin-top:12px!important}
+.v3919-manage{margin-top:12px;border:1px solid rgba(113,205,197,.10);border-radius:16px;background:#071d23;overflow:hidden}
+.v3919-manage summary{cursor:pointer;list-style:none;padding:12px 14px;color:#89aaa6;font-size:8px;font-weight:900}.v3919-manage summary::-webkit-details-marker{display:none}
+.v3919-manage summary:after{content:"＋";float:right;color:#63bdb5}.v3919-manage[open] summary:after{content:"−"}
+.v3919-manage .v393-manage-grid{padding:0 10px 10px}
+.v396-home-top h1{font-size:31px}.v396-hero-copy>p{max-width:520px}
+.v396-topic-row button{font-size:7.5px}
+body[data-vsa-theme="light"] .v3919-intent{background:#fff;border-color:#cfe2de;color:#173431}
+body[data-vsa-theme="light"] .v3919-intent>i{background:#e3f2ef;color:#27655f}
+body[data-vsa-theme="light"] .v3919-intent small{color:#6b8783}
+body[data-vsa-theme="light"] .v3919-manage{background:#fff;border-color:#cfe2de}
+@media(max-width:980px){.v3919-intent-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:699px){
+  .v3919-explore-hero{padding:15px!important}.v3919-intent-grid{margin-top:12px;gap:7px}
+  .v3919-intent{min-height:82px;grid-template-columns:34px minmax(0,1fr) 10px;padding:10px;gap:8px;border-radius:14px}
+  .v3919-intent>i{width:34px;height:34px}.v3919-intent b{font-size:9px}.v3919-intent small{font-size:6.5px}
+  .v396-home-top h1{font-size:25px}
+}
+@media(max-width:390px){.v3919-intent-grid{grid-template-columns:1fr}.v3919-intent{min-height:68px}}
+</style>
 </head>
 <body>
 <div class="app">
@@ -2935,7 +2965,7 @@ body.v37-ready #toolsModal .tool-view.active{display:block!important}
     </details>
   </section>
 
-  <div class="footer">v39.18.0 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.19.0 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -7016,7 +7046,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:"39.18.0",
+    version:"39.19.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -8369,7 +8399,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.18.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
+var VER="39.19.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -8482,27 +8512,27 @@ function heroHtml396(hit){
   var s=hit.song,y=s.startTime?new Date(s.startTime).getFullYear():"-",ts=tags(s).filter(function(t){return t&&t.length>1}).slice(0,4),badges=homeStatusBadges396(s.contentId);
   return '<section class="v396-hero"><div class="v396-hero-media">'+
     (s.thumbnailUrl?'<img src="'+E(s.thumbnailUrl)+'" alt="">':'<span class="v39-no-thumb">♪</span>')+
-    '<span class="v396-hero-mark">✦ '+E(label(hit.mark))+'에서 고른 한 곡</span></div>'+
+    '<span class="v396-hero-mark">✦ 오늘의 한 곡 · '+E(label(hit.mark))+'</span></div>'+
     '<div class="v396-hero-copy"><div class="v396-hero-kicker">TODAY · '+E(reason(s,hit.mark))+'</div><h2>'+E(s.title||s.contentId)+'</h2>'+
-    '<p>오늘 홈에서 먼저 들어볼 만한 곡입니다. 저장 여부와 최근 시청 기록은 카드와 함께 계속 표시됩니다.</p>'+
+    '<p>오늘 첫 곡으로 골라봤어요. 마음에 들면 보관하거나 비슷한 곡을 이어서 찾아보세요.</p>'+
     '<div class="v396-hero-meta"><span>'+E(s.contentId)+'</span><span>'+y+'</span><span>조회 '+F(s.viewCounter||0)+'</span></div>'+
     '<div class="v396-hero-tags">'+(ts.length?ts.map(function(t){return'<span>'+E(t)+'</span>'}).join(""):'<span>태그 정보 없음</span>')+'</div>'+
     (badges?'<div class="v396-hero-status">'+badges+'</div>':'')+
     '<div class="v396-hero-actions"><button type="button" class="primary" data-v399-play="'+E(s.contentId)+'">▶ 재생</button><button type="button" data-v396-universe="'+E(s.contentId)+'">보카로 우주</button><button type="button" data-v396-save="'+E(s.contentId)+'">♡ 보관</button><button type="button" class="quiet" data-v396-dislike="'+E(s.contentId)+'">관심없음</button></div></div></section>'
 }
 function continueHtml396(rows){
-  return '<section class="v396-continue"><div class="v396-continue-head"><div><h2>이어보기</h2><p>최근에 열었던 곡을 바로 다시 이어서 탐색합니다. <span class="v3910-device-note">현재 기록은 기기·브라우저별 저장</span></p></div><div class="v3910-history-actions"><button type="button" data-v396-personal>최근 기록 전체</button><button type="button" class="danger" data-v3910-clear-history="views">시청 기록 지우기</button></div></div>'+
-    (rows.length?'<div class="v39-media-grid">'+rows.slice(0,5).map(function(x){return mediaCard39(x,"CONTINUE")}).join("")+'</div>':'<div class="v3910-continue-empty">이 기기에서 아직 본 곡이 없습니다.<br>휴대폰과 PC의 시청 기록은 현재 서로 자동 동기화되지 않습니다.</div>')+
+  return '<section class="v396-continue"><div class="v396-continue-head"><div><h2>이어보기</h2><p>최근에 본 곡이에요. 이어서 듣거나 주변 곡을 더 찾아보세요. <span class="v3910-device-note">이 기기에만 저장됨</span></p></div><div class="v3910-history-actions"><button type="button" data-v396-personal>최근 기록</button><button type="button" class="danger" data-v3910-clear-history="views">기록 지우기</button></div></div>'+
+    (rows.length?'<div class="v39-media-grid">'+rows.slice(0,5).map(function(x){return mediaCard39(x,"CONTINUE")}).join("")+'</div>':'<div class="v3910-continue-empty">아직 본 곡이 없어요.<br>곡을 하나 열면 여기에서 바로 이어볼 수 있어요.</div>')+
   '</section>'
 }
 function render(){
-  var r=root(),f=currentFeed(),date=new Date().toLocaleDateString("ko-KR",{month:"long",day:"numeric",weekday:"short"});
+  var r=root(),f=currentFeed(),locale39=document.body.dataset.vsaLocale==="ja"?"ja-JP":"ko-KR",date=new Date().toLocaleDateString(locale39,{month:"long",day:"numeric",weekday:"short"});
   homeContext39=buildHomeContext396();
   var order=homePriority396(),hero=heroPick396(f,order),cont=continueRows396(),heroId=hero&&hero.song&&hero.song.contentId;
-  var intro=homeContext39.signals>=2?"취향 신호 "+F(homeContext39.signals)+"개를 반영해 섹션 순서를 자동 조정합니다.":"곡을 보관하거나 취향 피드백을 남기면 홈 순서가 점점 개인화됩니다.";
+  var intro=homeContext39.signals>=2?"지금 취향에 맞춰 홈 순서를 조금 바꿨어요.":"곡을 보관하거나 반응을 남기면 홈이 조금씩 취향에 맞춰져요.";
   var map={"DAILY":"daily","FOR YOU":"taste","NEW":"newer","DEEP":"hidden"};
-  r.innerHTML='<div class="v396-home-top"><div><small>VOCADIVE · HOME 3.0 · '+E(date)+'</small><h1>오늘은 어떤 곡부터 들어볼까요?</h1><p>'+E(intro)+'</p></div><div class="v396-home-top-actions"><button type="button" data-v39-open-explore>탐색</button><button type="button" data-v39-open-universe>우주</button><button type="button" class="primary" data-v396-personal>MY</button></div></div>'+
-    '<div class="v396-topic-row"><button data-v39-open-explore>숨은 곡</button><button data-v39-open-universe>유사곡 우주</button><button data-v39-feature="vocalRank">음원 순위</button><button data-v39-feature="producerDiscovery">숨은 P</button><button data-v39-feature="detective">잊은 곡 찾기</button><button data-v396-personal>내 취향</button></div>'+
+  r.innerHTML='<div class="v396-home-top"><div><small>VOCADIVE · HOME 3.1 · '+E(date)+'</small><h1>오늘은 뭘 들어볼까요?</h1><p>'+E(intro)+'</p></div><div class="v396-home-top-actions"><button type="button" data-v39-open-explore>찾아보기</button><button type="button" data-v39-open-universe>우주</button><button type="button" class="primary" data-v396-personal>MY</button></div></div>'+
+    '<div class="v396-topic-row"><button data-v39-open-explore>숨은 곡</button><button data-v39-open-universe>비슷한 곡</button><button data-v39-feature="vocalRank">보컬 순위</button><button data-v39-feature="producerDiscovery">숨은 P</button><button data-v39-feature="detective">잊은 곡 찾기</button><button data-v396-personal>내 취향</button></div>'+
     heroHtml396(hero)+continueHtml396(cont)+
     order.map(function(mark,i){return shelf39(mark,f[map[mark]],heroId,String(i+1))}).join("");
 }
@@ -9178,6 +9208,10 @@ function quickChip37(id,label,meta){
   const f=VSA37_FEATURES[id];if(!f)return"";
   return '<button type="button" class="v37-quick-chip" data-v37-feature-id="'+id+'"><i>'+featureIcon37(id)+'</i><span>'+label+'</span>'+(meta?'<small>'+meta+'</small>':'')+'</button>'
 }
+function intentButton3919(id,title,desc){
+  const f=VSA37_FEATURES[id];if(!f)return"";
+  return '<button type="button" class="v3919-intent" data-v37-feature-id="'+id+'"><i>'+featureIcon37(id)+'</i><span><b>'+title+'</b><small>'+desc+'</small></span><em>›</em></button>'
+}
 function refreshHub37(){
   const v=document.querySelector('[data-tool-view="hub37"]');if(!v)return;
   const recentBox=v.querySelector("#v37RecentFeatures"),freqBox=v.querySelector("#v37FrequentFeatures");
@@ -9185,10 +9219,10 @@ function refreshHub37(){
   const stats=featureStats37(),freq=frequentFeatures37(4);
   if(recentBox)recentBox.innerHTML=history.length?history.map(function(x){
     const f=VSA37_FEATURES[x.id];return quickChip37(x.id,f.label,"최근")
-  }).join(""):'<span style="font-size:8px;color:#6c918d">기능을 사용하면 최근 기록이 여기에 표시됩니다.</span>';
+  }).join(""):'<span style="font-size:8px;color:#6c918d">아직 최근 사용 기록이 없어요.</span>';
   if(freqBox)freqBox.innerHTML=freq.length?freq.map(function(id){
     const f=VSA37_FEATURES[id],n=(stats[id]&&stats[id].count)||0;return quickChip37(id,f.label,n+"회")
-  }).join(""):'<span style="font-size:8px;color:#6c918d">사용 횟수가 쌓이면 자주 쓰는 기능을 자동으로 보여줍니다.</span>';
+  }).join(""):'<span style="font-size:8px;color:#6c918d">몇 번 사용하면 자주 쓰는 기능이 여기에 모여요.</span>';
   v.querySelectorAll(".v37-hub-card[data-feature-id]").forEach(function(card){
     card.dataset.frequent=freq.includes(card.dataset.featureId)?"1":"0"
   })
@@ -9198,13 +9232,17 @@ function ensureHub37(){
   var v=body.querySelector('[data-tool-view="hub37"]');if(v){refreshHub37();return v}
   v=document.createElement("section");v.className="tool-view v37-native-hub v393-native-explore";v.dataset.toolView="hub37";
   v.innerHTML=
-    '<div class="v393-explore-hero"><small>VOCADIVE · EXPLORE</small><h2>어떤 방식으로 찾을까요?</h2><p>기능 이름을 외울 필요 없이 지금 하고 싶은 일부터 고르세요. 검색·발굴·우주·데이터가 같은 탐색 흐름으로 이어집니다.</p></div>'+
-    '<div class="v393-explore-primary">'+["detective","universe","gems","producerDiscovery"].map(featureButton37).join("")+'</div>'+
-    '<div class="v393-explore-recent"><section class="v37-hub-section"><div class="v37-hub-section-head"><b>최근 사용</b><small>방금 쓰던 탐색으로 돌아가기</small></div><div class="v37-quick-row" id="v37RecentFeatures"></div></section><section class="v37-hub-section"><div class="v37-hub-section-head"><b>자주 쓰는 기능</b><small>사용 횟수 기반</small></div><div class="v37-quick-row" id="v37FrequentFeatures"></div></section></div>'+
-    '<section class="v37-hub-section"><div class="v37-hub-section-head"><b>데이터로 둘러보기</b><small>빙산 · 음원 순위 · 프로듀서</small></div><div class="v393-data-grid">'+["archive","vocalRank","producer"].map(featureButton37).join("")+'</div></section>'+
-    '<section class="v37-hub-section"><div class="v37-hub-section-head"><b>추천 코스</b><small>새 곡을 넓게 발견</small></div><div class="v393-data-grid">'+["guide"].map(featureButton37).join("")+'</div></section>'+
-    '<section class="v37-hub-section"><div class="v37-hub-section-head"><b>관리</b><small>연결 · 문제 해결</small></div><div class="v393-manage-grid">'+["settings","diagnostics"].map(featureButton37).join("")+'</div></section>'+
-    '<div class="v37-hub-status" id="v37HubStatus">기능 중심 목록을 목적 중심 탐색 화면으로 재구성했습니다.</div>';
+    '<div class="v393-explore-hero v3919-explore-hero"><small>VOCADIVE · EXPLORE 2.0</small><h2>뭘 찾고 싶나요?</h2><p>곡 이름을 아는지, 기억이 흐릿한지, 그냥 새로운 곡이 듣고 싶은지부터 골라보세요.</p>'+
+      '<div class="v3919-intent-grid">'+
+        intentButton3919("search","곡명·P명으로 찾기","검색어가 있다면 여기서 바로")+
+        intentButton3919("detective","기억나는 단서로 찾기","가사·PV·시기만 기억나도 괜찮아요")+
+        intentButton3919("universe","비슷한 곡 이어 듣기","좋아하는 한 곡에서 시작")+
+        intentButton3919("gems","처음 보는 곡 찾기","덜 알려진 곡을 넓게 발굴")+
+      '</div></div>'+
+    '<section class="v37-hub-section v3919-deeper"><div class="v37-hub-section-head"><b>조금 더 파고들기</b><small>추천 · P · 순위 · 빙산</small></div><div class="v393-data-grid">'+["guide","taste","producer","producerDiscovery","vocalRank","archive"].map(featureButton37).join("")+'</div></section>'+
+    '<div class="v393-explore-recent"><section class="v37-hub-section"><div class="v37-hub-section-head"><b>최근 사용</b><small>아까 보던 기능으로 돌아가기</small></div><div class="v37-quick-row" id="v37RecentFeatures"></div></section><section class="v37-hub-section"><div class="v37-hub-section-head"><b>자주 쓰는 기능</b><small>자주 연 기능을 자동으로 모아요</small></div><div class="v37-quick-row" id="v37FrequentFeatures"></div></section></div>'+
+    '<details class="v3919-manage"><summary>연결 · 문제 해결</summary><div class="v393-manage-grid">'+["settings","diagnostics"].map(featureButton37).join("")+'</div></details>'+
+    '<div class="v37-hub-status" id="v37HubStatus">여기서 연 기능은 최근 사용에 남아요.</div>';
   body.prepend(v);refreshHub37();return v
 }
 function openHub37(){
@@ -9499,15 +9537,15 @@ var groups={};
 function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
-  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.18.0","./detective-v12.js?v=39.18.0","./detective-v13.js?v=39.18.0","./detective-v14.js?v=39.18.0","./detective-v16.js?v=39.18.0"]);
-  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.18.0","./smart-v23.js?v=39.18.0","./playlist-v24.js?v=39.18.0"]);
-  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.18.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.18.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.18.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.18.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.18.0");
+  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.19.0","./detective-v12.js?v=39.19.0","./detective-v13.js?v=39.19.0","./detective-v14.js?v=39.19.0","./detective-v16.js?v=39.19.0"]);
+  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.19.0","./smart-v23.js?v=39.19.0","./playlist-v24.js?v=39.19.0"]);
+  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.19.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.19.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.19.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.19.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.19.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
-    return seq(["./voca-app-v33.js?v=39.18.0","./voca-app-v33-1.js?v=39.18.0","./voca-app-v33-2.js?v=39.18.0","./voca-app-v33-3.js?v=39.18.0"]);
+    return seq(["./voca-app-v33.js?v=39.19.0","./voca-app-v33-1.js?v=39.19.0","./voca-app-v33-2.js?v=39.19.0","./voca-app-v33-3.js?v=39.19.0"]);
   });
   else groups[name]=Promise.resolve(false);
   groups[name]=Promise.resolve(groups[name]).then(function(v){
@@ -9551,4 +9589,4 @@ if("requestIdleCallback" in window)requestIdleCallback(function(){ensure("pwa")}
 else setTimeout(function(){ensure("pwa")},12000);
 })();
 </script>
-<script src="./i18n-v3918.js?v=39.18.0"></script>\n</body>\n</html>
+<script src="./i18n-v3918.js?v=39.19.0"></script>\n</body>\n</html>
