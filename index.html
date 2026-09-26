@@ -9990,11 +9990,15 @@ function executeSearch397(q,mode){
   apply();
   requestAnimationFrame(apply);
   setTimeout(apply,35);
-  setTimeout(function(){
+  function runWhenReady(attempt){
     apply();
+    if(typeof state!=="undefined"&&state.busy&&attempt<12){
+      setTimeout(function(){runWhenReady(attempt+1)},45);return
+    }
     try{freeSearch(true)}catch(e){}
-    setTimeout(function(){if(window.__VSA_PENDING_SEARCH397===q)window.__VSA_PENDING_SEARCH397=""},120)
-  },75)
+    setTimeout(function(){if(window.__VSA_PENDING_SEARCH397===q)window.__VSA_PENDING_SEARCH397=""},160)
+  }
+  setTimeout(function(){runWhenReady(0)},75)
 }
 function chooseSuggestion397(type,value,id){
   if(type==="song"&&id&&window.VSAOpenSong39){window.VSAOpenSong39(id);return}
