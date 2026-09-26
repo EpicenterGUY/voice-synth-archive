@@ -3117,6 +3117,14 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
   .v331-mini{bottom:calc(82px + env(safe-area-inset-bottom))!important}
 }
 </style>
+<style id="v3932YoutubeMini">
+/* v39.32 · YouTube-like Watch → mini continuity */
+.v399-inline-player-host{position:absolute;inset:0;width:100%;height:100%;background:#000}
+.v399-inline-player-host iframe,.v399-player-shell>.v331-inline-frame{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;border:0!important;background:#000!important}
+@media(max-width:699px){
+  .v331-mini{left:10px!important;right:10px!important;width:auto!important;transform:none!important;bottom:calc(84px + env(safe-area-inset-bottom))!important}
+}
+</style>
 </head>
 <body>
 <div class="app">
@@ -3337,7 +3345,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.31.0 · Playback Route Fix · Universe 3.1 · Watch Align · Guide 3.2 · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.32.0 · YouTube Mini Continuity · Universe 3.1 · Watch Align · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -7596,7 +7604,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:"39.31.0",
+    version:"39.32.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -9039,7 +9047,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.31.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
+var VER="39.32.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -9278,31 +9286,53 @@ function stopWatchInline399(showResume){
     shell.insertAdjacentHTML("beforeend",'<div class="v399-player-fallback-inline"><div><b>재생이 중지되었습니다.</b><p>다른 메뉴로 이동하면서 숨은 재생을 중지했어요.</p><button type="button" data-v399-resume>▶ 다시 재생</button></div></div>')
   }
 }
-function ensureBackgroundPlayerVisible399(){
-  try{
-    if(!window.VSANicoPlayer||!VSANicoPlayer.state)return false;
-    var st=VSANicoPlayer.state();
-    if(!st||!st.currentId)return false;
-    if(VSANicoPlayer.ensureVisible)return !!VSANicoPlayer.ensureVisible();
-    if(VSANicoPlayer.collapse){VSANicoPlayer.collapse();return true}
-  }catch(e){}
-  return false
+function watchQueue399(song){
+  return [song].concat(relatedSongs39(song)).map(function(x){return{id:x.contentId,title:x.title||x.contentId}})
+}
+function handoffWatchToMini399(){
+  var song=window.__VSA39_DETAIL_SONG,frame=document.getElementById("v399InlineFrame");
+  if(!song){
+    try{if(window.VSANicoPlayer&&VSANicoPlayer.ensureVisible)VSANicoPlayer.ensureVisible()}catch(_){}
+    return Promise.resolve(false)
+  }
+  var adopt=function(){
+    try{
+      if(window.VSANicoPlayer){
+        if(frame&&VSANicoPlayer.adoptInlineFrame){
+          VSANicoPlayer.adoptInlineFrame(frame,song.contentId,song.title||song.contentId,watchQueue399(song),true);
+          return true
+        }
+        if(VSANicoPlayer.state&&VSANicoPlayer.state().currentId===song.contentId&&VSANicoPlayer.detachToMini){
+          return !!VSANicoPlayer.detachToMini()
+        }
+        if(VSANicoPlayer.ensureVisible)return !!VSANicoPlayer.ensureVisible()
+      }
+    }catch(e){}
+    return false
+  };
+  if(adopt())return Promise.resolve(true);
+  if(window.VSAEnsureFeatures){
+    return Promise.resolve(VSAEnsureFeatures("player")).then(function(){return adopt()}).catch(function(){return false})
+  }
+  return Promise.resolve(false)
 }
 function leaveWatchRoute399(){
-  stopWatchInline399(false);
-  setTimeout(function(){ensureBackgroundPlayerVisible399()},0)
+  handoffWatchToMini399()
 }
 function ensureWatch399(){
-  var song=window.__VSA39_DETAIL_SONG;
-  if(!song)return;
-  var p=document.querySelector('[data-tool-view="songDetail39"]');
-  if(p&&p.classList.contains("active")&&!document.getElementById("v399InlineFrame")){
-    p.querySelectorAll(".v399-player-fallback-inline").forEach(function(x){x.remove()});
-    renderSongDetail39(song,false)
-  }
+  var song=window.__VSA39_DETAIL_SONG;if(!song)return;
+  var p=document.querySelector('[data-tool-view="songDetail39"]');if(!p||!p.classList.contains("active"))return;
+  p.querySelectorAll(".v399-player-fallback-inline").forEach(function(x){x.remove()});
+  var shell=p.querySelector(".v399-player-shell");
+  try{
+    if(shell&&window.VSANicoPlayer&&VSANicoPlayer.state&&VSANicoPlayer.state().currentId===song.contentId&&VSANicoPlayer.attachInline){
+      if(VSANicoPlayer.attachInline(shell,song.contentId))return
+    }
+  }catch(e){}
+  if(!shell||!shell.querySelector("#v399InlineFrame"))renderSongDetail39(song,false)
 }
 function nicoEmbed399(id,autoplay){
-  var q="jsapi=1&playerId=vsaInline399";if(autoplay)q+="&autoplay=1";
+  var q="jsapi=1&playerId=vsaPlayer";if(autoplay)q+="&autoplay=1";
   return "https://embed.nicovideo.jp/watch/"+encodeURIComponent(id)+"?"+q
 }
 function vocaCacheGet399(id){
@@ -9382,7 +9412,7 @@ function savedPlayerVolume3926(){
 }
 function postInlineVolume3926(n){
   var f=document.getElementById("v399InlineFrame");if(!f||!f.contentWindow)return;
-  try{f.contentWindow.postMessage({sourceConnectorType:1,playerId:"vsaInline399",eventName:"volumeChange",data:{volume:n/100}},"https://embed.nicovideo.jp")}catch(e){}
+  try{f.contentWindow.postMessage({sourceConnectorType:1,playerId:"vsaPlayer",eventName:"volumeChange",data:{volume:n/100}},"https://embed.nicovideo.jp")}catch(e){}
 }
 function setWatchVolume3926(value,silent){
   var n=Math.max(0,Math.min(100,Math.round(Number(value)||0)));
@@ -9412,8 +9442,11 @@ function renderSongDetail39(song,autoplay){
   var p=ensureSongDetail39();if(!p||!song)return;
   var ts=tags(song).slice(0,14),vocals=vocalTags39(song),locale399=document.body.dataset.vsaLocale==="ja"?"ja-JP":"ko-KR",date=song.startTime?new Date(song.startTime).toLocaleDateString(locale399):"-",year=song.startTime?new Date(song.startTime).getFullYear():"-";
   var original=false;try{original=typeof discoveryOriginalProof37==="function"&&discoveryOriginalProof37(song,"all_voice_synth_union").ok}catch(e){}
+  var resumeExisting=false;
+  try{resumeExisting=!!(window.VSANicoPlayer&&VSANicoPlayer.state&&VSANicoPlayer.state().currentId===song.contentId)}catch(e){}
+  var playerHtml=resumeExisting?'<div class="v399-inline-player-host" data-v399-inline-host></div>':'<iframe id="v399InlineFrame" src="'+E(nicoEmbed399(song.contentId,!!autoplay))+'" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" title="'+E(song.title||song.contentId)+'"></iframe>';
   p.innerHTML='<div class="v399-watch-layout v3920-watch"><main class="v399-watch-main">'+
-    '<div class="v399-player-shell"><iframe id="v399InlineFrame" src="'+E(nicoEmbed399(song.contentId,!!autoplay))+'" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" title="'+E(song.title||song.contentId)+'"></iframe></div>'+
+    '<div class="v399-player-shell">'+playerHtml+'</div>'+
     '<div class="v399-watch-info v3920-info"><div class="v399-watch-kicker"><span>'+E(String(year))+'</span><span>'+E(song.contentId||"")+'</span>'+(original?'<span class="v399-origin-badge">ORIGINAL</span>':'')+'</div>'+
       '<h2>'+E(song.title||song.contentId)+'</h2><div class="v399-watch-meta"><span data-vsa-song-date="'+E(song.startTime||"")+'">'+E(date)+'</span><span>니코니코</span></div>'+
       '<div class="v3920-credit-strip"><div class="v3920-credit"><small>P</small><div class="v392-detail-chips" data-v39-producer-credit><span>확인 중…</span></div></div><div class="v3920-credit"><small>VOCAL</small><div class="v392-detail-chips">'+(vocals.length?vocals.map(function(v){return'<button type="button" data-v39-search-tag="'+E(v)+'">'+E(v)+'</button>'}).join(""):'<span>보컬 태그 정보 없음</span>')+'</div></div></div>'+
@@ -9429,6 +9462,18 @@ function renderSongDetail39(song,autoplay){
   '</div>';
   renderWatchRelated399(song,[]);
   syncWatchVolume3926(p);
+  var shell399=p.querySelector(".v399-player-shell");
+  if(resumeExisting&&shell399&&window.VSANicoPlayer&&VSANicoPlayer.attachInline){
+    try{VSANicoPlayer.attachInline(shell399,song.contentId)}catch(_){}
+  }else if(window.VSAEnsureFeatures){
+    Promise.resolve(VSAEnsureFeatures("player")).then(function(){
+      try{
+        var current=window.__VSA39_DETAIL_SONG;
+        if(!current||current.contentId!==song.contentId)return;
+        if(window.VSANicoPlayer&&VSANicoPlayer.setVolume)VSANicoPlayer.setVolume(savedPlayerVolume3926(),true)
+      }catch(_){}
+    })
+  }
   var box=p.querySelector("[data-v39-producer-credit]");
   if(box&&typeof resolveSongProducers37==="function"){
     Promise.resolve(resolveSongProducers37(song)).then(function(ps){if(!box.isConnected)return;box.innerHTML=ps&&ps.length?ps.map(function(x){return'<button type="button" data-v39-search-producer="'+E(x.name)+'" title="출처: '+E(x.source||"메타데이터")+(x.role?(" · "+E(x.role)):"")+'">'+E(x.name)+'</button>'}).join(""):'<span>P 정보를 찾지 못했어요.</span>';if(window.VSAI18n)window.VSAI18n.refresh()}).catch(function(){if(box.isConnected)box.innerHTML='<span>P 정보 확인 실패</span>'})
@@ -9438,6 +9483,12 @@ function renderSongDetail39(song,autoplay){
 }
 function openSongDetail39(id,autoplay){
   var song=getAnySong39(id);if(!song)return;
+  try{
+    if(window.VSANicoPlayer&&VSANicoPlayer.state){
+      var st=VSANicoPlayer.state();
+      if(st&&st.currentId&&st.currentId!==song.contentId&&VSANicoPlayer.stop)VSANicoPlayer.stop()
+    }
+  }catch(e){}
   recordRecentView3910(song);
   window.__VSA39_DETAIL_SONG=song;renderSongDetail39(song,!!autoplay);openToolsModal("songDetail39")
 }
@@ -10121,10 +10172,11 @@ function init(){
     var lyric399=e.target.closest("[data-v399-lyric]");if(lyric399){selectLyric399(lyric399.dataset.v399Lyric);return}
     var mini399=e.target.closest("[data-v399-mini]");if(mini399){
       var ms399=getAnySong39(mini399.dataset.v399Mini);if(!ms399)return;
-      var q399=[ms399].concat(relatedSongs39(ms399)).map(function(x){return{id:x.contentId,title:x.title||x.contentId}});
-      stopWatchInline399(false);
-      if(window.VSANicoPlayer)(window.VSANicoPlayer.openMini||window.VSANicoPlayer.open)(ms399.contentId,ms399.title||ms399.contentId,q399);
-      else if(window.VSAEnsureFeatures){try{toast("미니 플레이어 준비 중…")}catch(_){ }VSAEnsureFeatures("player").then(function(){if(window.VSANicoPlayer)(window.VSANicoPlayer.openMini||window.VSANicoPlayer.open)(ms399.contentId,ms399.title||ms399.contentId,q399)})}
+      handoffWatchToMini399().then(function(ok){
+        if(ok)return;
+        var q399=watchQueue399(ms399);
+        if(window.VSANicoPlayer)(window.VSANicoPlayer.openMini||window.VSANicoPlayer.open)(ms399.contentId,ms399.title||ms399.contentId,q399)
+      });
       return
     }
     if(e.target.closest("[data-v399-resume]")){var rs399=window.__VSA39_DETAIL_SONG;if(rs399)renderSongDetail39(rs399,true);return}
@@ -10254,15 +10306,15 @@ var groups={};
 function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
-  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.31.0","./detective-v12.js?v=39.31.0","./detective-v13.js?v=39.31.0","./detective-v14.js?v=39.31.0","./detective-v16.js?v=39.31.0"]);
-  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.31.0","./smart-v23.js?v=39.31.0","./playlist-v24.js?v=39.31.0"]);
-  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.31.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.31.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.31.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.31.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.31.0");
+  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.32.0","./detective-v12.js?v=39.32.0","./detective-v13.js?v=39.32.0","./detective-v14.js?v=39.32.0","./detective-v16.js?v=39.32.0"]);
+  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.32.0","./smart-v23.js?v=39.32.0","./playlist-v24.js?v=39.32.0"]);
+  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.32.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.32.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.32.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.32.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.32.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
-    return seq(["./voca-app-v33.js?v=39.31.0","./voca-app-v33-1.js?v=39.31.0","./voca-app-v33-2.js?v=39.31.0","./voca-app-v33-3.js?v=39.31.0"]);
+    return seq(["./voca-app-v33.js?v=39.32.0","./voca-app-v33-1.js?v=39.32.0","./voca-app-v33-2.js?v=39.32.0","./voca-app-v33-3.js?v=39.32.0"]);
   });
   else groups[name]=Promise.resolve(false);
   groups[name]=Promise.resolve(groups[name]).then(function(v){
@@ -10306,4 +10358,4 @@ if("requestIdleCallback" in window)requestIdleCallback(function(){ensure("pwa")}
 else setTimeout(function(){ensure("pwa")},12000);
 })();
 </script>
-<script src="./i18n-v3918.js?v=39.31.0"></script>\n</body>\n</html>
+<script src="./i18n-v3918.js?v=39.32.0"></script>\n</body>\n</html>
