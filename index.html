@@ -9365,10 +9365,11 @@ async function refreshMark39(mark){
   try{
     if(window.VSAHome28&&VSAHome28.refreshSection)await VSAHome28.refreshSection(mark);
     else if(typeof fetchNico==="function"){
-      var opts=mark==="NEW"?{year:"all",limit:40,offset:0,mode:"ranking",sort:"-startTime"}:
-        mark==="DEEP"?{year:"all",limit:100,offset:0,mode:"ranking",sort:"+viewCounter",numericFilters:{viewCounter:{gte:100,lte:50000}}}:
-        mark==="FOR YOU"?{year:"all",limit:70,offset:0,mode:"ranking",sort:"-mylistCounter"}:
-        {year:"all",limit:70,offset:0,mode:"ranking",sort:"-viewCounter"};
+      var pageBase=Math.floor(pageRand3941(mark+"_fetch","offset")*5);
+      var opts=mark==="NEW"?{year:"all",limit:60,offset:pageBase*20,mode:"ranking",sort:"-startTime"}:
+        mark==="DEEP"?{year:"all",limit:100,offset:pageBase*100,mode:"ranking",sort:"+viewCounter",numericFilters:{viewCounter:{gte:100,lte:50000}}}:
+        mark==="FOR YOU"?{year:"all",limit:90,offset:pageBase*60,mode:"ranking",sort:"-mylistCounter"}:
+        {year:"all",limit:90,offset:pageBase*60,mode:"ranking",sort:["-viewCounter","-mylistCounter","-commentCounter"][PAGE_SEED3941%3]};
       var d=await fetchNico(opts),f=currentFeed(),raw=(d.data||[]).sort(function(){return Math.random()-.5}),arr=preferOriginal399(raw,12);
       f[k(mark)]=arr;S(HK,f)
     }
@@ -10580,6 +10581,14 @@ function init(){
   var h=document.querySelector(".topbar .brand h1");if(h)h.textContent="VocaDive";
   var subh=document.querySelector(".topbar .brand .sub");if(subh)subh.textContent="VOCAL SYNTH DISCOVERY · 발굴 · 추천 · 데이터";
   render();dock();ensureTopSearch39();initTheme3911();ensureCorePages37();ensureSearch397();ensureSearch398();ensureHub37();mountToolsPage37();syncDetectiveStep37(0);
+  var reloadMarks3941=["DAILY","FOR YOU","NEW","DEEP"],reloadMark3941=reloadMarks3941[PAGE_SEED3941%reloadMarks3941.length];
+  setTimeout(function(){
+    try{
+      if(document.hidden||window.__VSA37_CURRENT_ROUTE!=="home")return;
+      if(typeof relayBase==="function"&&!relayBase())return;
+      refreshMark39(reloadMark3941)
+    }catch(_){}
+  },900);
   var run397=document.getElementById("apiSearchBtn");if(run397&&!run397.dataset.v397Remember){run397.dataset.v397Remember="1";run397.addEventListener("click",function(){var x=document.getElementById("globalSearchInput");if(x&&x.value.trim()){rememberSearch397(x.value,searchMode397);renderEntity397(x.value)}} ,true)}
   document.querySelectorAll("#detectiveMobileSteps button").forEach(function(btn){
     btn.addEventListener("click",function(){syncDetectiveStep37(btn.dataset.dstep||0)})
@@ -10746,7 +10755,7 @@ function ensure(name){
   else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.41.0");
   else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.41.0");
   else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.41.0");
-  else if(name==="deviceSync")groups[name]=load("./device-sync-v3938.js?v=39.41.0");
+  else if(name==="deviceSync")groups[name]=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.41.0");
   else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.41.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
     return seq(["./voca-app-v33.js?v=39.41.0","./voca-app-v33-1.js?v=39.41.0","./voca-app-v33-2.js?v=39.41.0","./voca-app-v33-3.js?v=39.41.0"]);
