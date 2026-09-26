@@ -3345,7 +3345,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.34.0 · Mini Return · Universe Handoff · Universe Search 3.1 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.35.0 · Mini Return · Universe Handoff · Universe Search 3.1 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -7604,7 +7604,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:"39.34.0",
+    version:"39.35.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -9047,7 +9047,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.34.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
+var VER="39.35.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -9255,6 +9255,7 @@ function preferOriginal399(rows,count){
   return typeof count==="number"?out.slice(0,count):out
 }
 var relatedCycle399=new Map();
+var RELATED_EXPOSURE_KEY399="vsa399.related.exposure.v3";
 function localRelatedPool399(song){
   var f=currentFeed(),m=new Map();
   ["daily","taste","newer","hidden"].forEach(function(q){
@@ -9276,6 +9277,37 @@ function relatedViewBand399(song){
 function relatedSimilarity399(center,song){
   try{return typeof weightedTagSimilarity==="function"?Number(weightedTagSimilarity(center,song))||0:0}catch(e){return 0}
 }
+function relatedWatched399(){
+  var org=L(OK,{recentViews:[]}),rows=Array.isArray(org.recentViews)?org.recentViews:[],m=new Map();
+  rows.forEach(function(x,i){var id=String(x&&x.id||"");if(id&&!m.has(id))m.set(id,{rank:i,at:+x.viewedAt||0})});
+  return m
+}
+function relatedExposure399(){
+  var a=L(RELATED_EXPOSURE_KEY399,[]);
+  return Array.isArray(a)?a.filter(function(x){return x&&x.id}).slice(0,220):[]
+}
+function commitRelatedExposure399(rows){
+  var old=relatedExposure399(),ids=(rows||[]).map(function(x){return String(x&&x.contentId||"")}).filter(Boolean),set=new Set(ids);
+  var now=Date.now(),next=ids.map(function(id){return{id:id,at:now}}).concat(old.filter(function(x){return !set.has(String(x.id))}));
+  S(RELATED_EXPOSURE_KEY399,next.slice(0,220))
+}
+function relatedNoveltyPenalty399(id,watched,exposureRank){
+  var w=watched.get(String(id)),pen=0;
+  if(w){
+    if(w.rank<12)pen+=150;
+    else if(w.rank<30)pen+=105;
+    else if(w.rank<55)pen+=68;
+    else pen+=38
+  }
+  var er=exposureRank.get(String(id));
+  if(er!=null){
+    if(er<30)pen+=145;
+    else if(er<70)pen+=92;
+    else if(er<130)pen+=48;
+    else pen+=22
+  }
+  return pen
+}
 function balancedRelatedSelection399(center,rows,count,commit){
   count=Math.max(1,Number(count)||14);
   var seen=new Map();
@@ -9286,38 +9318,77 @@ function balancedRelatedSelection399(center,rows,count,commit){
   });
   var all=[...seen.values()];
   try{if(window.VSA37AdultFilterRows)all=window.VSA37AdultFilterRows(all,"watch_related").rows}catch(e){}
+
+  var watched=relatedWatched399(),exposure=relatedExposure399(),exposureRank=new Map();
+  exposure.forEach(function(x,i){var id=String(x.id||"");if(id&&!exposureRank.has(id))exposureRank.set(id,i)});
+  var hardRecent=new Set();
+  [...watched.entries()].forEach(function(x){if(x[1].rank<36)hardRecent.add(x[0])});
+  exposure.slice(0,64).forEach(function(x){hardRecent.add(String(x.id))});
+
+  var fresh=all.filter(function(s){return !hardRecent.has(String(s.contentId))});
+  var useFreshOnly=fresh.length>=Math.max(count+5,Math.ceil(count*1.35));
+  if(useFreshOnly)all=fresh;
+
   var key=String(center.contentId||""),st=relatedCycle399.get(key)||{turn:0,shown:[]};
   st.turn=(st.turn||0)+1;
-  var recent=new Set((st.shown||[]).slice(-36)),buckets={mega:[],high:[],mid:[],low:[],deep:[],unknown:[]};
+  var centerRecent=new Set((st.shown||[]).slice(-50)),buckets={mega:[],high:[],mid:[],low:[],deep:[],unknown:[]};
+
   all.forEach(function(s){
     var sim=relatedSimilarity399(center,s),orig=0;
     try{orig=typeof discoveryOriginalProof37==="function"&&discoveryOriginalProof37(s,"all_voice_synth_union").ok?1:0}catch(e){}
     var reacted=((+s.mylistCounter||0)+(+s.likeCounter||0)*.35+(+s.commentCounter||0)*.08)/Math.max(100,+s.viewCounter||0);
-    var score=sim*100+Math.min(10,reacted*450)+(orig?7:0)+(Math.random()*17)-(recent.has(s.contentId)?32:0);
+    var novelty=relatedNoveltyPenalty399(s.contentId,watched,exposureRank);
+    if(centerRecent.has(s.contentId))novelty+=95;
+    var score=sim*78+Math.min(10,reacted*450)+(orig?8:0)+(Math.random()*27)-novelty;
     buckets[relatedViewBand399(s)].push({song:s,score:score})
   });
+
   Object.keys(buckets).forEach(function(k){buckets[k].sort(function(a,b){return b.score-a.score})});
-  var order=["mega","high","mid","low","deep","unknown"];
-  var rot=st.turn%order.length;order=order.slice(rot).concat(order.slice(0,rot));
+  var order=["mega","high","mid","low","deep","unknown"],rot=st.turn%order.length;
+  order=order.slice(rot).concat(order.slice(0,rot));
   var out=[],used=new Set();
+
+  function chooseFrom(bucket){
+    if(!bucket||!bucket.length)return null;
+    var bestIndex=-1,best=-Infinity,limit=Math.min(bucket.length,18);
+    for(var i=0;i<limit;i++){
+      var e=bucket[i],s=e.song;if(used.has(s.contentId))continue;
+      var maxPeer=0,sameYear=0,sy=s.startTime?new Date(s.startTime).getFullYear():0;
+      for(var j=0;j<out.length;j++){
+        maxPeer=Math.max(maxPeer,relatedSimilarity399(s,out[j]));
+        var oy=out[j].startTime?new Date(out[j].startTime).getFullYear():0;
+        if(sy&&oy&&sy===oy)sameYear++
+      }
+      var mmr=e.score-maxPeer*58-(maxPeer>.64?28:0)-Math.min(10,sameYear*2.5);
+      if(mmr>best){best=mmr;bestIndex=i}
+    }
+    if(bestIndex<0)return null;
+    return bucket.splice(bestIndex,1)[0].song
+  }
+
   while(out.length<count){
     var added=false;
     for(var i=0;i<order.length&&out.length<count;i++){
-      var bucket=buckets[order[i]];
-      while(bucket.length&&used.has(bucket[0].song.contentId))bucket.shift();
-      if(!bucket.length)continue;
-      var pick=bucket.shift().song;used.add(pick.contentId);out.push(pick);added=true
+      var pick=chooseFrom(buckets[order[i]]);
+      if(!pick)continue;
+      used.add(pick.contentId);out.push(pick);added=true
     }
     if(!added)break
   }
+
   if(out.length<count){
-    all.slice().sort(function(a,b){
-      return relatedSimilarity399(center,b)-relatedSimilarity399(center,a)+(Math.random()-.5)*.15
-    }).forEach(function(s){if(out.length<count&&!used.has(s.contentId)){used.add(s.contentId);out.push(s)}})
+    var rest=[];
+    Object.keys(buckets).forEach(function(k){rest=rest.concat(buckets[k])});
+    while(out.length<count&&rest.length){
+      var pick=chooseFrom(rest);if(!pick)break;
+      if(!used.has(pick.contentId)){used.add(pick.contentId);out.push(pick)}
+    }
   }
+
   if(commit!==false){
-    st.shown=(st.shown||[]).concat(out.map(function(x){return x.contentId})).slice(-54);
-    relatedCycle399.set(key,st)
+    st.shown=(st.shown||[]).concat(out.map(function(x){return x.contentId})).slice(-90);
+    relatedCycle399.set(key,st);
+    commitRelatedExposure399(out)
   }
   return out.slice(0,count)
 }
@@ -9452,22 +9523,30 @@ async function fetchRelatedNico399(song){
   var qs=[];
   try{qs=typeof informativeTags==="function"?informativeTags(song):[]}catch(e){}
   if(!qs.length)qs=tags(song);
-  qs=qs.filter(function(t){return t&&String(t).length>1}).slice(0,8);
+  qs=qs.filter(function(t){return t&&String(t).length>1}).slice(0,10);
   if(!qs.length)return [];
   qs=qs.slice().sort(function(){return Math.random()-.5});
   var specs=[
-    {gte:0,lte:999,sort:"-mylistCounter"},
-    {gte:1000,lte:9999,sort:"-commentCounter"},
-    {gte:10000,lte:99999,sort:"-mylistCounter"},
-    {gte:100000,lte:999999,sort:"-startTime"},
-    {gte:1000000,lte:null,sort:"-viewCounter"}
+    {gte:0,lte:999},
+    {gte:1000,lte:9999},
+    {gte:10000,lte:99999},
+    {gte:100000,lte:999999},
+    {gte:1000000,lte:null}
   ];
-  var salt=Math.floor(Math.random()*100000);
-  var batches=await mapLimit(specs,3,async function(sp,i){
-    var nf={viewCounter:{gte:sp.gte}};if(sp.lte!=null)nf.viewCounter.lte=sp.lte;
-    var tag=qs[(i+salt)%qs.length],sorts=[sp.sort,"-mylistCounter","-commentCounter","-startTime"],sort=sorts[(salt+i)%sorts.length];
+  var salt=Math.floor(Math.random()*100000),jobs=[];
+  specs.forEach(function(sp,i){
+    var tries=Math.min(2,qs.length);
+    for(var j=0;j<tries;j++){
+      var nf={viewCounter:{gte:sp.gte}};if(sp.lte!=null)nf.viewCounter.lte=sp.lte;
+      var tag=qs[(i*2+j+salt)%qs.length];
+      var sorts=["-mylistCounter","-commentCounter","-startTime","-viewCounter"],sort=sorts[(salt+i+j)%sorts.length];
+      var offset=j===0?0:24+((salt+i*17)%3)*24;
+      jobs.push({tag:tag,sort:sort,nf:nf,offset:offset})
+    }
+  });
+  var batches=await mapLimit(jobs,4,async function(job){
     try{
-      var d=await fetchNico({year:"all",limit:36,offset:((salt+i)%3)*12,mode:"ranking",sort:sort,applyYear:false,applyTier:false,numericFilters:nf,extraExactTag:tag});
+      var d=await fetchNico({year:"all",limit:36,offset:job.offset,mode:"ranking",sort:job.sort,applyYear:false,applyTier:false,numericFilters:job.nf,extraExactTag:job.tag});
       return d.data||[]
     }catch(e){return[]}
   });
@@ -10431,15 +10510,15 @@ var groups={};
 function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
-  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.34.0","./detective-v12.js?v=39.34.0","./detective-v13.js?v=39.34.0","./detective-v14.js?v=39.34.0","./detective-v16.js?v=39.34.0"]);
-  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.34.0","./smart-v23.js?v=39.34.0","./playlist-v24.js?v=39.34.0"]);
-  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.34.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.34.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.34.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.34.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.34.0");
+  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.35.0","./detective-v12.js?v=39.35.0","./detective-v13.js?v=39.35.0","./detective-v14.js?v=39.35.0","./detective-v16.js?v=39.35.0"]);
+  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.35.0","./smart-v23.js?v=39.35.0","./playlist-v24.js?v=39.35.0"]);
+  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.35.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.35.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.35.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.35.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.35.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
-    return seq(["./voca-app-v33.js?v=39.34.0","./voca-app-v33-1.js?v=39.34.0","./voca-app-v33-2.js?v=39.34.0","./voca-app-v33-3.js?v=39.34.0"]);
+    return seq(["./voca-app-v33.js?v=39.35.0","./voca-app-v33-1.js?v=39.35.0","./voca-app-v33-2.js?v=39.35.0","./voca-app-v33-3.js?v=39.35.0"]);
   });
   else groups[name]=Promise.resolve(false);
   groups[name]=Promise.resolve(groups[name]).then(function(v){
@@ -10483,4 +10562,4 @@ if("requestIdleCallback" in window)requestIdleCallback(function(){ensure("pwa")}
 else setTimeout(function(){ensure("pwa")},12000);
 })();
 </script>
-<script src="./i18n-v3918.js?v=39.34.0"></script>\n</body>\n</html>
+<script src="./i18n-v3918.js?v=39.35.0"></script>\n</body>\n</html>
