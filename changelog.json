@@ -1,11 +1,27 @@
 {
   "current": {
-    "version": "39.36.0",
+    "version": "39.37.0",
     "releasedAt": "2026-09-27",
-    "title": "Related Novelty 3.1 · Nico Producer Name Fix",
-    "summary": "연관곡의 재노출·최근 시청곡 반복을 더 강하게 줄이고, 저조회수·신곡도 조회수와 무관하게 니코동 최신 메타데이터를 다시 확인해 P명을 표시하도록 개선했습니다. P명은 내부 별칭보다 니코동 실제 표기명을 우선합니다."
+    "title": "Playback 2.4 · Mini Player Route Repair",
+    "summary": "Watch에서 다른 화면으로 이동해도 같은 니코니코 iframe을 유지한 채 미니 플레이어로 넘기고, 미니 플레이어에서 재생·일시정지를 직접 제어할 수 있게 했습니다. 화면 전환 중 미니 플레이어가 사라지는 경로도 자동 복구합니다."
   },
   "entries": [
+    {
+      "version": "39.37.0",
+      "date": "2026-09-27",
+      "title": "Playback 2.4 · Mini Player Route Repair",
+      "changes": [
+        "미니 플레이어에 재생/일시정지 버튼을 추가하고 니코니코 playerStatusChange와 상태를 동기화",
+        "Watch → 홈/탐색/우주/MY/검색 등으로 이동할 때 기존 iframe DOM을 재생 위치 그대로 미니 스테이지로 이동",
+        "미니 플레이어 상태에서 다른 앱 화면으로 연속 전환해도 재생 iframe을 새로 만들거나 재시작하지 않도록 유지",
+        "모든 주요 라우트 전환에 플레이어 표면 재검증 이벤트를 추가하고 숨겨진 inline host에 iframe이 남으면 미니 플레이어로 자동 복구",
+        "toolsModal·현재 view의 hidden/class/style 변화도 감시해 라우트 경쟁 상태에서 미니 플레이어가 사라지는 현상을 자동 수리",
+        "브라우저 포커스 복귀·pageshow·visibilitychange 이후에도 재생 중인 플레이어가 보이지 않으면 미니 플레이어를 다시 표시",
+        "미니 플레이어 상태 API에 playing/mini 상태와 play/pause/syncSurface 제어를 추가",
+        "모바일 미니 플레이어 레이아웃에 재생/일시정지 버튼을 포함하도록 열 구성을 조정",
+        "PWA·서비스워커·설치 시작 URL과 지연 로딩 자산 버전을 v39.37.0으로 통일"
+      ]
+    },
     {
       "version": "39.36.0",
       "date": "2026-09-27",
