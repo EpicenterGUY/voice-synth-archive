@@ -1,8 +1,10 @@
 /* Voice Synth Archive PWA v21 */
 (function(){
 "use strict";
-const APP_VERSION="39.20.0";
-const CHECK_MS=60000;
+const APP_VERSION="39.21.0";
+const CHECK_MS=900000;
+const MIN_CHECK_GAP=45000;
+let lastCheckAt=0;
 let deferredInstall=null;
 let registration=null;
 let latestMeta=null;
@@ -32,8 +34,17 @@ function dismissedVersion(){
 function setDismissedVersion(v){
   try{if(v)localStorage.setItem(DISMISS_KEY,String(v));else localStorage.removeItem(DISMISS_KEY)}catch(e){}
 }
+function runtimeVersion(){
+  let best=APP_VERSION;
+  try{
+    const txt=(document.querySelector(".footer")?.textContent||"")+" "+(document.querySelector("[data-app-version]")?.getAttribute("data-app-version")||"");
+    const found=txt.match(/\d+\.\d+\.\d+/g)||[];
+    found.forEach(v=>{if(newer(v,best))best=v});
+  }catch(e){}
+  return best;
+}
 function updateIsReal(version){
-  return !!version && newer(version,APP_VERSION);
+  return !!version && newer(version,runtimeVersion());
 }
 function hideUpdate(){
   const bar=document.getElementById("pwaUpdateBar");
@@ -157,7 +168,10 @@ function showUpdate(version,title){
   bar.hidden=false;
   return true;
 }
-async function checkUpdate(){
+async function checkUpdate(force=false){
+  const now=Date.now();
+  if(!force&&now-lastCheckAt<MIN_CHECK_GAP)return;
+  lastCheckAt=now;
   try{
     const r=await fetch("./changelog.json?t="+Date.now(),{cache:"no-store"});
     if(r.ok){
@@ -242,7 +256,7 @@ navigator.serviceWorker?.addEventListener("controllerchange",()=>{
 
 async function boot(){
   try{
-    localStorage.setItem(RUNNING_KEY,APP_VERSION);
+    localStorage.setItem(RUNNING_KEY,runtimeVersion());
     if(dismissedVersion()&&!newer(dismissedVersion(),APP_VERSION))setDismissedVersion("");
   }catch(e){}
   buildUi();
@@ -262,10 +276,10 @@ async function boot(){
     }catch(e){console.warn("PWA service worker registration failed",e)}
   }
   // 첫 화면 로딩을 방해하지 않도록 업데이트 확인은 뒤로 미룹니다.
-  setTimeout(checkUpdate,8000);
+  setTimeout(()=>checkUpdate(true),8000);
   setInterval(checkUpdate,CHECK_MS);
-  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")setTimeout(checkUpdate,1200)});
-  window.addEventListener("online",()=>setTimeout(checkUpdate,1200));
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")setTimeout(()=>checkUpdate(false),1200)});
+  window.addEventListener("online",()=>setTimeout(()=>checkUpdate(true),1200));
 }
 boot();
 })();

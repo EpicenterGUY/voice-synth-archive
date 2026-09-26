@@ -1,4 +1,4 @@
-const SW_VERSION="39.20.0"
+const SW_VERSION="39.21.0"
 const CACHE_NAME="voice-synth-archive-shell-"+SW_VERSION;
 const SHELL=[
   "./",
@@ -76,7 +76,7 @@ self.addEventListener("fetch",event=>{
   }
 
   if(url.pathname.endsWith(".js")){
-    event.respondWith(cacheFirst(req));
+    event.respondWith(networkFirst(req));
     return;
   }
 
