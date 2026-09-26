@@ -3109,6 +3109,14 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
   }
 }
 </style>
+<style id="v3931PlaybackRouteFix">
+/* v39.31 · route/player recovery */
+.v331-mini{z-index:32020!important}
+.v3926-volume-popover{z-index:32030!important}
+@media(max-width:699px){
+  .v331-mini{bottom:calc(82px + env(safe-area-inset-bottom))!important}
+}
+</style>
 </head>
 <body>
 <div class="app">
@@ -3329,7 +3337,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.30.0 · Watch Align Fix · Guide 3.2 Scope · Volume UI 2.4 · Library 3.0 · Producer 2.0 · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.31.0 · Playback Route Fix · Universe 3.1 · Watch Align · Guide 3.2 · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -7588,7 +7596,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:"39.30.0",
+    version:"39.31.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -8588,16 +8596,35 @@ function ensureCorePages37(){
   enhanceCorePages3923({archive:archive,search:search,universe:universe,settings:settings,producerDiscovery:producerDiscovery,vocalRank:vocalRank,diagnostics:diagnostics});
   return {archive,search,universe,settings,producerDiscovery,vocalRank,diagnostics}
 }
-function openUniversePage37(song,force){
-  if(!song)return;
+function openUniverseHub3931(){
   ensureCorePages37();
-  openToolsModal("universe29");
-  if(window.VSAEnsureFeatures)window.VSAEnsureFeatures("universe");
-  requestAnimationFrame(function(){
-    try{buildUniverse(song,!!force)}catch(e){
-      const empty=document.getElementById("universeEmpty");
-      if(empty)empty.textContent="우주 보기를 불러오지 못했습니다."
-    }
+  var show=function(){
+    try{ensureUniverseToolbar39()}catch(_){}
+    openToolsModal("universe29");
+    if(typeof setDock==="function")setDock("universe");
+    return true
+  };
+  if(window.VSAEnsureFeatures){
+    return Promise.resolve(VSAEnsureFeatures("universe")).then(show).catch(function(){return show()})
+  }
+  return Promise.resolve(show())
+}
+function openUniversePage37(song,force){
+  if(!song)return Promise.resolve(false);
+  return openUniverseHub3931().then(function(){
+    return new Promise(function(resolve){
+      requestAnimationFrame(function(){
+        try{
+          ensureUniverseToolbar39();
+          buildUniverse(song,!!force);
+          resolve(true)
+        }catch(e){
+          const empty=document.getElementById("universeEmpty");
+          if(empty)empty.textContent="우주 3.0을 불러오지 못했습니다.";
+          resolve(false)
+        }
+      })
+    })
   })
 }
 
@@ -8647,7 +8674,7 @@ function setToolView(name){
   window.__VSA37_CURRENT_ROUTE=name;
 
   // Stop Watch only after the destination is already visible.
-  if(prev==="songDetail39"&&name!=="songDetail39")stopWatchInline399(false);
+  if(prev==="songDetail39"&&name!=="songDetail39")leaveWatchRoute399();
   if(name==="songDetail39")setTimeout(ensureWatch399,0);
   return true
 }
@@ -8700,7 +8727,7 @@ function closeToolsModal(){
   if(!modal)return;
   modal.hidden=true;
   document.body.classList.remove("tools-open");
-  if(wasWatch)stopWatchInline399(false);
+  if(wasWatch)leaveWatchRoute399();
   document.body.style.removeProperty("overflow");
   document.documentElement.style.removeProperty("overflow");
   if(typeof setDock==="function")setDock("home");
@@ -9012,7 +9039,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.30.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
+var VER="39.31.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -9250,6 +9277,20 @@ function stopWatchInline399(showResume){
   if(showResume&&shell&&!shell.querySelector(".v399-player-fallback-inline")){
     shell.insertAdjacentHTML("beforeend",'<div class="v399-player-fallback-inline"><div><b>재생이 중지되었습니다.</b><p>다른 메뉴로 이동하면서 숨은 재생을 중지했어요.</p><button type="button" data-v399-resume>▶ 다시 재생</button></div></div>')
   }
+}
+function ensureBackgroundPlayerVisible399(){
+  try{
+    if(!window.VSANicoPlayer||!VSANicoPlayer.state)return false;
+    var st=VSANicoPlayer.state();
+    if(!st||!st.currentId)return false;
+    if(VSANicoPlayer.ensureVisible)return !!VSANicoPlayer.ensureVisible();
+    if(VSANicoPlayer.collapse){VSANicoPlayer.collapse();return true}
+  }catch(e){}
+  return false
+}
+function leaveWatchRoute399(){
+  stopWatchInline399(false);
+  setTimeout(function(){ensureBackgroundPlayerVisible399()},0)
 }
 function ensureWatch399(){
   var song=window.__VSA39_DETAIL_SONG;
@@ -9875,8 +9916,7 @@ function openFeatureById37(id){
   if(id==="detective"){openDetective37();return}
   if(id==="producer"){openProducer37();return}
   if(id==="universe"){
-    openToolsModal(f.route);
-    if(window.VSAEnsureFeatures)window.VSAEnsureFeatures("universe");
+    openUniverseHub3931();
     return
   }
   if(id==="library"){openPersonalRoute395("library");return}
@@ -9993,7 +10033,7 @@ function forceDockRoute3913(view){
   document.body.classList.add("tools-open");
   modal.dataset.currentView=view;
   window.__VSA37_CURRENT_ROUTE=view;
-  if(prev==="songDetail39"&&view!=="songDetail39")stopWatchInline399(false);
+  if(prev==="songDetail39"&&view!=="songDetail39")leaveWatchRoute399();
   window.scrollTo({top:0,behavior:"auto"});
   return true
 }
@@ -10023,7 +10063,7 @@ function dock(){
       if(m)m.hidden=true;
       document.body.classList.remove("tools-open");
       window.__VSA37_CURRENT_ROUTE="home";
-      if(wasWatch)stopWatchInline399(false);
+      if(wasWatch)leaveWatchRoute399();
       setDock("home");
       document.getElementById("v37Home")?.scrollIntoView({block:"start"});
       return
@@ -10037,12 +10077,8 @@ function dock(){
     }
 
     if(v==="universe"){
-      try{ensureCorePages37()}catch(_){}
-      if(!forceDockRoute3913("universe29")){try{openToolsModal("universe29")}catch(_){}}
       setDock("universe");
-      if(window.VSAEnsureFeatures)Promise.resolve(VSAEnsureFeatures("universe")).catch(function(){});
-      try{ensureUniverseToolbar39()}catch(_){}
-      verifyDockRoute3913("universe29","universe");
+      Promise.resolve(openUniverseHub3931()).then(function(){verifyDockRoute3913("universe29","universe")});
       return
     }
 
@@ -10101,7 +10137,7 @@ function init(){
     var shelfRefresh=e.target.closest("[data-v39-refresh-section]");
     if(shelfRefresh){refreshMark39(shelfRefresh.dataset.v39RefreshSection);return}
     if(e.target.closest("[data-v39-open-explore]")){setDock("explore");openHub37();return}
-    if(e.target.closest("[data-v39-open-universe]")){setDock("universe");ensureCorePages37();openToolsModal("universe29");if(window.VSAEnsureFeatures)window.VSAEnsureFeatures("universe");ensureUniverseToolbar39();return}
+    if(e.target.closest("[data-v39-open-universe]")){openUniverseHub3931();return}
     var p395=e.target.closest("[data-v395-open]");if(p395){openPersonalRoute395(p395.dataset.v395Open);return}
     if(e.target.closest("[data-v395-refresh-rec]")){Promise.resolve(refreshMark39("FOR YOU")).then(function(){renderPersonalHub395()});return}
     var pu395=e.target.closest("[data-v395-universe]");if(pu395){var ps395=getAnySong39(pu395.dataset.v395Universe);if(ps395)openUniversePage37(ps395,false);return}
@@ -10218,15 +10254,15 @@ var groups={};
 function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
-  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.30.0","./detective-v12.js?v=39.30.0","./detective-v13.js?v=39.30.0","./detective-v14.js?v=39.30.0","./detective-v16.js?v=39.30.0"]);
-  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.30.0","./smart-v23.js?v=39.30.0","./playlist-v24.js?v=39.30.0"]);
-  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.30.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.30.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.30.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.30.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.30.0");
+  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.31.0","./detective-v12.js?v=39.31.0","./detective-v13.js?v=39.31.0","./detective-v14.js?v=39.31.0","./detective-v16.js?v=39.31.0"]);
+  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.31.0","./smart-v23.js?v=39.31.0","./playlist-v24.js?v=39.31.0"]);
+  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.31.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.31.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.31.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.31.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.31.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
-    return seq(["./voca-app-v33.js?v=39.30.0","./voca-app-v33-1.js?v=39.30.0","./voca-app-v33-2.js?v=39.30.0","./voca-app-v33-3.js?v=39.30.0"]);
+    return seq(["./voca-app-v33.js?v=39.31.0","./voca-app-v33-1.js?v=39.31.0","./voca-app-v33-2.js?v=39.31.0","./voca-app-v33-3.js?v=39.31.0"]);
   });
   else groups[name]=Promise.resolve(false);
   groups[name]=Promise.resolve(groups[name]).then(function(v){
@@ -10270,4 +10306,4 @@ if("requestIdleCallback" in window)requestIdleCallback(function(){ensure("pwa")}
 else setTimeout(function(){ensure("pwa")},12000);
 })();
 </script>
-<script src="./i18n-v3918.js?v=39.30.0"></script>\n</body>\n</html>
+<script src="./i18n-v3918.js?v=39.31.0"></script>\n</body>\n</html>
