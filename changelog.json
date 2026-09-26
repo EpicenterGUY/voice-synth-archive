@@ -1,11 +1,25 @@
 {
   "current": {
-    "version": "39.41.0",
+    "version": "39.42.0",
     "releasedAt": "2026-09-27",
-    "title": "Settings Control Hotfix · Reload Shuffle",
-    "summary": "기기 간 기록 동기화가 설정에서 보이지 않던 문제와 19금 필터 버튼이 눌리지 않던 문제를 수정하고, 브라우저 새로고침마다 홈 추천 순서와 일부 후보를 새로 섞도록 변경했습니다."
+    "title": "Auth Redirect Fix",
+    "summary": "회원가입 인증 메일이 localhost로 돌아가던 문제를 줄이기 위해 현재 VOCADive 주소를 인증 리디렉션 대상으로 전달하고, 가입 요청 쿨다운과 한국어 오류 안내를 추가했습니다."
   },
   "entries": [
+    {
+      "version": "39.42.0",
+      "date": "2026-09-27",
+      "title": "Auth Redirect Fix",
+      "changes": [
+        "Supabase 회원가입 시 현재 VOCADive 웹/PWA 주소를 emailRedirectTo로 전달하도록 수정",
+        "인증 요청을 연속으로 눌러 rate limit에 걸리지 않도록 가입 버튼에 30초 재요청 카운트다운 추가",
+        "‘For security purposes…’ 같은 Supabase 오류를 한국어로 변환해 남은 대기 시간을 안내",
+        "이메일 형식·비밀번호 길이를 서버 요청 전에 먼저 검사",
+        "이메일/비밀번호 입력칸에 명확한 라벨과 예시를 추가",
+        "이미 가입된 이메일, 이메일 미인증, 잘못된 로그인 정보 오류를 각각 구분해 안내",
+        "PWA·서비스워커·설치 URL과 동기화 모듈 버전을 v39.42.0으로 통일"
+      ]
+    },
     {
       "version": "39.41.0",
       "date": "2026-09-27",
