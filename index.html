@@ -3071,6 +3071,44 @@ body[data-vsa-theme="light"] .v3929-guide-scope-chips button.active{background:l
 body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
 @media(max-width:699px){.v3929-guide-scope{padding:10px}.v3929-guide-scope-head small{font-size:6.5px}.v3929-guide-scope-chips button{min-height:34px;padding:0 10px}}
 </style>
+<style id="v3930WatchPlayerAlignFix">
+/* v39.30 · mobile Watch player alignment hotfix */
+@media(max-width:820px){
+  body.v37-ready .tools-modal[data-current-view="songDetail39"] .v399-watch-main{
+    min-width:0!important;width:100%!important;max-width:100%!important;overflow:hidden!important
+  }
+  body.v37-ready .tools-modal[data-current-view="songDetail39"] .v399-player-shell{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    margin-left:0!important;
+    margin-right:0!important;
+    box-sizing:border-box!important;
+    transform:none!important;
+    left:auto!important;
+    right:auto!important;
+    aspect-ratio:16/9!important
+  }
+  body.v37-ready .tools-modal[data-current-view="songDetail39"] .v399-player-shell iframe{
+    display:block!important;
+    position:absolute!important;
+    inset:0!important;
+    width:100%!important;
+    height:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    margin:0!important;
+    padding:0!important;
+    transform:none!important;
+    box-sizing:border-box!important
+  }
+}
+@media(max-width:699px){
+  body.v37-ready .tools-modal[data-current-view="songDetail39"] .v399-player-shell{
+    border-radius:14px!important
+  }
+}
+</style>
 </head>
 <body>
 <div class="app">
@@ -3291,7 +3329,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.29.0 · Guide 3.2 Scope · Watch Light Fix · Volume UI 2.4 · Library 3.0 · Producer 2.0 · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.30.0 · Watch Align Fix · Guide 3.2 Scope · Volume UI 2.4 · Library 3.0 · Producer 2.0 · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -7550,7 +7588,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:"39.29.0",
+    version:"39.30.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -8974,7 +9012,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.29.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
+var VER="39.30.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -10180,15 +10218,15 @@ var groups={};
 function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
-  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.29.0","./detective-v12.js?v=39.29.0","./detective-v13.js?v=39.29.0","./detective-v14.js?v=39.29.0","./detective-v16.js?v=39.29.0"]);
-  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.29.0","./smart-v23.js?v=39.29.0","./playlist-v24.js?v=39.29.0"]);
-  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.29.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.29.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.29.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.29.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.29.0");
+  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.30.0","./detective-v12.js?v=39.30.0","./detective-v13.js?v=39.30.0","./detective-v14.js?v=39.30.0","./detective-v16.js?v=39.30.0"]);
+  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.30.0","./smart-v23.js?v=39.30.0","./playlist-v24.js?v=39.30.0"]);
+  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.30.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.30.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.30.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.30.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.30.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
-    return seq(["./voca-app-v33.js?v=39.29.0","./voca-app-v33-1.js?v=39.29.0","./voca-app-v33-2.js?v=39.29.0","./voca-app-v33-3.js?v=39.29.0"]);
+    return seq(["./voca-app-v33.js?v=39.30.0","./voca-app-v33-1.js?v=39.30.0","./voca-app-v33-2.js?v=39.30.0","./voca-app-v33-3.js?v=39.30.0"]);
   });
   else groups[name]=Promise.resolve(false);
   groups[name]=Promise.resolve(groups[name]).then(function(v){
@@ -10232,4 +10270,4 @@ if("requestIdleCallback" in window)requestIdleCallback(function(){ensure("pwa")}
 else setTimeout(function(){ensure("pwa")},12000);
 })();
 </script>
-<script src="./i18n-v3918.js?v=39.29.0"></script>\n</body>\n</html>
+<script src="./i18n-v3918.js?v=39.30.0"></script>\n</body>\n</html>
