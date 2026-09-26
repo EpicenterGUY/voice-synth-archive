@@ -3052,6 +3052,25 @@ body[data-vsa-theme="light"] .tools-modal[data-current-view="songDetail39"] .v39
   }
 }
 </style>
+<style id="v3929GuideScopeFilter">
+/* v39.29 · Guide population filter */
+.v3929-guide-scope{margin:10px 0;padding:11px 12px;border:1px solid rgba(113,205,197,.12);border-radius:16px;background:#071d23}
+.v3929-guide-scope-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.v3929-guide-scope-head b{display:block;font-size:9px;color:#dff8f4}.v3929-guide-scope-head small{display:block;margin-top:3px;color:#688f8b;font-size:7px;line-height:1.45}
+.v3929-guide-scope-chips{display:flex;gap:6px;overflow-x:auto;padding:1px 0 5px;scrollbar-width:none}.v3929-guide-scope-chips::-webkit-scrollbar{display:none}
+.v3929-guide-scope-chips button{flex:0 0 auto;min-height:36px;padding:0 11px;border:1px solid #285159;border-radius:999px;background:#09262c;color:#9fc0bc;font-size:8px;font-weight:900}
+.v3929-guide-scope-chips button.active{background:linear-gradient(135deg,#17484d,#263f62);border-color:#4a8d86;color:#effffb}
+.v3929-guide-scope-more{margin-top:4px;border-top:1px solid rgba(113,205,197,.08)}
+.v3929-guide-scope-more summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 2px 2px;color:#87aaa6;font-size:7px;font-weight:900}
+.v3929-guide-scope-more summary::-webkit-details-marker{display:none}.v3929-guide-scope-more summary span{color:#5f8581;font-weight:700}
+.v3929-guide-scope-more .control{margin-top:8px}.v3929-guide-scope-more select{width:100%}
+body[data-vsa-theme="light"] .v3929-guide-scope{background:#fff;border-color:#cfe2de}
+body[data-vsa-theme="light"] .v3929-guide-scope-head b{color:#173431}body[data-vsa-theme="light"] .v3929-guide-scope-head small{color:#617e79}
+body[data-vsa-theme="light"] .v3929-guide-scope-chips button{background:#f2f8f6;border-color:#c9ded9;color:#385f59}
+body[data-vsa-theme="light"] .v3929-guide-scope-chips button.active{background:linear-gradient(135deg,#d5f0eb,#dbe4ff);border-color:#78aaa3;color:#153b37}
+body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
+@media(max-width:699px){.v3929-guide-scope{padding:10px}.v3929-guide-scope-head small{font-size:6.5px}.v3929-guide-scope-chips button{min-height:34px;padding:0 10px}}
+</style>
 </head>
 <body>
 <div class="app">
@@ -3272,7 +3291,7 @@ body[data-vsa-theme="light"] .tools-modal[data-current-view="songDetail39"] .v39
     </details>
   </section>
 
-  <div class="footer">v39.28.0 · Watch Light Fix · Volume UI 2.4 · Library 3.0 · Producer 2.0 · Guide 3.1 · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.29.0 · Guide 3.2 Scope · Watch Light Fix · Volume UI 2.4 · Library 3.0 · Producer 2.0 · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -3785,11 +3804,36 @@ body[data-vsa-theme="light"] .tools-modal[data-current-view="songDetail39"] .v39
       <div class="v3925-keyword-head"><div><div class="recommend-chip-label">자동 추천 키워드</div><small>매번 여러 키워드를 새로 섞어 보여줘요 · 고른 키워드는 유지됩니다.</small></div><button type="button" class="v3925-shuffle" id="guideKeywordShuffle">다시 섞기 ↻</button></div>
       <div class="taste-chips recommend-chips" id="guideQuickChips" aria-live="polite"></div>
     </div>
+    <div class="v3929-guide-scope">
+      <div class="v3929-guide-scope-head"><div><b>추천 모집단</b><small>빙산처럼 먼저 곡의 범위를 정하고, 그 안에서 키워드·조회수 필터를 적용합니다.</small></div></div>
+      <div class="v3929-guide-scope-chips" id="guideScopeChips">
+        <button type="button" class="active" data-guide-scope="all_voice_synth">오리지널곡 전체</button>
+        <button type="button" data-guide-scope="all">니코동 전체</button>
+        <button type="button" data-guide-scope="vocaloid">VOCALOID</button>
+        <button type="button" data-guide-scope="utau">UTAU</button>
+        <button type="button" data-guide-scope="synthv">SynthV</button>
+      </div>
+      <details class="v3929-guide-scope-more">
+        <summary>세부 모집단 <span>CeVIO · VoiSona · NEUTRINO · VOICEVOX</span></summary>
+        <div class="control"><label>전체 범위</label><select id="guideScope">
+          <option value="all_voice_synth" selected>음성합성 오리지널 전체</option>
+          <option value="all">니코동 전체</option>
+          <option value="voice_synth">VOCALOID + UTAU + SynthV 오리지널</option>
+          <option value="vocaloid">VOCALOID 오리지널곡</option>
+          <option value="utau">UTAU 오리지널곡</option>
+          <option value="synthv">Synthesizer V 오리지널곡</option>
+          <option value="cevio">CeVIO / CeVIO AI 오리지널곡</option>
+          <option value="voisona">VoiSona 오리지널곡</option>
+          <option value="neutrino">NEUTRINO 오리지널곡</option>
+          <option value="voicevox">VOICEVOX 계열 오리지널곡</option>
+        </select></div>
+      </details>
+    </div>
     <div class="discovery-controls discovery-controls-v20 v3925-guide-controls">
       <div class="control"><label>추천 곡 수</label><select id="guideCount"><option value="8">8곡</option><option value="12" selected>12곡</option><option value="20">20곡</option><option value="30">30곡</option></select></div>
       <div class="control"><label>시대</label><select id="guideEra"><option value="all">전 시대</option><option value="2007-2012">2007~2012</option><option value="2013-2018">2013~2018</option><option value="2019-2022">2019~2022</option><option value="2023-9999">2023~현재</option></select></div>
       <div class="control v3925-ice-control"><label>빙산 구간</label><select id="guideIceberg"><option value="all">전체 빙산</option></select><small id="guideIcebergHint">보카로 빙산과 같은 조회수 구간을 사용합니다.</small></div>
-      <div class="control"><label>보컬/태그 직접 입력</label><input id="guideTag" placeholder="예: 初音ミク, VOCAROCK"></div>
+      <div class="control"><label>추가 보컬 / 태그</label><input id="guideTag" placeholder="예: 初音ミク, VOCAROCK"></div>
       <div class="control"><label>빼고 싶은 요소</label><input id="guideAvoid" placeholder="예: MMD, 너무 느린 곡"></div>
     </div>
     <div class="taste-summary" id="guideSummary">고른 조건 안에서 매번 다른 곡을 섞어 추천합니다. 같은 조건으로 다시 눌러도 조합이 달라집니다.</div>
@@ -4663,7 +4707,7 @@ function syncSourceUI(){
   $("#totalLabel").textContent="선택 범위 전체 "+d.unit;
   $("#tierLabel").textContent="선택 구간 "+d.unit;
   if($("#gemSourceLabel")) $("#gemSourceLabel").textContent=d.label+" 기준";
-  if($("#guideSourceLabel")) $("#guideSourceLabel").textContent=d.label+" 기준";
+  if($("#guideSourceLabel")) $("#guideSourceLabel").textContent=typeof guideScopeValue37==="function"?guideScopeLabel37(guideScopeValue37())+" 기준":d.label+" 기준";
   if($("#tasteSourceLabel")) $("#tasteSourceLabel").textContent=d.label+" 기준";
 }
 
@@ -6222,6 +6266,35 @@ const GUIDE_KEYWORD_POOL=[
   {label:"광기",term:"狂気",group:"mood"},{label:"우울",term:"鬱",group:"mood"},{label:"힐링",term:"癒し",group:"mood"},{label:"레트로",term:"レトロ",group:"mood"},
   {label:"실험적",term:"実験音楽",group:"feature"},{label:"업템포",term:"アップテンポ",group:"feature"},{label:"손그림 PV",term:"手描きPV",group:"feature"},{label:"스토리",term:"物語音楽",group:"feature"}
 ];
+const GUIDE_SCOPE_LABELS37={
+  all_voice_synth:"음성합성 오리지널 전체",
+  all:"니코동 전체",
+  voice_synth:"VOCALOID + UTAU + SynthV",
+  vocaloid:"VOCALOID 오리지널곡",
+  utau:"UTAU 오리지널곡",
+  synthv:"Synthesizer V 오리지널곡",
+  cevio:"CeVIO / CeVIO AI 오리지널곡",
+  voisona:"VoiSona 오리지널곡",
+  neutrino:"NEUTRINO 오리지널곡",
+  voicevox:"VOICEVOX 계열 오리지널곡"
+};
+function guideScopeLabel37(scope){return GUIDE_SCOPE_LABELS37[scope]||GUIDE_SCOPE_LABELS37.all_voice_synth}
+function guideScopeValue37(){var el=$("#guideScope");return el?el.value:"all_voice_synth"}
+function syncGuideScope37(){
+  var sel=$("#guideScope"),chips=$("#guideScopeChips");if(!sel)return;
+  var v=sel.value||"all_voice_synth";
+  if(chips)chips.querySelectorAll("[data-guide-scope]").forEach(function(b){b.classList.toggle("active",b.dataset.guideScope===v);b.setAttribute("aria-pressed",b.dataset.guideScope===v?"true":"false")});
+  var lab=$("#guideSourceLabel");if(lab)lab.textContent=guideScopeLabel37(v)+" 기준"
+}
+function guideScopeAccepts37(song,scope){
+  if(scope==="all")return true;
+  return songMatchesScope(song,scope)
+}
+function guideScopeQuery37(scope){
+  if(scope==="all")return {mode:"free",query:"音楽",scope:"all",queryTargets:"title,description,tags"};
+  var tags=STAT_SCOPE_TAGS[scope]||STAT_SCOPE_TAGS.all_voice_synth;
+  return {mode:"ranking",overrideQuery:tags.join(" OR "),overrideTargets:"tagsExact"}
+}
 function guideTier37(value){
   if(!value||value==="all")return null;
   return TIERS.find(function(t){return t.id===value})||null
@@ -6362,29 +6435,38 @@ async function fetchRandomRecommendationBatch37(opts,extraPages=1){
   }
   return {data:[...uniq.values()],meta:first.meta||{}}
 }
-async function fetchGuideBatch(sort,bounds,tag){
+async function fetchGuideBatch(sort,bounds,tag,scope){
   const nf={viewCounter:{gte:bounds.min}};if(bounds.max!=null)nf.viewCounter.lte=bounds.max;
-  const opts={year:"all",mode:"ranking",sort,applyYear:false,applyTier:false,numericFilters:nf};if(tag)opts.extraExactTag=tag;
+  var base=guideScopeQuery37(scope),opts={year:"all",sort:sort,applyYear:false,applyTier:false,numericFilters:nf};
+  Object.assign(opts,base);
+  if(tag){
+    if(scope==="all"){opts.query=tag;opts.queryTargets="title,description,tags"}
+    else opts.extraExactTag=tag
+  }
   return fetchRandomRecommendationBatch37(opts,1);
 }
 async function buildGuide(){
   if(state.busy)return;if(!relayBase()){toast("먼저 Worker를 연결하세요.");return}
-  const level=state.guideLevel,preset=GUIDE_PRESETS[level],count=+$("#guideCount").value||12,era=eraBounds($("#guideEra").value),tier=guideTier37($("#guideIceberg").value),bounds=guideBounds37(preset,tier),parsed=parseGuideInputs37();
+  const level=state.guideLevel,preset=GUIDE_PRESETS[level],count=+$("#guideCount").value||12,era=eraBounds($("#guideEra").value),tier=guideTier37($("#guideIceberg").value),bounds=guideBounds37(preset,tier),scope=guideScopeValue37(),parsed=parseGuideInputs37();
   state.busy=true;$("#buildGuideBtn").disabled=true;$("#guideGrid").innerHTML='<div class="discovery-empty">추천을 만드는 중…</div>';
   try{
     const uniq=new Map(),tasks=[];
     preset.sorts.forEach(function(sort){tasks.push({sort:sort,tag:""})});
     parsed.terms.slice(0,6).forEach(function(term){tasks.push({sort:preset.sorts[Math.floor(Math.random()*preset.sorts.length)],tag:term})});
-    const batches=await mapLimit(tasks.slice(0,10),3,async function(task){try{return(await fetchGuideBatch(task.sort,bounds,task.tag)).data||[]}catch{return[]}});
+    if(scope==="all"&&!parsed.terms.length){["音楽","オリジナル曲","VOCALOID","UTAU"].forEach(function(seed){tasks.push({sort:preset.sorts[Math.floor(Math.random()*preset.sorts.length)],tag:seed})})}
+    const batches=await mapLimit(tasks.slice(0,12),3,async function(task){try{return(await fetchGuideBatch(task.sort,bounds,task.tag,scope)).data||[]}catch{return[]}});
     for(const s of batches.flat()){
       const V=+s.viewCounter||0;
       if(!inEra(s,era)||V<bounds.min||(bounds.max!=null&&V>bounds.max))continue;
+      if(!guideScopeAccepts37(s,scope))continue;
       if(parsed.directTerms.length&&!guideMatchesAny37(s,parsed.directTerms))continue;
       if(guideAvoids37(s,parsed.avoidTerms))continue;
       uniq.set(s.contentId,s)
     }
-    let rows=filterAdultRows37(filterDiscoveryOriginalRows37([...uniq.values()],"guide").rows,"guide").rows;
-    if(!rows.length)throw new Error("필터 조건을 통과한 음성합성 원곡을 찾지 못했습니다.");
+    var scopedRows=[...uniq.values()];
+    if(scope!=="all")scopedRows=filterDiscoveryOriginalRows37(scopedRows,"guide",scope==="voice_synth"?"voice_synth_union":scope==="vocaloid"?"original_union":scope==="utau"?"utau_union":scope==="synthv"?"synthv_union":scope==="cevio"?"cevio_union":scope==="voisona"?"voisona_union":scope==="neutrino"?"neutrino_union":scope==="voicevox"?"voicevox_union":"all_voice_synth_union").rows;
+    let rows=filterAdultRows37(scopedRows,"guide").rows;
+    if(!rows.length)throw new Error("선택한 모집단과 필터를 통과한 곡을 찾지 못했습니다.");
     const maxV=Math.max(...rows.map(s=>+s.viewCounter||0),1),maxM=Math.max(...rows.map(s=>+s.mylistCounter||0),1),maxL=Math.max(...rows.map(s=>+s.likeCounter||0),1);
     const scored=rows.map(function(s){
       const V=+s.viewCounter||0,M=+s.mylistCounter||0,L=+s.likeCounter||0,C=+s.commentCounter||0;
@@ -6395,7 +6477,7 @@ async function buildGuide(){
       return{song:s,score:.76*base+.24*termScore,termHits:hits}
     }).sort((a,b)=>b.score-a.score);
     state.guideSongs=diversifySongs(scored,count);
-    state.guideLastMeta={tier:tier,terms:parsed.terms.slice(),avoid:parsed.avoidTerms.slice(),era:$("#guideEra").value};
+    state.guideLastMeta={tier:tier,scope:scope,terms:parsed.terms.slice(),avoid:parsed.avoidTerms.slice(),era:$("#guideEra").value};
     renderGuide(preset);
   }catch(e){
     $("#guideGrid").innerHTML=`<div class="discovery-empty">추천 실패<br><small>${esc(String(e?.message||e))}</small></div>`
@@ -6406,7 +6488,7 @@ async function buildGuide(){
 }
 function renderGuide(preset){
   const summary=$("#guideSummary"),meta=state.guideLastMeta||{},tier=meta.tier,terms=meta.terms||[];
-  if(summary)summary.innerHTML='<b>'+esc(preset.label)+'</b> · '+(tier?('<b>'+esc(tier.name)+'</b> '+esc(tier.range)):'빙산 전체')+' · '+(terms.length?('키워드 '+terms.slice(0,4).map(esc).join(" · ")+(terms.length>4?' 외 '+(terms.length-4)+'개':'')):'키워드 자동')+' · '+state.guideSongs.length+'곡 랜덤 추천';
+  if(summary)summary.innerHTML='<b>'+esc(preset.label)+'</b> · <b>'+esc(guideScopeLabel37(meta.scope||guideScopeValue37()))+'</b> · '+(tier?('<b>'+esc(tier.name)+'</b> '+esc(tier.range)):'빙산 전체')+' · '+(terms.length?('키워드 '+terms.slice(0,4).map(esc).join(" · ")+(terms.length>4?' 외 '+(terms.length-4)+'개':'')):'키워드 자동')+' · '+state.guideSongs.length+'곡 랜덤 추천';
   $("#guideGrid").innerHTML=state.guideSongs.map((x,i)=>{const s=x.song,tags=informativeTags(s).slice(0,4);return`<article class="discovery-card"><img src="${esc(s.thumbnailUrl||"")}" loading="lazy" onerror="this.style.visibility='hidden'"><div class="discovery-body"><a class="discovery-title" href="https://www.nicovideo.jp/watch/${encodeURIComponent(s.contentId)}" target="_blank" rel="noopener">${i+1}. ${esc(s.title||s.contentId)}</a><div class="discovery-meta"><span>조회 ${fmt(s.viewCounter||0)}</span><span>${songYear(s)||"-"}년</span></div><div class="discovery-tags">${tags.map(t=>`<span class="discovery-tag">${esc(t)}</span>`).join("")}</div><div class="discovery-reason">${esc(preset.reason)}</div><div class="gem-actions"><button class="mini-btn" onclick="openGuideUniverse('${esc(s.contentId)}')">우주 보기</button><button class="mini-btn" onclick="window.open('https://www.nicovideo.jp/watch/${encodeURIComponent(s.contentId)}','_blank','noopener')">듣기</button></div></div></article>`}).join("");
 }
 function openGuideUniverse(id){const x=state.guideSongs.find(x=>x.song.contentId===id);if(!x)return;openUniversePage37(x.song,false)}
@@ -7468,7 +7550,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:"39.28.0",
+    version:"39.29.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -8782,6 +8864,13 @@ $("#tagIcebergBtn").onclick=()=>{
 
 document.querySelectorAll("#guideTabs button").forEach(btn=>{btn.addEventListener("click",()=>{state.guideLevel=btn.dataset.level;document.querySelectorAll("#guideTabs button").forEach(b=>b.classList.toggle("active",b===btn))})});
 populateGuideIceberg37();
+syncGuideScope37();
+var guideScopeSel37=$("#guideScope"),guideScopeChips37=$("#guideScopeChips");
+if(guideScopeSel37)guideScopeSel37.addEventListener("change",syncGuideScope37);
+if(guideScopeChips37)guideScopeChips37.addEventListener("click",function(e){
+  var b=e.target.closest("[data-guide-scope]");if(!b||!guideScopeSel37)return;
+  guideScopeSel37.value=b.dataset.guideScope;guideScopeSel37.dispatchEvent(new Event("change",{bubbles:true}));
+});
 guideKeywordShuffle37();
 $("#guideKeywordShuffle").onclick=guideKeywordShuffle37;
 // Guide 3.1: each randomized chip receives a direct click handler inside renderGuideKeywords37().
@@ -8885,7 +8974,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.28.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
+var VER="39.29.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -10091,15 +10180,15 @@ var groups={};
 function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
-  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.28.0","./detective-v12.js?v=39.28.0","./detective-v13.js?v=39.28.0","./detective-v14.js?v=39.28.0","./detective-v16.js?v=39.28.0"]);
-  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.28.0","./smart-v23.js?v=39.28.0","./playlist-v24.js?v=39.28.0"]);
-  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.28.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.28.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.28.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.28.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.28.0");
+  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.29.0","./detective-v12.js?v=39.29.0","./detective-v13.js?v=39.29.0","./detective-v14.js?v=39.29.0","./detective-v16.js?v=39.29.0"]);
+  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.29.0","./smart-v23.js?v=39.29.0","./playlist-v24.js?v=39.29.0"]);
+  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.29.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.29.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.29.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.29.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.29.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
-    return seq(["./voca-app-v33.js?v=39.28.0","./voca-app-v33-1.js?v=39.28.0","./voca-app-v33-2.js?v=39.28.0","./voca-app-v33-3.js?v=39.28.0"]);
+    return seq(["./voca-app-v33.js?v=39.29.0","./voca-app-v33-1.js?v=39.29.0","./voca-app-v33-2.js?v=39.29.0","./voca-app-v33-3.js?v=39.29.0"]);
   });
   else groups[name]=Promise.resolve(false);
   groups[name]=Promise.resolve(groups[name]).then(function(v){
@@ -10143,4 +10232,4 @@ if("requestIdleCallback" in window)requestIdleCallback(function(){ensure("pwa")}
 else setTimeout(function(){ensure("pwa")},12000);
 })();
 </script>
-<script src="./i18n-v3918.js?v=39.28.0"></script>\n</body>\n</html>
+<script src="./i18n-v3918.js?v=39.29.0"></script>\n</body>\n</html>
