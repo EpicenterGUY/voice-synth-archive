@@ -83,7 +83,7 @@ function songCard(s){
   return '<article class="v331-song"><button type="button" class="v331-song-open" data-v331-song="'+esc(s.contentId)+'"><div class="v331-song-thumb">'+(s.thumbnailUrl?'<img src="'+esc(s.thumbnailUrl)+'" loading="lazy" alt="">':'')+'<i>▶</i></div><b>'+esc(s.title||s.contentId)+'</b><small>조회 '+fmt(s.viewCounter)+' · '+y+'</small></button></article>';
 }
 function section(title,sub,rows){
-  return '<section class="v331-section"><div class="v331-section-head"><h3>'+title+'</h3><small>'+sub+'</small></div><div class="v331-songgrid">'+(rows.length?rows.slice(0,8).map(songCard).join(""):'<div class="v33-card-body">니코니코 메타데이터에서 표시할 곡을 찾지 못했습니다.</div>')+'</div></section>';
+  return '<section class="v331-section"><div class="v331-section-head"><h3>'+title+'</h3><small>'+sub+'</small></div><div class="v331-songgrid">'+(rows.length?rows.slice(0,8).map(songCard).join(""):'<div class="v33-card-body">아직 이 프로듀서의 곡을 찾지 못했어요.</div>')+'</div></section>';
 }
 function followed(tag){var a=load(K_FOLLOW,[]);return a.indexOf(tag)>=0}
 function toggleFollow(tag){
@@ -98,7 +98,7 @@ async function openProducer(tag){
   ensureProducerView();a.openView("producerDetail33");
   var root=document.getElementById("v331ProducerBody");if(!root)return;
   var aliases=producerAliases(tag),searchName=aliases[0]||tag;
-  root.innerHTML='<div class="v331-producer-hero"><small>PRODUCER HUB · 멀티소스 검색</small><h2>'+esc(tag)+'</h2><p>니코니코의 태그·제목·설명과 알려진 P명 별칭을 함께 검색하는 중…</p><div class="v331-producer-evidence">'+aliases.map(function(x){return'<span>'+esc(x)+'</span>'}).join("")+'<span class="source">NicoNico metadata</span><span class="source">VocaDB when available</span></div></div>';
+  root.innerHTML='<div class="v331-producer-hero"><small>PRODUCER HUB · P명 확인</small><h2>'+esc(tag)+'</h2><p>니코니코에 적힌 P명과 다른 표기를 함께 찾고 있어요.</p><div class="v331-producer-evidence">'+aliases.map(function(x){return'<span>'+esc(x)+'</span>'}).join("")+'<span class="source">니코니코 정보</span><span class="source">VocaDB 정보</span></div></div>';
   var local=localProducerSongs(tag);
   var packs=await Promise.all([
     fetchProducerRows(tag,"-viewCounter"),
@@ -110,9 +110,9 @@ async function openProducer(tag){
       deep=uniq(packs[2].concat(local)).filter(function(x){var v=Number(x.viewCounter)||0;return v>0&&v<=50000}).sort(function(x,y){var xv=(Number(x.mylistCounter)||0)/(Math.max(1,Number(x.viewCounter)||1)),yv=(Number(y.mylistCounter)||0)/(Math.max(1,Number(y.viewCounter)||1));return yv-xv}),
       all=uniq(popular.concat(recent,deep)),views=all.reduce(function(n,x){return n+(Number(x.viewCounter)||0)},0);
   rememberProducerSongs(all);
-  root.innerHTML='<div class="v331-producer-hero"><small>PRODUCER HUB · 멀티소스 검색</small><h2>'+esc(tag)+'</h2><p>니코니코 태그·제목·설명에서 P명을 찾고, 별칭까지 함께 조회합니다.</p><div class="v331-producer-evidence">'+aliases.map(function(x){return'<span>'+esc(x)+'</span>'}).join("")+'<span class="source">NicoNico metadata</span><span class="source">VocaDB when available</span></div><div class="v331-producer-note">대표곡이 비어 있으면 정확 P태그 검색까지 자동으로 한 번 더 확인합니다. 곡 카드를 누르면 VocaDive Watch로 이동합니다.</div><div class="v331-producer-actions"><button class="primary" data-v331-search="'+esc(searchName)+'">전체 곡 검색</button><button data-v331-follow="'+esc(tag)+'">'+(followed(tag)?"팔로우 해제":"♡ 취향에 추가")+'</button></div></div>'+
+  root.innerHTML='<div class="v331-producer-hero"><small>PRODUCER HUB · P명 확인</small><h2>'+esc(tag)+'</h2><p>니코니코에 적힌 P명과 별칭을 함께 확인했어요.</p><div class="v331-producer-evidence">'+aliases.map(function(x){return'<span>'+esc(x)+'</span>'}).join("")+'<span class="source">니코니코 정보</span><span class="source">VocaDB 정보</span></div><div class="v331-producer-note">대표곡이 바로 안 나오면 P명 태그로 한 번 더 찾아요. 곡을 누르면 VocaDive에서 바로 재생됩니다.</div><div class="v331-producer-actions"><button class="primary" data-v331-search="'+esc(searchName)+'">전체 곡 검색</button><button data-v331-follow="'+esc(tag)+'">'+(followed(tag)?"팔로우 해제":"♡ 취향에 추가")+'</button></div></div>'+
     '<div class="v331-producer-stats"><div class="v331-producer-stat"><small>확인 곡</small><b>'+all.length+'</b></div><div class="v331-producer-stat"><small>누적 조회</small><b>'+fmt(views)+'</b></div><div class="v331-producer-stat"><small>최신 활동</small><b>'+(recent[0]&&recent[0].startTime?new Date(recent[0].startTime).getFullYear():"-")+'</b></div></div>'+
-    section("대표곡","조회수 중심 · 태그/제목/설명",popular)+section("최근곡","최근 등록순",recent)+section("숨은 곡","5만 조회 이하 반응률 중심",deep);
+    section("대표곡","조회수 중심",popular)+section("최근곡","최근 등록순",recent)+section("숨은 곡","5만 조회 이하 반응률 중심",deep);
 }
 function defaultPresets(){
   var y=String(new Date().getFullYear());
