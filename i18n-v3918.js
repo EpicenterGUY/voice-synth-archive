@@ -143,6 +143,13 @@ var JA=new Map(Object.entries({
   ,"전체 검색 범위":"検索範囲"
   ,"플레이어 최대 음량":"プレーヤー最大音量"
 
+  ,"음량 MAX":"音量 MAX"
+  ,"음량 기본":"通常音量"
+  ,"음량 MAX 켜짐":"音量 MAX オン"
+  ,"음량 MAX 꺼짐":"音量 MAX オフ"
+  ,"음량 MAX 해제":"音量 MAX を解除"
+  ,"음량 MAX · 니코 플레이어 100%":"音量 MAX・ニコニコプレーヤー 100%"
+
 }));
 
 var PLACEHOLDER_JA=new Map(Object.entries({

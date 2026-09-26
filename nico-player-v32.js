@@ -1,4 +1,4 @@
-/* VocaDive in-app Nico player v39.23 · Playback 2.1 */
+/* VocaDive in-app Nico player v39.24 · Playback 2.2 */
 (function(){
 "use strict";
 var modal=null,mini=null,frame=null,fullStage=null,miniStage=null,currentId="",currentTitle="",pushed=false,queue=[],queueIndex=-1,autoNext=true,pipWindow=null,pipClosing=false,lastPlayerStatus=0,maxVolume=true,volumeAppliedFor="";
@@ -30,13 +30,13 @@ function addStyle(){
     ".v331-player-head{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid #17383e;background:#092128}.v331-player-head>div{min-width:0;flex:1}.v331-player-head small{display:block;font-size:7px;font-weight:950;letter-spacing:.12em;color:#70d9d0}.v331-player-head b{display:block;margin-top:2px;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.v331-player-head button{width:38px;height:38px;border:1px solid #2a555c;border-radius:11px;background:#0b2930;color:#dff7f3;font-size:17px}.v331-player-head #v3921PipFull,.v331-player-head #v3923VolumeFull{font-size:9px;font-weight:950;letter-spacing:.03em}.v331-player-head #v3923VolumeFull.active{border-color:#54bdb4;background:#17464c;color:#effffb}",
     ".v331-player-stage{position:relative;aspect-ratio:16/9;background:#000;min-height:220px}.v331-player-stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000}",
     ".v331-player-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 11px;background:#071b20;border-top:1px solid #17383e}.v331-player-foot span{min-width:0;font-size:8px;color:#739794;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.v331-player-foot a{flex:0 0 auto;min-height:34px;display:inline-flex;align-items:center;padding:0 10px;border:1px solid #2a565d;border-radius:10px;background:#0c2b31;color:#cde9e5;text-decoration:none;font-size:8px;font-weight:900}",
-    ".v331-mini{position:fixed;left:50%;bottom:calc(74px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:22000;width:min(680px,calc(100vw - 16px));height:70px;display:grid;grid-template-columns:108px minmax(0,1fr) auto auto auto auto auto;align-items:center;gap:6px;padding:7px;border:1px solid #2a555c;border-radius:15px;background:rgba(6,24,29,.97);box-shadow:0 18px 60px #000c;backdrop-filter:blur(20px)}",
+    ".v331-mini{position:fixed;left:50%;bottom:calc(74px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:22000;width:min(720px,calc(100vw - 16px));height:70px;display:grid;grid-template-columns:108px minmax(0,1fr) auto auto auto auto auto auto;align-items:center;gap:6px;padding:7px;border:1px solid #2a555c;border-radius:15px;background:rgba(6,24,29,.97);box-shadow:0 18px 60px #000c;backdrop-filter:blur(20px)}",
     ".v331-mini-stage{width:108px;aspect-ratio:16/9;overflow:hidden;border-radius:9px;background:#000;pointer-events:none}.v331-mini-stage iframe{width:100%;height:100%;border:0}",
-    ".v331-mini-copy{min-width:0}.v331-mini-copy b{display:block;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.v331-mini-copy small{display:block;margin-top:3px;font-size:7px;color:#6d928e}.v331-mini button{width:34px;height:34px;border:1px solid #2b565d;border-radius:10px;background:#0b2930;color:#dff7f3;font-size:15px}.v331-player button[hidden],.v331-mini button[hidden]{display:none!important}",
+    ".v331-mini-copy{min-width:0}.v331-mini-copy b{display:block;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.v331-mini-copy small{display:block;margin-top:3px;font-size:7px;color:#6d928e}.v331-mini button{width:34px;height:34px;border:1px solid #2b565d;border-radius:10px;background:#0b2930;color:#dff7f3;font-size:15px}.v331-mini #v3924VolumeMini{font-size:11px;font-weight:950}.v331-mini #v3924VolumeMini.active{border-color:#54bdb4;background:#17464c;color:#effffb}.v331-player button[hidden],.v331-mini button[hidden]{display:none!important}",
     "body.v331-player-open{overflow:hidden!important}body.v331-player-open .v33-dock{display:none!important}",
     "body[data-vsa-theme='light'] .v331-player-shell,body[data-vsa-theme='light'] .v331-mini{background:rgba(249,253,252,.98);border-color:#bdd8d4;color:#17312f}body[data-vsa-theme='light'] .v331-player-head,body[data-vsa-theme='light'] .v331-player-foot{background:#eef7f5;border-color:#cfe3df}body[data-vsa-theme='light'] .v331-player-head button,body[data-vsa-theme='light'] .v331-mini button{background:#fff;border-color:#c4ddd8;color:#234744}body[data-vsa-theme='light'] .v331-mini-copy small,body[data-vsa-theme='light'] .v331-player-foot span{color:#67827e}",
     "@media(min-width:900px){.v331-mini{bottom:16px}}",
-    "@media(max-width:699px){.v331-player{padding:0;place-items:stretch}.v331-player-shell{width:100vw;height:100dvh;max-height:none;border:0;border-radius:0;grid-template-rows:auto auto 1fr}.v331-player-stage{aspect-ratio:16/9;min-height:0}.v331-player-foot{align-self:end}.v331-player-head{padding-top:max(9px,env(safe-area-inset-top))}.v331-player-head .v332-queue-nav{display:none}.v331-mini{left:10px;right:10px;bottom:calc(78px + env(safe-area-inset-bottom));transform:none;width:auto;height:58px;grid-template-columns:64px minmax(0,1fr) auto auto auto;gap:5px;padding:5px 6px;border-radius:13px}.v331-mini-stage{width:64px;border-radius:8px}.v331-mini-copy b{font-size:8px}.v331-mini-copy small{font-size:6.5px}.v331-mini #v332PrevMini,.v331-mini #v332NextMini{display:none}.v331-mini button{width:30px;height:30px;font-size:12px}}"
+    "@media(max-width:699px){.v331-player{padding:0;place-items:stretch}.v331-player-shell{width:100vw;height:100dvh;max-height:none;border:0;border-radius:0;grid-template-rows:auto auto 1fr}.v331-player-stage{aspect-ratio:16/9;min-height:0}.v331-player-foot{align-self:end}.v331-player-head{padding-top:max(9px,env(safe-area-inset-top))}.v331-player-head .v332-queue-nav{display:none}.v331-mini{left:10px;right:10px;bottom:calc(78px + env(safe-area-inset-bottom));transform:none;width:auto;height:58px;grid-template-columns:64px minmax(0,1fr) auto auto auto auto;gap:5px;padding:5px 6px;border-radius:13px}.v331-mini-stage{width:64px;border-radius:8px}.v331-mini-copy b{font-size:8px}.v331-mini-copy small{font-size:6.5px}.v331-mini #v332PrevMini,.v331-mini #v332NextMini{display:none}.v331-mini button{width:30px;height:30px;font-size:12px}.v331-mini #v3924VolumeMini{display:grid!important}}"
   ].join("");document.head.appendChild(s);
 }
 function sendNico(eventName,data){
@@ -44,11 +44,22 @@ function sendNico(eventName,data){
   try{frame.contentWindow.postMessage({sourceConnectorType:1,playerId:PLAYER_ID,eventName:eventName,data:data||{}},NICO_ORIGIN)}catch(e){}
 }
 function updateVolumeUi(){
-  var b=document.getElementById("v3923VolumeFull");if(!b)return;
-  b.classList.toggle("active",maxVolume);
-  b.textContent=maxVolume?"MAX":"VOL";
-  b.title=maxVolume?"니코니코 플레이어 음량을 100%로 맞춥니다. 휴대폰 음량은 그대로 조절할 수 있습니다.":"플레이어 최대 음량 사용";
-  b.setAttribute("aria-pressed",maxVolume?"true":"false")
+  var on=maxVolume;
+  var full=document.getElementById("v3923VolumeFull");
+  if(full){
+    full.classList.toggle("active",on);
+    full.textContent=on?"MAX":"VOL";
+    full.title=on?"니코니코 플레이어 내부 음량 100% · 누르면 해제":"플레이어 내부 최대 음량 사용";
+    full.setAttribute("aria-pressed",on?"true":"false")
+  }
+  var miniBtn=document.getElementById("v3924VolumeMini");
+  if(miniBtn){
+    miniBtn.classList.toggle("active",on);
+    miniBtn.textContent=on?"🔊":"🔉";
+    miniBtn.title=on?"음량 MAX 켜짐 · 누르면 해제":"음량 MAX 켜기";
+    miniBtn.setAttribute("aria-label",on?"음량 MAX 켜짐":"음량 MAX 꺼짐");
+    miniBtn.setAttribute("aria-pressed",on?"true":"false")
+  }
 }
 function applyPlayerVolume(force){
   if(!maxVolume||!currentId)return;
@@ -64,6 +75,7 @@ function setMaxVolume(on){
     applyPlayerVolume(true);
     setTimeout(function(){applyPlayerVolume(true)},450)
   }
+  try{toast(maxVolume?"음량 MAX · 니코 플레이어 100%":"음량 MAX 해제")}catch(_){}
   updateQueueUi()
 }
 function syncMediaSession(){
@@ -154,9 +166,9 @@ function build(){
   if(modal)return;addStyle();
   frame=createFrame32();
   modal=document.createElement("div");modal.className="v331-player";modal.hidden=true;modal.innerHTML='<div class="v331-player-shell" role="dialog" aria-modal="true" aria-label="앱 내부 니코니코 플레이어"><div class="v331-player-head"><div><small>NOW PLAYING</small><b id="v331PlayerTitle">재생 준비</b></div><div class="v332-queue-nav"><button type="button" id="v332PrevFull" aria-label="이전 곡">‹</button><button type="button" id="v332NextFull" aria-label="다음 곡">›</button></div><button type="button" id="v3923VolumeFull" aria-label="플레이어 최대 음량" aria-pressed="true" title="플레이어 최대 음량">MAX</button><button type="button" id="v3921PipFull" aria-label="작은 창으로 보기" title="작은 창" hidden>PiP</button><button type="button" id="v331Collapse" aria-label="미니 플레이어로">—</button><button type="button" id="v331Close" aria-label="닫기">×</button></div><div class="v331-player-stage" id="v331FullStage"></div><div class="v331-player-foot"><span id="v331PlayerMeta">백그라운드 재생 · 자동 다음곡</span><a id="v331External" href="#" target="_blank" rel="noopener">니코동에서 열기 ↗</a></div></div>';
-  mini=document.createElement("div");mini.className="v331-mini";mini.hidden=true;mini.innerHTML='<div class="v331-mini-stage" id="v331MiniStage"></div><div class="v331-mini-copy"><b id="v331MiniTitle">재생 중</b><small id="v332MiniMeta">백그라운드 재생 · 자동 다음곡</small></div><button type="button" id="v332PrevMini" aria-label="이전 곡">‹</button><button type="button" id="v332NextMini" aria-label="다음 곡">›</button><button type="button" id="v3921PipMini" aria-label="작은 창으로 보기" title="작은 창" hidden>▣</button><button type="button" id="v331Expand" aria-label="펼치기">⌃</button><button type="button" id="v331MiniClose" aria-label="닫기">×</button>';
+  mini=document.createElement("div");mini.className="v331-mini";mini.hidden=true;mini.innerHTML='<div class="v331-mini-stage" id="v331MiniStage"></div><div class="v331-mini-copy"><b id="v331MiniTitle">재생 중</b><small id="v332MiniMeta">백그라운드 재생 · 자동 다음곡</small></div><button type="button" id="v332PrevMini" aria-label="이전 곡">‹</button><button type="button" id="v332NextMini" aria-label="다음 곡">›</button><button type="button" id="v3924VolumeMini" aria-label="음량 MAX 켜짐" aria-pressed="true" title="음량 MAX">🔊</button><button type="button" id="v3921PipMini" aria-label="작은 창으로 보기" title="작은 창" hidden>▣</button><button type="button" id="v331Expand" aria-label="펼치기">⌃</button><button type="button" id="v331MiniClose" aria-label="닫기">×</button>';
   document.body.appendChild(modal);document.body.appendChild(mini);fullStage=document.getElementById("v331FullStage");miniStage=document.getElementById("v331MiniStage");fullStage.appendChild(frame);
-  document.getElementById("v331Close").onclick=function(){closePlayer(true)};document.getElementById("v331Collapse").onclick=function(){collapsePlayer()};document.getElementById("v331Expand").onclick=function(){expandPlayer()};document.getElementById("v331MiniClose").onclick=function(e){e.stopPropagation();closePlayer(true)};document.getElementById("v332PrevFull").onclick=function(){playRelative(-1)};document.getElementById("v332NextFull").onclick=function(){playRelative(1)};document.getElementById("v332PrevMini").onclick=function(e){e.stopPropagation();playRelative(-1)};document.getElementById("v332NextMini").onclick=function(e){e.stopPropagation();playRelative(1)};document.getElementById("v3923VolumeFull").onclick=function(){setMaxVolume(!maxVolume)};document.getElementById("v3921PipFull").onclick=openPictureInPicture;document.getElementById("v3921PipMini").onclick=openPictureInPicture;mini.addEventListener("click",function(e){if(!e.target.closest("button"))expandPlayer()});modal.addEventListener("click",function(e){if(e.target===modal)collapsePlayer()});document.addEventListener("keydown",function(e){if(e.key==="Escape"){if(!modal.hidden)collapsePlayer();else if(!mini.hidden)closePlayer(true)}});window.addEventListener("popstate",function(){if(!modal.hidden||!mini.hidden)closePlayer(false)});window.addEventListener("message",handleNicoMessage);initMediaSession();syncPipButtons();updateVolumeUi();
+  document.getElementById("v331Close").onclick=function(){closePlayer(true)};document.getElementById("v331Collapse").onclick=function(){collapsePlayer()};document.getElementById("v331Expand").onclick=function(){expandPlayer()};document.getElementById("v331MiniClose").onclick=function(e){e.stopPropagation();closePlayer(true)};document.getElementById("v332PrevFull").onclick=function(){playRelative(-1)};document.getElementById("v332NextFull").onclick=function(){playRelative(1)};document.getElementById("v332PrevMini").onclick=function(e){e.stopPropagation();playRelative(-1)};document.getElementById("v332NextMini").onclick=function(e){e.stopPropagation();playRelative(1)};document.getElementById("v3923VolumeFull").onclick=function(){setMaxVolume(!maxVolume)};document.getElementById("v3924VolumeMini").onclick=function(e){e.stopPropagation();setMaxVolume(!maxVolume)};document.getElementById("v3921PipFull").onclick=openPictureInPicture;document.getElementById("v3921PipMini").onclick=openPictureInPicture;mini.addEventListener("click",function(e){if(!e.target.closest("button"))expandPlayer()});modal.addEventListener("click",function(e){if(e.target===modal)collapsePlayer()});document.addEventListener("keydown",function(e){if(e.key==="Escape"){if(!modal.hidden)collapsePlayer();else if(!mini.hidden)closePlayer(true)}});window.addEventListener("popstate",function(){if(!modal.hidden||!mini.hidden)closePlayer(false)});window.addEventListener("message",handleNicoMessage);initMediaSession();syncPipButtons();updateVolumeUi();
 }
 function normalizeQueue(items){
   var seen=new Set(),out=[];
