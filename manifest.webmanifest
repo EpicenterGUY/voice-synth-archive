@@ -4,7 +4,7 @@
   "short_name": "VocaDive",
   "description": "VOCALOID, UTAU, SynthV 등 음성합성 원곡을 콘텐츠 피드·검색·보카로 우주로 발견하는 디스커버리 앱",
   "lang": "ko-KR",
-  "start_url": "./?appv=39.18.0",
+  "start_url": "./?appv=39.19.0",
   "scope": "./",
   "display": "standalone",
   "display_override": [
