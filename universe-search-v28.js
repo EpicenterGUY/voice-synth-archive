@@ -1,4 +1,4 @@
-/* VocaDive Universe Search v39.4 · Universe 3.0 bridge */
+/* VocaDive Universe Search v39.33 · Universe Search 3.1 */
 (function(){
 "use strict";
 var recentKey="vsa.universe.search.v28";
@@ -66,29 +66,49 @@ function localSearch(q){
     .sort(function(a,b){return b.score-a.score;})
     .slice(0,12).map(function(x){return x.song;});
 }
-async function remoteSearch(q,scope){
-  var isId=/^(sm|nm|so|lv)?\d+$/i.test(q);
-  var targets=isId?["contentId","title,description,tags"]:["title,description,tags","tags"];
-  for(var i=0;i<targets.length;i++){
-    try{
-      var data=await fetchNico({
-        year:"all",limit:30,offset:0,mode:"free",query:q,scope:scope||"all_voice_synth",
-        queryTargets:targets[i],sort:"-viewCounter",applyYear:false,applyTier:false
-      });
-      if(data.data&&data.data.length)return data.data;
-    }catch(e){}
-  }
-  return [];
+function normalizedSearchText(v){
+  return String(v==null?"":v).normalize("NFKC").trim().toLowerCase()
 }
-function merge(a,b){
+function exactSongMatch(song,q){
+  var n=normalizedSearchText(q);
+  return normalizedSearchText(song&&song.contentId)===n||normalizedSearchText(song&&song.title)===n
+}
+async function remoteSearch(q,scope){
+  var isId=/^(sm|nm|so|lv)?\d+$/i.test(q),selected=scope||"all_voice_synth";
+  var targets=isId?["contentId","title,description,tags"]:["title","title,description,tags","tags"];
+  var scopes=selected==="all"?["all"]:[selected,"all"];
+  var out=[],seen=new Set();remoteSearch.expanded=false;
+  for(var s=0;s<scopes.length;s++){
+    var sc=scopes[s];
+    for(var i=0;i<targets.length;i++){
+      try{
+        var data=await fetchNico({
+          year:"all",limit:50,offset:0,mode:"free",query:q,scope:sc,
+          queryTargets:targets[i],sort:"-viewCounter",applyYear:false,applyTier:false
+        });
+        (data.data||[]).forEach(function(song){
+          if(song&&song.contentId&&!seen.has(song.contentId)){seen.add(song.contentId);out.push(song)}
+        });
+        if(out.some(function(song){return exactSongMatch(song,q)}))break
+      }catch(e){}
+    }
+    if(out.length&&s===0)break;
+    if(s===1&&out.length)remoteSearch.expanded=true
+  }
+  return out;
+}
+function merge(a,b,q,scope){
   var map=new Map();
   a.concat(b).forEach(function(song){
     if(song&&song.contentId&&!map.has(song.contentId))map.set(song.contentId,song);
   });
-  var rows=Array.from(map.values());
-  try{if(window.VSA37DiscoveryOriginalRows)rows=window.VSA37DiscoveryOriginalRows(rows,"universe_search").rows}catch(e){}
+  var rows=Array.from(map.values()),exact=rows.filter(function(song){return exactSongMatch(song,q)}),rest=rows.filter(function(song){return !exactSongMatch(song,q)});
+  if(scope!=="all"){
+    try{if(window.VSA37DiscoveryOriginalRows)rest=window.VSA37DiscoveryOriginalRows(rest,"universe_search").rows}catch(e){}
+  }
+  rows=exact.concat(rest.filter(function(song){return !exact.some(function(x){return x.contentId===song.contentId})}));
   try{if(window.VSA37AdultFilterRows)rows=window.VSA37AdultFilterRows(rows,"universe_search").rows}catch(e){}
-  return rows.slice(0,24);
+  return rows.slice(0,30);
 }
 function renderRecent(){
   var box=document.getElementById("universeRecent");
@@ -142,7 +162,10 @@ async function runSearch(){
       remote=await remoteSearch(q,scope?scope.value:"all_voice_synth");
     }
   }catch(e){}
-  render(merge(local,remote));
+  var selectedScope=scope?scope.value:"all_voice_synth";
+  var merged=merge(local,remote,q,selectedScope);
+  render(merged);
+  if(status&&merged.length&&remoteSearch.expanded)status.textContent=merged.length+"곡 찾음 · 선택 범위에서 없어 니코동 전체까지 찾았습니다.";
   if(button)button.disabled=false;
 }
 function choose(index){
@@ -170,7 +193,7 @@ function addStyle(){
     ".v394-universe-panel .us-recent{display:flex;gap:4px;align-items:center;overflow-x:auto;margin-top:6px;min-height:24px;scrollbar-width:none}.v394-universe-panel .us-recent::-webkit-scrollbar{display:none}.v394-universe-panel .us-recent:before{content:'최근';flex:0 0 auto;font-size:7px;color:#547b78;margin-right:2px}.v394-universe-panel .us-recent button{flex:0 0 auto;min-height:24px;border:1px solid #24484e;border-radius:999px;padding:0 7px;background:#0a262c;color:#8fb9b5;font-size:7px}.v394-universe-panel .us-recent span{font-size:7px;color:#557875}.v394-universe-panel .us-status{margin-top:4px;font-size:7px;color:#668f8b}",
     ".v394-universe-panel .us-results{display:flex;gap:7px;overflow-x:auto;overflow-y:hidden;margin-top:9px;padding:1px 1px 4px;scrollbar-width:none}.v394-universe-panel .us-results::-webkit-scrollbar{display:none}.v394-universe-panel .universe-search:not(.has-results) .us-results{display:none}",
     ".v394-universe-panel .us-result{flex:0 0 min(360px,42vw);min-width:0;display:grid;grid-template-columns:82px minmax(0,1fr);gap:8px;align-items:center;padding:7px;border:1px solid rgba(112,205,197,.14);border-radius:12px;background:#0a2930;color:#dff5f1;text-align:left}.v394-universe-panel .us-result:hover{border-color:rgba(111,225,213,.36);background:#10343b}.v394-universe-panel .us-result img,.v394-universe-panel .us-noimg{width:82px;aspect-ratio:16/9;object-fit:cover;border-radius:8px;background:#123037;display:grid;place-items:center}.v394-universe-panel .us-copy{min-width:0}.v394-universe-panel .us-copy b{display:block;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.v394-universe-panel .us-copy small,.v394-universe-panel .us-copy i{display:block;margin-top:2px;font-size:7px;color:#719492;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-style:normal}.v394-universe-panel .us-result strong{grid-column:2;font-size:7px;color:#75ded4;white-space:nowrap}.v394-universe-panel .us-empty{flex:1 0 100%;min-height:62px;display:grid;place-items:center;text-align:center;color:#678b88;font-size:8px;border:1px dashed #24464c;border-radius:11px}",
-    "@media(max-width:699px){.v394-universe-panel .universe-search{padding:8px}.v394-universe-panel .us-title small{display:none}.v394-universe-panel .us-row{grid-template-columns:1fr auto}.v394-universe-panel .us-row input{grid-column:1/-1}.v394-universe-panel .us-row select{min-height:39px!important}.v394-universe-panel .us-row button{min-height:39px}.v394-universe-panel .us-result{flex-basis:min(84vw,330px);grid-template-columns:72px minmax(0,1fr)}.v394-universe-panel .us-result img,.v394-universe-panel .us-noimg{width:72px}}"
+    "@media(max-width:699px){.v394-universe-panel .universe-search{padding:8px;overscroll-behavior:contain}.v394-universe-panel .us-title small{display:none}.v394-universe-panel .us-row{grid-template-columns:1fr auto}.v394-universe-panel .us-row input{grid-column:1/-1}.v394-universe-panel .us-row select{min-height:39px!important}.v394-universe-panel .us-row button{min-height:39px}.v394-universe-panel .us-results{display:grid;grid-template-columns:1fr;gap:7px;max-height:46vh;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y;padding:2px 1px 8px}.v394-universe-panel .us-result{width:100%;max-width:100%;min-width:0;flex:none;grid-template-columns:72px minmax(0,1fr);box-sizing:border-box}.v394-universe-panel .us-result img,.v394-universe-panel .us-noimg{width:72px}.v394-universe-panel .us-empty{width:100%;box-sizing:border-box}}"
   ].join("");
   document.head.appendChild(style);
 }
@@ -184,7 +207,7 @@ function inject(){
   wrap.innerHTML=
     '<div class="us-main"><div class="us-title"><b>중심곡 검색</b><small>곡명·P명·보컬·태그·sm번호로 새 중심곡을 찾습니다.</small></div>'+
     '<div class="us-row"><input id="universeSearchInput" placeholder="곡명 · P명 · 보컬 · 태그 · sm번호">'+
-    '<select id="universeSearchScope"><option value="all_voice_synth">음성합성 전체</option><option value="vocaloid">VOCALOID</option><option value="utau">UTAU</option><option value="synthv">Synthesizer V</option><option value="cevio">CeVIO</option><option value="voisona">VoiSona</option><option value="neutrino">NEUTRINO</option><option value="voicevox">VOICEVOX</option></select>'+
+    '<select id="universeSearchScope"><option value="all_voice_synth">음성합성 전체</option><option value="all">니코동 전체</option><option value="vocaloid">VOCALOID</option><option value="utau">UTAU</option><option value="synthv">Synthesizer V</option><option value="cevio">CeVIO</option><option value="voisona">VoiSona</option><option value="neutrino">NEUTRINO</option><option value="voicevox">VOICEVOX</option></select>'+
     '<button type="button" id="universeSearchBtn">검색</button></div>'+
     '<div class="us-recent" id="universeRecent"></div><div class="us-status" id="universeSearchStatus">곡명·P명·보컬·태그·sm번호로 중심곡을 검색할 수 있습니다.</div></div>'+
     '<div class="us-results" id="universeSearchResults"><div class="us-empty">검색하면 후보곡이 여기에 표시됩니다.</div></div>';
