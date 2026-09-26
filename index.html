@@ -2532,7 +2532,8 @@ body.v37-ready .v397-search-page>.v393-page-strip{display:none!important}
   .v399-watch-layout{grid-template-columns:minmax(0,1.9fr) minmax(390px,.52fr)!important}
   .v39-media-grid{grid-template-columns:repeat(5,minmax(0,1fr))!important}
 }
-@media(max-width:699px){.v3911-theme-toggle{min-height:31px!important;padding:0 8px!important;font-size:7px!important}}
+.v3940-explore-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}.v3940-explore-top>div{min-width:0}.v3940-settings-shortcut,.v3940-sync-shortcut{flex:0 0 auto;min-height:38px;padding:0 12px;border:1px solid #2a565d;border-radius:12px;background:#0b2930;color:#dff7f3;font-size:8px;font-weight:950;white-space:nowrap}.v3940-settings-shortcut{margin-top:2px}.v3940-settings-shortcut:hover,.v3940-sync-shortcut:hover{border-color:#4ca29a;background:#123b41}
+@media(max-width:699px){.v3911-theme-toggle{min-height:31px!important;padding:0 8px!important;font-size:7px!important}.v3940-explore-top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}.v3940-settings-shortcut{min-height:36px;padding:0 10px}.v3940-settings-shortcut span{display:none}.v395-personal-hero-actions{flex-wrap:wrap}.v3940-sync-shortcut{width:100%}}
 
 body[data-vsa-theme="light"]{background:#eef5f4!important;color:#183432!important}
 body[data-vsa-theme="light"] .app,body[data-vsa-theme="light"].v37-ready{background:#eef5f4!important}
@@ -3345,7 +3346,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.39.0 · Mini Return · Universe Handoff · Universe Search 3.1 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.40.0 · Mini Return · Universe Handoff · Universe Search 3.1 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -7604,7 +7605,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:"39.39.0",
+    version:"39.40.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -9145,7 +9146,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.39.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
+var VER="39.40.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -10240,7 +10241,7 @@ function renderPersonalHub395(){
   var p=document.querySelector('[data-tool-view="personal395"]');if(!p)return;
   var snap=personalSnapshot395(),c=snap.counts,recs=(snap.feed.taste||[]).filter(Boolean).slice(0,8),saved=snap.saved.slice(0,8);
   p.innerHTML='<div class="v395-personal-hero"><div class="v395-personal-title"><small>MY VOCADIVE</small><h2>내 음악</h2><p>보관함과 취향 피드백을 따로 관리하지 않고, 저장한 곡·취향 신호·개인 추천을 한 화면에서 이어서 봅니다.</p></div>'+
-    '<div class="v395-personal-hero-actions"><button type="button" data-v395-open="library">전체 보관함</button><button type="button" class="primary" data-v395-open="smart">스마트 믹스</button></div></div>'+
+    '<div class="v395-personal-hero-actions"><button type="button" data-v395-open="library">전체 보관함</button><button type="button" class="primary" data-v395-open="smart">스마트 믹스</button><button type="button" class="v3940-sync-shortcut" data-v37-feature-id="settings">⚙ 설정 · 동기화</button></div></div>'+
     '<div class="v395-personal-stats"><div class="v395-stat"><small>보관한 곡</small><b>'+F(c.saved)+'</b><em>상태를 지정한 전체 곡</em></div><div class="v395-stat"><small>최애</small><b>'+F(c.favorite)+'</b><em>추천에 가장 강하게 반영</em></div><div class="v395-stat"><small>관심곡</small><b>'+F(c.interest)+'</b><em>다시 찾아볼 곡</em></div><div class="v395-stat"><small>취향 신호</small><b>'+F(snap.signals)+'</b><em>보관 + 직접 피드백</em></div></div>'+
     '<div class="v395-personal-grid"><section class="v395-card"><div class="v395-card-head"><div><h3>내 취향 프로필</h3><p>최애·관심곡·좋아요/관심없음을 합쳐 자동 계산</p></div><button type="button" data-v395-open="taste">직접 조건 추천</button></div>'+
       '<div class="v395-profile-tags">'+(snap.top.length?snap.top.map(function(x){return'<button type="button" data-v395-search-query="'+E(x[0])+'">'+E(x[0])+'</button>'}).join(""):'<span>아직 취향 데이터가 적어요</span>')+'</div>'+
@@ -10368,7 +10369,7 @@ function ensureHub37(){
   var v=body.querySelector('[data-tool-view="hub37"]');if(v){refreshHub37();return v}
   v=document.createElement("section");v.className="tool-view v37-native-hub v393-native-explore";v.dataset.toolView="hub37";
   v.innerHTML=
-    '<div class="v393-explore-hero v3919-explore-hero"><small>VOCADIVE · EXPLORE 2.0</small><h2>뭘 찾고 싶나요?</h2><p>곡 이름을 아는지, 기억이 흐릿한지, 그냥 새로운 곡이 듣고 싶은지부터 골라보세요.</p>'+
+    '<div class="v393-explore-hero v3919-explore-hero"><div class="v3940-explore-top"><div><small>VOCADIVE · EXPLORE 2.0</small><h2>뭘 찾고 싶나요?</h2><p>곡 이름을 아는지, 기억이 흐릿한지, 그냥 새로운 곡이 듣고 싶은지부터 골라보세요.</p></div><button type="button" class="v3940-settings-shortcut" data-v37-feature-id="settings" aria-label="설정 열기">⚙ <span>설정</span></button></div>'+
       '<div class="v3919-intent-grid">'+
         intentButton3919("search","곡명·P명으로 찾기","검색어가 있다면 여기서 바로")+
         intentButton3919("detective","기억나는 단서로 찾기","가사·PV·시기만 기억나도 괜찮아요")+
@@ -10679,16 +10680,16 @@ var groups={};
 function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
-  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.39.0","./detective-v12.js?v=39.39.0","./detective-v13.js?v=39.39.0","./detective-v14.js?v=39.39.0","./detective-v16.js?v=39.39.0"]);
-  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.39.0","./smart-v23.js?v=39.39.0","./playlist-v24.js?v=39.39.0"]);
-  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.39.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.39.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.39.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.39.0");
-  else if(name==="deviceSync")groups[name]=load("./device-sync-v3938.js?v=39.39.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.39.0");
+  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.40.0","./detective-v12.js?v=39.40.0","./detective-v13.js?v=39.40.0","./detective-v14.js?v=39.40.0","./detective-v16.js?v=39.40.0"]);
+  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.40.0","./smart-v23.js?v=39.40.0","./playlist-v24.js?v=39.40.0"]);
+  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.40.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.40.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.40.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.40.0");
+  else if(name==="deviceSync")groups[name]=load("./device-sync-v3938.js?v=39.40.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.40.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
-    return seq(["./voca-app-v33.js?v=39.39.0","./voca-app-v33-1.js?v=39.39.0","./voca-app-v33-2.js?v=39.39.0","./voca-app-v33-3.js?v=39.39.0"]);
+    return seq(["./voca-app-v33.js?v=39.40.0","./voca-app-v33-1.js?v=39.40.0","./voca-app-v33-2.js?v=39.40.0","./voca-app-v33-3.js?v=39.40.0"]);
   });
   else groups[name]=Promise.resolve(false);
   groups[name]=Promise.resolve(groups[name]).then(function(v){
@@ -10732,4 +10733,4 @@ if("requestIdleCallback" in window)requestIdleCallback(function(){ensure("pwa")}
 else setTimeout(function(){ensure("pwa")},12000);
 })();
 </script>
-<script src="./i18n-v3918.js?v=39.39.0"></script>\n</body>\n</html>
+<script src="./i18n-v3918.js?v=39.40.0"></script>\n</body>\n</html>
