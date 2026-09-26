@@ -227,6 +227,10 @@ function setLocale(next){
   document.body.dataset.vsaLocale=locale;
   walk(document.body,false);updateSwitcher();
   try{window.dispatchEvent(new CustomEvent("vsa:localechange",{detail:{locale:locale}}))}catch(e){}
+  setTimeout(function(){
+    try{if(window.VSAHome37&&typeof window.VSAHome37.render==="function")window.VSAHome37.render()}catch(e){}
+    try{if(window.VSAI18n)window.VSAI18n.refresh()}catch(e){}
+  },0)
 }
 var observer=new MutationObserver(function(ms){
   if(applying)return;
