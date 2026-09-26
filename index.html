@@ -3349,7 +3349,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.43.0 · Mini Return · Universe Handoff · Universe Search 3.1 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.44.0 · Mini Return · Universe Handoff · Universe Search 3.1 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -7608,7 +7608,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:"39.43.0",
+    version:"39.44.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -9193,7 +9193,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.43.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
+var VER="39.44.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -9229,6 +9229,25 @@ function balanceHomeViews3943(rows,bands,salt,count){
     pageRows3941(String(salt||"mix")+"_rest",rows).forEach(function(s){if(out.length<count&&s&&s.contentId&&!used.has(s.contentId)){used.add(s.contentId);out.push(s)}})
   }
   return out.slice(0,count)
+}
+function normalizeDeepRows3944(rows,salt,count){
+  rows=(rows||[]).filter(function(s){var v=Number(s&&s.viewCounter)||0;return v>=100&&v<=50000});
+  var exact100=rows.filter(function(s){return Number(s.viewCounter)===100});
+  var non100=rows.filter(function(s){return Number(s.viewCounter)!==100});
+  var mixed=balanceHomeViews3943(non100,[[101,499],[500,1999],[2000,9999],[10000,50000]],salt,count);
+  if(mixed.length<count&&exact100.length){
+    var one=pageRows3941(String(salt||"deep100"),exact100)[0];
+    if(one&&!mixed.some(function(x){return x.contentId===one.contentId}))mixed.push(one)
+  }
+  return mixed.slice(0,count)
+}
+function deepFeedNeedsRefresh3944(feed){
+  var rows=feed&&Array.isArray(feed.hidden)?feed.hidden:[];
+  if(rows.length<6)return true;
+  var exact100=rows.filter(function(s){return Number(s&&s.viewCounter)===100}).length;
+  var bands=[[101,499],[500,1999],[2000,9999],[10000,50000]],hits=0;
+  bands.forEach(function(r){if(rows.some(function(s){var v=Number(s&&s.viewCounter)||0;return v>=r[0]&&v<=r[1]}))hits++});
+  return exact100>1||hits<3
 }
 function k(mark){return mark==="DAILY"?"daily":mark==="FOR YOU"?"taste":mark==="NEW"?"newer":"hidden"}
 function label(mark){return mark==="DAILY"?"추천":mark==="FOR YOU"?"내 취향":mark==="NEW"?"신곡":mark==="CONTINUE"?"이어보기":"숨은 곡"}
@@ -9277,7 +9296,7 @@ function mediaCard39(x,mark){
   '</article>'
 }
 function shelf39(mark,rows,excludeId,priority){
-  rows=pageRows3941("shelf_"+mark,rows||[]).filter(function(x){return !excludeId||x.contentId!==excludeId});
+  rows=(mark==="DEEP"?normalizeDeepRows3944(rows,"shelf_"+mark,12):pageRows3941("shelf_"+mark,rows||[])).filter(function(x){return !excludeId||x.contentId!==excludeId});
   if(window.VSA37AdultFilterRows)rows=window.VSA37AdultFilterRows(rows,"home_"+mark).rows;
   rows=rows.slice(0,12);
   return '<section class="v39-shelf v396-shelf-priority" data-priority="'+(priority||"")+'"><div class="v39-shelf-head"><div><h2>'+label(mark)+(priority?'<span class="v396-priority-note"><b>'+priority+'</b> 맞춤 순서</span>':'')+'</h2><p>'+sub(mark)+'</p></div><button type="button" data-v39-refresh-section="'+mark+'">'+(busy&&active===mark?"불러오는 중…":"새로 추천 ↻")+'</button></div>'+
@@ -9293,11 +9312,17 @@ function homePriority396(){
 function heroPick396(feed,order){
   var ctx=homeContext39||buildHomeContext396(),map={"DAILY":"daily","FOR YOU":"taste","NEW":"newer","DEEP":"hidden"},recent12=new Set(ctx.recent.slice(0,12).map(function(x){return x.id}));
   for(var mark of order){
-    var rows=pageRows3941("hero_"+mark,feed[map[mark]]||[]).filter(function(x){return x&&x.contentId&&!ctx.disliked.has(x.contentId)&&!recent12.has(x.contentId)});
+    var base=feed[map[mark]]||[],rows;
+    if(mark==="DEEP"){
+      var bands=[[101,499],[500,1999],[2000,9999],[10000,50000]],target=PAGE_SEED3941%bands.length,range=bands[target];
+      rows=pageRows3941("hero_deep_"+target,base.filter(function(s){var v=Number(s&&s.viewCounter)||0;return v>=range[0]&&v<=range[1]}));
+      if(!rows.length)rows=normalizeDeepRows3944(base,"hero_deep_fallback",12).filter(function(s){return Number(s&&s.viewCounter)!==100})
+    }else rows=pageRows3941("hero_"+mark,base);
+    rows=rows.filter(function(x){return x&&x.contentId&&!ctx.disliked.has(x.contentId)&&!recent12.has(x.contentId)});
     if(rows.length)return {song:rows[0],mark:mark}
   }
   for(var fallback of order){
-    var a=pageRows3941("hero_fallback_"+fallback,feed[map[fallback]]||[]);
+    var a=fallback==="DEEP"?normalizeDeepRows3944(feed[map[fallback]]||[],"hero_fallback_deep",12).filter(function(s){return Number(s&&s.viewCounter)!==100}):pageRows3941("hero_fallback_"+fallback,feed[map[fallback]]||[]);
     if(a.length)return{song:a[0],mark:fallback}
   }
   return null
@@ -9391,7 +9416,7 @@ async function refreshMark39(mark){
           return fetchNico({year:"all",limit:80,offset:((PAGE_SEED3941+i)%4)*80,mode:"ranking",sort:i%2?"-commentCounter":"-mylistCounter",applyYear:false,applyTier:false,numericFilters:{viewCounter:{gte:r[0],lte:r[1]}}})
         }));
         var m=new Map();groups.forEach(function(g){(g&&g.data||[]).forEach(function(s){if(s&&s.contentId)m.set(s.contentId,s)})});
-        arr=balanceHomeViews3943(preferOriginal399([...m.values()]),bands,"deep",12)
+        arr=normalizeDeepRows3944(preferOriginal399([...m.values()]),"deep",12)
       }else{
         var pageBase=Math.floor(pageRand3941(mark+"_fetch","offset")*5);
         var opts=mark==="NEW"?{year:"all",limit:60,offset:pageBase*20,mode:"ranking",sort:"-startTime"}:
@@ -10615,9 +10640,10 @@ function init(){
     try{
       if(document.hidden||window.__VSA37_CURRENT_ROUTE!=="home")return;
       if(typeof relayBase==="function"&&!relayBase())return;
-      refreshMark39(reloadMark3941)
+      var feed3944=currentFeed();
+      refreshMark39(deepFeedNeedsRefresh3944(feed3944)?"DEEP":reloadMark3941)
     }catch(_){}
-  },900);
+  },450);
   var run397=document.getElementById("apiSearchBtn");if(run397&&!run397.dataset.v397Remember){run397.dataset.v397Remember="1";run397.addEventListener("click",function(){var x=document.getElementById("globalSearchInput");if(x&&x.value.trim()){rememberSearch397(x.value,searchMode397);renderEntity397(x.value)}} ,true)}
   document.querySelectorAll("#detectiveMobileSteps button").forEach(function(btn){
     btn.addEventListener("click",function(){syncDetectiveStep37(btn.dataset.dstep||0)})
@@ -10778,16 +10804,16 @@ var groups={};
 function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
-  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.43.0","./detective-v12.js?v=39.43.0","./detective-v13.js?v=39.43.0","./detective-v14.js?v=39.43.0","./detective-v16.js?v=39.43.0"]);
-  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.43.0","./smart-v23.js?v=39.43.0","./playlist-v24.js?v=39.43.0"]);
-  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.43.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.43.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.43.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.43.0");
-  else if(name==="deviceSync")groups[name]=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.43.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.43.0");
+  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.44.0","./detective-v12.js?v=39.44.0","./detective-v13.js?v=39.44.0","./detective-v14.js?v=39.44.0","./detective-v16.js?v=39.44.0"]);
+  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.44.0","./smart-v23.js?v=39.44.0","./playlist-v24.js?v=39.44.0"]);
+  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.44.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.44.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.44.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.44.0");
+  else if(name==="deviceSync")groups[name]=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.44.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.44.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
-    return seq(["./voca-app-v33.js?v=39.43.0","./voca-app-v33-1.js?v=39.43.0","./voca-app-v33-2.js?v=39.43.0","./voca-app-v33-3.js?v=39.43.0"]);
+    return seq(["./voca-app-v33.js?v=39.44.0","./voca-app-v33-1.js?v=39.44.0","./voca-app-v33-2.js?v=39.44.0","./voca-app-v33-3.js?v=39.44.0"]);
   });
   else groups[name]=Promise.resolve(false);
   groups[name]=Promise.resolve(groups[name]).then(function(v){
@@ -10831,4 +10857,4 @@ if("requestIdleCallback" in window)requestIdleCallback(function(){ensure("pwa")}
 else setTimeout(function(){ensure("pwa")},12000);
 })();
 </script>
-<script src="./device-sync-v3938.js?v=39.43.0"></script>\n<script src="./i18n-v3918.js?v=39.43.0"></script>\n</body>\n</html>
+<script src="./device-sync-v3938.js?v=39.44.0"></script>\n<script src="./i18n-v3918.js?v=39.44.0"></script>\n</body>\n</html>
