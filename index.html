@@ -2745,6 +2745,12 @@ body[data-vsa-theme="light"] .v3919-manage{background:#fff;border-color:#cfe2de}
 }
 @media(max-width:390px){.v3919-intent-grid{grid-template-columns:1fr}.v3919-intent{min-height:68px}}
 </style>
+<style id="v397PersonalIcons">
+.v395-action i svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+body[data-vsa-theme="light"] .v395-action i{background:#e1f1ee;color:#286860}
+body[data-vsa-theme="light"] .v395-action{background:#f5f9f8;border-color:#cfe1de;color:#183b37}
+body[data-vsa-theme="light"] .v395-action small{color:#66817d}
+</style>
 <style id="v3926VolumeKeywordFix">
 /* v39.26 · precise player volume + Guide keyword touch hotfix */
 .v3925-guide-keywords #guideQuickChips{position:relative;z-index:3;pointer-events:auto!important}
@@ -3196,7 +3202,7 @@ body[data-vsa-theme="light"] .v3920-fold-body>p{background:#f5f9f8!important;col
     </details>
   </section>
 
-  <div class="footer">v39.26.0 · Guide 3.1 · Playback 2.3 · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.27.0 · Library 3.0 · Producer 2.0 · Guide 3.1 · Playback 2.3 · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -7392,7 +7398,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:"39.26.0",
+    version:"39.27.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -8809,7 +8815,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.26.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
+var VER="39.27.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -9563,6 +9569,17 @@ function ensurePersonalHub395(){
   var p=body.querySelector('[data-tool-view="personal395"]');if(p)return p;
   p=document.createElement("section");p.className="tool-view v395-personal";p.dataset.toolView="personal395";body.prepend(p);return p
 }
+function personalIcon395(kind){
+  var c='viewBox="0 0 24 24" aria-hidden="true" focusable="false"';
+  return {
+    library:'<svg '+c+'><path d="M6 4h11a1 1 0 0 1 1 1v15l-6.5-3-6.5 3V5a1 1 0 0 1 1-1z"/></svg>',
+    smart:'<svg '+c+'><path d="m12 3 2.1 4.7L19 10l-4.9 2.3L12 17l-2.1-4.7L5 10l4.9-2.3z"/><path d="M18.5 15.5v5M16 18h5"/></svg>',
+    playlist:'<svg '+c+'><path d="M5 7h9M5 12h9M5 17h6"/><path d="M17 14v5.5a2.2 2.2 0 1 0 2-2.2V12l3-1"/></svg>',
+    taste:'<svg '+c+'><path d="M12 20s-7-4.2-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.8-7 10-7 10z"/><path d="M8.5 12h2l1-2.2 1.6 4.4 1.1-2.2h1.3"/></svg>',
+    recent:'<svg '+c+'><path d="M4 12a8 8 0 1 0 2.2-5.5L4 9"/><path d="M4 4v5h5M12 8v4l3 2"/></svg>',
+    cases:'<svg '+c+'><circle cx="10.5" cy="10.5" r="5.5"/><path d="m14.7 14.7 4.8 4.8M8.7 9.2a2 2 0 0 1 3.8.8c0 1.5-2 1.6-2 3M10.5 15.6h.01"/></svg>'
+  }[kind]||''
+}
 function renderPersonalHub395(){
   var p=document.querySelector('[data-tool-view="personal395"]');if(!p)return;
   var snap=personalSnapshot395(),c=snap.counts,recs=(snap.feed.taste||[]).filter(Boolean).slice(0,8),saved=snap.saved.slice(0,8);
@@ -9573,12 +9590,12 @@ function renderPersonalHub395(){
       '<div class="v395-profile-tags">'+(snap.top.length?snap.top.map(function(x){return'<button type="button" data-v395-search-query="'+E(x[0])+'">'+E(x[0])+'</button>'}).join(""):'<span>아직 취향 데이터가 적어요</span>')+'</div>'+
       '<div class="v395-profile-note">최애와 관심곡을 보관하거나 추천 카드에 취향 피드백을 남길수록 이 프로필과 개인 추천이 함께 바뀝니다. 관심없음 '+F(c.disliked)+'곡도 제외 신호로 반영됩니다.</div></section>'+
     '<section class="v395-card"><div class="v395-card-head"><div><h3>바로가기</h3><p>예전 보관함·내 취향 기능을 한 곳으로 모음</p></div></div><div class="v395-actions">'+
-      '<button type="button" class="v395-action" data-v395-open="library"><i>▣</i><b>보관함 관리</b><small>최애·관심·조사·들어봄·관심없음 정리</small></button>'+
-      '<button type="button" class="v395-action" data-v395-open="smart"><i>◈</i><b>스마트 믹스</b><small>취향 신호로 자동 플레이리스트 만들기</small></button>'+
-      '<button type="button" class="v395-action" data-v395-open="playlist"><i>☷</i><b>플레이리스트</b><small>저장한 믹스와 곡 순서 관리</small></button>'+
-      '<button type="button" class="v395-action" data-v395-open="taste"><i>♡</i><b>조건 추천</b><small>분위기·보컬·장르를 직접 골라 추천</small></button>'+
-      '<button type="button" class="v395-action" data-v395-open="recent"><i>↺</i><b>최근 기록</b><small>최근 본 곡과 검색 기록 다시 보기</small></button>'+
-      '<button type="button" class="v395-action" data-v395-open="cases"><i>?</i><b>저장한 탐정</b><small>곡 탐정 사건과 후보 기록 복원</small></button>'+
+      '<button type="button" class="v395-action" data-v395-open="library"><i>'+personalIcon395("library")+'</i><b>보관함 관리</b><small>최애·관심·조사·들어봄·관심없음 정리</small></button>'+
+      '<button type="button" class="v395-action" data-v395-open="smart"><i>'+personalIcon395("smart")+'</i><b>스마트 믹스</b><small>취향 신호로 자동 플레이리스트 만들기</small></button>'+
+      '<button type="button" class="v395-action" data-v395-open="playlist"><i>'+personalIcon395("playlist")+'</i><b>플레이리스트</b><small>저장한 믹스와 곡 순서 관리</small></button>'+
+      '<button type="button" class="v395-action" data-v395-open="taste"><i>'+personalIcon395("taste")+'</i><b>조건 추천</b><small>분위기·보컬·장르를 직접 골라 추천</small></button>'+
+      '<button type="button" class="v395-action" data-v395-open="recent"><i>'+personalIcon395("recent")+'</i><b>최근 기록</b><small>최근 본 곡과 검색 기록 다시 보기</small></button>'+
+      '<button type="button" class="v395-action" data-v395-open="cases"><i>'+personalIcon395("cases")+'</i><b>저장한 탐정</b><small>곡 탐정 사건과 후보 기록 복원</small></button>'+
     '</div></section></div>'+
     '<section class="v395-section"><div class="v395-section-head"><div><h3>최근 보관</h3><p>최근 상태를 바꾼 곡부터</p></div><button type="button" data-v395-open="library">모두 보기</button></div>'+
       (saved.length?'<div class="v395-saved-row">'+saved.map(personalSavedCard395).join("")+'</div>':'<div class="v395-empty">아직 보관한 곡이 없습니다.<br>홈이나 검색에서 마음에 드는 곡을 보관해보세요.</div>')+'</section>'+
@@ -10004,15 +10021,15 @@ var groups={};
 function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
-  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.26.0","./detective-v12.js?v=39.26.0","./detective-v13.js?v=39.26.0","./detective-v14.js?v=39.26.0","./detective-v16.js?v=39.26.0"]);
-  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.26.0","./smart-v23.js?v=39.26.0","./playlist-v24.js?v=39.26.0"]);
-  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.26.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.26.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.26.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.26.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.26.0");
+  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.27.0","./detective-v12.js?v=39.27.0","./detective-v13.js?v=39.27.0","./detective-v14.js?v=39.27.0","./detective-v16.js?v=39.27.0"]);
+  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.27.0","./smart-v23.js?v=39.27.0","./playlist-v24.js?v=39.27.0"]);
+  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.27.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.27.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.27.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.27.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.27.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
-    return seq(["./voca-app-v33.js?v=39.26.0","./voca-app-v33-1.js?v=39.26.0","./voca-app-v33-2.js?v=39.26.0","./voca-app-v33-3.js?v=39.26.0"]);
+    return seq(["./voca-app-v33.js?v=39.27.0","./voca-app-v33-1.js?v=39.27.0","./voca-app-v33-2.js?v=39.27.0","./voca-app-v33-3.js?v=39.27.0"]);
   });
   else groups[name]=Promise.resolve(false);
   groups[name]=Promise.resolve(groups[name]).then(function(v){
@@ -10056,4 +10073,4 @@ if("requestIdleCallback" in window)requestIdleCallback(function(){ensure("pwa")}
 else setTimeout(function(){ensure("pwa")},12000);
 })();
 </script>
-<script src="./i18n-v3918.js?v=39.26.0"></script>\n</body>\n</html>
+<script src="./i18n-v3918.js?v=39.27.0"></script>\n</body>\n</html>
