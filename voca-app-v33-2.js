@@ -3,7 +3,7 @@
 "use strict";
 var OK="vsa.organizer.v22",SK="vsa.smart.v23",HK="vsa.home.v28";
 var selected=new Set(),selectMode=false,filter="all",sortMode="updated",query="",statusTarget="";
-var statusMeta={interest:["♡","관심곡"],favorite:["★","최애"],investigate:["⌕","나중에 조사"],heard:["✓","들어봄"],dislike:["×","관심없음"]};
+var statusMeta={interest:["♡","관심곡"],favorite:["★","최애"],investigate:["⌕","나중에 보기"],heard:["✓","들어봄"],dislike:["×","관심없음"]};
 
 function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function fmt(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
@@ -43,7 +43,7 @@ function ensureView(){
   var el=body.querySelector('[data-tool-view="libraryHub33"]');
   if(el)return el;
   el=document.createElement("section");el.className="tool-view v33-view v332-lib";el.dataset.toolView="libraryHub33";
-  el.innerHTML='<div class="v332-lib-head"><div><small>VOCALO LIBRARY</small><h2>보관함</h2><p>최애부터 관심없음까지 한 곳에서 정리하고 바로 재생합니다.</p></div></div>'+
+  el.innerHTML='<div class="v332-lib-head"><div><small>VOCALO LIBRARY</small><h2>보관함</h2><p>좋아하는 곡, 나중에 들을 곡, 관심 없는 곡을 한곳에서 정리해요.</p></div></div>'+
     '<div class="v332-lib-controls"><input id="v332LibQuery" placeholder="보관한 곡 검색"><select id="v332LibSort"><option value="updated">최근 변경</option><option value="views">조회수</option><option value="title">제목</option></select><button id="v332SelectMode">선택</button></div>'+
     '<div class="v332-lib-chips" id="v332LibChips"></div><div class="v332-lib-stats" id="v332LibStats"></div><div class="v332-lib-grid" id="v332LibGrid"></div>'+
     '<div class="v332-batch" id="v332Batch" hidden><b id="v332BatchCount">0곡 선택</b><button data-batch="favorite">★ 최애</button><button data-batch="interest">♡ 관심</button><button data-batch="heard">✓ 들어봄</button><button data-batch="investigate">⌕ 조사</button><button data-batch="dislike">관심없음</button><button data-batch="remove">삭제</button></div>';
@@ -64,7 +64,7 @@ function render(){
   chips.innerHTML=chipHtml("all","전체",c)+chipHtml("favorite","★ 최애",c)+chipHtml("interest","♡ 관심",c)+chipHtml("investigate","⌕ 조사",c)+chipHtml("heard","✓ 들어봄",c)+chipHtml("dislike","관심없음",c);
   stats.innerHTML='<span>총 '+c.all+'곡</span><span>최애 '+c.favorite+'</span><span>관심 '+c.interest+'</span><span>관심없음 '+c.dislike+'</span>';
   var a=records();grid.parentElement.classList.toggle("v332-selecting",selectMode);
-  grid.innerHTML=a.length?a.map(card).join(""):'<div class="v332-empty">이 조건에 해당하는 곡이 없습니다.</div>';
+  grid.innerHTML=a.length?a.map(card).join(""):'<div class="v332-empty">이 조건에 맞는 곡이 없어요.</div>';
   var batch=document.getElementById("v332Batch");batch.hidden=!selectMode;document.getElementById("v332BatchCount").textContent=selected.size+"곡 선택";
   var b=document.getElementById("v332SelectMode");if(b)b.textContent=selectMode?"선택 종료":"선택";
 }
@@ -91,7 +91,7 @@ function play(id){
 function buildSheet(){
   if(document.getElementById("v332StatusSheet"))return;
   var sh=document.createElement("div");sh.id="v332StatusSheet";sh.className="v332-sheet";sh.hidden=true;
-  sh.innerHTML='<div class="v332-sheet-panel"><h3>곡 상태 변경</h3><div class="v332-status-options"><button data-status="favorite">★ 최애</button><button data-status="interest">♡ 관심곡</button><button data-status="investigate">⌕ 나중에 조사</button><button data-status="heard">✓ 들어봄</button><button data-status="dislike" class="danger">관심없음</button><button data-status="remove" class="danger">보관에서 삭제</button></div></div>';
+  sh.innerHTML='<div class="v332-sheet-panel"><h3>곡 정리</h3><div class="v332-status-options"><button data-status="favorite">★ 최애</button><button data-status="interest">♡ 관심곡</button><button data-status="investigate">⌕ 나중에 보기</button><button data-status="heard">✓ 들어봄</button><button data-status="dislike" class="danger">관심없음</button><button data-status="remove" class="danger">보관에서 삭제</button></div></div>';
   document.body.appendChild(sh);sh.addEventListener("click",function(e){if(e.target===sh){sh.hidden=true;return}var b=e.target.closest("[data-status]");if(!b)return;var st=b.dataset.status;sh.hidden=true;if(st==="remove")removeItem(statusTarget);else updateStatus(statusTarget,st)});
 }
 function openStatus(id){statusTarget=id;buildSheet();document.getElementById("v332StatusSheet").hidden=false}
@@ -114,7 +114,7 @@ function feedCard(song,mark){
   return '<article class="v28-card v332-feed-card"><a class="v28-thumb" href="https://www.nicovideo.jp/watch/'+encodeURIComponent(song.contentId)+'" target="_blank" rel="noopener">'+(song.thumbnailUrl?'<img src="'+esc(song.thumbnailUrl)+'" loading="lazy" alt="">':'')+'<span class="v28-play">▶</span></a><div class="v28-card-body"><a class="v28-title" href="https://www.nicovideo.jp/watch/'+encodeURIComponent(song.contentId)+'" target="_blank" rel="noopener">'+esc(song.title||song.contentId)+'</a><div class="v28-meta">조회 '+fmt(song.viewCounter||0)+' · '+y+'</div><div class="v332-reason">'+esc(reason(song,mark))+'</div><div class="v28-card-actions"><button data-save="'+esc(song.contentId)+'">♡ 보관</button><button data-dislike="'+esc(song.contentId)+'">관심없음</button></div></div></article>';
 }
 function openFeed(mark){
-  ensureFeedView();var info=feedInfo(mark),f=homeFeed(),rows=f[info[1]]||[];document.getElementById("v332FeedTitle").textContent=info[0];document.getElementById("v332FeedGrid").dataset.mark=mark;document.getElementById("v332FeedGrid").innerHTML=rows.length?rows.map(function(s){return feedCard(s,mark)}).join(""):'<div class="v332-empty">표시할 곡이 없습니다.</div>';
+  ensureFeedView();var info=feedInfo(mark),f=homeFeed(),rows=f[info[1]]||[];document.getElementById("v332FeedTitle").textContent=info[0];document.getElementById("v332FeedGrid").dataset.mark=mark;document.getElementById("v332FeedGrid").innerHTML=rows.length?rows.map(function(s){return feedCard(s,mark)}).join(""):'<div class="v332-empty">아직 보여줄 곡이 없어요.</div>';
   if(window.VSAV33&&window.VSAV33.openView)window.VSAV33.openView("feedMore33");
 }
 function patchHome(){
