@@ -1,7 +1,7 @@
-/* VocaDive in-app Nico player v39.26 · Playback 2.3 */
+/* VocaDive in-app Nico player v39.37 · Playback 2.4 */
 (function(){
 "use strict";
-var modal=null,mini=null,frame=null,fullStage=null,miniStage=null,inlineHost=null,currentId="",currentTitle="",pushed=false,queue=[],queueIndex=-1,autoNext=true,pipWindow=null,pipClosing=false,lastPlayerStatus=0,maxVolume=true,volumeAppliedFor="",playerVolume=100,volumePopover=null;
+var modal=null,mini=null,frame=null,fullStage=null,miniStage=null,inlineHost=null,currentId="",currentTitle="",pushed=false,queue=[],queueIndex=-1,autoNext=true,pipWindow=null,pipClosing=false,lastPlayerStatus=0,maxVolume=true,volumeAppliedFor="",playerVolume=100,volumePopover=null,surfaceRepairTimer=0;
 var PLAYER_ID="vsaPlayer",NICO_ORIGIN="https://embed.nicovideo.jp",MAX_VOLUME_KEY="vsa.player.maxVolume",VOLUME_KEY="vsa.player.volume";
 try{
   autoNext=localStorage.getItem("vsa.player.autoNext")!=="0";
@@ -36,7 +36,7 @@ function addStyle(){
     ".v331-player-head{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid #17383e;background:#092128}.v331-player-head>div{min-width:0;flex:1}.v331-player-head small{display:block;font-size:7px;font-weight:950;letter-spacing:.12em;color:#70d9d0}.v331-player-head b{display:block;margin-top:2px;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.v331-player-head button{width:38px;height:38px;border:1px solid #2a555c;border-radius:11px;background:#0b2930;color:#dff7f3;font-size:17px}.v331-player-head #v3921PipFull,.v331-player-head #v3923VolumeFull{font-size:9px;font-weight:950;letter-spacing:.03em}.v331-player-head #v3923VolumeFull.active{border-color:#54bdb4;background:#17464c;color:#effffb}",
     ".v331-player-stage{position:relative;aspect-ratio:16/9;background:#000;min-height:220px}.v331-player-stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000}",
     ".v331-player-foot{display:grid;grid-template-columns:minmax(0,1fr) minmax(190px,320px) auto;align-items:center;gap:10px;padding:9px 11px;background:#071b20;border-top:1px solid #17383e}.v331-player-foot>span{min-width:0;font-size:8px;color:#739794;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.v331-player-foot a{flex:0 0 auto;min-height:34px;display:inline-flex;align-items:center;padding:0 10px;border:1px solid #2a565d;border-radius:10px;background:#0c2b31;color:#cde9e5;text-decoration:none;font-size:8px;font-weight:900}.v3926-volume-strip{display:grid;grid-template-columns:auto minmax(90px,1fr) 38px;align-items:center;gap:7px;min-width:0}.v3926-volume-strip label{color:#8eb0ac;font-size:7px;font-weight:900}.v3926-volume-strip input{width:100%;min-width:0;accent-color:#68d0c6}.v3926-volume-strip output{color:#d7f5f0;font-size:8px;font-weight:950;text-align:right}",
-    ".v331-mini{position:fixed;left:50%;bottom:calc(74px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:32020;width:min(720px,calc(100vw - 16px));height:70px;display:grid;grid-template-columns:108px minmax(0,1fr) auto auto auto auto auto auto;align-items:center;gap:6px;padding:7px;border:1px solid #2a555c;border-radius:15px;background:rgba(6,24,29,.97);box-shadow:0 18px 60px #000c;backdrop-filter:blur(20px)}",
+    ".v331-mini{position:fixed;left:50%;bottom:calc(74px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:32020;width:min(760px,calc(100vw - 16px));height:70px;display:grid;grid-template-columns:108px minmax(0,1fr) auto auto auto auto auto auto auto;align-items:center;gap:6px;padding:7px;border:1px solid #2a555c;border-radius:15px;background:rgba(6,24,29,.97);box-shadow:0 18px 60px #000c;backdrop-filter:blur(20px)}",
     ".v331-mini-stage{width:108px;aspect-ratio:16/9;overflow:hidden;border-radius:9px;background:#000;pointer-events:none}.v331-mini-stage iframe{width:100%;height:100%;border:0}",
     ".v331-mini-copy{min-width:0}.v331-mini-copy b{display:block;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.v331-mini-copy small{display:block;margin-top:3px;font-size:7px;color:#6d928e}.v331-mini button{width:34px;height:34px;border:1px solid #2b565d;border-radius:10px;background:#0b2930;color:#dff7f3;font-size:15px}.v331-mini #v3924VolumeMini{font-size:11px;font-weight:950}.v331-mini #v3924VolumeMini.active{border-color:#54bdb4;background:#17464c;color:#effffb}.v3926-volume-popover{position:fixed;z-index:32030;width:min(310px,calc(100vw - 24px));display:grid;grid-template-columns:1fr auto;gap:9px;align-items:center;padding:11px;border:1px solid #2c5960;border-radius:14px;background:rgba(6,25,30,.98);box-shadow:0 18px 55px #000b;backdrop-filter:blur(16px)}.v3926-volume-popover[hidden]{display:none!important}.v3926-volume-popover input{grid-column:1/-1;width:100%;accent-color:#68d0c6}.v3926-volume-popover b{font-size:9px}.v3926-volume-popover output{font-size:10px;font-weight:950;color:#dff8f4}.v3926-volume-presets{grid-column:1/-1;display:flex;gap:5px}.v3926-volume-presets button{width:auto!important;height:30px!important;min-width:48px;padding:0 8px;font-size:7px!important;border-radius:999px!important}.v331-player button[hidden],.v331-mini button[hidden]{display:none!important}",
     "body.v331-player-open{overflow:hidden!important}body.v331-player-open .v33-dock{display:none!important}",
@@ -104,6 +104,57 @@ function toggleVolumePopover(show){
   volumePopover.hidden=show===undefined?!volumePopover.hidden:!show;
   if(!volumePopover.hidden){updateVolumeUi();requestAnimationFrame(positionVolumePopover)}
 }
+function playbackIsPlaying(){
+  return lastPlayerStatus===2
+}
+function updatePlaybackUi(){
+  var b=document.getElementById("v3937PlayPauseMini");if(!b)return;
+  var playing=playbackIsPlaying();
+  b.textContent=playing?"❚❚":"▶";
+  b.classList.toggle("playing",playing);
+  b.setAttribute("aria-label",playing?"일시정지":"재생");
+  b.title=playing?"일시정지":"재생"
+}
+function togglePlayback(){
+  if(!currentId)return false;
+  if(playbackIsPlaying()){
+    sendNico("pause");lastPlayerStatus=3;setMediaPlaybackState("paused")
+  }else{
+    sendNico("play");lastPlayerStatus=2;setMediaPlaybackState("playing")
+  }
+  updatePlaybackUi();return true
+}
+function nodeVisible32(el){
+  if(!el||!el.isConnected)return false;
+  var p=el;
+  while(p&&p!==document.body){
+    if(p.hidden)return false;
+    var cs;try{cs=getComputedStyle(p)}catch(e){cs=null}
+    if(cs&&(cs.display==="none"||cs.visibility==="hidden"))return false;
+    p=p.parentElement
+  }
+  return true
+}
+function repairPlayerSurface(reason){
+  if(!currentId||!modal||!mini||!frame)return false;
+  if(pipWindow&&!pipWindow.closed)return true;
+  var fullVisible=!modal.hidden&&nodeVisible32(modal);
+  var inlineVisible=inlineHost&&nodeVisible32(inlineHost)&&frame.parentNode===inlineHost;
+  var miniVisible=!mini.hidden&&nodeVisible32(mini)&&frame.parentNode===miniStage;
+  if(fullVisible||inlineVisible||miniVisible)return true;
+  var ok=detachToMini();
+  if(ok){
+    mini.classList.remove("v3937-surface-repair");
+    void mini.offsetWidth;
+    mini.classList.add("v3937-surface-repair");
+    setTimeout(function(){if(mini)mini.classList.remove("v3937-surface-repair")},220)
+  }
+  return ok
+}
+function scheduleSurfaceRepair(reason){
+  clearTimeout(surfaceRepairTimer);
+  surfaceRepairTimer=setTimeout(function(){repairPlayerSurface(reason||"route")},35)
+}
 function syncMediaSession(){
   if(!("mediaSession" in navigator)||!currentId)return;
   try{
@@ -145,6 +196,7 @@ function handleNicoMessage(e){
   }
   if(msg.eventName!=="playerStatusChange")return;
   lastPlayerStatus=Number(data.playerStatus)||0;
+  updatePlaybackUi();
   if(lastPlayerStatus===2)setMediaPlaybackState("playing");
   else if(lastPlayerStatus===3)setMediaPlaybackState("paused");
   else if(lastPlayerStatus===4){
@@ -192,10 +244,10 @@ function build(){
   if(modal)return;addStyle();
   frame=createFrame32();
   modal=document.createElement("div");modal.className="v331-player";modal.hidden=true;modal.innerHTML='<div class="v331-player-shell" role="dialog" aria-modal="true" aria-label="앱 내부 니코니코 플레이어"><div class="v331-player-head"><div><small>NOW PLAYING</small><b id="v331PlayerTitle">재생 준비</b></div><div class="v332-queue-nav"><button type="button" id="v332PrevFull" aria-label="이전 곡">‹</button><button type="button" id="v332NextFull" aria-label="다음 곡">›</button></div><button type="button" id="v3923VolumeFull" aria-label="플레이어 최대 음량" aria-pressed="true" title="플레이어 최대 음량">MAX</button><button type="button" id="v3921PipFull" aria-label="작은 창으로 보기" title="작은 창" hidden>PiP</button><button type="button" id="v331Collapse" aria-label="미니 플레이어로">—</button><button type="button" id="v331Close" aria-label="닫기">×</button></div><div class="v331-player-stage" id="v331FullStage"></div><div class="v331-player-foot"><span id="v331PlayerMeta">백그라운드 재생 · 자동 다음곡</span><div class="v3926-volume-strip"><label for="v3926VolumeFullRange">음량</label><input id="v3926VolumeFullRange" type="range" min="0" max="100" step="1" value="100" aria-label="플레이어 음량"><output id="v3926VolumeFullOut">100%</output></div><a id="v331External" href="#" target="_blank" rel="noopener">니코동에서 열기 ↗</a></div></div>';
-  mini=document.createElement("div");mini.className="v331-mini";mini.hidden=true;mini.innerHTML='<div class="v331-mini-stage" id="v331MiniStage"></div><div class="v331-mini-copy"><b id="v331MiniTitle">재생 중</b><small id="v332MiniMeta">백그라운드 재생 · 자동 다음곡</small></div><button type="button" id="v332PrevMini" aria-label="이전 곡">‹</button><button type="button" id="v332NextMini" aria-label="다음 곡">›</button><button type="button" id="v3924VolumeMini" aria-label="음량 MAX 켜짐" aria-pressed="true" title="음량 MAX">🔊</button><button type="button" id="v3921PipMini" aria-label="작은 창으로 보기" title="작은 창" hidden>▣</button><button type="button" id="v331Expand" aria-label="큰 화면으로 돌아가기" title="큰 화면으로 돌아가기">⤢</button><button type="button" id="v331MiniClose" aria-label="닫기">×</button>';
+  mini=document.createElement("div");mini.className="v331-mini";mini.hidden=true;mini.innerHTML='<div class="v331-mini-stage" id="v331MiniStage"></div><div class="v331-mini-copy"><b id="v331MiniTitle">재생 중</b><small id="v332MiniMeta">백그라운드 재생 · 자동 다음곡</small></div><button type="button" id="v332PrevMini" aria-label="이전 곡">‹</button><button type="button" id="v332NextMini" aria-label="다음 곡">›</button><button type="button" id="v3937PlayPauseMini" aria-label="일시정지" title="일시정지">❚❚</button><button type="button" id="v3924VolumeMini" aria-label="음량 MAX 켜짐" aria-pressed="true" title="음량 MAX">🔊</button><button type="button" id="v3921PipMini" aria-label="작은 창으로 보기" title="작은 창" hidden>▣</button><button type="button" id="v331Expand" aria-label="큰 화면으로 돌아가기" title="큰 화면으로 돌아가기">⤢</button><button type="button" id="v331MiniClose" aria-label="닫기">×</button>';
   volumePopover=document.createElement("div");volumePopover.className="v3926-volume-popover";volumePopover.hidden=true;volumePopover.innerHTML='<b>플레이어 음량</b><output id="v3926VolumeMiniOut">100%</output><input id="v3926VolumeMiniRange" type="range" min="0" max="100" step="1" value="100" aria-label="미니 플레이어 음량"><div class="v3926-volume-presets"><button type="button" data-v3926-preset="50">50%</button><button type="button" data-v3926-preset="75">75%</button><button type="button" data-v3926-preset="100">MAX</button></div>';
   document.body.appendChild(modal);document.body.appendChild(mini);document.body.appendChild(volumePopover);fullStage=document.getElementById("v331FullStage");miniStage=document.getElementById("v331MiniStage");fullStage.appendChild(frame);
-  document.getElementById("v331Close").onclick=function(){closePlayer(true)};document.getElementById("v331Collapse").onclick=function(){collapsePlayer()};document.getElementById("v331Expand").onclick=function(e){e.stopPropagation();returnToWatch()};document.getElementById("v331MiniClose").onclick=function(e){e.stopPropagation();closePlayer(true)};document.getElementById("v332PrevFull").onclick=function(){playRelative(-1)};document.getElementById("v332NextFull").onclick=function(){playRelative(1)};document.getElementById("v332PrevMini").onclick=function(e){e.stopPropagation();playRelative(-1)};document.getElementById("v332NextMini").onclick=function(e){e.stopPropagation();playRelative(1)};document.getElementById("v3923VolumeFull").onclick=function(){setPlayerVolume(100,false)};document.getElementById("v3924VolumeMini").onclick=function(e){e.stopPropagation();toggleVolumePopover()};document.getElementById("v3926VolumeFullRange").addEventListener("input",function(){setPlayerVolume(this.value,true)});document.getElementById("v3926VolumeFullRange").addEventListener("change",function(){setPlayerVolume(this.value,false)});document.getElementById("v3926VolumeMiniRange").addEventListener("input",function(){setPlayerVolume(this.value,true)});document.getElementById("v3926VolumeMiniRange").addEventListener("change",function(){setPlayerVolume(this.value,false)});volumePopover.addEventListener("click",function(e){var b=e.target.closest("[data-v3926-preset]");if(b)setPlayerVolume(b.dataset.v3926Preset,false)});window.addEventListener("resize",positionVolumePopover);document.addEventListener("pointerdown",function(e){if(volumePopover&&!volumePopover.hidden&&!volumePopover.contains(e.target)&&!e.target.closest("#v3924VolumeMini"))toggleVolumePopover(false)});document.getElementById("v3921PipFull").onclick=openPictureInPicture;document.getElementById("v3921PipMini").onclick=openPictureInPicture;mini.addEventListener("click",function(e){if(!e.target.closest("button"))returnToWatch()});modal.addEventListener("click",function(e){if(e.target===modal)collapsePlayer()});document.addEventListener("keydown",function(e){if(e.key==="Escape"){if(!modal.hidden)collapsePlayer();else if(!mini.hidden)closePlayer(true)}});window.addEventListener("popstate",function(){if(!modal.hidden||!mini.hidden)closePlayer(false)});window.addEventListener("message",handleNicoMessage);initMediaSession();syncPipButtons();updateVolumeUi();
+  document.getElementById("v331Close").onclick=function(){closePlayer(true)};document.getElementById("v331Collapse").onclick=function(){collapsePlayer()};document.getElementById("v331Expand").onclick=function(e){e.stopPropagation();returnToWatch()};document.getElementById("v331MiniClose").onclick=function(e){e.stopPropagation();closePlayer(true)};document.getElementById("v332PrevFull").onclick=function(){playRelative(-1)};document.getElementById("v332NextFull").onclick=function(){playRelative(1)};document.getElementById("v332PrevMini").onclick=function(e){e.stopPropagation();playRelative(-1)};document.getElementById("v332NextMini").onclick=function(e){e.stopPropagation();playRelative(1)};document.getElementById("v3937PlayPauseMini").onclick=function(e){e.stopPropagation();togglePlayback()};document.getElementById("v3923VolumeFull").onclick=function(){setPlayerVolume(100,false)};document.getElementById("v3924VolumeMini").onclick=function(e){e.stopPropagation();toggleVolumePopover()};document.getElementById("v3926VolumeFullRange").addEventListener("input",function(){setPlayerVolume(this.value,true)});document.getElementById("v3926VolumeFullRange").addEventListener("change",function(){setPlayerVolume(this.value,false)});document.getElementById("v3926VolumeMiniRange").addEventListener("input",function(){setPlayerVolume(this.value,true)});document.getElementById("v3926VolumeMiniRange").addEventListener("change",function(){setPlayerVolume(this.value,false)});volumePopover.addEventListener("click",function(e){var b=e.target.closest("[data-v3926-preset]");if(b)setPlayerVolume(b.dataset.v3926Preset,false)});window.addEventListener("resize",positionVolumePopover);document.addEventListener("pointerdown",function(e){if(volumePopover&&!volumePopover.hidden&&!volumePopover.contains(e.target)&&!e.target.closest("#v3924VolumeMini"))toggleVolumePopover(false)});document.getElementById("v3921PipFull").onclick=openPictureInPicture;document.getElementById("v3921PipMini").onclick=openPictureInPicture;mini.addEventListener("click",function(e){if(!e.target.closest("button"))returnToWatch()});modal.addEventListener("click",function(e){if(e.target===modal)collapsePlayer()});document.addEventListener("keydown",function(e){if(e.key==="Escape"){if(!modal.hidden)collapsePlayer();else if(!mini.hidden)closePlayer(true)}});window.addEventListener("popstate",function(){if(!modal.hidden||!mini.hidden)closePlayer(false)});window.addEventListener("message",handleNicoMessage);window.addEventListener("vsa:route-change",function(){scheduleSurfaceRepair("route")});window.addEventListener("focus",function(){scheduleSurfaceRepair("focus")});window.addEventListener("pageshow",function(){scheduleSurfaceRepair("pageshow")});document.addEventListener("visibilitychange",function(){if(!document.hidden)scheduleSurfaceRepair("visible")});var routeRoot=document.getElementById("toolsModal");if(routeRoot)new MutationObserver(function(){scheduleSurfaceRepair("mutation")}).observe(routeRoot,{attributes:true,subtree:true,attributeFilter:["hidden","class","style","data-current-view"]});initMediaSession();syncPipButtons();updateVolumeUi();updatePlaybackUi();
 }
 function normalizeQueue(items){
   var seen=new Set(),out=[];
@@ -263,7 +315,7 @@ function loadCurrent(id,title,keepQueue,autoplay){
   if(!id)return;
   if(!keepQueue){queue=[{id:id,title:title||id}];queueIndex=0}
   inlineHost=null;syncCurrentMeta(id,title||id);
-  lastPlayerStatus=1;volumeAppliedFor="";
+  lastPlayerStatus=autoplay===false?3:2;volumeAppliedFor="";updatePlaybackUi();
   frame.src=NICO_ORIGIN+"/watch/"+encodeURIComponent(id)+"?jsapi=1&playerId="+encodeURIComponent(PLAYER_ID)+(autoplay===false?"":"&autoplay=1")
 }
 function setQueue(items,current){
@@ -293,7 +345,7 @@ function detachToMini(){
   if(pipWindow&&!pipWindow.closed)return true;
   toggleVolumePopover(false);inlineHost=null;
   if(frame.parentNode!==miniStage)miniStage.appendChild(frame);
-  modal.hidden=true;mini.hidden=false;document.body.classList.remove("v331-player-open");updateQueueUi();
+  modal.hidden=true;mini.hidden=false;document.body.classList.remove("v331-player-open");updateQueueUi();updatePlaybackUi();
   return true
 }
 function collapsePlayer(){if(!modal||modal.hidden)return;detachToMini()}
@@ -318,13 +370,13 @@ function attachInline(host,id){
   if(pipWindow&&!pipWindow.closed)return false;
   toggleVolumePopover(false);inlineHost=host;
   if(frame.parentNode!==host)host.appendChild(frame);
-  modal.hidden=true;mini.hidden=true;document.body.classList.remove("v331-player-open");updateQueueUi();
+  modal.hidden=true;mini.hidden=true;document.body.classList.remove("v331-player-open");updateQueueUi();updatePlaybackUi();
   return true
 }
 function ensureVisiblePlayer(){
   if(!currentId||!modal||!mini)return false;
   if(pipWindow&&!pipWindow.closed)return true;
-  return detachToMini()
+  return repairPlayerSurface("ensure")||detachToMini()
 }
 function closePlayer(back){
   if(!modal)return;
@@ -341,6 +393,6 @@ function intercept(){
     var id=videoIdFromUrl(a.href);if(!id)return;var info=findSong(id,a),items=queueFromAnchor(a,id,info.title);e.preventDefault();e.stopPropagation();openPlayer(id,info.title,items);
   },true);
 }
-function boot(){build();intercept();window.VSANicoPlayer={open:openPlayer,openMini:openMiniPlayer,close:function(){closePlayer(true)},stop:function(){closePlayer(false)},collapse:collapsePlayer,expand:expandPlayer,returnToWatch:returnToWatch,detachToMini:detachToMini,adoptInlineFrame:adoptInlineFrame,attachInline:attachInline,ensureVisible:ensureVisiblePlayer,setQueue:setQueue,next:function(){playRelative(1)},prev:function(){playRelative(-1)},setMaxVolume:setMaxVolume,setVolume:setPlayerVolume,getVolume:function(){return playerVolume},state:function(){return{currentId:currentId,queue:queue.slice(),index:queueIndex,maxVolume:maxVolume,volume:playerVolume,inline:!!inlineHost}}}}
+function boot(){build();intercept();window.VSANicoPlayer={open:openPlayer,openMini:openMiniPlayer,close:function(){closePlayer(true)},stop:function(){closePlayer(false)},collapse:collapsePlayer,expand:expandPlayer,returnToWatch:returnToWatch,detachToMini:detachToMini,adoptInlineFrame:adoptInlineFrame,attachInline:attachInline,ensureVisible:ensureVisiblePlayer,syncSurface:repairPlayerSurface,togglePlayback:togglePlayback,play:function(){sendNico("play");lastPlayerStatus=2;updatePlaybackUi();setMediaPlaybackState("playing")},pause:function(){sendNico("pause");lastPlayerStatus=3;updatePlaybackUi();setMediaPlaybackState("paused")},setQueue:setQueue,next:function(){playRelative(1)},prev:function(){playRelative(-1)},setMaxVolume:setMaxVolume,setVolume:setPlayerVolume,getVolume:function(){return playerVolume},state:function(){return{currentId:currentId,queue:queue.slice(),index:queueIndex,maxVolume:maxVolume,volume:playerVolume,inline:!!inlineHost,playing:playbackIsPlaying(),mini:!!(mini&&!mini.hidden)}}}}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
 })();
