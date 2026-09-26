@@ -106,7 +106,16 @@ var JA=new Map(Object.entries({
 "곡명 검색과 기억을 단서로 찾는 기능을 나눠뒀어요.":"曲名で探す機能と、記憶を手がかりに探す機能を分けています。",
 "빙산 · 통계":"アイスバーグ・統計","숨은 곡 발굴":"知られざる曲を探す","노래 추천":"曲のおすすめ",
 "프로듀서 도감":"P図鑑","숨은 프로듀서 발굴":"知られざるPを探す","음원 순위":"音源ランキング","일반 검색":"検索",
-"설정":"設定","진단 센터":"診断","내 취향 추천":"好みに合わせておすすめ"
+"설정":"設定","진단 센터":"診断","내 취향 추천":"好みに合わせておすすめ",
+"미니로 듣기":"ミニプレーヤー","다음 곡":"次の曲","비슷한 원곡 위주":"似ているオリジナル曲を中心に",
+"곡 설명":"曲の説明","니코동·VocaDB에 등록된 설명":"ニコニコ・VocaDBに登録された説明",
+"가사":"歌詞","VocaDB에 등록된 경우 표시":"VocaDBに登録されている場合に表示",
+"가사를 확인하는 중…":"歌詞を確認中…","설명 정보를 확인하는 중…":"説明を確認中…","설명 정보가 없습니다.":"説明はありません。",
+"조회":"再生","마이리스트":"マイリスト","댓글":"コメント","좋아요":"いいね","태그":"タグ",
+"확인 중…":"確認中…","P 정보를 찾지 못했어요.":"P情報を見つけられませんでした。","P 정보 확인 실패":"P情報の確認に失敗しました","P 정보 없음":"P情報なし",
+"보컬 태그 정보 없음":"ボーカルタグ情報なし","오리지널곡":"オリジナル曲","연관곡":"関連曲","연관곡을 아직 찾지 못했습니다.":"関連曲はまだ見つかっていません。",
+"표시할 가사 내용이 없습니다.":"表示できる歌詞がありません。","VocaDB에 표시 가능한 가사가 등록되어 있지 않습니다.":"VocaDBに表示できる歌詞は登録されていません。",
+"VocaDB 등록 가사":"VocaDB登録歌詞"
 
 }));
 
@@ -127,6 +136,10 @@ function trimTranslate(raw){
   var rules=[
     [/^(\d+)곡 표시$/, "$1曲表示"],
     [/^(\d+)곡 확인$/, "$1曲確認"],
+    [/^(\d+)곡$/, "$1曲"],
+    [/^(\d+)개$/, "$1件"],
+    [/^출처: (.+)$/, "出典: $1"],
+    [/^VocaDB 등록 가사 · 출처: (.+)$/, "VocaDB登録歌詞 · 出典: $1"],
     [/^(\d+)회$/, "$1回"],
     [/^최근$/, "最近"],
     [/^(\d+)곡 선택$/, "$1曲選択"],
@@ -220,12 +233,19 @@ function ensureSwitcher(){
   sw.addEventListener("click",function(e){var b=e.target.closest("button[data-vsa-locale]");if(b)setLocale(b.dataset.vsaLocale)});
   updateSwitcher()
 }
+function updateLocaleDates(){
+  document.querySelectorAll("[data-vsa-song-date]").forEach(function(el){
+    var raw=el.getAttribute("data-vsa-song-date");if(!raw)return;
+    var d=new Date(raw);if(!Number.isFinite(d.getTime()))return;
+    el.textContent=d.toLocaleDateString(locale==="ja"?"ja-JP":"ko-KR")
+  })
+}
 function setLocale(next){
   next=next==="ja"?"ja":"ko";locale=next;
   try{localStorage.setItem(KEY,locale)}catch(e){}
   document.documentElement.lang=locale==="ja"?"ja":"ko-KR";
   document.body.dataset.vsaLocale=locale;
-  walk(document.body,false);updateSwitcher();
+  walk(document.body,false);updateLocaleDates();updateSwitcher();
   try{window.dispatchEvent(new CustomEvent("vsa:localechange",{detail:{locale:locale}}))}catch(e){}
   setTimeout(function(){
     try{if(window.VSAHome37&&typeof window.VSAHome37.render==="function")window.VSAHome37.render()}catch(e){}
@@ -247,6 +267,7 @@ function boot(){
   document.documentElement.lang=locale==="ja"?"ja":"ko-KR";
   document.body.dataset.vsaLocale=locale;
   if(locale==="ja")walk(document.body,true);
+  updateLocaleDates();
   observer.observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:["placeholder","aria-label","title"]});
   setTimeout(function(){ensureSwitcher();if(locale==="ja")walk(document.body,false)},500)
 }
