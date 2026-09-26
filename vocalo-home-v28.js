@@ -1,4 +1,4 @@
-/* Voice Synth Archive Voca Support Home v28 · v39.9 original-first feed */
+/* Voice Synth Archive Voca Support Home v28 · v39.43 balanced view mix */
 (function(){
 "use strict";
 var CK="vsa.home.v28",OK="vsa.organizer.v22",SK="vsa.smart.v23",REFRESH_KEY="vsa.home.refresh.v31",feed=null,busy=false,busySince=0;
@@ -34,6 +34,45 @@ function pool(){var m=new Map();try{[state.songs,state.tasteSongs,state.guideSon
 function pref(){var sm=load(SK,{feedback:{},tagPrefs:{}}),org=load(OK,{library:{}}),m=new Map();function add(song,w){tags(song).filter(function(t){return t.length>1&&!generic(t)}).forEach(function(t){m.set(t,(m.get(t)||0)+w)})}Object.values(org.library||{}).forEach(function(x){var w=x.status==="favorite"?4:x.status==="interest"?2.5:x.status==="investigate"?1:0;if(w&&x.song)add(x.song,w)});Object.values(sm.feedback||{}).forEach(function(x){var w=(Number(x.value)||0)*4;if(w&&x.song)add(x.song,w)});Object.entries(sm.tagPrefs||{}).forEach(function(x){m.set(x[0],(m.get(x[0])||0)+(Number(x[1])||0)*5)});return Array.from(m.entries()).sort(function(a,b){return b[1]-a[1]})}
 function tasteScore(s,p){var st=new Set(tags(s)),x=0;p.forEach(function(v){if(st.has(v[0]))x+=v[1]});var V=Number(s.viewCounter)||0,M=Number(s.mylistCounter)||0,C=Number(s.commentCounter)||0;return x+(M+2)/(V+1200)*18+(C+2)/(V+1200)*4}
 function hiddenScore(s){var V=Math.max(1,Number(s.viewCounter)||1),M=Number(s.mylistCounter)||0,C=Number(s.commentCounter)||0,L=Number(s.likeCounter)||0;return(M+2)/V*160+(C+2)/V*35+(L+2)/V*20}
+function viewBandsHidden399(){return[[100,499],[500,1999],[2000,9999],[10000,50000]]}
+function viewBandsDaily399(){return[[1000,9999],[10000,99999],[100000,499999],[500000,1500000]]}
+function balancedViewMix399(rows,bands,seed,count,scoreFn){
+  rows=clean(rows);bands=bands||[];count=Math.max(1,Number(count)||12);
+  var buckets=bands.map(function(range,i){
+    var arr=rows.filter(function(s){var v=Number(s.viewCounter)||0;return v>=range[0]&&v<=range[1]});
+    if(scoreFn)arr.sort(function(a,b){return scoreFn(b)-scoreFn(a)});
+    var top=arr.slice(0,Math.min(48,arr.length));
+    return originalShuffle399(top,seed+(i+1)*977,top.length)
+  });
+  var order=buckets.map(function(_,i){return i}),rot=buckets.length?seed%buckets.length:0;
+  order=order.slice(rot).concat(order.slice(0,rot));
+  var out=[],used=new Set(),cursor=0;
+  while(out.length<count&&cursor<64){
+    var added=false;
+    for(var oi=0;oi<order.length&&out.length<count;oi++){
+      var b=buckets[order[oi]],s=b[cursor];
+      if(s&&s.contentId&&!used.has(s.contentId)){used.add(s.contentId);out.push(s);added=true}
+    }
+    if(!added&&cursor>=Math.max.apply(null,buckets.map(function(x){return x.length}).concat([0])))break;
+    cursor++
+  }
+  if(out.length<count){
+    var rest=originalShuffle399(rows,seed+7919,rows.length);
+    for(var j=0;j<rest.length&&out.length<count;j++){
+      var s=rest[j];if(s&&s.contentId&&!used.has(s.contentId)){used.add(s.contentId);out.push(s)}
+    }
+  }
+  return out.slice(0,count)
+}
+function hiddenMix399(rows,seed,count){return balancedViewMix399(rows,viewBandsHidden399(),seed,count,hiddenScore)}
+function dailyMix399(rows,seed,count){return balancedViewMix399(rows,viewBandsDaily399(),seed,count,function(s){return(Number(s.mylistCounter)||0)*2+(Number(s.commentCounter)||0)+(Number(s.likeCounter)||0)*.5})}
+function hiddenMixNeedsRefresh399(feed){
+  var rows=feed&&Array.isArray(feed.hidden)?feed.hidden:[];if(rows.length<6)return true;
+  var counts=[0,0,0,0],exact100=0;
+  rows.forEach(function(s){var v=Number(s&&s.viewCounter)||0;if(v===100)exact100++;var bands=viewBandsHidden399();for(var i=0;i<bands.length;i++)if(v>=bands[i][0]&&v<=bands[i][1]){counts[i]++;break}});
+  var nonzero=counts.filter(function(x){return x>0}).length,max=Math.max.apply(null,counts);
+  return exact100>3||nonzero<3||max>Math.ceil(rows.length*.55)
+}
 async function broad(sort,filter,offset){try{var d=await fetchNico({year:"all",limit:100,offset:offset||0,mode:"ranking",sort:sort,applyYear:false,applyTier:false,numericFilters:filter||{}});return d.data||[]}catch(e){return[]}}
 async function tagFetch(t){try{var d=await fetchNico({year:"all",limit:100,offset:0,mode:"ranking",sort:"-mylistCounter",applyYear:false,applyTier:false,numericFilters:{viewCounter:{gte:100}},extraExactTag:t});return d.data||[]}catch(e){return[]}}
 function refreshState(){var x=load(REFRESH_KEY,{daily:0,taste:0,newer:0,hidden:0});return{daily:Number(x.daily)||0,taste:Number(x.taste)||0,newer:Number(x.newer)||0,hidden:Number(x.hidden)||0}}
@@ -43,30 +82,32 @@ function bumpAll(){var x=refreshState();["daily","taste","newer","hidden"].forEa
 function negativeMap(){return(load(SK,{feedback:{}}).feedback||{})}
 function clean(rows){var neg=negativeMap(),m=new Map();(rows||[]).map(norm).filter(Boolean).forEach(function(song){if(!(neg[song.contentId]&&Number(neg[song.contentId].value)<0)&&!m.has(song.contentId))m.set(song.contentId,song)});return Array.from(m.values())}
 async function gather(){var d=day(),seed=hash(d),p=pref(),pages=refreshState(),m=new Map();pool().forEach(function(song){m.set(song.contentId,song)});
+  var hiddenBands=viewBandsHidden399();
   var jobs=[
     broad("-mylistCounter",{viewCounter:{gte:1000,lte:1500000}},((seed%3)+pages.daily)%9*100),
     broad("-commentCounter",{viewCounter:{gte:500,lte:700000}},pages.daily*100),
     broad("-mylistCounter",{viewCounter:{gte:100}},pages.taste*100),
-    broad("-startTime",{viewCounter:{gte:0}},pages.newer*100),
-    broad("-mylistCounter",{viewCounter:{gte:100,lte:50000}},pages.hidden*100),
-    broad("-commentCounter",{viewCounter:{gte:100,lte:50000}},pages.hidden*100)
+    broad("-startTime",{viewCounter:{gte:0}},pages.newer*100)
   ];
+  hiddenBands.forEach(function(r,i){
+    jobs.push(broad(i%2?"-commentCounter":"-mylistCounter",{viewCounter:{gte:r[0],lte:r[1]}},((pages.hidden+i)%5)*100))
+  });
   p.filter(function(x){return x[1]>0}).slice(0,4).forEach(function(x){jobs.push(tagFetch(x[0]))});
   var groups=await Promise.all(jobs);groups.flat().map(norm).filter(Boolean).forEach(function(song){m.set(song.contentId,song)});
   var all=clean(Array.from(m.values()));
-  var daily=originalShuffle399(all.filter(function(song){return song.viewCounter>=1000&&song.viewCounter<=1500000}),hash(d+"-daily-"+pages.daily),12);
+  var daily=dailyMix399(all.filter(function(song){return song.viewCounter>=1000&&song.viewCounter<=1500000}),hash(d+"-daily-"+pages.daily),12);
   var rankedTaste=all.slice().sort(function(a,b){return tasteScore(b,p)-tasteScore(a,p)}).filter(function(song){return tasteScore(song,p)>0});
   var taste=originalShuffle399(rankedTaste.slice(0,Math.min(72,rankedTaste.length)),hash(d+"-taste-"+pages.taste),12);
   var newer=originalFirst399(clean(groups[3]).sort(function(a,b){return new Date(b.startTime)-new Date(a.startTime)})).slice(0,12);
-  var rankedHidden=clean(groups[4].concat(groups[5])).filter(function(song){return song.viewCounter>=100&&song.viewCounter<=50000}).sort(function(a,b){return hiddenScore(b)-hiddenScore(a)});
-  var hidden=originalShuffle399(rankedHidden.slice(0,Math.min(72,rankedHidden.length)),hash(d+"-hidden-"+pages.hidden),12);
+  var hiddenRows=clean(groups.slice(4,8).flat()).filter(function(song){return song.viewCounter>=100&&song.viewCounter<=50000});
+  var hidden=hiddenMix399(hiddenRows,hash(d+"-hidden-"+pages.hidden),12);
   var out={date:d,at:Date.now(),daily:daily,taste:taste,newer:newer,hidden:hidden,signals:p.slice(0,8).map(function(x){return x[0]}),refresh:pages};
   save(CK,out);return out
 }
 function card(s){if(!s)return"";var y=s.startTime?new Date(s.startTime).getFullYear():"-",tg=tags(s).filter(function(t){return !generic(t)}).slice(0,2),h="";h+='<article class="v28-card"><a class="v28-thumb" href="https://www.nicovideo.jp/watch/'+encodeURIComponent(s.contentId)+'" target="_blank" rel="noopener">';h+=s.thumbnailUrl?'<img src="'+esc(s.thumbnailUrl)+'" loading="lazy" alt="">':'<span>♪</span>';h+='<span class="v28-play">▶</span></a><div class="v28-card-body"><a class="v28-title" href="https://www.nicovideo.jp/watch/'+encodeURIComponent(s.contentId)+'" target="_blank" rel="noopener">'+esc(s.title||s.contentId)+'</a><div class="v28-meta">조회 '+fmt(s.viewCounter)+' · '+y+'</div>';if(tg.length)h+='<div class="v28-tags">'+tg.map(function(t){return'<span>'+esc(t)+'</span>'}).join("")+'</div>';h+='<div class="v28-card-actions"><button data-save="'+esc(s.contentId)+'">♡ 보관</button><button data-sim="'+esc(s.contentId)+'">비슷한 곡</button><button class="v28-dislike" data-dislike="'+esc(s.contentId)+'">관심없음</button></div></div></article>';return h}
 function refreshLabel(mark){return mark==="DAILY"?"다른 추천":mark==="FOR YOU"?"다른 취향":mark==="NEW"?"새 곡 더 보기":"다른 숨은 곡"}
 function rail(title,sub,a,mark){return'<section class="v28-rail" data-v28-rail="'+mark+'"><div class="v28-rail-head"><div><h3>'+title+'</h3><p>'+sub+'</p></div><div class="v32-rail-actions"><span class="v28-rail-mark">'+mark+'</span><button type="button" class="v32-refresh" data-v28-refresh="'+mark+'">'+refreshLabel(mark)+' ↻</button></div></div><div class="v28-cards">'+(a&&a.length?a.map(card).join(""):'<div class="v28-empty">추천 데이터가 아직 없습니다.</div>')+'</div></section>'}
-function render(f){feed=f;var root=document.getElementById("v28Home");if(!root)return;var first=(f.daily||[])[0]||(f.taste||[])[0]||(f.newer||[])[0],date=new Date().toLocaleDateString("ko-KR",{month:"long",day:"numeric",weekday:"short"}),h="";h+='<section class="v28-hero"><div class="v28-hero-copy"><span class="v28-kicker">VOCALO SUPPORT · '+esc(date)+'</span><h2>오늘 뭐 들을까?</h2><p>매일 추천, 내 취향, 신곡, 숨은 곡을 첫 화면에서 바로 골라 들을 수 있어.</p><div class="v28-search"><input id="v28SearchInput" placeholder="곡명 · P명 · 보컬 · 태그 · sm번호"><button id="v28SearchBtn">검색</button><button class="secondary" id="v28MenuBtn">보카로 메뉴</button></div>';if(f.signals&&f.signals.length)h+='<div class="v28-signals">취향 신호 '+f.signals.slice(0,5).map(function(t){return'<span>'+esc(t)+'</span>'}).join("")+'</div>';h+='</div>';if(first){h+='<a class="v28-pick" href="https://www.nicovideo.jp/watch/'+encodeURIComponent(first.contentId)+'" target="_blank" rel="noopener">'+(first.thumbnailUrl?'<img src="'+esc(first.thumbnailUrl)+'" alt="">':"")+'<div class="v28-pick-shade"></div><div class="v28-pick-copy"><small>오늘의 한 곡</small><b>'+esc(first.title)+'</b><span>조회 '+fmt(first.viewCounter)+'</span></div></a>'}else h+='<div class="v28-pick v28-pick-empty">추천 준비 중</div>';h+='</section><div class="v28-homebar"><b>For You</b><div><button id="v28Refresh">피드 갱신</button><button id="v28OpenMenu">전체 기능</button></div></div>';h+=rail("오늘의 추천","오늘 날짜를 기준으로 매일 바뀌는 추천곡",f.daily,"DAILY");h+=rail("내 취향으로 골랐어","최애·관심곡과 피드백을 반영",f.taste,"FOR YOU");h+=rail("새로 올라온 곡","최근 등록된 음성합성 오리지널곡",f.newer,"NEW");h+=rail("조회수 아래 숨어있는 곡","낮은 조회수 대비 반응이 좋은 곡",f.hidden,"DEEP");root.innerHTML=h;bindLocal()}
+function render(f){feed=f;var root=document.getElementById("v28Home");if(!root)return;var first=(f.daily||[])[0]||(f.taste||[])[0]||(f.newer||[])[0],date=new Date().toLocaleDateString("ko-KR",{month:"long",day:"numeric",weekday:"short"}),h="";h+='<section class="v28-hero"><div class="v28-hero-copy"><span class="v28-kicker">VOCALO SUPPORT · '+esc(date)+'</span><h2>오늘 뭐 들을까?</h2><p>매일 추천, 내 취향, 신곡, 숨은 곡을 첫 화면에서 바로 골라 들을 수 있어.</p><div class="v28-search"><input id="v28SearchInput" placeholder="곡명 · P명 · 보컬 · 태그 · sm번호"><button id="v28SearchBtn">검색</button><button class="secondary" id="v28MenuBtn">보카로 메뉴</button></div>';if(f.signals&&f.signals.length)h+='<div class="v28-signals">취향 신호 '+f.signals.slice(0,5).map(function(t){return'<span>'+esc(t)+'</span>'}).join("")+'</div>';h+='</div>';if(first){h+='<a class="v28-pick" href="https://www.nicovideo.jp/watch/'+encodeURIComponent(first.contentId)+'" target="_blank" rel="noopener">'+(first.thumbnailUrl?'<img src="'+esc(first.thumbnailUrl)+'" alt="">':"")+'<div class="v28-pick-shade"></div><div class="v28-pick-copy"><small>오늘의 한 곡</small><b>'+esc(first.title)+'</b><span>조회 '+fmt(first.viewCounter)+'</span></div></a>'}else h+='<div class="v28-pick v28-pick-empty">추천 준비 중</div>';h+='</section><div class="v28-homebar"><b>For You</b><div><button id="v28Refresh">피드 갱신</button><button id="v28OpenMenu">전체 기능</button></div></div>';h+=rail("오늘의 추천","오늘 날짜를 기준으로 매일 바뀌는 추천곡",f.daily,"DAILY");h+=rail("내 취향으로 골랐어","최애·관심곡과 피드백을 반영",f.taste,"FOR YOU");h+=rail("새로 올라온 곡","최근 등록된 음성합성 오리지널곡",f.newer,"NEW");h+=rail("조회수 아래 숨어있는 곡","100~5만 조회수를 구간별로 섞어 발굴",f.hidden,"DEEP");root.innerHTML=h;bindLocal()}
 function find(id){if(feed){var ks=["daily","taste","newer","hidden"];for(var i=0;i<ks.length;i++){var x=(feed[ks[i]]||[]).find(function(s){return s.contentId===id});if(x)return x}}return pool().find(function(s){return s.contentId===id})||null}
 function keep(id){var s=find(id);if(!s)return;try{if(window.VSAOrganizer22&&window.VSAOrganizer22.setSongStatus){window.VSAOrganizer22.setSongStatus(id,"interest",s);toast("관심곡으로 보관했습니다.");return}}catch(e){}var db=load(OK,{version:1,library:{},recentViews:[],recentSearches:[],cases:[],compare:[],snapshots:{}});db.library=db.library||{};db.library[id]={status:"interest",song:norm(s),savedAt:Date.now(),updatedAt:Date.now()};save(OK,db);try{if(window.VSAOrganizer22&&window.VSAOrganizer22.reload)window.VSAOrganizer22.reload();if(window.VSAOrganizer22&&window.VSAOrganizer22.renderLibrary)window.VSAOrganizer22.renderLibrary()}catch(e){}try{toast("관심곡으로 보관했습니다.")}catch(e){}}
 function dislike(id){var s=find(id);if(!s)return;var sm=load(SK,{feedback:{},tagPrefs:{}});sm.feedback=sm.feedback||{};sm.feedback[id]={value:-1,at:Date.now(),song:norm(s)};save(SK,sm);if(feed){["daily","taste","newer","hidden"].forEach(function(k){feed[k]=(feed[k]||[]).filter(function(x){return x.contentId!==id})});save(CK,feed);render(feed)}try{toast("관심없음으로 반영했습니다.")}catch(e){}}
@@ -78,9 +119,9 @@ async function fetchSection(mark){
   if(mark==="DAILY"){
     rows=clean((await Promise.all([
       broad("-mylistCounter",{viewCounter:{gte:1000,lte:1500000}},pages.daily*100),
-      broad("-commentCounter",{viewCounter:{gte:500,lte:700000}},pages.daily*100)
+      broad("-commentCounter",{viewCounter:{gte:500,lte:700000}},((pages.daily+2)%9)*100)
     ])).flat()).filter(function(song){return song.viewCounter>=1000&&song.viewCounter<=1500000});
-    return originalShuffle399(rows,hash(day()+"-daily-"+pages.daily),12);
+    return dailyMix399(rows,hash(day()+"-daily-"+pages.daily),12);
   }
   if(mark==="FOR YOU"){
     var jobs=[broad("-mylistCounter",{viewCounter:{gte:100}},pages.taste*100),broad("-commentCounter",{viewCounter:{gte:100}},pages.taste*100)];
@@ -92,11 +133,11 @@ async function fetchSection(mark){
     rows=clean(await broad("-startTime",{viewCounter:{gte:0}},pages.newer*100)).sort(function(a,b){return new Date(b.startTime)-new Date(a.startTime)});
     return originalFirst399(rows).slice(0,12);
   }
-  rows=clean((await Promise.all([
-    broad("-mylistCounter",{viewCounter:{gte:100,lte:50000}},pages.hidden*100),
-    broad("-commentCounter",{viewCounter:{gte:100,lte:50000}},pages.hidden*100)
-  ])).flat()).filter(function(song){return song.viewCounter>=100&&song.viewCounter<=50000}).sort(function(a,b){return hiddenScore(b)-hiddenScore(a)});
-  return originalShuffle399(rows.slice(0,Math.min(72,rows.length)),hash(day()+"-hidden-"+pages.hidden),12);
+  var bands=viewBandsHidden399(),jobs=bands.map(function(r,i){
+    return broad(i%2?"-commentCounter":"-mylistCounter",{viewCounter:{gte:r[0],lte:r[1]}},((pages.hidden+i)%5)*100)
+  });
+  rows=clean((await Promise.all(jobs)).flat()).filter(function(song){return song.viewCounter>=100&&song.viewCounter<=50000});
+  return hiddenMix399(rows,hash(day()+"-hidden-"+pages.hidden),12);
 }
 function keyForMark(mark){return mark==="DAILY"?"daily":mark==="FOR YOU"?"taste":mark==="NEW"?"newer":"hidden"}
 async function refreshSection(mark){
@@ -110,7 +151,7 @@ async function refreshSection(mark){
       if(mark==="DAILY")rows=originalShuffle399(local,hash(day()+"-daily-local-"+pages[k]),12);
       else if(mark==="FOR YOU")rows=originalShuffle399(local.slice().sort(function(a,b){return tasteScore(b,pm)-tasteScore(a,pm)}).slice(0,72),hash(day()+"-taste-local-"+pages[k]),12);
       else if(mark==="NEW"){var sorted=originalFirst399(local.filter(function(x){return x.startTime}).sort(function(a,b){return new Date(b.startTime)-new Date(a.startTime)}));var start=(pages[k]*12)%Math.max(1,sorted.length);rows=sorted.slice(start,start+12);if(rows.length<12)rows=rows.concat(sorted.slice(0,12-rows.length));}
-      else rows=originalShuffle399(local.filter(function(x){return x.viewCounter>0&&x.viewCounter<=50000}).sort(function(a,b){return hiddenScore(b)-hiddenScore(a)}).slice(0,72),hash(day()+"-hidden-local-"+pages[k]),12);
+      else rows=hiddenMix399(local.filter(function(x){return x.viewCounter>=100&&x.viewCounter<=50000}),hash(day()+"-hidden-local-"+pages[k]),12);
     }
     if(!feed)feed={date:day(),daily:[],taste:[],newer:[],hidden:[],signals:pref().slice(0,8).map(function(x){return x[0]})};
     if(mark==="DAILY")feed.daily=rows;
@@ -138,7 +179,9 @@ function build(){if(document.getElementById("v28Home"))return;var r=document.cre
 function localFeedSnapshot(){
   var p=pool(),pages=refreshState(),pm=pref(),sortedNew=p.filter(function(s){return s.startTime}).sort(function(a,b){return new Date(b.startTime)-new Date(a.startTime)}),newStart=(pages.newer*12)%Math.max(1,sortedNew.length),localNew=sortedNew.slice(newStart,newStart+12);
   if(localNew.length<12)localNew=localNew.concat(sortedNew.slice(0,12-localNew.length));
-  return{date:day(),at:Date.now(),daily:shuffle(p,hash(day()+"-daily-local-"+pages.daily)).slice(0,12),taste:shuffle(p.slice().sort(function(a,b){return tasteScore(b,pm)-tasteScore(a,pm)}).slice(0,72),hash(day()+"-taste-local-"+pages.taste)).slice(0,12),newer:localNew,hidden:shuffle(p.filter(function(s){return s.viewCounter>0&&s.viewCounter<=50000}).sort(function(a,b){return hiddenScore(b)-hiddenScore(a)}).slice(0,72),hash(day()+"-hidden-local-"+pages.hidden)).slice(0,12),signals:pm.slice(0,8).map(function(x){return x[0]}),refresh:pages};
+  var dailyLocal=dailyMix399(p.filter(function(s){return(Number(s.viewCounter)||0)>=1000&&(Number(s.viewCounter)||0)<=1500000}),hash(day()+"-daily-local-"+pages.daily),12);
+  var hiddenLocal=hiddenMix399(p.filter(function(s){return(Number(s.viewCounter)||0)>=100&&(Number(s.viewCounter)||0)<=50000}),hash(day()+"-hidden-local-"+pages.hidden),12);
+  return{date:day(),at:Date.now(),daily:dailyLocal.length?dailyLocal:shuffle(p,hash(day()+"-daily-local-fallback-"+pages.daily)).slice(0,12),taste:shuffle(p.slice().sort(function(a,b){return tasteScore(b,pm)-tasteScore(a,pm)}).slice(0,72),hash(day()+"-taste-local-"+pages.taste)).slice(0,12),newer:localNew,hidden:hiddenLocal,signals:pm.slice(0,8).map(function(x){return x[0]}),refresh:pages};
 }
 function hasFeedData(x){return !!(x&&(["daily","taste","newer","hidden"].some(function(k){return Array.isArray(x[k])&&x[k].length})))}
 function withTimeout(promise,ms){
@@ -152,7 +195,8 @@ async function loadFeed(force){
   try{
     if(cached&&hasFeedData(cached)){
       render(cached);showing=true;
-      if(!force)return;
+      if(!force&&!hiddenMixNeedsRefresh399(cached))return;
+      if(hiddenMixNeedsRefresh399(cached))force=true;
     }else{
       var local=localFeedSnapshot();
       if(hasFeedData(local)){render(local);showing=true;if(!force){save(CK,local);return}}
