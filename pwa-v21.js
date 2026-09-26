@@ -1,7 +1,7 @@
 /* Voice Synth Archive PWA v21 */
 (function(){
 "use strict";
-const APP_VERSION="39.33.0";
+const APP_VERSION="39.34.0";
 const CHECK_MS=900000;
 const MIN_CHECK_GAP=45000;
 let lastCheckAt=0;
