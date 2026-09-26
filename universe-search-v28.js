@@ -92,7 +92,8 @@ async function remoteSearch(q,scope){
         if(out.some(function(song){return exactSongMatch(song,q)}))break
       }catch(e){}
     }
-    if(out.length&&s===0)break;
+    if(out.some(function(song){return exactSongMatch(song,q)}))break;
+    if(selected==="all"&&out.length)break;
     if(s===1&&out.length)remoteSearch.expanded=true
   }
   return out;
