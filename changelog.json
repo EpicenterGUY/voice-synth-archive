@@ -1,11 +1,22 @@
 {
   "current": {
-    "version": "39.39.0",
+    "version": "39.40.0",
     "releasedAt": "2026-09-27",
-    "title": "Search Sync Fix · Producer Family Link · Cloud Sync",
-    "summary": "상단 검색과 내부 검색의 쿼리 동기화 오류를 고치고, 같은 곡 계열에서 P명이 빠지는 경우 형제 업로드의 니코동 표기를 이용해 보완합니다. 휴대폰·컴퓨터 클라우드 동기화 계정도 추가했습니다."
+    "title": "Settings Shortcut Hotfix",
+    "summary": "탐색과 MY 화면에서 설정·기기 동기화를 바로 열 수 있도록 설정 바로가기를 노출했습니다."
   },
   "entries": [
+    {
+      "version": "39.40.0",
+      "date": "2026-09-27",
+      "title": "Settings Shortcut Hotfix",
+      "changes": [
+        "탐색 화면 상단에 모바일에서도 항상 보이는 ⚙ 설정 바로가기 추가",
+        "MY 화면 상단 액션에 ‘⚙ 설정 · 동기화’ 바로가기 추가",
+        "기존 ‘연결 · 문제 해결’ 접힘 메뉴를 찾지 않아도 설정과 기기 동기화 화면에 바로 진입 가능",
+        "PWA·서비스워커·설치 URL과 지연 로딩 자산 버전을 v39.40.0으로 통일"
+      ]
+    },
     {
       "version": "39.39.0",
       "date": "2026-09-27",
