@@ -3345,7 +3345,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.32.0 · YouTube Mini Continuity · Universe 3.1 · Watch Align · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.33.0 · Mini Return · Universe Handoff · Universe Search 3.1 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -7604,7 +7604,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:"39.32.0",
+    version:"39.33.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -9047,7 +9047,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.32.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
+var VER="39.33.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -9482,7 +9482,7 @@ function renderSongDetail39(song,autoplay){
   try{if(window.VSAI18n)window.VSAI18n.refresh()}catch(e){}
 }
 function openSongDetail39(id,autoplay){
-  var song=getAnySong39(id);if(!song)return;
+  var song=getAnySong39(id);if(!song)return false;
   try{
     if(window.VSANicoPlayer&&VSANicoPlayer.state){
       var st=VSANicoPlayer.state();
@@ -9490,8 +9490,10 @@ function openSongDetail39(id,autoplay){
     }
   }catch(e){}
   recordRecentView3910(song);
-  window.__VSA39_DETAIL_SONG=song;renderSongDetail39(song,!!autoplay);openToolsModal("songDetail39")
+  window.__VSA39_DETAIL_SONG=song;renderSongDetail39(song,!!autoplay);openToolsModal("songDetail39");
+  return true
 }
+window.VSAOpenSongDetail39=openSongDetail39;
 var SEARCH397_RECENT_KEY="vsa397.search.recent",SEARCH397_MODE_KEY="vsa397.search.mode",searchMode397=localStorage.getItem(SEARCH397_MODE_KEY)||"all";
 function allVoicebanks397(){
   var out=[],pairs=[];
@@ -10196,7 +10198,11 @@ function init(){
     var pq395=e.target.closest("[data-v395-search-query]");if(pq395){openGlobalSearch39(pq395.dataset.v395SearchQuery);return}
     var f39=e.target.closest("[data-v39-feature]");if(f39){openFeatureById37(f39.dataset.v39Feature);return}
     var save39=e.target.closest("[data-v39-detail-save]");if(save39){keep(save39.dataset.v39DetailSave);return}
-    var uni39=e.target.closest("[data-v39-detail-universe]");if(uni39){var us=getAnySong39(uni39.dataset.v39DetailUniverse);if(us)openUniversePage37(us,false);return}
+    var uni39=e.target.closest("[data-v39-detail-universe]");if(uni39){
+      var us=getAnySong39(uni39.dataset.v39DetailUniverse);
+      if(us)Promise.resolve(handoffWatchToMini399()).finally(function(){openUniversePage37(us,false)});
+      return
+    }
     var nico39=e.target.closest("[data-v39-detail-nico]");if(nico39){window.open("https://www.nicovideo.jp/watch/"+encodeURIComponent(nico39.dataset.v39DetailNico),"_blank","noopener");return}
     var tag39=e.target.closest("[data-v39-search-tag]");if(tag39){openGlobalSearch39(tag39.dataset.v39SearchTag);return}
     var prod39=e.target.closest("[data-v39-search-producer]");if(prod39){openDiscoveredProducer37(prod39.dataset.v39SearchProducer);return}
@@ -10306,15 +10312,15 @@ var groups={};
 function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
-  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.32.0","./detective-v12.js?v=39.32.0","./detective-v13.js?v=39.32.0","./detective-v14.js?v=39.32.0","./detective-v16.js?v=39.32.0"]);
-  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.32.0","./smart-v23.js?v=39.32.0","./playlist-v24.js?v=39.32.0"]);
-  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.32.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.32.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.32.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.32.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.32.0");
+  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.33.0","./detective-v12.js?v=39.33.0","./detective-v13.js?v=39.33.0","./detective-v14.js?v=39.33.0","./detective-v16.js?v=39.33.0"]);
+  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.33.0","./smart-v23.js?v=39.33.0","./playlist-v24.js?v=39.33.0"]);
+  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.33.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.33.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.33.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.33.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.33.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
-    return seq(["./voca-app-v33.js?v=39.32.0","./voca-app-v33-1.js?v=39.32.0","./voca-app-v33-2.js?v=39.32.0","./voca-app-v33-3.js?v=39.32.0"]);
+    return seq(["./voca-app-v33.js?v=39.33.0","./voca-app-v33-1.js?v=39.33.0","./voca-app-v33-2.js?v=39.33.0","./voca-app-v33-3.js?v=39.33.0"]);
   });
   else groups[name]=Promise.resolve(false);
   groups[name]=Promise.resolve(groups[name]).then(function(v){
@@ -10358,4 +10364,4 @@ if("requestIdleCallback" in window)requestIdleCallback(function(){ensure("pwa")}
 else setTimeout(function(){ensure("pwa")},12000);
 })();
 </script>
-<script src="./i18n-v3918.js?v=39.32.0"></script>\n</body>\n</html>
+<script src="./i18n-v3918.js?v=39.33.0"></script>\n</body>\n</html>
