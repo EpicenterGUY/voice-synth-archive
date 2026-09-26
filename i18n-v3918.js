@@ -184,6 +184,23 @@ var JA=new Map(Object.entries({
   ,"P 목록":"P一覧"
   ,"최고 조회":"最高再生数"
 
+  ,"추천 모집단":"おすすめ対象"
+  ,"빙산처럼 먼저 곡의 범위를 정하고, 그 안에서 키워드·조회수 필터를 적용합니다.":"アイスバーグのように先に対象範囲を決め、その中でキーワード・再生数フィルターを適用します。"
+  ,"오리지널곡 전체":"オリジナル曲全体"
+  ,"니코동 전체":"ニコニコ全体"
+  ,"세부 모집단":"詳細対象"
+  ,"전체 범위":"全体範囲"
+  ,"음성합성 오리지널 전체":"音声合成オリジナル全体"
+  ,"VOCALOID + UTAU + SynthV 오리지널":"VOCALOID + UTAU + SynthV オリジナル"
+  ,"VOCALOID 오리지널곡":"VOCALOIDオリジナル曲"
+  ,"UTAU 오리지널곡":"UTAUオリジナル曲"
+  ,"Synthesizer V 오리지널곡":"Synthesizer V オリジナル曲"
+  ,"CeVIO / CeVIO AI 오리지널곡":"CeVIO / CeVIO AI オリジナル曲"
+  ,"VoiSona 오리지널곡":"VoiSona オリジナル曲"
+  ,"NEUTRINO 오리지널곡":"NEUTRINO オリジナル曲"
+  ,"VOICEVOX 계열 오리지널곡":"VOICEVOX系オリジナル曲"
+  ,"추가 보컬 / 태그":"追加ボーカル / タグ"
+
 }));
 
 var PLACEHOLDER_JA=new Map(Object.entries({
