@@ -60,8 +60,9 @@ async function fetchProducerRows(tag,sort,filter){
   }));
   var exact=await Promise.all(aliases.map(function(alias){
     return fetchNico({
-      year:"all",limit:100,offset:0,mode:"ranking",sort:sort,applyYear:false,applyTier:false,
-      extraExactTag:alias,numericFilters:filter||{}
+      year:"all",limit:100,offset:0,mode:"free",query:alias,scope:"all",
+      queryTargets:"tagsExact",sort:sort,applyYear:false,applyTier:false,
+      numericFilters:filter||{}
     }).then(function(d){return d.data||[]}).catch(function(){return[]})
   }));
   var rows=uniq(broad.flat().concat(exact.flat()));
