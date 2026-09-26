@@ -1,7 +1,7 @@
 /* VocaDive in-app Nico player v39.26 · Playback 2.3 */
 (function(){
 "use strict";
-var modal=null,mini=null,frame=null,fullStage=null,miniStage=null,currentId="",currentTitle="",pushed=false,queue=[],queueIndex=-1,autoNext=true,pipWindow=null,pipClosing=false,lastPlayerStatus=0,maxVolume=true,volumeAppliedFor="",playerVolume=100,volumePopover=null;
+var modal=null,mini=null,frame=null,fullStage=null,miniStage=null,inlineHost=null,currentId="",currentTitle="",pushed=false,queue=[],queueIndex=-1,autoNext=true,pipWindow=null,pipClosing=false,lastPlayerStatus=0,maxVolume=true,volumeAppliedFor="",playerVolume=100,volumePopover=null;
 var PLAYER_ID="vsaPlayer",NICO_ORIGIN="https://embed.nicovideo.jp",MAX_VOLUME_KEY="vsa.player.maxVolume",VOLUME_KEY="vsa.player.volume";
 try{
   autoNext=localStorage.getItem("vsa.player.autoNext")!=="0";
@@ -251,16 +251,20 @@ function stopFrame32(){
   frame=createFrame32();
   if(fullStage)fullStage.appendChild(frame)
 }
-function loadCurrent(id,title,keepQueue){
-  if(!id)return;
+function syncCurrentMeta(id,title){
   currentId=id;currentTitle=title||id;
-  if(!keepQueue){queue=[{id:id,title:currentTitle}];queueIndex=0}
   document.getElementById("v331PlayerTitle").textContent=currentTitle;
   document.getElementById("v331MiniTitle").textContent=currentTitle;
   document.getElementById("v331PlayerMeta").textContent=id+" · 백그라운드 재생 · 자동 다음곡 · 음량 "+playerVolume+"%";
   document.getElementById("v331External").href="https://www.nicovideo.jp/watch/"+encodeURIComponent(id);
-  lastPlayerStatus=1;volumeAppliedFor="";frame.src=NICO_ORIGIN+"/watch/"+encodeURIComponent(id)+"?jsapi=1&playerId="+encodeURIComponent(PLAYER_ID)+"&autoplay=1";syncMediaSession();
-  updateQueueUi();setTimeout(markPlaying,0);
+  syncMediaSession();updateQueueUi();setTimeout(markPlaying,0)
+}
+function loadCurrent(id,title,keepQueue,autoplay){
+  if(!id)return;
+  if(!keepQueue){queue=[{id:id,title:title||id}];queueIndex=0}
+  inlineHost=null;syncCurrentMeta(id,title||id);
+  lastPlayerStatus=1;volumeAppliedFor="";
+  frame.src=NICO_ORIGIN+"/watch/"+encodeURIComponent(id)+"?jsapi=1&playerId="+encodeURIComponent(PLAYER_ID)+(autoplay===false?"":"&autoplay=1")
 }
 function setQueue(items,current){
   queue=normalizeQueue(items);
@@ -276,35 +280,52 @@ function openPlayer(id,title,items){
   build();if(!id)return;
   if(items&&items.length)setQueue(items,id);else if(!queue.length||!queue.some(function(x){return x.id===id}))setQueue([{id:id,title:title||id}],id);else queueIndex=queue.findIndex(function(x){return x.id===id});
   if(frame.parentNode!==fullStage)fullStage.appendChild(frame);
-  loadCurrent(id,title||((queue[queueIndex]||{}).title)||id,true);
-  toggleVolumePopover(false);mini.hidden=true;modal.hidden=false;document.body.classList.add("v331-player-open");
+  loadCurrent(id,title||((queue[queueIndex]||{}).title)||id,true,true);
+  toggleVolumePopover(false);mini.hidden=true;modal.hidden=false;inlineHost=null;document.body.classList.add("v331-player-open");
   if(!pushed){try{history.pushState({vsaPlayer:true},"",location.href);pushed=true}catch(e){}}
 }
 function openMiniPlayer(id,title,items){
   openPlayer(id,title,items);
-  setTimeout(function(){if(modal&&!modal.hidden)collapsePlayer()},0)
+  setTimeout(function(){detachToMini()},0)
 }
-function collapsePlayer(){if(!modal||modal.hidden)return;if(pipWindow&&!pipWindow.closed)return;if(frame.parentNode!==miniStage)miniStage.appendChild(frame);modal.hidden=true;mini.hidden=false;document.body.classList.remove("v331-player-open");toggleVolumePopover(false)}
-function expandPlayer(){if(!mini||mini.hidden)return;if(pipWindow&&!pipWindow.closed)return;toggleVolumePopover(false);if(frame.parentNode!==fullStage)fullStage.appendChild(frame);mini.hidden=true;modal.hidden=false;document.body.classList.add("v331-player-open")}
+function detachToMini(){
+  if(!currentId||!modal||!mini||!frame)return false;
+  if(pipWindow&&!pipWindow.closed)return true;
+  toggleVolumePopover(false);inlineHost=null;
+  if(frame.parentNode!==miniStage)miniStage.appendChild(frame);
+  modal.hidden=true;mini.hidden=false;document.body.classList.remove("v331-player-open");updateQueueUi();
+  return true
+}
+function collapsePlayer(){if(!modal||modal.hidden)return;detachToMini()}
+function expandPlayer(){if(!mini||mini.hidden)return;if(pipWindow&&!pipWindow.closed)return;toggleVolumePopover(false);inlineHost=null;if(frame.parentNode!==fullStage)fullStage.appendChild(frame);mini.hidden=true;modal.hidden=false;document.body.classList.add("v331-player-open")}
+function adoptInlineFrame(external,id,title,items,showMini){
+  build();if(!external||!id)return false;
+  if(frame&&frame!==external){try{frame.remove()}catch(e){}}
+  frame=external;frame.classList.add("v331-inline-frame");
+  if(items&&items.length)setQueue(items,id);else setQueue([{id:id,title:title||id}],id);
+  syncCurrentMeta(id,title||id);volumeAppliedFor="";
+  if(showMini!==false)return detachToMini();
+  return true
+}
+function attachInline(host,id){
+  if(!host||!currentId||!frame||String(id||currentId)!==String(currentId))return false;
+  if(pipWindow&&!pipWindow.closed)return false;
+  toggleVolumePopover(false);inlineHost=host;
+  if(frame.parentNode!==host)host.appendChild(frame);
+  modal.hidden=true;mini.hidden=true;document.body.classList.remove("v331-player-open");updateQueueUi();
+  return true
+}
 function ensureVisiblePlayer(){
   if(!currentId||!modal||!mini)return false;
   if(pipWindow&&!pipWindow.closed)return true;
-  toggleVolumePopover(false);
-  if(!modal.hidden){collapsePlayer();return true}
-  if(mini.hidden){
-    if(frame.parentNode!==miniStage)miniStage.appendChild(frame);
-    mini.hidden=false;
-    document.body.classList.remove("v331-player-open");
-    updateQueueUi();
-  }
-  return true
+  return detachToMini()
 }
 function closePlayer(back){
   if(!modal)return;
   toggleVolumePopover(false);pipClosing=true;try{if(pipWindow&&!pipWindow.closed)pipWindow.close()}catch(e){}restoreFromPip(false);pipClosing=false;
   modal.hidden=true;mini.hidden=true;document.body.classList.remove("v331-player-open");
   stopFrame32();
-  currentId="";currentTitle="";queue=[];queueIndex=-1;lastPlayerStatus=0;setMediaPlaybackState("none");try{if("mediaSession" in navigator)navigator.mediaSession.metadata=null}catch(e){}markPlaying();
+  inlineHost=null;currentId="";currentTitle="";queue=[];queueIndex=-1;lastPlayerStatus=0;setMediaPlaybackState("none");try{if("mediaSession" in navigator)navigator.mediaSession.metadata=null}catch(e){}markPlaying();
   if(back&&pushed){pushed=false;try{history.back()}catch(e){}}else pushed=false;
 }
 function intercept(){
@@ -314,6 +335,6 @@ function intercept(){
     var id=videoIdFromUrl(a.href);if(!id)return;var info=findSong(id,a),items=queueFromAnchor(a,id,info.title);e.preventDefault();e.stopPropagation();openPlayer(id,info.title,items);
   },true);
 }
-function boot(){build();intercept();window.VSANicoPlayer={open:openPlayer,openMini:openMiniPlayer,close:function(){closePlayer(true)},collapse:collapsePlayer,expand:expandPlayer,ensureVisible:ensureVisiblePlayer,setQueue:setQueue,next:function(){playRelative(1)},prev:function(){playRelative(-1)},setMaxVolume:setMaxVolume,setVolume:setPlayerVolume,getVolume:function(){return playerVolume},state:function(){return{currentId:currentId,queue:queue.slice(),index:queueIndex,maxVolume:maxVolume,volume:playerVolume}}}}
+function boot(){build();intercept();window.VSANicoPlayer={open:openPlayer,openMini:openMiniPlayer,close:function(){closePlayer(true)},stop:function(){closePlayer(false)},collapse:collapsePlayer,expand:expandPlayer,detachToMini:detachToMini,adoptInlineFrame:adoptInlineFrame,attachInline:attachInline,ensureVisible:ensureVisiblePlayer,setQueue:setQueue,next:function(){playRelative(1)},prev:function(){playRelative(-1)},setMaxVolume:setMaxVolume,setVolume:setPlayerVolume,getVolume:function(){return playerVolume},state:function(){return{currentId:currentId,queue:queue.slice(),index:queueIndex,maxVolume:maxVolume,volume:playerVolume,inline:!!inlineHost}}}}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
 })();
