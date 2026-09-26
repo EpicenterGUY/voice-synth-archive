@@ -1,4 +1,4 @@
-/* Voice Synth Archive Voca Support Home v28 · v39.43 balanced view mix */
+/* Voice Synth Archive Voca Support Home v28 · v39.44 strict balanced view mix */
 (function(){
 "use strict";
 var CK="vsa.home.v28",OK="vsa.organizer.v22",SK="vsa.smart.v23",REFRESH_KEY="vsa.home.refresh.v31",feed=null,busy=false,busySince=0;
@@ -34,7 +34,7 @@ function pool(){var m=new Map();try{[state.songs,state.tasteSongs,state.guideSon
 function pref(){var sm=load(SK,{feedback:{},tagPrefs:{}}),org=load(OK,{library:{}}),m=new Map();function add(song,w){tags(song).filter(function(t){return t.length>1&&!generic(t)}).forEach(function(t){m.set(t,(m.get(t)||0)+w)})}Object.values(org.library||{}).forEach(function(x){var w=x.status==="favorite"?4:x.status==="interest"?2.5:x.status==="investigate"?1:0;if(w&&x.song)add(x.song,w)});Object.values(sm.feedback||{}).forEach(function(x){var w=(Number(x.value)||0)*4;if(w&&x.song)add(x.song,w)});Object.entries(sm.tagPrefs||{}).forEach(function(x){m.set(x[0],(m.get(x[0])||0)+(Number(x[1])||0)*5)});return Array.from(m.entries()).sort(function(a,b){return b[1]-a[1]})}
 function tasteScore(s,p){var st=new Set(tags(s)),x=0;p.forEach(function(v){if(st.has(v[0]))x+=v[1]});var V=Number(s.viewCounter)||0,M=Number(s.mylistCounter)||0,C=Number(s.commentCounter)||0;return x+(M+2)/(V+1200)*18+(C+2)/(V+1200)*4}
 function hiddenScore(s){var V=Math.max(1,Number(s.viewCounter)||1),M=Number(s.mylistCounter)||0,C=Number(s.commentCounter)||0,L=Number(s.likeCounter)||0;return(M+2)/V*160+(C+2)/V*35+(L+2)/V*20}
-function viewBandsHidden399(){return[[100,499],[500,1999],[2000,9999],[10000,50000]]}
+function viewBandsHidden399(){return[[101,499],[500,1999],[2000,9999],[10000,50000]]}
 function viewBandsDaily399(){return[[1000,9999],[10000,99999],[100000,499999],[500000,1500000]]}
 function balancedViewMix399(rows,bands,seed,count,scoreFn){
   rows=clean(rows);bands=bands||[];count=Math.max(1,Number(count)||12);
@@ -64,14 +64,24 @@ function balancedViewMix399(rows,bands,seed,count,scoreFn){
   }
   return out.slice(0,count)
 }
-function hiddenMix399(rows,seed,count){return balancedViewMix399(rows,viewBandsHidden399(),seed,count,hiddenScore)}
+function hiddenMix399(rows,seed,count){
+  rows=clean(rows||[]);
+  var exact100=rows.filter(function(s){return Number(s&&s.viewCounter)===100});
+  var non100=rows.filter(function(s){return Number(s&&s.viewCounter)!==100});
+  var out=balancedViewMix399(non100,viewBandsHidden399(),seed,count,hiddenScore);
+  if(out.length<count&&exact100.length){
+    var one=originalShuffle399(exact100,seed+19001,1)[0];
+    if(one&&!out.some(function(x){return x.contentId===one.contentId}))out.push(one)
+  }
+  return out.slice(0,count)
+}
 function dailyMix399(rows,seed,count){return balancedViewMix399(rows,viewBandsDaily399(),seed,count,function(s){return(Number(s.mylistCounter)||0)*2+(Number(s.commentCounter)||0)+(Number(s.likeCounter)||0)*.5})}
 function hiddenMixNeedsRefresh399(feed){
   var rows=feed&&Array.isArray(feed.hidden)?feed.hidden:[];if(rows.length<6)return true;
   var counts=[0,0,0,0],exact100=0;
   rows.forEach(function(s){var v=Number(s&&s.viewCounter)||0;if(v===100)exact100++;var bands=viewBandsHidden399();for(var i=0;i<bands.length;i++)if(v>=bands[i][0]&&v<=bands[i][1]){counts[i]++;break}});
   var nonzero=counts.filter(function(x){return x>0}).length,max=Math.max.apply(null,counts);
-  return exact100>3||nonzero<3||max>Math.ceil(rows.length*.55)
+  return exact100>1||nonzero<3||max>Math.ceil(rows.length*.55)
 }
 async function broad(sort,filter,offset){try{var d=await fetchNico({year:"all",limit:100,offset:offset||0,mode:"ranking",sort:sort,applyYear:false,applyTier:false,numericFilters:filter||{}});return d.data||[]}catch(e){return[]}}
 async function tagFetch(t){try{var d=await fetchNico({year:"all",limit:100,offset:0,mode:"ranking",sort:"-mylistCounter",applyYear:false,applyTier:false,numericFilters:{viewCounter:{gte:100}},extraExactTag:t});return d.data||[]}catch(e){return[]}}
