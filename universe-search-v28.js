@@ -1,8 +1,8 @@
-/* VocaDive Dive Start v39.71 · Search Response 2.0 */
+/* VocaDive Dive Start v39.72 · Search Response 2.1 */
 (function(){
 "use strict";
 var recentKey="vsa.universe.search.v28";
-var results=[];
+var results=[],boundWrap65=null;
 function diveMode53(){try{return window.VSA53DiveContent?window.VSA53DiveContent.get():"original"}catch(e){return "original"}}
 function diveModeLabel53(){try{return window.VSA53DiveContent?window.VSA53DiveContent.label(diveMode53()):"오리지널곡"}catch(e){return "오리지널곡"}}
 function filterDiveRows53(rows,context){try{return window.VSA53DiveFilterRows?window.VSA53DiveFilterRows(rows,context,diveMode53()).rows:rows}catch(e){return rows}}
@@ -360,7 +360,7 @@ async function randomStart(){
         var shell=document.getElementById("universeSearchBar");if(shell)shell.classList.add("center-selected");
         if(status)status.textContent="랜덤 시작 · "+diveModeLabel53()+" · "+band.name+" · "+(song.title||song.contentId);
         var stage=document.querySelector(".universe-stage");if(stage)stage.scrollIntoView({behavior:"smooth",block:"start"});
-        return
+        return true
       }
     }
     if(local.length){
@@ -370,29 +370,36 @@ async function randomStart(){
       var shell=document.getElementById("universeSearchBar");if(shell)shell.classList.add("center-selected");
       if(status)status.textContent="랜덤 시작 · 보관된 후보 · "+(song.title||song.contentId);
       var stage=document.querySelector(".universe-stage");if(stage)stage.scrollIntoView({behavior:"smooth",block:"start"});
-      return
+      return true
     }
     if(status)status.textContent="랜덤 시작 후보를 찾지 못했습니다. Worker 연결 또는 검색 결과를 확인해 주세요.";
+    return false
   }catch(e){
     if(status)status.textContent="랜덤 시작 실패 · "+String(e&&e.message?e.message:e);
+    return false
   }finally{
     if(button)button.disabled=false
   }
 }
 
-function choose(index){
+async function choose(index){
   var song=results[index];
-  if(!song)return;
+  if(!song)return false;
+  var status=document.getElementById("universeSearchStatus");
   try{
     state.universeCenter=song;
-    buildUniverse(song,false);
+    if(status)status.textContent="중심곡: "+(song.title||song.contentId)+" · 다이브 경로 생성 중…";
+    await Promise.resolve(buildUniverse(song,false));
     var shell=document.getElementById("universeSearchBar");if(shell)shell.classList.add("center-selected");
-    var status=document.getElementById("universeSearchStatus");
-    if(status)status.textContent="중심곡: "+(song.title||song.contentId)+" · 다이브 준비 중";
+    if(status)status.textContent="중심곡: "+(song.title||song.contentId)+" · 다이브 준비 완료";
     var stage=document.querySelector(".universe-stage");
     if(stage)stage.scrollIntoView({behavior:"smooth",block:"center"});
+    return true
   }catch(e){
-    try{toast("다이브를 시작하지 못했습니다.");}catch(_){}
+    var msg=String(e&&e.message?e.message:e);
+    if(status)status.textContent="다이브 시작 실패 · "+msg;
+    try{toast("다이브를 시작하지 못했습니다. "+msg);}catch(_){}
+    return false
   }
 }
 function addStyle(){
@@ -411,8 +418,8 @@ function addStyle(){
   document.head.appendChild(style);
 }
 function bindSearchUi65(wrap){
-  if(!wrap||wrap.dataset.usBound65==="1")return;
-  wrap.dataset.usBound65="1";
+  if(!wrap||boundWrap65===wrap)return;
+  boundWrap65=wrap;
   var searchBtn=document.getElementById("universeSearchBtn");
   var randomBtn=document.getElementById("universeRandomStartBtn");
   var types=document.getElementById("universeContentTypes");
