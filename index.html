@@ -12680,11 +12680,11 @@ function shared58(a,b,kind){
 function year58(n){try{return n&&n.startTime?new Date(n.startTime).getFullYear():null}catch(_){return null}}
 function views58(n){return +((n&&n.viewCounter)||0)}
 var DEPTH58=[
- {name:"수면",short:"수면",range:"100만+"},
- {name:"얕은층",short:"얕은",range:"25만–99만"},
- {name:"중층",short:"중층",range:"5만–24만"},
- {name:"심층",short:"심층",range:"5천–4.9만"},
- {name:"심해",short:"심해",range:"5천 미만"}
+ {name:"수면",short:"수면",range:"100만+",desc:"햇빛 · 잔물결"},
+ {name:"얕은층",short:"얕은",range:"25만–99만",desc:"빛 강함 · 완만한 해류"},
+ {name:"중층",short:"중층",range:"5만–24만",desc:"청색광 · 부유 입자"},
+ {name:"심층",short:"심층",range:"5천–4.9만",desc:"저시야 · 느린 해류"},
+ {name:"심해",short:"심해",range:"5천 미만",desc:"무광 · 생물광"}
 ];
 function depth58(n){
  var v=views58(n),y=year58(n),age=y?Math.max(.5,2026-y+1):4,ageFactor=Math.max(.62,Math.min(1.55,Math.sqrt(4/age)));
@@ -12869,7 +12869,7 @@ function startScreen58(p){
  if(!p)return;
  try{if(typeof ensureUniverseToolbar39==="function")ensureUniverseToolbar39()}catch(_){}
  var h=q58("#v394UniverseHeader",p),t=h&&h.querySelector(".v394-universe-title");
- if(t)t.innerHTML='<small>VOCADIVE · RELATION BRIDGE 1.2</small><h2>다이브</h2><p>곡 하나를 고르면 장르·스타일·P·보컬·시대·수층을 묶어 다음 곡으로 이어집니다.</p>';
+ if(t)t.innerHTML='<small>VOCADIVE · OCEAN DIVE 1.0</small><h2>다이브</h2><p>곡 하나를 고르면 장르·스타일·P·보컬·시대·수층을 묶어 다음 곡으로 이어집니다.</p>';
  var d=typeof state!=="undefined"?state.universeData:null;
  if(d&&d.center)return;
  var stage=q58(".universe-stage",p);
@@ -12891,7 +12891,7 @@ function render58(d){
  var p=normalizePanel58();if(!p)return;
  var layout=q58(".universe-layout",p),ld=ensureRelationLoader58(p);
  if(ld){ld.className="mr58-loader";ld.style.display="none"}
- try{var h=q58("#v394UniverseHeader",p),t=h&&h.querySelector(".v394-universe-title");if(t)t.innerHTML='<small>VOCADIVE · RELATION BRIDGE 1.2</small><h2>다이브</h2><p>같은 장르와 인접 장르 브리지를 함께 탐색하고, 장르·스타일·분위기·P·보컬·시대·수층을 교차해서 좁힙니다.</p>'}catch(_){}
+ try{var h=q58("#v394UniverseHeader",p),t=h&&h.querySelector(".v394-universe-title");if(t)t.innerHTML='<small>VOCADIVE · OCEAN DIVE 1.0</small><h2>다이브</h2><p>같은 장르와 인접 장르 브리지를 함께 탐색하고, 장르·스타일·분위기·P·보컬·시대·수층을 교차해서 좁힙니다.</p>'}catch(_){}
  var stage=q58(".universe-stage",p);if(stage)stage.innerHTML=scene58(d);
  var info=q58("#universeInfo",p);if(info)info.innerHTML=side58(d.center,d);
  selected58=null;bind58()
