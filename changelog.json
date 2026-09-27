@@ -1,11 +1,24 @@
 {
   "current": {
-    "version": "39.75.0",
+    "version": "39.76.0",
     "releasedAt": "2026-09-28",
-    "title": "App Shell Recovery · Settings + Worker + Update UI",
-    "summary": "설정 접근을 복구하고 중복 메뉴를 제거했으며, 모바일 상단 검색과 Worker 상태를 정리했습니다. Live Shell은 앱 셸 버전과 웹 UI 버전을 분리해 표시하고 웹 업데이트를 즉시 적용할 수 있습니다."
+    "title": "Route Recovery 2.0 · Shell Polish",
+    "summary": "존재하지 않는 studioHome fallback을 제거하고 설정·Worker 상태·단일 메뉴·웹 업데이트 복구를 v39.76.0으로 묶었습니다."
   },
   "entries": [
+    {
+      "version": "39.76.0",
+      "date": "2026-09-28",
+      "title": "Route Recovery 2.0 · Shell Polish",
+      "changes": [
+        "존재하지 않는 studioHome fallback 경로를 제거하고 실패 시 hub37로 복구",
+        "설정 · 업데이트 · 진단 센터 진입 경로 유지",
+        "중복 하단 도크 제거 및 모바일 메뉴 겹침 방지",
+        "상단 Worker 상태 pill과 단일 검색바 유지",
+        "Live Shell 웹 UI 자동 갱신 및 강제 웹 업데이트 적용 기능 포함",
+        "앱 셸·PWA·서비스워커·업데이터·공통 UI 버전을 v39.76.0으로 동기화"
+      ]
+    },
     {
       "version": "39.75.0",
       "date": "2026-09-28",
