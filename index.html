@@ -3349,7 +3349,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.58.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.59.0 · Relation Pool 2.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -7183,15 +7183,27 @@ async function buildUniverse(center,force=false){
 
   try{
     const tags=informativeTags(center);
-    const queryTags=(window.VSA58RelationQueryTags?window.VSA58RelationQueryTags(center,tags):tags.slice(0,5));
+    let queryTags=(window.VSA58RelationQueryTags?window.VSA58RelationQueryTags(center,tags):tags.slice(0,5));
     if(!queryTags.length) throw new Error("유사곡 검색에 사용할 음악 태그가 부족합니다.");
 
-    const batches=await mapLimit(queryTags,3,tag=>fetchTagCandidates(tag,40));
+    let relationMeta59=null,collectedRows=[];
+    if(window.VSA59CollectRelationCandidates){
+      relationMeta59=await window.VSA59CollectRelationCandidates(center,tags,queryTags);
+      collectedRows=(relationMeta59&&relationMeta59.rows)||[];
+      if(relationMeta59&&Array.isArray(relationMeta59.queryTags)&&relationMeta59.queryTags.length)queryTags=relationMeta59.queryTags;
+    }else{
+      const batches=await mapLimit(queryTags,3,tag=>fetchTagCandidates(tag,40));
+      collectedRows=batches.flat()
+    }
     const map=new Map();
-    const universeScoped=filterDiveContentRows53(batches.flat(),"universe",diveContentMode53());
+    const universeScoped=filterDiveContentRows53(collectedRows,"universe",diveContentMode53());
     const universeSafe=filterAdultRows37(universeScoped.rows,"universe");
     for(const rows of universeSafe.rows){
       if(rows.contentId===center.contentId) continue;
+      const prev=map.get(rows.contentId);
+      if(prev&&prev.__relSources59&&rows.__relSources59){
+        rows.__relSources59=[...new Set(prev.__relSources59.concat(rows.__relSources59))]
+      }
       map.set(rows.contentId,rows);
     }
 
@@ -7201,10 +7213,13 @@ async function buildUniverse(center,force=false){
       similarityBreakdown:similarityBreakdown50(center,s),
       shared:sharedTags(center,s)
     }));
-    candidates.sort((a,b)=>b.similarity-a.similarity || (+b.viewCounter||0)-(+a.viewCounter||0));
 
     const count=+$("#universeSize").value||20;
-    candidates=candidates.slice(0,count);
+    if(window.VSA59SelectRelationCandidates)candidates=window.VSA59SelectRelationCandidates(center,candidates,count,relationMeta59);
+    else{
+      candidates.sort((a,b)=>b.similarity-a.similarity || (+b.viewCounter||0)-(+a.viewCounter||0));
+      candidates=candidates.slice(0,count)
+    }
 
     const nodes=[{...center,similarity:1,shared:informativeTags(center).slice(0,6),center:true},...candidates];
     const links=[];
@@ -7215,7 +7230,7 @@ async function buildUniverse(center,force=false){
     // 이웃끼리의 연결은 보기 복잡하지 않도록 일부 핵심 링크만 남긴다.
     links.push(...buildSparseNeighborLinks(nodes).map(x=>({...x,kind:"neighbor"})));
 
-    const data={center,nodes,links,queryTags};
+    const data={center,nodes,links,queryTags,relationMeta59};
     state.universeCache.set(cacheKey,data);
     state.universeData=data;
     (window.renderUniverse||renderUniverse)(data);
@@ -10984,7 +10999,7 @@ function ensure(name){
   else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.45.0","./smart-v23.js?v=39.45.0","./playlist-v24.js?v=39.45.0"]);
   else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.45.0");
   else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.45.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.58.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.59.0");
   else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.45.0");
   else if(name==="deviceSync")groups[name]=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.45.0");
   else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.45.0");
@@ -12528,6 +12543,141 @@ window.VSADiveRelations58={render:render58,relation:rel58,genres:genreProfile58,
 window.renderUniverse=render58;
 function boot58(){var d=typeof state!=="undefined"?state.universeData:null;if(d)render58(d)}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(boot58,80)});else setTimeout(boot58,80);
+})();
+</script>
+
+
+<style id="v3959RelationPoolStyle">
+.mr59-pool{display:flex;gap:4px;align-items:center;flex-wrap:wrap;margin:0 0 8px}
+.mr59-pool small{color:#779f9b;font-size:6px;font-weight:950;letter-spacing:.1em;margin-right:2px}
+.mr59-pool span{display:inline-flex;align-items:center;min-height:23px;padding:0 7px;border:1px solid rgba(148,221,214,.12);border-radius:999px;background:rgba(5,34,43,.55);color:#a9cfca;font-size:6px;font-weight:900}
+.mr59-pool span.genre{color:#d7e0ff;background:rgba(49,67,110,.52)}
+.mr59-pool span.producer{color:#f0dcff;background:rgba(78,51,96,.52)}
+.mr59-pool span.vocal{color:#ffe1ef;background:rgba(91,56,75,.52)}
+.mr59-pool span.era{color:#fff0c1;background:rgba(82,73,44,.52)}
+.mr59-pool span.depth{color:#dceaff;background:rgba(36,58,86,.55)}
+@media(max-width:699px){.mr59-pool{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.mr59-pool::-webkit-scrollbar{display:none}.mr59-pool small,.mr59-pool span{flex:0 0 auto}}
+</style>
+<script id="v3959RelationCandidateEngine">
+(function(){
+"use strict";
+var oldRender59=window.renderUniverse;
+function norm59(v){return String(v||"").normalize("NFKC").toLowerCase().replace(/[\s　・･_\-\/／]+/g,"")}
+function raw59(n){try{return parseTags(n&&n.tags)||[]}catch(_){return Array.isArray(n&&n.tags)?n.tags:[]}}
+function producerTags59(n){
+ return raw59(n).map(function(x){return String(x||"").normalize("NFKC").trim()})
+  .filter(function(x){return /(?:^|[^A-Za-z0-9])[\p{L}\p{N}_.・ー-]{1,28}P$/u.test(x)||/P名$|プロデューサー/.test(x)})
+  .slice(0,3)
+}
+function vocalTags59(n){
+ var tags=raw59(n),bank=[];
+ try{bank=[].concat(VOCALOID_VOICEBANK_SEEDS37,UTAU_VOICEBANK_SEEDS37,SYNTHV_VOICEBANK_SEEDS37,CEVIO_VOICEBANK_SEEDS37,VOISONA_VOICEBANK_SEEDS37,NEUTRINO_VOICEBANK_SEEDS37,VOICEVOX_VOICEBANK_SEEDS37)}catch(_){}
+ var set=new Map(tags.map(function(x){return[norm59(x),String(x)]})),out=[];
+ bank.forEach(function(x){var hit=set.get(norm59(x));if(hit&&!out.includes(hit))out.push(hit)});
+ return out.slice(0,3)
+}
+function genreTags59(n){
+ var out=[];
+ try{
+   var gs=window.VSA58GenreProfile?window.VSA58GenreProfile(n):[];
+   (gs||[]).slice(0,3).forEach(function(g){
+     var a=(g.aliases||[]).slice(0,4);a.forEach(function(x){if(!out.includes(x))out.push(x)})
+   })
+ }catch(_){}
+ return out.slice(0,8)
+}
+function yearRange59(n){
+ var y=null;try{y=n&&n.startTime?new Date(n.startTime).getFullYear():null}catch(_){}
+ if(!y)return null;
+ return {gte:(y-2)+"-01-01T00:00:00+09:00",lt:(y+3)+"-01-01T00:00:00+09:00"}
+}
+function depthBand59(n){
+ var v=+((n&&n.viewCounter)||0);
+ if(v>=1000000)return {gte:700000};
+ if(v>=250000)return {gte:150000,lte:1400000};
+ if(v>=50000)return {gte:25000,lte:450000};
+ if(v>=5000)return {gte:2000,lte:90000};
+ return {gte:0,lte:12000}
+}
+function tasks59(center,tags,queryTags){
+ var tasks=[],seen=new Map();
+ function add(lane,tag,extra){
+   tag=String(tag||"").trim();if(!tag)return;
+   var key=norm59(tag)+"|"+lane+"|"+JSON.stringify(extra||{});
+   if(seen.has(key))return;seen.set(key,1);tasks.push(Object.assign({lane:lane,tag:tag},extra||{}))
+ }
+ (queryTags||tags||[]).slice(0,5).forEach(function(t){add("similar",t)});
+ genreTags59(center).forEach(function(t){add("genre",t)});
+ producerTags59(center).forEach(function(t){add("producer",t)});
+ vocalTags59(center).forEach(function(t){add("vocal",t)});
+ var base=(queryTags&&queryTags[0])||(tags&&tags[0]);
+ var yr=yearRange59(center);if(base&&yr)add("era",base,{dateRange:yr});
+ if(base)add("depth",base,{numericFilters:{viewCounter:depthBand59(center)}});
+ var priority={producer:0,vocal:1,genre:2,similar:3,era:4,depth:5};
+ tasks.sort(function(a,b){return priority[a.lane]-priority[b.lane]});
+ return tasks.slice(0,16)
+}
+async function fetchTask59(t){
+ var sort=t.lane==="producer"?"-startTime":t.lane==="genre"?"-mylistCounter":t.lane==="vocal"?"-commentCounter":t.lane==="era"?"-startTime":"-viewCounter";
+ try{
+   var d=await fetchNico({
+     year:"all",limit:36,offset:0,mode:"free",query:t.tag,scope:"all",
+     queryTargets:"tagsExact",sort:sort,applyYear:false,applyTier:false,
+     dateRange:t.dateRange||null,numericFilters:t.numericFilters||null
+   });
+   return (d.data||[]).map(function(s){
+     var x=Object.assign({},s),old=Array.isArray(x.__relSources59)?x.__relSources59:[];
+     x.__relSources59=[...new Set(old.concat([t.lane]))];
+     return x
+   })
+ }catch(_){return[]}
+}
+window.VSA59CollectRelationCandidates=async function(center,tags,queryTags){
+ var tasks=tasks59(center,tags,queryTags),batches=await mapLimit(tasks,4,fetchTask59),map=new Map(),laneStats={};
+ tasks.forEach(function(t,i){
+   var rows=batches[i]||[];laneStats[t.lane]=(laneStats[t.lane]||0)+rows.length;
+   rows.forEach(function(s){
+     if(!s||!s.contentId)return;
+     var prev=map.get(s.contentId);
+     if(prev){
+       prev.__relSources59=[...new Set((prev.__relSources59||[]).concat(s.__relSources59||[]))]
+     }else map.set(s.contentId,s)
+   })
+ });
+ return {rows:[...map.values()],queryTags:[...new Set(tasks.map(function(t){return t.tag}))].slice(0,12),laneStats:laneStats,tasks:tasks.map(function(t){return{lane:t.lane,tag:t.tag}})}
+};
+window.VSA59SelectRelationCandidates=function(center,candidates,count,meta){
+ candidates=(candidates||[]).filter(Boolean);count=Math.max(8,Number(count)||20);
+ var relApi=window.VSADiveRelations58,rows=candidates.map(function(s){
+   var r=null;try{r=relApi&&relApi.relation?relApi.relation(center,s):null}catch(_){}
+   if(!r)r={score:+s.similarity||0,base:+s.similarity||0,kinds:(s.__relSources59||[]).slice()};
+   return {song:s,rel:r}
+ });
+ rows.sort(function(a,b){return (+b.rel.score||0)-(+a.rel.score||0)||(+b.song.viewCounter||0)-(+a.song.viewCounter||0)});
+ var picked=[],used=new Set(),kinds=["similar","genre","producer","vocal","era","depth"];
+ kinds.forEach(function(k){
+   var lane=rows.filter(function(x){return (x.rel.kinds||[]).includes(k)||(x.song.__relSources59||[]).includes(k)}).slice(0,2);
+   lane.forEach(function(x){if(picked.length<count&&!used.has(x.song.contentId)){used.add(x.song.contentId);picked.push(x)}})
+ });
+ rows.forEach(function(x){if(picked.length<count&&!used.has(x.song.contentId)){used.add(x.song.contentId);picked.push(x)}});
+ return picked.slice(0,count).map(function(x){
+   x.song.__relation59=x.rel;return x.song
+ })
+};
+function laneBar59(d){
+ var m=d&&d.relationMeta59&&d.relationMeta59.laneStats;if(!m)return "";
+ var order=[["similar","유사"],["genre","장르"],["producer","P"],["vocal","보컬"],["era","시대"],["depth","수층"]];
+ return '<div class="mr59-pool"><small>후보 수집</small>'+order.map(function(x){return '<span class="'+x[0]+'">'+x[1]+' '+(m[x[0]]||0)+'</span>'}).join("")+'</div>'
+}
+window.renderUniverse=function(d){
+ var out=oldRender59?oldRender59(d):undefined;
+ try{
+   var filters=document.querySelector("#universePanel .mr58-filters");
+   if(filters&&!document.querySelector("#universePanel .mr59-pool"))filters.insertAdjacentHTML("beforebegin",laneBar59(d))
+ }catch(_){}
+ return out
+};
+window.VSADiveCandidateEngine59={tasks:tasks59,producerTags:producerTags59,vocalTags:vocalTags59,genreTags:genreTags59};
 })();
 </script>
 
