@@ -33,7 +33,7 @@ worker/niconico-worker.js
 
 ## 현재 버전
 
-App: v39.66.0
+App: v39.67.0
 Worker: v10
 
 
@@ -81,7 +81,7 @@ v39.64.0부터 Android 앱 빌드에 VocaDive 전용 아이콘/스플래시 생�
 
 ## Direct APK Update 1.0
 
-v39.66.0부터 직접 설치한 Android APK는 앱 내부에서 새 GitHub Release를 확인하고 업데이트 APK를 내려받은 뒤 Android 시스템 설치 확인창으로 이어질 수 있습니다.
+v39.67.0부터 직접 설치한 Android APK는 앱 내부에서 새 GitHub Release를 확인하고 업데이트 APK를 내려받은 뒤 Android 시스템 설치 확인창으로 이어질 수 있습니다.
 
 - 시작 시 자동 업데이트 확인
 - Wi-Fi에서 자동 다운로드
@@ -91,3 +91,8 @@ v39.66.0부터 직접 설치한 Android APK는 앱 내부에서 새 GitHub Relea
 - 디버그 APK에서는 서명 불일치 방지를 위해 직접 덮어쓰기를 비활성화
 
 정식 업데이트 채널은 영구 Android 서명키가 필요합니다. 키 파일은 저장소에 커밋하지 않고 GitHub Actions Secrets로만 주입합니다. 필요한 secret 이름과 배포 절차는 `docs/app-foundation.md`에 정리되어 있습니다.
+
+
+## Search Hotfix 4.1
+
+v39.67.0부터 검색은 보카로·UTAU 순위/통계 로딩과 독립적으로 실행됩니다. 느린 순위 다운로드 중에도 검색 버튼이 즉시 동작하며, 이전 순위 응답이 늦게 끝나도 최신 검색 결과를 덮어쓰지 않습니다.
