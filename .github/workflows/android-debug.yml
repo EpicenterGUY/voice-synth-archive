@@ -87,8 +87,22 @@ jobs:
       - name: Build debug APK and AAB
         working-directory: android
         run: |
+          set -euo pipefail
           chmod +x ./gradlew
-          ./gradlew assembleDebug bundleDebug --stacktrace
+          ok=0
+          for attempt in 1 2 3; do
+            echo "Gradle build attempt $attempt/3"
+            if ./gradlew assembleDebug bundleDebug --stacktrace; then
+              ok=1
+              break
+            fi
+            if [ "$attempt" -lt 3 ]; then
+              echo "::warning::Gradle build/download failed; retrying in $((attempt * 5)) seconds."
+              rm -f "$HOME/.gradle/wrapper/dists"/*/*/*.part 2>/dev/null || true
+              sleep $((attempt * 5))
+            fi
+          done
+          test "$ok" = "1"
 
       - name: Upload Android debug artifacts
         uses: actions/upload-artifact@v4
