@@ -12630,7 +12630,7 @@ function filters58(d){
  return '<div class="mr58-filters"><small>연결 보기</small>'+
   '<span class="mr61-match"><button type="button" class="'+(filterMode58==="or"?"active":"")+'" data-mr58-match="or">하나라도</button><button type="button" class="'+(filterMode58==="and"?"active":"")+'" data-mr58-match="and">모두</button></span>'+
   Object.keys(REL58).map(function(k){return '<button type="button" class="mr58-filter '+(active58.has(k)?"active":"")+'" data-mr58-filter="'+k+'">'+REL58[k].label+' '+counts[k]+'</button>'}).join("")+
-  '<button type="button" class="mr58-filter mr58-all" data-mr58-all>전부 켜기</button></div>'
+  '<button type="button" class="mr58-filter mr58-all" data-mr58-all>'+(filterMode58==="and"?"교집합 기본":"전부 켜기")+'</button></div>'
 }
 function summary58(rows){var c={genre:0,bridge:0,style:0,mood:0,producer:0,vocal:0,era:0,depth:0};rows.forEach(function(x){Object.keys(c).forEach(function(k){if(x.rel.kinds.includes(k))c[k]++})});return '<div class="mr58-summary"><span>장르 '+c.genre+'</span><span>브리지 '+c.bridge+'</span><span>스타일 '+c.style+'</span><span>무드 '+c.mood+'</span><span>P '+c.producer+'</span><span>보컬 '+c.vocal+'</span><span>시대 '+c.era+'</span><span>수층 '+c.depth+'</span></div>'}
 function scene58(d){
@@ -12693,9 +12693,26 @@ function random58(){
 function bind58(){
  var p=q58("#universePanel");if(!p||bound58)return;bound58=true;
  p.addEventListener("click",function(ev){
-   var match=ev.target.closest("[data-mr58-match]");if(match){ev.preventDefault();ev.stopImmediatePropagation();filterMode58=match.dataset.mr58Match==="and"?"and":"or";var dm=state.universeData;if(dm)render58(dm);return}
-   var f=ev.target.closest("[data-mr58-filter]");if(f){ev.preventDefault();ev.stopImmediatePropagation();var k=f.dataset.mr58Filter;if(active58.has(k))active58.delete(k);else active58.add(k);var d=state.universeData;if(d)render58(d);return}
-   if(ev.target.closest("[data-mr58-all]")){ev.preventDefault();ev.stopImmediatePropagation();active58=new Set(Object.keys(REL58));var da=state.universeData;if(da)render58(da);return}
+   var match=ev.target.closest("[data-mr58-match]");if(match){
+     ev.preventDefault();ev.stopImmediatePropagation();
+     filterMode58=match.dataset.mr58Match==="and"?"and":"or";
+     if(filterMode58==="and"&&(active58.size>3||(active58.has("genre")&&active58.has("bridge"))))active58=new Set(["similar","genre"]);
+     var dm=state.universeData;if(dm)render58(dm);return
+   }
+   var f=ev.target.closest("[data-mr58-filter]");if(f){
+     ev.preventDefault();ev.stopImmediatePropagation();var k=f.dataset.mr58Filter;
+     if(active58.has(k))active58.delete(k);else{
+       if(filterMode58==="and"&&k==="bridge")active58.delete("genre");
+       if(filterMode58==="and"&&k==="genre")active58.delete("bridge");
+       active58.add(k)
+     }
+     var d=state.universeData;if(d)render58(d);return
+   }
+   if(ev.target.closest("[data-mr58-all]")){
+     ev.preventDefault();ev.stopImmediatePropagation();
+     active58=filterMode58==="and"?new Set(["similar","genre"]):new Set(Object.keys(REL58));
+     var da=state.universeData;if(da)render58(da);return
+   }
    var s=ev.target.closest("[data-mr58-select]");if(s){ev.preventDefault();ev.stopImmediatePropagation();var d=state.universeData,n=find58(s.dataset.mr58Select,d);if(n){selected58=n.contentId;qa58(".mr58-node",p).forEach(function(x){x.classList.toggle("selected",x.dataset.mr58Select===selected58)});var info=q58("#universeInfo",p);if(info)info.innerHTML=side58(n,d)}return}
    var g=ev.target.closest("[data-mr58-go]");if(g){ev.preventDefault();ev.stopImmediatePropagation();go58(g.dataset.mr58Go);return}
    var play=ev.target.closest("[data-mr58-play]");if(play){ev.preventDefault();ev.stopImmediatePropagation();if(window.VSAOpenSong39)window.VSAOpenSong39(play.dataset.mr58Play,true);else if(window.VSAOpenSongDetail39)window.VSAOpenSongDetail39(play.dataset.mr58Play,true);return}
