@@ -48,6 +48,17 @@ function pushRoute(route){
 function savePlayback(reason){
   try{
     var snap=window.VSANicoPlayer&&VSANicoPlayer.snapshot?VSANicoPlayer.snapshot():null;
+    if(!snap&&currentRoute()==="songDetail39"){
+      var song=window.__VSA39_DETAIL_SONG,inline=document.getElementById("v399InlineFrame");
+      if(song&&song.contentId&&inline){
+        var q=[{id:String(song.contentId),title:String(song.title||song.contentId)}];
+        try{if(typeof window.watchQueue399==="function")q=window.watchQueue399(song)}catch(_){}
+        snap={
+          schema:1,currentId:String(song.contentId),currentTitle:String(song.title||song.contentId),
+          queue:q,index:0,volume:100,playing:true,mini:false,inline:true,full:false,capturedAt:Date.now()
+        }
+      }
+    }
     if(!snap){localStorage.removeItem(PLAYBACK_KEY);return false}
     snap.reason=String(reason||"lifecycle");
     snap.route=currentRoute();
@@ -136,10 +147,12 @@ async function handleBack(){
 }
 function onBackground(){
   lastBackgroundAt=Date.now();
+  var handoff=null;
   try{
-    if(currentRoute()==="songDetail39"&&typeof window.handoffWatchToMini399==="function")window.handoffWatchToMini399()
+    if(currentRoute()==="songDetail39"&&typeof window.handoffWatchToMini399==="function")handoff=window.handoffWatchToMini399()
   }catch(_){}
   savePlayback("background");
+  if(handoff&&typeof handoff.finally==="function")handoff.finally(function(){savePlayback("background-handoff")});
   try{document.documentElement.dataset.vocadiveAppState="background"}catch(_){}
 }
 function onForeground(){
