@@ -3349,7 +3349,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.48.0 · Mini Return · Dive Handoff · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Sea 2.0 · Sonar 2.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.49.0 · Mini Return · Dive Handoff · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Ocean Current 3.0 · Similar Sonar 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -7072,15 +7072,16 @@ async function buildUniverse(center,force=false){
   ensureUniverseToolbar39();
   recordUniverseCenter39(center);
   state.universeCenter=center;
-  $("#rebuildUniverseBtn").disabled=true;
-  $("#universeEmpty").style.display="grid";
-  $("#universeEmpty").innerHTML="비슷한 곡을 찾는 중…<br><small>태그별 후보를 모아 유사도를 계산합니다.</small>";
+  const universeRebuildBtn=$("#rebuildUniverseBtn");
+  const universeLoader=$("#universeEmpty");
+  if(universeRebuildBtn)universeRebuildBtn.disabled=true;
+  if(universeLoader){universeLoader.style.display="grid";universeLoader.innerHTML="비슷한 곡을 찾는 중…<br><small>태그별 후보를 모아 유사도를 계산합니다.</small>"}
 
   const cacheKey=sourceIdentity()+"|"+center.contentId+"|"+$("#universeSize").value+"|"+($("#universeDensity")?.value||"minimal");
   if(!force && state.universeCache.has(cacheKey)){
     state.universeData=state.universeCache.get(cacheKey);
     renderUniverse(state.universeData);
-    $("#rebuildUniverseBtn").disabled=false;
+    if(universeRebuildBtn)universeRebuildBtn.disabled=false;
     return;
   }
 
@@ -7122,10 +7123,9 @@ async function buildUniverse(center,force=false){
     state.universeData=data;
     renderUniverse(data);
   }catch(e){
-    $("#universeEmpty").style.display="grid";
-    $("#universeEmpty").innerHTML=`경로 생성 실패<br><small>${esc(String(e?.message||e))}</small>`;
+    if(universeLoader){universeLoader.style.display="grid";universeLoader.innerHTML=`경로 생성 실패<br><small>${esc(String(e?.message||e))}</small>`}
   }finally{
-    $("#rebuildUniverseBtn").disabled=false;
+    if(universeRebuildBtn)universeRebuildBtn.disabled=false;
   }
 }
 function seededAngle(id){
@@ -11536,6 +11536,196 @@ window.VSADiveSea48={render:renderSea48,setMode:function(m){seaMode48=m==="sonar
 function boot48(){ensure48();var d=currentData48();if(d)renderSea48(d)}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(boot48,30)});else setTimeout(boot48,30);
 window.addEventListener("popstate",function(){setTimeout(function(){ensure48();var d=currentData48();if(d)renderSea48(d)},20)});
+})();
+</script>
+
+
+<style id="v3949OceanCurrentStyle">
+/* v39.49 · one layer at a time */
+#universePanel.v3949-current #v39UniverseJourney{display:none!important}
+#universePanel.v3949-current .v394-universe-controls{display:none!important}
+#universePanel.v3949-current .v394-universe-quick{display:none!important}
+#universePanel.v3949-current .universe-layout{grid-template-columns:minmax(0,1fr) 300px!important;gap:11px!important;align-items:start!important}
+#universePanel.v3949-current .universe-stage{border:0!important;background:transparent!important;overflow:visible!important;min-height:0!important}
+#universePanel.v3949-current .universe-side{position:sticky;top:74px;max-height:calc(100dvh - 92px)!important;border:1px solid rgba(147,225,218,.14)!important;border-radius:20px!important;background:#071c25!important;overflow:auto!important}
+.oc49-toolbar{position:sticky;top:5px;z-index:70;display:flex;align-items:center;gap:6px;margin:0 0 8px;padding:6px;border:1px solid rgba(142,225,216,.16);border-radius:14px;background:rgba(5,24,32,.91);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 12px 32px rgba(0,8,15,.18)}
+.oc49-toolbar button{min-height:37px;padding:0 11px;border:1px solid rgba(136,217,209,.13);border-radius:10px;background:#0b3039;color:#bdded9;font-size:8px;font-weight:950;cursor:pointer}
+.oc49-toolbar button.active{border:0;background:linear-gradient(135deg,#71dfd4,#708ee9);color:#06171b}
+.oc49-toolbar button:disabled{opacity:.35;cursor:default}
+.oc49-depth{margin-left:auto;display:flex;align-items:center;gap:7px;padding:0 8px}.oc49-depth small{color:#759d98;font-size:6px;font-weight:950;letter-spacing:.12em}.oc49-depth b{color:#effdfa;font-size:10px;white-space:nowrap}
+.oc49-meter{width:72px;height:4px;border-radius:999px;background:#14333d;overflow:hidden}.oc49-meter i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#73e2d6,#727ee5);transition:.38s width}
+.oc49-scene{--oc-top:#0e6987;--oc-bottom:#071a2d;--oc-glow:rgba(104,226,213,.16);position:relative;min-height:680px;border-radius:24px;overflow:hidden;isolation:isolate;background:linear-gradient(180deg,var(--oc-top),var(--oc-bottom));box-shadow:0 20px 58px rgba(0,8,15,.24)}
+.oc49-scene[data-layer="surface"]{--oc-top:#38cfd0;--oc-bottom:#147da7;--oc-glow:rgba(236,255,249,.27)}
+.oc49-scene[data-layer="shallow"]{--oc-top:#1593b8;--oc-bottom:#0c567e;--oc-glow:rgba(190,255,247,.20)}
+.oc49-scene[data-layer="mid"]{--oc-top:#0c5c80;--oc-bottom:#092f55;--oc-glow:rgba(122,224,218,.14)}
+.oc49-scene[data-layer="deep"]{--oc-top:#0a3458;--oc-bottom:#0a1838;--oc-glow:rgba(89,194,203,.12)}
+.oc49-scene[data-layer="abyss"]{--oc-top:#101b3a;--oc-bottom:#050814;--oc-glow:rgba(111,93,216,.13)}
+.oc49-bg,.oc49-caustic,.oc49-specks,.oc49-bubbles,.oc49-vignette,.oc49-sonar-wave,.oc49-transition{position:absolute;inset:0;pointer-events:none!important}
+.oc49-bg{z-index:0;background:
+ radial-gradient(circle at 50% 35%,var(--oc-glow),transparent 30%),
+ linear-gradient(180deg,rgba(255,255,255,.025),transparent 36%)}
+.oc49-caustic{z-index:1;top:-8%;height:42%;opacity:.30;background:
+ linear-gradient(106deg,transparent 22%,rgba(236,255,250,.20) 29%,transparent 39%),
+ linear-gradient(76deg,transparent 52%,rgba(220,255,251,.13) 60%,transparent 69%);animation:oc49Light 10s ease-in-out infinite alternate}
+.oc49-scene[data-layer="deep"] .oc49-caustic,.oc49-scene[data-layer="abyss"] .oc49-caustic{opacity:.06}
+.oc49-specks{z-index:1;opacity:.26;background-image:radial-gradient(circle,rgba(216,255,251,.8) 0 1px,transparent 1.3px),radial-gradient(circle,rgba(111,212,218,.7) 0 1px,transparent 1.3px);background-size:89px 91px,137px 131px;animation:oc49Specks 22s linear infinite}
+.oc49-scene[data-layer="abyss"] .oc49-specks{opacity:.48;background-image:radial-gradient(circle,rgba(94,226,210,.85) 0 1px,transparent 1.5px),radial-gradient(circle,rgba(139,116,255,.72) 0 1px,transparent 1.5px)}
+.oc49-vignette{z-index:2;background:radial-gradient(ellipse at center,transparent 48%,rgba(0,7,16,.30) 100%)}
+.oc49-bubble{position:absolute;bottom:-25px;border:1px solid rgba(225,255,252,.37);border-radius:50%;opacity:.34;animation:oc49Bubble var(--dur) linear infinite;animation-delay:var(--delay)}
+.oc49-content{position:relative;z-index:5;min-height:680px;display:grid;grid-template-rows:auto 1fr auto;padding:16px}
+.oc49-layer-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;padding:3px 3px 0;color:#ecfffc}
+.oc49-layer-head small{display:block;font-size:7px;font-weight:950;letter-spacing:.14em;color:rgba(231,255,252,.68)}.oc49-layer-head h3{margin:4px 0 3px;font-size:24px;letter-spacing:-.05em}.oc49-layer-head p{margin:0;max-width:590px;color:rgba(218,245,241,.72);font-size:8px;line-height:1.5}
+.oc49-layer-badge{text-align:right}.oc49-layer-badge b{display:block;font-size:18px}.oc49-layer-badge span{font-size:7px;color:rgba(217,243,240,.67)}
+.oc49-map{position:relative;min-height:490px;margin-top:4px}
+.oc49-center{position:absolute;z-index:8;left:50%;top:50%;transform:translate(-50%,-50%);width:min(410px,48%);padding:11px;border:1px solid rgba(235,255,252,.22);border-radius:20px;background:rgba(4,24,34,.66);backdrop-filter:blur(14px);box-shadow:0 18px 42px rgba(0,8,17,.20)}
+.oc49-center-media{display:grid;grid-template-columns:128px minmax(0,1fr);gap:11px;align-items:center}.oc49-center img,.oc49-center .noimg{width:128px;aspect-ratio:16/9;border-radius:13px;object-fit:cover;background:#0d4654;display:grid;place-items:center;color:#a9eee8;font-size:26px}
+.oc49-center small{color:#8adbd3;font-size:7px;font-weight:950}.oc49-center h2{margin:5px 0 4px;color:#f4fffd;font-size:17px;line-height:1.28;letter-spacing:-.035em}.oc49-center p{margin:0;color:#a9cfcb;font-size:7px}
+.oc49-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.oc49-tags span{padding:4px 7px;border-radius:999px;background:rgba(11,59,68,.72);color:#b5ded9;font-size:6px}
+.oc49-center-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:9px}.oc49-center-actions button{min-height:35px;border:1px solid rgba(152,226,218,.15);border-radius:10px;background:#0d3540;color:#c8e6e2;font-size:7px;font-weight:950}.oc49-center-actions button.primary{border:0;background:linear-gradient(135deg,#72e0d5,#718ce8);color:#06171a}
+.oc49-node{position:absolute;z-index:7;width:190px;display:grid;grid-template-columns:70px minmax(0,1fr);gap:7px;align-items:center;padding:7px;border:1px solid rgba(218,252,248,.12);border-radius:14px;background:rgba(5,29,39,.60);backdrop-filter:blur(10px);box-shadow:0 10px 24px rgba(0,7,15,.13);cursor:pointer;transition:.16s transform,.16s border-color,.16s background}
+.oc49-node:hover,.oc49-node.selected{transform:scale(1.025);border-color:rgba(128,231,221,.46);background:rgba(6,45,55,.78)}
+.oc49-node img,.oc49-node .noimg{width:70px;aspect-ratio:16/9;border-radius:8px;object-fit:cover;background:#0c3d49;display:grid;place-items:center;color:#89cfc8}.oc49-node-copy{min-width:0}.oc49-node b{display:block;color:#effcf9;font-size:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.oc49-node small{display:block;margin-top:3px;color:#84aaa6;font-size:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.oc49-node em{display:inline-flex;margin-top:5px;padding:3px 6px;border-radius:999px;background:#10414a;color:#a7d8d3;font-size:6px;font-style:normal}
+.oc49-node.n0{left:3%;top:17%}.oc49-node.n1{right:3%;top:17%}.oc49-node.n2{left:2%;top:52%}.oc49-node.n3{right:2%;top:52%}.oc49-node.n4{left:15%;bottom:3%}.oc49-node.n5{right:15%;bottom:3%}
+.oc49-current-line{position:absolute;z-index:3;left:50%;top:50%;width:76%;height:62%;transform:translate(-50%,-50%);border:1px solid rgba(206,250,245,.09);border-radius:50%;pointer-events:none}
+.oc49-current-line:before,.oc49-current-line:after{content:"";position:absolute;inset:12%;border:1px solid rgba(206,250,245,.07);border-radius:50%}.oc49-current-line:after{inset:29%}
+.oc49-depth-nav{display:grid;grid-template-columns:1fr auto 1fr;gap:7px;align-items:center;margin-top:8px}
+.oc49-depth-nav button{min-height:44px;border:1px solid rgba(218,250,246,.13);border-radius:13px;background:rgba(4,28,39,.60);color:#d5eeeb;font-size:8px;font-weight:950;cursor:pointer}
+.oc49-depth-nav button:disabled{opacity:.34}.oc49-depth-nav span{text-align:center;color:rgba(222,249,246,.68);font-size:7px}
+.oc49-side-current{display:flex;justify-content:center;margin-top:7px}.oc49-side-current button{min-height:37px;padding:0 14px;border:1px solid rgba(215,249,245,.13);border-radius:999px;background:rgba(7,36,47,.65);color:#bdded9;font-size:7px;font-weight:900}
+.oc49-sonar-wave{z-index:4;left:50%;top:50%;width:230px;height:230px;inset:auto;transform:translate(-50%,-50%);border:1px solid rgba(111,231,219,.18);border-radius:50%;opacity:0}
+.oc49-scene.sonar .oc49-sonar-wave{opacity:1;animation:oc49Sonar 2.8s ease-out infinite;box-shadow:0 0 0 100px rgba(101,218,208,.025),0 0 0 200px rgba(101,218,208,.015)}
+.oc49-scene.sonar .oc49-current-line{border-color:rgba(118,233,222,.16)}
+.oc49-scene.sonar .oc49-node em{background:#153e52;color:#b8e9f3}
+.oc49-transition{z-index:30;display:grid;place-items:center;background:linear-gradient(180deg,rgba(78,199,206,.04),rgba(3,9,22,.58));opacity:0;transition:.15s opacity}
+.oc49-transition b{padding:9px 13px;border:1px solid rgba(225,255,251,.18);border-radius:999px;background:rgba(4,25,35,.82);color:#edfffc;font-size:9px;transform:translateY(24px);opacity:0}
+.oc49-scene.go-down .oc49-transition,.oc49-scene.go-up .oc49-transition,.oc49-scene.go-side .oc49-transition{opacity:1}
+.oc49-scene.go-down .oc49-content{animation:oc49LeaveDown .48s cubic-bezier(.25,.8,.3,1) both}.oc49-scene.go-up .oc49-content{animation:oc49LeaveUp .48s cubic-bezier(.25,.8,.3,1) both}.oc49-scene.go-side .oc49-content{animation:oc49LeaveSide .42s ease both}
+.oc49-scene.go-down .oc49-transition b,.oc49-scene.go-up .oc49-transition b,.oc49-scene.go-side .oc49-transition b{animation:oc49Label .34s ease both}
+.oc49-scene.enter-down .oc49-content{animation:oc49EnterDown .5s ease both}.oc49-scene.enter-up .oc49-content{animation:oc49EnterUp .5s ease both}.oc49-scene.enter-side .oc49-content{animation:oc49EnterSide .42s ease both}
+@keyframes oc49Light{from{transform:skewX(-5deg) translateX(-3%)}to{transform:skewX(5deg) translateX(4%)}}
+@keyframes oc49Specks{to{background-position:0 -300px,0 -440px}}
+@keyframes oc49Bubble{0%{transform:translate3d(0,0,0) scale(.8);opacity:0}10%{opacity:.35}100%{transform:translate3d(var(--drift),-760px,0) scale(1.15);opacity:0}}
+@keyframes oc49Sonar{0%{transform:translate(-50%,-50%) scale(.6);opacity:.78}100%{transform:translate(-50%,-50%) scale(1.55);opacity:0}}
+@keyframes oc49LeaveDown{to{transform:translateY(-86px) scale(.97);filter:blur(2px);opacity:.2}}@keyframes oc49LeaveUp{to{transform:translateY(86px) scale(.97);filter:blur(2px);opacity:.2}}@keyframes oc49LeaveSide{to{transform:translateX(-70px);filter:blur(1px);opacity:.25}}
+@keyframes oc49EnterDown{from{transform:translateY(78px);filter:blur(2px);opacity:.1}to{transform:none;filter:none;opacity:1}}@keyframes oc49EnterUp{from{transform:translateY(-78px);filter:blur(2px);opacity:.1}to{transform:none;filter:none;opacity:1}}@keyframes oc49EnterSide{from{transform:translateX(70px);opacity:.1}to{transform:none;opacity:1}}@keyframes oc49Label{to{transform:none;opacity:1}}
+@media(max-width:1050px){#universePanel.v3949-current .universe-layout{grid-template-columns:1fr!important}#universePanel.v3949-current .universe-side{position:relative;top:auto;max-height:none!important}.oc49-scene{min-height:650px}}
+@media(max-width:699px){
+ .oc49-toolbar{gap:4px;padding:5px}.oc49-toolbar button{min-height:39px;flex:1;padding:0 6px;font-size:7px}.oc49-depth{width:100%;margin:0;justify-content:center;padding:3px}.oc49-scene{min-height:660px;border-radius:18px}.oc49-content{min-height:660px;padding:10px}
+ .oc49-layer-head h3{font-size:19px}.oc49-layer-head p{font-size:7px}.oc49-layer-badge b{font-size:14px}
+ .oc49-map{min-height:485px}.oc49-center{top:46%;width:calc(100% - 20px);max-width:390px}.oc49-center-media{grid-template-columns:92px minmax(0,1fr)}.oc49-center img,.oc49-center .noimg{width:92px}.oc49-center h2{font-size:13px}.oc49-tags{display:none}
+ .oc49-node{width:46%;grid-template-columns:58px minmax(0,1fr);padding:6px}.oc49-node img,.oc49-node .noimg{width:58px}.oc49-node.n0{left:1%;top:2%}.oc49-node.n1{right:1%;top:2%}.oc49-node.n2{left:1%;top:auto;bottom:1%}.oc49-node.n3{right:1%;top:auto;bottom:1%}.oc49-node.n4,.oc49-node.n5{display:none}.oc49-current-line{width:88%;height:56%}
+ .oc49-depth-nav{grid-template-columns:1fr 1fr}.oc49-depth-nav span{grid-column:1/-1;grid-row:1}
+}
+@media(prefers-reduced-motion:reduce){.oc49-caustic,.oc49-specks,.oc49-bubble,.oc49-scene.sonar .oc49-sonar-wave,.oc49-scene[class*="go-"] .oc49-content,.oc49-scene[class*="enter-"] .oc49-content{animation:none!important}}
+</style>
+<script id="v3949OceanCurrent">
+(function(){
+"use strict";
+var ocMode49="explore",ocBusy49=false,ocBound49=false,ocEnter49="",ocSelected49="";
+var L49=[
+ {key:"surface",label:"SURFACE",ko:"수면층",meter:"0–30m",depth:"15m",desc:"가장 널리 알려진 곡과 입문곡이 떠 있는 밝은 해역"},
+ {key:"shallow",label:"SHALLOW",ko:"얕은층",meter:"30–150m",depth:"90m",desc:"유명곡과 익숙한 프로듀서·장르가 이어지는 얕은 해류"},
+ {key:"mid",label:"MID",ko:"중층",meter:"150–700m",depth:"420m",desc:"팬들이 본격적으로 파고드는 시대·보컬·장르의 교차 해역"},
+ {key:"deep",label:"DEEP",ko:"심층",meter:"700–2,500m",depth:"1,400m",desc:"조회수는 낮아져도 연결성이 살아 있는 숨은 곡 해역"},
+ {key:"abyss",label:"ABYSS",ko:"심해층",meter:"2,500m+",depth:"4,200m",desc:"아주 낮은 인지도와 의외의 연결이 살아 있는 심연 해역"}
+];
+function q49(s,r){return (r||document).querySelector(s)}
+function qa49(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))}
+function e49(s){return String(s==null?"":s).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
+function v49(n){return +((n&&n.viewCounter)||0)}
+function y49(n){try{return n&&n.startTime?new Date(n.startTime).getFullYear():"연도 미상"}catch(e){return "연도 미상"}}
+function f49(v){try{return typeof fmt==="function"?fmt(v):Number(v||0).toLocaleString()}catch(e){return String(v||0)}}
+function sh49(c,n){try{return typeof sharedTags==="function"?sharedTags(c,n).slice(0,3):((n&&n.shared)||[]).slice(0,3)}catch(e){return ((n&&n.shared)||[]).slice(0,3)}}
+function data49(){return typeof state!=="undefined"&&state.universeData?state.universeData:null}
+function layerIndex49(n){var x=v49(n);if(x>=1000000)return 0;if(x>=250000)return 1;if(x>=50000)return 2;if(x>=5000)return 3;return 4}
+function layer49(n){return L49[layerIndex49(n)]}
+function find49(id,d){return d&&(d.nodes||[]).find(function(n){return n&&n.contentId===id})}
+function bubble49(){var s="";for(var i=0;i<15;i++){var w=4+(i%4)*2,left=5+(i*43)%91,dur=8+(i%6)*2,delay=-(i%8)*1.3,drift=((i%2)?1:-1)*(8+(i%5)*7);s+='<i class="oc49-bubble" style="width:'+w+'px;height:'+w+'px;left:'+left+'%;--dur:'+dur+'s;--delay:'+delay+'s;--drift:'+drift+'px"></i>'}return s}
+function ensure49(){
+ var p=q49("#universePanel");if(!p)return;p.classList.add("v3949-current");
+ var h=q49("#v394UniverseHeader",p);if(h){var t=h.querySelector(".v394-universe-title");if(t)t.innerHTML='<small>VOCADIVE · OCEAN CURRENT 3.0</small><h2>다이브</h2><p>현재 곡이 실제로 속한 수층만 보여줍니다. 같은 해역의 유사곡을 훑거나, 위·아래 해류를 타고 다른 깊이로 이동하세요.</p>'}
+ var layout=p.querySelector(".universe-layout");
+ if(layout&&!q49("#oc49Toolbar",p)){var b=document.createElement("div");b.id="oc49Toolbar";b.className="oc49-toolbar";b.innerHTML='<button type="button" data-oc49-back>← 이전</button><button type="button" data-oc49-forward>다음 →</button><button type="button" data-oc49-mode="explore">해류 탐색</button><button type="button" data-oc49-mode="similar">≈ 유사곡</button><button type="button" data-oc49-random>랜덤 다이브</button><div class="oc49-depth"><small>DEPTH</small><b id="oc49Depth">—</b><span class="oc49-meter"><i id="oc49Meter"></i></span></div>';layout.parentNode.insertBefore(b,layout)}
+ bind49()
+}
+function syncToolbar49(center){
+ qa49("[data-oc49-mode]").forEach(function(b){b.classList.toggle("active",b.dataset.oc49Mode===ocMode49)});
+ var idx=layerIndex49(center),d=L49[idx],meter=q49("#oc49Meter"),txt=q49("#oc49Depth");if(txt)txt.textContent=d.depth+" · "+d.label;if(meter)meter.style.width=(10+idx*22.5)+"%";
+ var back=q49("[data-oc49-back]"),forward=q49("[data-oc49-forward]");
+ if(typeof state!=="undefined"){if(back)back.disabled=state.universeHistoryIndex<=0;if(forward)forward.disabled=state.universeHistoryIndex<0||state.universeHistoryIndex>=state.universeHistory.length-1}
+}
+function rank49(d,center){
+ var ci=layerIndex49(center),all=(d.nodes||[]).slice(1).filter(function(n){return n&&n.contentId});
+ var same=all.filter(function(n){return layerIndex49(n)===ci}).sort(function(a,b){return (+b.similarity||0)-(+a.similarity||0)||v49(b)-v49(a)});
+ var allSim=all.slice().sort(function(a,b){return (+b.similarity||0)-(+a.similarity||0)||v49(b)-v49(a)});
+ if(same.length<6)allSim.forEach(function(n){if(same.length<6&&!same.some(function(x){return x.contentId===n.contentId}))same.push(n)});
+ var up=all.filter(function(n){return layerIndex49(n)<ci}).sort(function(a,b){return (+b.similarity||0)-(+a.similarity||0)}); 
+ var down=all.filter(function(n){return layerIndex49(n)>ci}).sort(function(a,b){return (+b.similarity||0)-(+a.similarity||0)});
+ var used=new Set(same.slice(0,6).map(function(n){return n.contentId}));
+ var side=all.filter(function(n){var sim=+n.similarity||0;return !used.has(n.contentId)&&sim>=.18&&sim<=.68}).sort(function(a,b){return Math.abs((+a.similarity||0)-.42)-Math.abs((+b.similarity||0)-.42)});
+ return {same:same.slice(0,6),similar:allSim.slice(0,8),up:up,down:down,side:side}
+}
+function node49(n,c,i){
+ var sim=Math.round((+n.similarity||0)*100),li=layer49(n),shared=sh49(c,n);
+ return '<button type="button" class="oc49-node n'+i+'" data-oc49-select="'+e49(n.contentId)+'">'+(n.thumbnailUrl?'<img src="'+e49(n.thumbnailUrl)+'" loading="lazy" alt="">':'<span class="noimg">♪</span>')+'<span class="oc49-node-copy"><b>'+e49(n.title||n.contentId)+'</b><small>'+e49(shared.length?shared.join(" · "):(y49(n)+" · 조회 "+f49(v49(n))))+'</small><em>'+sim+'% · '+li.ko+'</em></span></button>'
+}
+function center49(c,d,li){
+ var tags=(d.queryTags||[]).slice(0,5);
+ return '<div class="oc49-center"><div class="oc49-center-media">'+(c.thumbnailUrl?'<img src="'+e49(c.thumbnailUrl)+'" alt="">':'<div class="noimg">♪</div>')+'<div><small>'+li.label+' · '+li.depth+'</small><h2>'+e49(c.title||c.contentId)+'</h2><p>'+y49(c)+' · 조회 '+f49(v49(c))+'</p><div class="oc49-tags">'+(tags.length?tags.map(function(x){return"<span>"+e49(x)+"</span>"}).join(""):"<span>해류 분석 중</span>")+'</div></div></div><div class="oc49-center-actions"><button type="button" data-oc49-detail="'+e49(c.contentId)+'">곡 상세</button><button type="button" class="primary" data-oc49-random>이 해역에서 랜덤</button></div></div>'
+}
+function scene49(d){
+ var c=d.center,li=layer49(c),r=rank49(d,c),nodes=(ocMode49==="similar"?r.similar:r.same).slice(0,6);
+ var ci=layerIndex49(c),up=r.up[0],down=r.down[0],side=r.side[0];
+ var title=ocMode49==="similar"?"유사곡 소나":"같은 수층 해류";
+ var desc=ocMode49==="similar"?"현재 수층 배경을 유지한 채 유사도 순으로 주변 곡을 탐지합니다.":li.desc;
+ return '<div class="oc49-scene '+(ocMode49==="similar"?"sonar":"")+'" data-layer="'+li.key+'"><div class="oc49-bg"></div><div class="oc49-caustic"></div><div class="oc49-specks"></div><div class="oc49-bubbles">'+bubble49()+'</div><div class="oc49-vignette"></div><div class="oc49-sonar-wave"></div><div class="oc49-content"><div class="oc49-layer-head"><div><small>'+li.label+' · '+li.meter+'</small><h3>'+title+' · '+li.ko+'</h3><p>'+desc+'</p></div><div class="oc49-layer-badge"><b>'+li.depth+'</b><span>현재 탐색 수심</span></div></div><div class="oc49-map"><div class="oc49-current-line"></div>'+nodes.map(function(n,i){return node49(n,c,i)}).join("")+center49(c,d,li)+'</div><div><div class="oc49-depth-nav"><button type="button" data-oc49-go="'+(up?e49(up.contentId):"")+'" data-oc49-dir="up" '+(up?"":"disabled")+'>↑ '+(ci>0?L49[ci-1].ko:"더 얕은 층 없음")+'</button><span>곡이 속한 층은 조회수·인지도 기준의 탐색 지표</span><button type="button" data-oc49-go="'+(down?e49(down.contentId):"")+'" data-oc49-dir="down" '+(down?"":"disabled")+'>↓ '+(ci<4?L49[ci+1].ko:"더 깊은 층 없음")+'</button></div><div class="oc49-side-current"><button type="button" data-oc49-go="'+(side?e49(side.contentId):"")+'" data-oc49-dir="side" '+(side?"":"disabled")+'>↝ 샛길 해류'+(side?" · "+Math.round((+side.similarity||0)*100)+"%":" 없음")+'</button></div></div></div><div class="oc49-transition"><b>해류를 따라 이동 중…</b></div></div>'
+}
+function side49(n,d){
+ var c=d.center,sim=n.contentId===c.contentId?100:Math.round((+n.similarity||0)*100),li=layer49(n),shared=n.contentId===c.contentId?(d.queryTags||[]).slice(0,5):sh49(c,n);
+ return '<div class="sea48-side-card"><div class="dive46-side-cover">'+(n.thumbnailUrl?'<img src="'+e49(n.thumbnailUrl)+'" alt="">':'<div class="noimg">♪</div>')+'</div><div class="dive46-side-kicker"><span class="dive46-badge">'+li.label+' · '+li.ko+'</span><span class="dive46-badge">유사도 '+sim+'%</span></div><h3>'+e49(n.title||n.contentId)+'</h3><div class="dive46-side-meta">'+li.depth+' · '+y49(n)+' · 조회 '+f49(v49(n))+'</div><div class="dive46-side-reason"><small>'+(n.contentId===c.contentId?"현재 곡의 핵심 태그":"현재 곡과 이어진 이유")+'</small><div>'+(shared.length?shared.map(function(x){return"<span>"+e49(x)+"</span>"}).join(""):"<span>의외의 샛길 해류</span>")+'</div></div><div class="sea48-side-actions">'+(n.contentId!==c.contentId?'<button type="button" class="primary" data-oc49-go="'+e49(n.contentId)+'" data-oc49-dir="'+(layerIndex49(n)>layerIndex49(c)?"down":layerIndex49(n)<layerIndex49(c)?"up":"side")+'">이 곡으로 이동</button>':'')+'<button type="button" data-oc49-detail="'+e49(n.contentId)+'">곡 상세</button><button type="button" data-oc49-pin="'+e49(n.contentId)+'">'+((typeof isUniversePinned39==="function"&&isUniversePinned39(n.contentId))?"핀 해제":"핀 고정")+'</button></div></div>'
+}
+function select49(id){
+ var d=data49(),n=find49(id,d);if(!n)return;ocSelected49=id;qa49(".oc49-node").forEach(function(x){x.classList.toggle("selected",x.dataset.oc49Select===id)});var info=q49("#universeInfo");if(info)info.innerHTML=side49(n,d)
+}
+function render49(d){
+ ensure49();syncToolbar49(d.center);
+ var loader=q49("#universeEmpty");if(loader)loader.style.display="none";
+ var stage=q49("#universePanel .universe-stage");if(stage){stage.innerHTML=scene49(d);if(ocEnter49){var s=q49(".oc49-scene",stage);if(s){s.classList.add("enter-"+ocEnter49);setTimeout(function(){s.classList.remove("enter-"+ocEnter49)},560)}ocEnter49=""}}
+ var info=q49("#universeInfo");if(info)info.innerHTML=side49(d.center,d)
+}
+function go49(id,dir){
+ if(ocBusy49||!id)return;var d=data49(),song=find49(id,d);if(!song)return;
+ ocBusy49=true;var sc=q49(".oc49-scene");if(sc)sc.classList.add("go-"+dir);
+ setTimeout(function(){var p;
+   try{p=typeof buildUniverse==="function"?buildUniverse(song,false):(window.centerUniverseOnId39?window.centerUniverseOnId39(id):null)}
+   catch(e){ocBusy49=false;return}
+   Promise.resolve(p).catch(function(){}).finally(function(){ocEnter49=dir;ocBusy49=false})
+ },470)
+}
+function random49(){
+ if(ocBusy49)return;var d=data49();if(!d)return;var c=d.center,r=rank49(d,c),pool;
+ if(ocMode49==="similar")pool=r.similar.slice(0,8);else pool=r.same.slice(0,6).concat(r.down.slice(0,2)).concat(r.side.slice(0,2));
+ pool=pool.filter(function(n){return n&&n.contentId!==c.contentId});if(!pool.length)pool=(d.nodes||[]).slice(1);if(!pool.length)return;
+ var n=pool[Math.floor(Math.random()*pool.length)],a=layerIndex49(n),b=layerIndex49(c),dir=a>b?"down":a<b?"up":"side";go49(n.contentId,dir)
+}
+function bind49(){
+ var p=q49("#universePanel");if(!p||ocBound49)return;ocBound49=true;
+ p.addEventListener("click",function(ev){var t=ev.target.closest&&ev.target.closest("button,[data-oc49-select]");if(!t)return;
+   if(t.matches("[data-oc49-back]")){ev.preventDefault();ev.stopImmediatePropagation();if(typeof navigateUniverseHistory39==="function")navigateUniverseHistory39(-1);return}
+   if(t.matches("[data-oc49-forward]")){ev.preventDefault();ev.stopImmediatePropagation();if(typeof navigateUniverseHistory39==="function")navigateUniverseHistory39(1);return}
+   if(t.matches("[data-oc49-mode]")){ev.preventDefault();ev.stopImmediatePropagation();ocMode49=t.dataset.oc49Mode==="similar"?"similar":"explore";var d=data49();if(d)render49(d);return}
+   if(t.matches("[data-oc49-random]")){ev.preventDefault();ev.stopImmediatePropagation();random49();return}
+   var go=t.closest("[data-oc49-go]");if(go){ev.preventDefault();ev.stopImmediatePropagation();if(!go.disabled)go49(go.dataset.oc49Go,go.dataset.oc49Dir||"side");return}
+   var sel=t.closest("[data-oc49-select]");if(sel){ev.preventDefault();ev.stopImmediatePropagation();select49(sel.dataset.oc49Select);return}
+   var detail=t.closest("[data-oc49-detail]");if(detail){ev.preventDefault();ev.stopImmediatePropagation();if(window.VSAOpenSong39)window.VSAOpenSong39(detail.dataset.oc49Detail,true);return}
+   var pin=t.closest("[data-oc49-pin]");if(pin){ev.preventDefault();ev.stopImmediatePropagation();if(window.toggleUniversePin39)window.toggleUniversePin39(pin.dataset.oc49Pin);pin.textContent=(typeof isUniversePinned39==="function"&&isUniversePinned39(pin.dataset.oc49Pin))?"핀 해제":"핀 고정";return}
+ },true)
+}
+window.renderUniverse=render49;
+window.VSADiveOcean49={render:render49,random:random49,go:go49,setMode:function(m){ocMode49=m==="similar"?"similar":"explore";var d=data49();if(d)render49(d)}};
+function boot49(){ensure49();var d=data49();if(d)render49(d)}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(boot49,40)});else setTimeout(boot49,40);
+window.addEventListener("popstate",function(){setTimeout(function(){ensure49();var d=data49();if(d)render49(d)},20)});
 })();
 </script>
 
