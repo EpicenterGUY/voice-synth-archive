@@ -3349,7 +3349,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.52.0 · Mini Return · Dive Handoff · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.2 · Mobile Dive UX · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.53.0 · Mini Return · Dive Handoff · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.3 · Original Scope · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -4389,7 +4389,70 @@ function filterDiscoveryOriginalRows37(rows,context,mode=state.sourceMode){
   if(rejected.length)console.info("[discovery-original]",context,"rejected",rejected.length);
   return {rows:kept,rejected:rejected.length,rejectedRows:rejected}
 }
+
 window.VSA37DiscoveryOriginalRows=filterDiscoveryOriginalRows37;
+
+/* v39.53 · Dive content scope
+ * 다이브 기본 모집단은 항상 음성합성 오리지널곡.
+ * 커버/歌ってみた 및 기타 파생 영상은 명시적으로 별도 모드에서만 사용한다.
+ */
+const DIVE_CONTENT_SESSION_KEY53="vsa.dive.contentMode.v3953";
+const DIVE_COVER_RE53=/(?:^|[\s　,、/【】\[\]()（）・])(?:歌ってみた|歌ってみました|歌わせてみた|歌ってもらった|歌っていただいた|VOCALOIDカバー曲|UTAUカバー曲|SynthesizerVカバー曲|SynthVカバー曲|CeVIOカバー曲|VoiSonaカバー曲|NEUTRINOカバー曲|VOICEVOXカバー曲|ボカロカバー|カバー曲|cover|covered)(?:$|[\s　,、/【】\[\]()（）・])/i;
+const DIVE_DERIVATIVE_RE53=/(?:歌ってみた|歌ってみました|歌わせてみた|歌ってもらった|VOCALOIDカバー曲|UTAUカバー曲|SynthesizerVカバー曲|SynthVカバー曲|CeVIOカバー曲|VoiSonaカバー曲|NEUTRINOカバー曲|VOICEVOXカバー曲|ボカロカバー|カバー曲|cover|covered|踊ってみた|演奏してみた|弾いてみた|吹いてみた|叩いてみた|ベース弾いてみた|ギター弾いてみた|ニコカラ|カラオケ|MMD|VOCALOIDMMD|UTAU_MMD|MAD)/i;
+function diveContentMode53(){
+  try{
+    const v=sessionStorage.getItem(DIVE_CONTENT_SESSION_KEY53);
+    return v==="cover"||v==="derivative"?v:"original"
+  }catch(_){return "original"}
+}
+function diveContentLabel53(mode=diveContentMode53()){
+  return mode==="cover"?"歌ってみた·커버":mode==="derivative"?"파생 전체":"오리지널곡"
+}
+function diveSongText53(song){
+  return [song&&song.title,song&&song.description].concat(parseTags(song&&song.tags)).filter(Boolean).join(" ")
+}
+function diveSongKind53(song){
+  const text=diveSongText53(song);
+  const original=discoveryOriginalProof37(song,"all_voice_synth_union").ok;
+  if(DIVE_COVER_RE53.test(text))return "cover";
+  if(DIVE_DERIVATIVE_RE53.test(text))return "derivative";
+  if(original)return "original";
+  return "unknown"
+}
+function diveSongMatchesContentMode53(song,mode=diveContentMode53()){
+  const kind=diveSongKind53(song);
+  if(mode==="original")return kind==="original";
+  if(mode==="cover")return kind==="cover";
+  if(mode==="derivative")return kind==="cover"||kind==="derivative";
+  return false
+}
+function filterDiveContentRows53(rows,context,mode=diveContentMode53()){
+  const list=Array.isArray(rows)?rows:[],kept=[],rejected=[];
+  for(const song of list){
+    if(diveSongMatchesContentMode53(song,mode))kept.push(song);else rejected.push(song)
+  }
+  const key=(context||"dive")+"_content_"+mode;
+  if(typeof state!=="undefined"&&state.sourceRejectStats){
+    state.sourceRejectStats[key]={checked:list.length,kept:kept.length,rejected:rejected.length,mode:mode,at:Date.now()}
+  }
+  return {rows:kept,rejected:rejected.length,rejectedRows:rejected,mode:mode}
+}
+function setDiveContentMode53(mode){
+  const next=mode==="cover"||mode==="derivative"?mode:"original";
+  try{sessionStorage.setItem(DIVE_CONTENT_SESSION_KEY53,next)}catch(_){}
+  try{
+    if(state.universeCache)state.universeCache.clear();
+    state.universeData=null;state.universeCenter=null;
+    state.universeHistory=[];state.universeHistoryIndex=-1;state.universeHistoryNavigating=false
+  }catch(_){}
+  document.dispatchEvent(new CustomEvent("vsa:dive-content-mode",{detail:{mode:next,label:diveContentLabel53(next)}}));
+  return next
+}
+window.VSA53DiveContent={
+  get:diveContentMode53,set:setDiveContentMode53,label:diveContentLabel53,
+  kind:diveSongKind53,matches:diveSongMatchesContentMode53,filter:filterDiveContentRows53
+};
+window.VSA53DiveFilterRows=filterDiveContentRows53;
 
 function strictFilterSourceRows37(rows,context){
   const list=Array.isArray(rows)?rows:[];
@@ -7086,7 +7149,7 @@ async function buildUniverse(center,force=false){
   if(universeRebuildBtn)universeRebuildBtn.disabled=true;
   if(universeLoader){universeLoader.style.display="grid";universeLoader.innerHTML="비슷한 곡을 찾는 중…<br><small>태그별 후보를 모아 유사도를 계산합니다.</small>"}
 
-  const cacheKey=sourceIdentity()+"|"+center.contentId+"|"+$("#universeSize").value+"|"+($("#universeDensity")?.value||"minimal");
+  const cacheKey=sourceIdentity()+"|dive:"+diveContentMode53()+"|"+center.contentId+"|"+$("#universeSize").value+"|"+($("#universeDensity")?.value||"minimal");
   if(!force && state.universeCache.has(cacheKey)){
     state.universeData=state.universeCache.get(cacheKey);
     (window.renderUniverse||renderUniverse)(state.universeData);
@@ -7101,8 +7164,8 @@ async function buildUniverse(center,force=false){
 
     const batches=await mapLimit(queryTags,3,tag=>fetchTagCandidates(tag,40));
     const map=new Map();
-    const universeVerified=filterDiscoveryOriginalRows37(batches.flat(),"universe");
-    const universeSafe=filterAdultRows37(universeVerified.rows,"universe");
+    const universeScoped=filterDiveContentRows53(batches.flat(),"universe",diveContentMode53());
+    const universeSafe=filterAdultRows37(universeScoped.rows,"universe");
     for(const rows of universeSafe.rows){
       if(rows.contentId===center.contentId) continue;
       map.set(rows.contentId,rows);
@@ -10846,7 +10909,7 @@ function ensure(name){
   else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.45.0","./smart-v23.js?v=39.45.0","./playlist-v24.js?v=39.45.0"]);
   else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.45.0");
   else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.45.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.52.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.53.0");
   else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.45.0");
   else if(name==="deviceSync")groups[name]=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.45.0");
   else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.45.0");
@@ -11840,7 +11903,7 @@ function trail50(){
 }
 function ensure50(){
  var p=q50("#universePanel");if(!p)return;p.classList.add("v3950-graph");
- var h=q50("#v394UniverseHeader",p);if(h){var t=h.querySelector(".v394-universe-title");if(t)t.innerHTML='<small>VOCADIVE · DIVE GRAPH 4.2</small><h2>다이브</h2><p>한 곡을 중심으로 유사곡은 거리로, 수층 이동은 후보 선택으로, 지나온 길은 Dive Trail로 이어집니다.</p>'}
+ var h=q50("#v394UniverseHeader",p);if(h){var t=h.querySelector(".v394-universe-title");if(t)t.innerHTML='<small>VOCADIVE · DIVE GRAPH 4.3</small><h2>다이브</h2><p>기본은 음성합성 오리지널곡. 커버·歌ってみた·파생 영상은 별도 모드로 분리하며, 유사곡과 수층 이동도 같은 모집단 안에서 이어집니다.</p>'}
  var layout=p.querySelector(".universe-layout");
  if(layout&&!q50("#dg50Toolbar",p)){var b=document.createElement("div");b.id="dg50Toolbar";b.className="dg50-toolbar";b.innerHTML='<button type="button" data-dg50-back>← 이전</button><button type="button" data-dg50-forward>다음 →</button><button type="button" data-dg50-mode="explore">해류 탐색</button><button type="button" data-dg50-mode="similar">≈ 유사곡 소나</button><span id="dg50TrailMount"></span>';layout.parentNode.insertBefore(b,layout)}
  bind50()
