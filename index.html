@@ -3349,7 +3349,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.47.0 · Mini Return · Dive Handoff · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Path 1.1 · Similar Only 1.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.48.0 · Mini Return · Dive Handoff · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Sea 2.0 · Sonar 2.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -11205,6 +11205,321 @@ window.renderUniverse=function(data){
 function boot47(){ensureButton47();var data=(typeof state!=="undefined"&&state.universeData)?state.universeData:null;if(data)window.renderUniverse(data)}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(boot47,20)});else setTimeout(boot47,20);
 window.addEventListener("popstate",function(){setTimeout(ensureButton47,20)});
+})();
+</script>
+
+
+<style id="v3948DiveSeaStyle">
+/* v39.48 · Dive Sea 2.0 */
+body.v37-ready #universePanel.v3948-sea{--sea-accent:#68ddd2;--sea-card:rgba(7,30,39,.80)}
+#universePanel.v3948-sea .v394-universe-title small{color:#7ce5da!important}
+#universePanel.v3948-sea .v394-universe-title h2{letter-spacing:-.05em}
+#universePanel.v3948-sea .v394-universe-title p{max-width:700px}
+#universePanel.v3948-sea #v3947SimilarToggle{display:none!important}
+#universePanel.v3948-sea .universe-density-control{display:none!important}
+#universePanel.v3948-sea .universe-layout{grid-template-columns:minmax(0,1.65fr) minmax(280px,.35fr)!important;gap:12px!important;align-items:start!important}
+#universePanel.v3948-sea .universe-stage{min-height:0!important;overflow:visible!important;border:0!important;background:transparent!important;touch-action:pan-y!important}
+#universePanel.v3948-sea .universe-stage:after{display:none!important}
+#universePanel.v3948-sea .universe-side{position:sticky;top:76px;max-height:calc(100dvh - 96px)!important;border:1px solid rgba(120,214,207,.13)!important;border-radius:20px!important;background:linear-gradient(160deg,#09242b,#061820)!important;overflow:auto!important}
+.sea48-modebar{
+  position:sticky;top:7px;z-index:34;display:flex;gap:7px;align-items:center;flex-wrap:wrap;
+  margin:0 0 9px;padding:7px;border:1px solid rgba(129,222,214,.16);border-radius:15px;
+  background:rgba(5,25,33,.88);backdrop-filter:blur(18px) saturate(1.12);-webkit-backdrop-filter:blur(18px) saturate(1.12);
+  box-shadow:0 10px 30px rgba(0,9,15,.18)
+}
+.sea48-modebar button{
+  min-height:36px;padding:0 12px;border:1px solid rgba(118,213,204,.15);border-radius:11px;
+  background:#0c3038;color:#b9dad6;font-size:8px;font-weight:950;cursor:pointer
+}
+.sea48-modebar button.active{border:0;background:linear-gradient(135deg,#70ded4,#6d91eb);color:#06171b}
+.sea48-modebar .sea48-depth-readout{margin-left:auto;display:flex;gap:7px;align-items:center;padding:0 7px}
+.sea48-depth-readout small{color:#6f9793;font-size:6px;font-weight:900;letter-spacing:.08em}
+.sea48-depth-readout b{color:#e9fbf8;font-size:11px}
+.sea48-depth-track{width:68px;height:4px;border-radius:999px;background:#15333e;overflow:hidden}
+.sea48-depth-track i{display:block;width:4%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#75e5da,#697fe3);transition:.35s width}
+.sea48-ocean{position:relative;border-radius:24px;overflow:hidden;background:#071b24;isolation:isolate;box-shadow:0 18px 55px rgba(0,8,14,.22)}
+.sea48-ocean-bg,.sea48-light,.sea48-particles,.sea48-bubbles,.sea48-pressure{position:absolute;inset:0;z-index:0;pointer-events:none!important}
+.sea48-ocean-bg{
+  background:
+    linear-gradient(180deg,
+      #3fd6d3 0%,
+      #1591bd 10%,
+      #0d6f99 22%,
+      #084b72 40%,
+      #082f53 58%,
+      #091c3b 74%,
+      #080f25 89%,
+      #050815 100%);
+}
+.sea48-light{
+  height:30%;opacity:.34;transform-origin:50% 0;
+  background:
+    linear-gradient(104deg,transparent 23%,rgba(220,255,249,.22) 29%,transparent 38%),
+    linear-gradient(78deg,transparent 50%,rgba(208,255,251,.14) 58%,transparent 68%);
+  animation:sea48Light 11s ease-in-out infinite alternate
+}
+.sea48-particles{
+  opacity:.23;background-image:
+    radial-gradient(circle,rgba(215,255,250,.85) 0 1px,transparent 1.3px),
+    radial-gradient(circle,rgba(132,220,224,.7) 0 1px,transparent 1.4px);
+  background-size:73px 79px,113px 109px;background-position:17px 31px,46px 7px;
+  animation:sea48Particles 20s linear infinite
+}
+.sea48-pressure{top:58%;background:linear-gradient(180deg,transparent,rgba(3,5,18,.25) 45%,rgba(3,4,13,.46));}
+.sea48-bubble{position:absolute;bottom:-35px;width:7px;height:7px;border:1px solid rgba(211,255,251,.38);border-radius:50%;opacity:.38;animation:sea48Bubble var(--dur) linear infinite;animation-delay:var(--delay)}
+.sea48-bubble:nth-child(3n){width:4px;height:4px}.sea48-bubble:nth-child(4n){width:11px;height:11px;opacity:.24}
+@keyframes sea48Bubble{0%{transform:translate3d(0,0,0) scale(.75);opacity:0}10%{opacity:.38}100%{transform:translate3d(var(--drift),-1200px,0) scale(1.18);opacity:0}}
+@keyframes sea48Light{from{transform:skewX(-4deg) translateX(-2%);opacity:.26}to{transform:skewX(5deg) translateX(3%);opacity:.42}}
+@keyframes sea48Particles{from{background-position:17px 31px,46px 7px}to{background-position:17px -220px,46px -330px}}
+.sea48-content{position:relative;z-index:3}
+.sea48-start{position:relative;padding:21px 17px 23px;min-height:310px;display:grid;place-items:center;text-align:center}
+.sea48-waterline{position:absolute;left:0;right:0;top:0;height:23px;opacity:.5;background:
+  radial-gradient(ellipse at 20% 0,rgba(237,255,252,.46),transparent 48%),
+  radial-gradient(ellipse at 65% 0,rgba(237,255,252,.28),transparent 52%)}
+.sea48-start-card{width:min(720px,calc(100% - 12px));display:grid;grid-template-columns:150px minmax(0,1fr);gap:15px;align-items:center;padding:13px;text-align:left;border:1px solid rgba(232,255,252,.23);border-radius:20px;background:rgba(5,40,49,.58);backdrop-filter:blur(15px);box-shadow:0 16px 40px rgba(0,20,31,.19)}
+.sea48-start-card img,.sea48-start-card .noimg{width:150px;aspect-ratio:16/9;border-radius:14px;object-fit:cover;background:#0d5967;display:grid;place-items:center;font-size:28px;color:#bff8f2}
+.sea48-kicker{display:flex;gap:6px;flex-wrap:wrap}.sea48-pill{display:inline-flex;align-items:center;min-height:23px;padding:0 8px;border:1px solid rgba(223,255,251,.17);border-radius:999px;background:rgba(5,35,45,.50);color:#c2f1eb;font-size:7px;font-weight:950}
+.sea48-start-card h3{margin:7px 0 4px;font-size:20px;color:#f4fffd;line-height:1.25;letter-spacing:-.04em}.sea48-start-card p{margin:0;color:#b1d8d4;font-size:8px}
+.sea48-start-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.sea48-start-tags span{padding:4px 7px;border-radius:999px;background:rgba(5,40,50,.62);color:#b9dfdb;font-size:7px}
+.sea48-dive-cue{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:grid;place-items:center;color:#d4f8f4;font-size:7px;font-weight:900;opacity:.78;animation:sea48Cue 1.8s ease-in-out infinite}
+.sea48-dive-cue i{font-style:normal;font-size:17px;line-height:1}@keyframes sea48Cue{50%{transform:translate(-50%,5px);opacity:.45}}
+.sea48-layer{position:relative;min-height:500px;padding:42px 15px 55px;border-top:1px solid rgba(223,255,252,.08)}
+.sea48-layer[data-depth="shallow"]{min-height:520px}
+.sea48-layer[data-depth="mid"]{min-height:560px}
+.sea48-layer[data-depth="deep"]{min-height:600px}
+.sea48-layer[data-depth="abyss"]{min-height:660px}
+.sea48-layer-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:0 auto 13px;width:min(920px,100%)}
+.sea48-layer-head small{display:block;color:rgba(215,250,247,.63);font-size:7px;font-weight:950;letter-spacing:.14em}.sea48-layer-head h3{margin:4px 0 3px;color:#f0fdfb;font-size:22px;letter-spacing:-.045em}.sea48-layer-head p{margin:0;color:rgba(192,226,224,.67);font-size:8px}
+.sea48-depth-number{text-align:right}.sea48-depth-number b{display:block;color:#e9fbf8;font-size:18px}.sea48-depth-number span{color:#91b7b5;font-size:7px}
+.sea48-school{width:min(920px,100%);margin:auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.sea48-song{
+  min-width:0;display:grid;grid-template-columns:102px minmax(0,1fr);gap:10px;align-items:center;
+  padding:9px;border:1px solid rgba(197,242,237,.11);border-radius:16px;background:rgba(5,25,35,.52);
+  backdrop-filter:blur(10px);transition:.18s transform,.18s border-color,.18s background;box-shadow:0 10px 25px rgba(0,8,17,.10)
+}
+.sea48-song:hover,.sea48-song.selected{transform:translateY(-2px);border-color:rgba(125,231,220,.40);background:rgba(7,40,50,.69)}
+.sea48-song img,.sea48-song .noimg{width:102px;aspect-ratio:16/9;border-radius:10px;object-fit:cover;background:#0d3b4a;display:grid;place-items:center;color:#8fded7}
+.sea48-song-main{min-width:0}.sea48-song-main b{display:block;color:#effbf9;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sea48-song-main>small{display:block;margin-top:3px;color:#82aaa6;font-size:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sea48-song-meta{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-top:7px}.sea48-song-meta span{font-size:6px;padding:3px 6px;border-radius:999px;background:rgba(19,67,76,.68);color:#9fcac6}.sea48-song-meta .sim{color:#c7f7f2}
+.sea48-song-actions{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:1px}
+.sea48-song-actions button{min-height:34px;border:1px solid rgba(130,221,212,.13);border-radius:10px;background:rgba(7,41,49,.76);color:#bcded9;font-size:7px;font-weight:950;cursor:pointer}
+.sea48-song-actions button.primary{border:0;background:linear-gradient(135deg,rgba(105,224,212,.94),rgba(101,126,224,.96));color:#06171b}
+.sea48-empty-layer{grid-column:1/-1;min-height:120px;display:grid;place-items:center;text-align:center;border:1px dashed rgba(185,229,225,.16);border-radius:16px;color:#82a7a3;font-size:8px}
+.sea48-current{position:absolute;left:10px;top:50%;transform:translateY(-50%);writing-mode:vertical-rl;color:rgba(206,245,241,.24);font-size:7px;font-weight:950;letter-spacing:.15em}
+.sea48-abyss-glow{position:absolute;left:50%;bottom:7%;width:160px;height:110px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle,rgba(77,197,188,.12),transparent 65%);filter:blur(7px);pointer-events:none}
+.sea48-side-card{padding:13px}.sea48-side-card .dive46-side-cover{box-shadow:0 10px 28px rgba(0,5,13,.2)}
+.sea48-side-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}.sea48-side-actions button{min-height:37px;border:1px solid rgba(118,207,199,.15);border-radius:10px;background:#0d3037;color:#c7e3df;font-size:8px;font-weight:950}.sea48-side-actions .primary{grid-column:1/-1;border:0;background:linear-gradient(135deg,#6bded3,#708ce9);color:#06171b}
+.sea48-dive-overlay{position:absolute;inset:0;z-index:25;pointer-events:none;display:grid;place-items:center;background:linear-gradient(180deg,rgba(52,183,194,.08),rgba(3,12,27,.58));opacity:0;transition:.16s opacity}
+.sea48-dive-overlay span{padding:9px 13px;border:1px solid rgba(209,255,250,.18);border-radius:999px;background:rgba(4,26,36,.74);color:#e8fffc;font-size:9px;font-weight:950;transform:translateY(-35px);opacity:0}
+.sea48-ocean.diving .sea48-dive-overlay{opacity:1}.sea48-ocean.diving .sea48-dive-overlay span{animation:sea48DiveLabel .52s ease both}.sea48-ocean.diving .sea48-content{animation:sea48Sink .52s cubic-bezier(.24,.75,.32,1) both}
+@keyframes sea48Sink{to{transform:translateY(-46px) scale(.985);filter:blur(1.4px);opacity:.42}}@keyframes sea48DiveLabel{to{transform:translateY(0);opacity:1}}
+/* Sonar */
+.sea48-sonar{position:relative;min-height:760px;padding:20px 14px 44px;overflow:hidden;background:linear-gradient(180deg,#092d3b,#061729 55%,#050c1b)}
+.sea48-sonar:before,.sea48-sonar:after{content:"";position:absolute;left:50%;top:180px;transform:translate(-50%,-50%);border:1px solid rgba(103,225,213,.12);border-radius:50%;pointer-events:none}
+.sea48-sonar:before{width:500px;height:500px;box-shadow:0 0 0 90px rgba(89,212,202,.025),0 0 0 180px rgba(89,212,202,.018);animation:sea48Sonar 4s ease-out infinite}
+.sea48-sonar:after{width:260px;height:260px}
+@keyframes sea48Sonar{0%{opacity:.8;transform:translate(-50%,-50%) scale(.55)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.25)}}
+.sea48-sonar-head{position:relative;z-index:3;width:min(900px,100%);margin:auto;display:grid;grid-template-columns:110px minmax(0,1fr) auto;gap:12px;align-items:center;padding:11px;border:1px solid rgba(110,220,210,.16);border-radius:17px;background:rgba(5,35,46,.72);backdrop-filter:blur(14px)}
+.sea48-sonar-head img,.sea48-sonar-head .noimg{width:110px;aspect-ratio:16/9;border-radius:11px;object-fit:cover;background:#0d3b4c;display:grid;place-items:center;color:#76d8ce}
+.sea48-sonar-head small{color:#70d9cf;font-size:7px;font-weight:950}.sea48-sonar-head h3{margin:4px 0;color:#effdfa;font-size:16px}.sea48-sonar-head p{margin:0;color:#89aaa8;font-size:7px}
+.sea48-sonar-filter{display:flex;gap:5px;flex-wrap:wrap}.sea48-sonar-filter button{min-height:31px;padding:0 9px;border:1px solid rgba(110,218,209,.14);border-radius:999px;background:#0a303b;color:#9fc7c3;font-size:7px;font-weight:900}.sea48-sonar-filter button.active{background:#17505a;color:#eafffc;border-color:#4d9f9b}
+.sea48-sonar-list{position:relative;z-index:3;width:min(900px,100%);margin:14px auto 0;display:grid;gap:7px}
+.sea48-sonar-row{display:grid;grid-template-columns:38px 88px minmax(0,1fr) auto;gap:9px;align-items:center;padding:8px;border:1px solid rgba(115,210,202,.09);border-radius:14px;background:rgba(5,27,38,.67);backdrop-filter:blur(10px);cursor:pointer}
+.sea48-sonar-row:hover,.sea48-sonar-row.selected{border-color:rgba(109,228,216,.37);background:rgba(7,43,53,.77)}
+.sea48-sonar-rank{text-align:center;color:#6faaa4;font-size:10px;font-weight:950}.sea48-sonar-row:nth-child(-n+3) .sea48-sonar-rank{color:#77e3d8}
+.sea48-sonar-row img,.sea48-sonar-row .noimg{width:88px;aspect-ratio:16/9;border-radius:9px;object-fit:cover;background:#103b48;display:grid;place-items:center;color:#78bdb7}
+.sea48-sonar-copy{min-width:0}.sea48-sonar-copy b{display:block;color:#edfafa;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sea48-sonar-copy small{display:block;margin-top:3px;color:#759c98;font-size:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sea48-sonar-score{text-align:right}.sea48-sonar-score b{display:block;color:#75e4d9;font-size:14px}.sea48-sonar-score small{font-size:6px;color:#668e8b}
+@media(max-width:980px){
+ #universePanel.v3948-sea .universe-layout{grid-template-columns:1fr!important}
+ #universePanel.v3948-sea .universe-side{position:relative;top:auto;max-height:none!important}
+ .sea48-layer{min-height:460px}.sea48-school{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:699px){
+ .sea48-modebar{top:5px;border-radius:13px;gap:5px;padding:5px}.sea48-modebar button{flex:1;min-height:39px;padding:0 7px;font-size:7px}.sea48-modebar .sea48-depth-readout{width:100%;margin-left:0;justify-content:center;padding:3px 4px}
+ .sea48-ocean{border-radius:18px}.sea48-start{min-height:270px;padding:16px 10px 29px}.sea48-start-card{grid-template-columns:92px minmax(0,1fr);gap:9px;padding:9px}.sea48-start-card img,.sea48-start-card .noimg{width:92px}.sea48-start-card h3{font-size:14px}.sea48-start-tags{display:none}
+ .sea48-layer{min-height:0!important;padding:35px 9px 47px}.sea48-layer-head h3{font-size:18px}.sea48-depth-number b{font-size:14px}.sea48-current{display:none}
+ .sea48-school{grid-template-columns:1fr;gap:7px}.sea48-song{grid-template-columns:82px minmax(0,1fr);padding:8px}.sea48-song img,.sea48-song .noimg{width:82px}.sea48-song-actions button{min-height:38px}
+ .sea48-sonar{min-height:620px;padding:10px 8px 35px}.sea48-sonar-head{grid-template-columns:82px minmax(0,1fr);gap:8px;padding:8px}.sea48-sonar-head img,.sea48-sonar-head .noimg{width:82px}.sea48-sonar-head h3{font-size:13px}.sea48-sonar-filter{grid-column:1/-1}
+ .sea48-sonar-row{grid-template-columns:28px 70px minmax(0,1fr) auto;gap:6px;padding:7px}.sea48-sonar-row img,.sea48-sonar-row .noimg{width:70px}.sea48-sonar-score b{font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){.sea48-light,.sea48-particles,.sea48-bubble,.sea48-dive-cue,.sea48-sonar:before{animation:none!important}.sea48-ocean.diving .sea48-content,.sea48-ocean.diving .sea48-dive-overlay span{animation:none!important}}
+</style>
+<script id="v3948DiveSea">
+(function(){
+"use strict";
+var seaMode48="dive",sonarMin48=0,seaBusy48=false,observer48=null,delegateBound48=false;
+function q48(s,r){return (r||document).querySelector(s)}
+function qa48(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))}
+function e48(s){return String(s==null?"":s).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]})}
+function views48(n){return +((n&&n.viewCounter)||0)}
+function year48(n){try{return n&&n.startTime?new Date(n.startTime).getFullYear():"연도 미상"}catch(e){return "연도 미상"}}
+function fmt48(v){try{return typeof fmt==="function"?fmt(v):Number(v||0).toLocaleString()}catch(e){return String(v||0)}}
+function shared48(c,n){try{return typeof sharedTags==="function"?sharedTags(c,n).slice(0,3):((n&&n.shared)||[]).slice(0,3)}catch(e){return ((n&&n.shared)||[]).slice(0,3)}}
+function currentData48(){return typeof state!=="undefined"&&state.universeData?state.universeData:null}
+function findSong48(id,data){return data&&(data.nodes||[]).find(function(n){return n&&n.contentId===id})}
+function bubbles48(){
+  var out="";for(var i=0;i<18;i++){var left=(7+(i*37)%89),dur=8+(i%7)*1.7,delay=-(i%9)*1.15,drift=((i%2)?1:-1)*(10+(i%5)*8);
+    out+='<i class="sea48-bubble" style="left:'+left+'%;--dur:'+dur+'s;--delay:'+delay+'s;--drift:'+drift+'px"></i>'}
+  return out
+}
+function ensure48(){
+  var panel=q48("#universePanel");if(!panel)return;
+  panel.classList.add("v3948-sea");
+  var header=q48("#v394UniverseHeader",panel);
+  if(header){
+    var title=header.querySelector(".v394-universe-title");
+    if(title)title.innerHTML='<small>VOCADIVE · DIVE SEA 2.0</small><h2>다이브</h2><p>수면에서 출발해 음악의 해류를 따라 심해까지 내려가세요. 깊이는 현재 탐색에서의 인지도·발굴 난이도를 나타냅니다.</p>';
+  }
+  var layout=panel.querySelector(".universe-layout");
+  if(layout&&!q48("#sea48Modebar",panel)){
+    var bar=document.createElement("div");bar.id="sea48Modebar";bar.className="sea48-modebar";
+    bar.innerHTML='<button type="button" data-sea48-mode="dive">↓ 다이브</button><button type="button" data-sea48-mode="sonar">≈ 유사곡 소나</button><button type="button" data-sea48-random>랜덤 다이브</button><button type="button" data-sea48-surface>↑ 수면으로</button>'+
+      '<div class="sea48-depth-readout"><small>DEPTH</small><b id="sea48DepthText">0m · SURFACE</b><span class="sea48-depth-track"><i id="sea48DepthBar"></i></span></div>';
+    layout.parentNode.insertBefore(bar,layout)
+  }
+  syncMode48();bindDelegate48()
+}
+function syncMode48(){
+  qa48("[data-sea48-mode]").forEach(function(b){b.classList.toggle("active",b.dataset.sea48Mode===seaMode48)})
+}
+function popularityOrder48(data){
+  return (data.nodes||[]).slice(1).filter(function(n){return n&&n.contentId}).sort(function(a,b){
+    return views48(b)-views48(a)||(+b.similarity||0)-(+a.similarity||0)
+  })
+}
+function layerGroups48(data){
+  var rows=popularityOrder48(data),n=rows.length;
+  function slice(a,b){return rows.slice(Math.floor(n*a),Math.floor(n*b))}
+  var groups=[
+    {key:"shallow",label:"SHALLOW",ko:"얕은층",range:"10–100m",meter:"70m",desc:"가장 쉽게 이어지는 유명 유사곡과 익숙한 해류",rows:slice(0,.25)},
+    {key:"mid",label:"MID",ko:"중층",range:"100–500m",meter:"320m",desc:"같은 시대·분위기·보컬 태그를 따라 본격적으로 탐색",rows:slice(.25,.52)},
+    {key:"deep",label:"DEEP",ko:"심층",range:"500–2,000m",meter:"1,240m",desc:"인지도는 낮아지지만 연결이 살아 있는 숨은 곡",rows:slice(.52,.78)},
+    {key:"abyss",label:"ABYSS",ko:"심해층",range:"2,000m+",meter:"3,900m",desc:"가장 깊은 발굴 구간. 낮은 조회수와 의외의 연결",rows:rows.slice(Math.floor(n*.78))}
+  ];
+  if(rows.length&&groups.some(function(g){return !g.rows.length})){
+    var bySim=(data.nodes||[]).slice(1).filter(function(n){return n&&n.contentId}).sort(function(a,b){return (+b.similarity||0)-(+a.similarity||0)});
+    groups.forEach(function(g,i){if(!g.rows.length&&bySim[i])g.rows=[bySim[i]]})
+  }
+  return groups
+}
+function songCard48(n,center){
+  var sim=Math.round((+n.similarity||0)*100),sh=shared48(center,n);
+  return '<article class="sea48-song" data-sea48-card="'+e48(n.contentId)+'">'+
+    (n.thumbnailUrl?'<img src="'+e48(n.thumbnailUrl)+'" loading="lazy" alt="">':'<div class="noimg">♪</div>')+
+    '<div class="sea48-song-main"><b>'+e48(n.title||n.contentId)+'</b><small>'+year48(n)+' · 조회 '+fmt48(views48(n))+'</small><div class="sea48-song-meta"><span class="sim">유사도 '+sim+'%</span>'+(sh.length?sh.map(function(x){return"<span>"+e48(x)+"</span>"}).join(""):"<span>의외의 해류</span>")+'</div></div>'+
+    '<div class="sea48-song-actions"><button type="button" data-sea48-select="'+e48(n.contentId)+'">연결 이유 보기</button><button type="button" class="primary" data-sea48-deeper="'+e48(n.contentId)+'">↓ 이 곡으로 다이브</button></div></article>'
+}
+function start48(center,data){
+  var tags=(data.queryTags||[]).slice(0,5);
+  return '<section class="sea48-start" data-sea48-layer="surface" data-depth-index="0"><div class="sea48-waterline"></div><div class="sea48-start-card">'+
+    (center.thumbnailUrl?'<img src="'+e48(center.thumbnailUrl)+'" alt="">':'<div class="noimg">♪</div>')+
+    '<div><div class="sea48-kicker"><span class="sea48-pill">SURFACE · 수면</span><span class="sea48-pill">START · 0m</span></div><h3>'+e48(center.title||center.contentId)+'</h3><p>'+year48(center)+' · 조회 '+fmt48(views48(center))+'</p><div class="sea48-start-tags">'+(tags.length?tags.map(function(t){return"<span>"+e48(t)+"</span>"}).join(""):"<span>해류 분석 중</span>")+'</div></div></div><div class="sea48-dive-cue"><span>아래로 잠수</span><i>⌄</i></div></section>'
+}
+function layer48(g,center,index){
+  return '<section class="sea48-layer" data-sea48-layer="'+g.key+'" data-depth-index="'+index+'"><span class="sea48-current">'+g.label+' CURRENT</span><div class="sea48-layer-head"><div><small>'+g.label+' · '+g.range+'</small><h3>'+g.ko+'</h3><p>'+g.desc+'</p></div><div class="sea48-depth-number"><b>'+g.meter+'</b><span>탐색 수심</span></div></div>'+
+    '<div class="sea48-school">'+(g.rows.length?g.rows.map(function(n){return songCard48(n,center)}).join(""):'<div class="sea48-empty-layer">이 수심의 후보가 부족합니다.<br>경로 다시 찾기로 후보를 넓혀보세요.</div>')+'</div>'+(g.key==="abyss"?'<div class="sea48-abyss-glow"></div>':'')+'</section>'
+}
+function side48(n,data){
+  var center=data.center,isCenter=n.contentId===center.contentId,sh=isCenter?(data.queryTags||[]).slice(0,6):shared48(center,n),sim=isCenter?100:Math.round((+n.similarity||0)*100);
+  return '<div class="sea48-side-card"><div class="dive46-side-cover">'+(n.thumbnailUrl?'<img src="'+e48(n.thumbnailUrl)+'" alt="">':'<div class="noimg">♪</div>')+'</div>'+
+    '<div class="dive46-side-kicker"><span class="dive46-badge">'+(isCenter?"SURFACE":"CURRENT")+'</span><span class="dive46-badge">유사도 '+sim+'%</span></div><h3>'+e48(n.title||n.contentId)+'</h3>'+
+    '<div class="dive46-side-meta">'+e48(n.contentId)+' · '+year48(n)+' · 조회 '+fmt48(views48(n))+'</div>'+
+    '<div class="dive46-side-reason"><small>'+(isCenter?"현재 다이브의 핵심 태그":"이 곡으로 이어진 이유")+'</small><div>'+(sh.length?sh.map(function(t){return"<span>"+e48(t)+"</span>"}).join(""):"<span>공통 태그가 적은 샛길 해류</span>")+'</div></div>'+
+    '<div class="sea48-side-actions">'+(!isCenter?'<button type="button" class="primary" data-sea48-deeper="'+e48(n.contentId)+'">↓ 이 곡으로 계속 다이브</button>':'')+
+    '<button type="button" data-sea48-detail="'+e48(n.contentId)+'">곡 상세</button><button type="button" data-sea48-pin="'+e48(n.contentId)+'">'+((typeof isUniversePinned39==="function"&&isUniversePinned39(n.contentId))?"핀 해제":"핀 고정")+'</button></div></div>'
+}
+function select48(id,data){
+  var n=findSong48(id,data);if(!n)return;
+  qa48("[data-sea48-card]").forEach(function(x){x.classList.toggle("selected",x.dataset.sea48Card===id)});
+  qa48(".sea48-sonar-row").forEach(function(x){x.classList.toggle("selected",x.dataset.sea48Select===id)});
+  var info=q48("#universeInfo");if(info)info.innerHTML=side48(n,data)
+}
+function oceanShell48(inner){
+  return '<div class="sea48-ocean"><div class="sea48-ocean-bg"></div><div class="sea48-light"></div><div class="sea48-particles"></div><div class="sea48-pressure"></div><div class="sea48-bubbles">'+bubbles48()+'</div><div class="sea48-content">'+inner+'</div><div class="sea48-dive-overlay"><span>더 깊은 해류로 이동 중…</span></div></div>'
+}
+function renderDive48(data){
+  var stage=q48("#universePanel .universe-stage");if(!stage)return;
+  var groups=layerGroups48(data);
+  stage.innerHTML=oceanShell48(start48(data.center,data)+groups.map(function(g,i){return layer48(g,data.center,i+1)}).join(""));
+  var info=q48("#universeInfo");if(info)info.innerHTML=side48(data.center,data);
+  observeDepth48()
+}
+function sonarRows48(data){
+  return (data.nodes||[]).slice(1).filter(function(n){return n&&n.contentId&&(+n.similarity||0)>=sonarMin48}).sort(function(a,b){return (+b.similarity||0)-(+a.similarity||0)||views48(b)-views48(a)})
+}
+function renderSonar48(data){
+  var stage=q48("#universePanel .universe-stage");if(!stage)return,rows=sonarRows48(data),center=data.center;
+  var body='<div class="sea48-sonar"><div class="sea48-sonar-head">'+(center.thumbnailUrl?'<img src="'+e48(center.thumbnailUrl)+'" alt="">':'<div class="noimg">♪</div>')+
+    '<div><small>SIMILAR SONAR · 중심곡</small><h3>'+e48(center.title||center.contentId)+'</h3><p>현재 곡과 가까운 후보만 유사도 순으로 탐지합니다.</p></div>'+
+    '<div class="sea48-sonar-filter"><button type="button" data-sea48-sonar-min="0" class="'+(sonarMin48===0?"active":"")+'">전체</button><button type="button" data-sea48-sonar-min=".5" class="'+(sonarMin48===.5?"active":"")+'">50%+</button><button type="button" data-sea48-sonar-min=".7" class="'+(sonarMin48===.7?"active":"")+'">70%+</button></div></div>'+
+    '<div class="sea48-sonar-list">'+(rows.length?rows.map(function(n,i){var sim=Math.round((+n.similarity||0)*100),sh=shared48(center,n);return '<article class="sea48-sonar-row" data-sea48-select="'+e48(n.contentId)+'"><div class="sea48-sonar-rank">#'+(i+1)+'</div>'+
+      (n.thumbnailUrl?'<img src="'+e48(n.thumbnailUrl)+'" loading="lazy" alt="">':'<div class="noimg">♪</div>')+'<div class="sea48-sonar-copy"><b>'+e48(n.title||n.contentId)+'</b><small>'+(sh.length?e48(sh.join(" · ")):year48(n)+' · 조회 '+fmt48(views48(n)))+'</small></div><div class="sea48-sonar-score"><b>'+sim+'%</b><small>유사도</small></div></article>'}).join(""):'<div class="sea48-empty-layer">현재 필터에 맞는 유사곡이 없습니다.</div>')+'</div></div>';
+  stage.innerHTML=body;
+  var info=q48("#universeInfo");if(info)info.innerHTML=side48(center,data);
+  updateDepth48(0,"SONAR")
+}
+function renderSea48(data){
+  ensure48();syncMode48();
+  if(seaMode48==="sonar")renderSonar48(data);else renderDive48(data);
+  if(typeof renderUniverseJourney39==="function")try{renderUniverseJourney39()}catch(e){}
+}
+function updateDepth48(index,label){
+  var names=[["0m","SURFACE"],["70m","SHALLOW"],["320m","MID"],["1,240m","DEEP"],["3,900m","ABYSS"]],x=names[Math.max(0,Math.min(4,index))];
+  var text=q48("#sea48DepthText"),bar=q48("#sea48DepthBar");if(text)text.textContent=(label?x[0]+" · "+label:x[0]+" · "+x[1]);if(bar)bar.style.width=(4+index*24)+"%"
+}
+function observeDepth48(){
+  if(observer48)try{observer48.disconnect()}catch(e){}
+  var sections=qa48("[data-sea48-layer]");if(!sections.length)return;
+  if(!("IntersectionObserver" in window)){updateDepth48(0);return}
+  observer48=new IntersectionObserver(function(entries){
+    var visible=entries.filter(function(x){return x.isIntersecting}).sort(function(a,b){return Math.abs(a.boundingClientRect.top-innerHeight*.28)-Math.abs(b.boundingClientRect.top-innerHeight*.28)});
+    if(!visible.length)return;var el=visible[0].target,idx=+(el.dataset.depthIndex||0);updateDepth48(idx)
+  },{root:null,rootMargin:"-18% 0px -52% 0px",threshold:[0,.1,.3]});
+  sections.forEach(function(x){observer48.observe(x)})
+}
+function surface48(){
+  var el=q48('[data-sea48-layer="surface"]')||q48("#universePanel");if(el)el.scrollIntoView({behavior:"smooth",block:"start"});updateDepth48(0)
+}
+function diveTo48(id){
+  if(seaBusy48)return;var data=currentData48(),song=findSong48(id,data);if(!song)return;
+  seaBusy48=true;var ocean=q48(".sea48-ocean");if(ocean)ocean.classList.add("diving");
+  setTimeout(function(){
+    try{
+      if(typeof buildUniverse==="function")buildUniverse(song,false);
+      else if(window.centerUniverseOnId39)window.centerUniverseOnId39(id)
+    }finally{
+      setTimeout(function(){seaBusy48=false;surface48()},120)
+    }
+  },480)
+}
+function random48(){
+  var data=currentData48();if(!data||!data.nodes||data.nodes.length<2)return;
+  var pool=data.nodes.slice(1).filter(function(n){return n&&(+n.similarity||0)>=.18});if(!pool.length)pool=data.nodes.slice(1);
+  var song=pool[Math.floor(Math.random()*pool.length)];if(song)diveTo48(song.contentId)
+}
+function bindDelegate48(){
+  var panel=q48("#universePanel");if(!panel||delegateBound48)return;delegateBound48=true;
+  panel.addEventListener("click",function(ev){
+    var t=ev.target.closest&&ev.target.closest("button,[data-sea48-select],.sea48-sonar-row");if(!t)return;
+    if(t.matches("[data-u39-back]")){ev.preventDefault();ev.stopImmediatePropagation();if(typeof navigateUniverseHistory39==="function")navigateUniverseHistory39(-1);return}
+    if(t.matches("[data-u39-forward]")){ev.preventDefault();ev.stopImmediatePropagation();if(typeof navigateUniverseHistory39==="function")navigateUniverseHistory39(1);return}
+    if(t.matches("[data-u39-history]")){ev.preventDefault();ev.stopImmediatePropagation();var target=+(t.dataset.u39History||-1);if(typeof state!=="undefined"&&target>=0){var delta=target-state.universeHistoryIndex;if(delta&&typeof navigateUniverseHistory39==="function")navigateUniverseHistory39(delta)}return}
+    if(t.matches("[data-sea48-mode]")){ev.preventDefault();seaMode48=t.dataset.sea48Mode||"dive";syncMode48();var d=currentData48();if(d)renderSea48(d);return}
+    if(t.matches("[data-sea48-random]")){ev.preventDefault();random48();return}
+    if(t.matches("[data-sea48-surface]")){ev.preventDefault();surface48();return}
+    if(t.matches("[data-sea48-sonar-min]")){ev.preventDefault();sonarMin48=Number(t.dataset.sea48SonarMin)||0;var ds=currentData48();if(ds)renderSonar48(ds);return}
+    var deeper=t.closest("[data-sea48-deeper]");if(deeper){ev.preventDefault();ev.stopPropagation();diveTo48(deeper.dataset.sea48Deeper);return}
+    var detail=t.closest("[data-sea48-detail]");if(detail){ev.preventDefault();if(window.VSAOpenSong39)window.VSAOpenSong39(detail.dataset.sea48Detail,true);return}
+    var pin=t.closest("[data-sea48-pin]");if(pin){ev.preventDefault();if(window.toggleUniversePin39)window.toggleUniversePin39(pin.dataset.sea48Pin);pin.textContent=(typeof isUniversePinned39==="function"&&isUniversePinned39(pin.dataset.sea48Pin))?"핀 해제":"핀 고정";return}
+    var select=t.closest("[data-sea48-select]");if(select){ev.preventDefault();var dd=currentData48();if(dd)select48(select.dataset.sea48Select,dd);return}
+  },true)
+}
+window.renderUniverse=renderSea48;
+window.VSADiveSea48={render:renderSea48,setMode:function(m){seaMode48=m==="sonar"?"sonar":"dive";var d=currentData48();if(d)renderSea48(d)},surface:surface48};
+function boot48(){ensure48();var d=currentData48();if(d)renderSea48(d)}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(boot48,30)});else setTimeout(boot48,30);
+window.addEventListener("popstate",function(){setTimeout(function(){ensure48();var d=currentData48();if(d)renderSea48(d)},20)});
 })();
 </script>
 
