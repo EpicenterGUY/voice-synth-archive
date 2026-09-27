@@ -1,4 +1,4 @@
-/* VocaDive in-app Nico player v39.65 · Native Lifecycle Playback 2.5 */
+/* VocaDive in-app Nico player v39.66 · Native Lifecycle Playback 2.5 */
 (function(){
 "use strict";
 var modal=null,mini=null,frame=null,fullStage=null,miniStage=null,inlineHost=null,currentId="",currentTitle="",pushed=false,queue=[],queueIndex=-1,autoNext=true,pipWindow=null,pipClosing=false,lastPlayerStatus=0,maxVolume=true,volumeAppliedFor="",playerVolume=100,volumePopover=null,surfaceRepairTimer=0;
