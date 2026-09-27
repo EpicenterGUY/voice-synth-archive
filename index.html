@@ -11375,10 +11375,16 @@ function ensure48(){
     if(title)title.innerHTML='<small>VOCADIVE · DIVE SEA 2.0</small><h2>다이브</h2><p>수면에서 출발해 음악의 해류를 따라 심해까지 내려가세요. 깊이는 현재 탐색에서의 인지도·발굴 난이도를 나타냅니다.</p>';
   }
   var layout=panel.querySelector(".universe-layout");
-  if(layout&&!q48("#universeEmpty",panel)){
-    var loader=document.createElement("div");loader.id="universeEmpty";loader.className="sea48-loader";loader.style.display="none";
-    loader.innerHTML="해류를 분석하는 중…<br><small>유사곡 후보와 탐색 수심을 계산합니다.</small>";
-    layout.parentNode.insertBefore(loader,layout)
+  if(layout){
+    var loader=q48("#universeEmpty",panel);
+    if(loader&&loader.closest(".universe-stage")){
+      loader.className="sea48-loader";loader.style.display="none";
+      layout.parentNode.insertBefore(loader,layout)
+    }else if(!loader){
+      loader=document.createElement("div");loader.id="universeEmpty";loader.className="sea48-loader";loader.style.display="none";
+      loader.innerHTML="해류를 분석하는 중…<br><small>유사곡 후보와 탐색 수심을 계산합니다.</small>";
+      layout.parentNode.insertBefore(loader,layout)
+    }
   }
   if(layout&&!q48("#sea48Modebar",panel)){
     var bar=document.createElement("div");bar.id="sea48Modebar";bar.className="sea48-modebar";
