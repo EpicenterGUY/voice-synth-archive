@@ -2,9 +2,9 @@
   "id": "./",
   "name": "VocaDive - Vocal Synth Discovery",
   "short_name": "VocaDive",
-  "description": "VOCALOID, UTAU, SynthV 등 음성합성 원곡을 콘텐츠 피드·검색·다이브 패스·유사곡 탐색으로 발견하는 디스커버리 앱",
+  "description": "VOCALOID, UTAU, SynthV 음성합성 원곡을 검색하고 수면부터 심해까지 내려가는 Dive Sea와 유사곡 소나로 발견하는 디스커버리 앱",
   "lang": "ko-KR",
-  "start_url": "./?appv=39.47.0",
+  "start_url": "./?appv=39.48.0",
   "scope": "./",
   "display": "standalone",
   "display_override": [
