@@ -2,7 +2,7 @@
 (function(){
 "use strict";
 
-var VERSION="39.76.0";
+var VERSION="39.77.0";
 var STORAGE_KEY="vocadive.entitlements.session.v1";
 
 var FEATURES={
