@@ -1,4 +1,4 @@
-/* VocaDive in-app Nico player v39.37 · Playback 2.4 */
+/* VocaDive in-app Nico player v39.63 · Native Lifecycle Playback 2.5 */
 (function(){
 "use strict";
 var modal=null,mini=null,frame=null,fullStage=null,miniStage=null,inlineHost=null,currentId="",currentTitle="",pushed=false,queue=[],queueIndex=-1,autoNext=true,pipWindow=null,pipClosing=false,lastPlayerStatus=0,maxVolume=true,volumeAppliedFor="",playerVolume=100,volumePopover=null,surfaceRepairTimer=0;
@@ -378,6 +378,45 @@ function ensureVisiblePlayer(){
   if(pipWindow&&!pipWindow.closed)return true;
   return repairPlayerSurface("ensure")||detachToMini()
 }
+function playbackSnapshot32(){
+  if(!currentId)return null;
+  return{
+    schema:1,
+    currentId:currentId,
+    currentTitle:currentTitle||currentId,
+    queue:queue.slice(),
+    index:queueIndex,
+    volume:playerVolume,
+    maxVolume:maxVolume,
+    playing:playbackIsPlaying(),
+    mini:!!(mini&&!mini.hidden),
+    inline:!!inlineHost,
+    full:!!(modal&&!modal.hidden),
+    capturedAt:Date.now()
+  }
+}
+function restorePlaybackSnapshot32(snap,opts){
+  build();
+  snap=snap&&typeof snap==="object"?snap:null;
+  opts=opts&&typeof opts==="object"?opts:{};
+  if(!snap||!snap.currentId)return false;
+  var id=String(snap.currentId),title=String(snap.currentTitle||id),items=Array.isArray(snap.queue)?snap.queue:[{id:id,title:title}];
+  if(Number.isFinite(Number(snap.volume)))setPlayerVolume(Number(snap.volume),true);
+  setQueue(items,id);
+  if(Number.isFinite(Number(snap.index))&&queue.length){
+    queueIndex=Math.max(0,Math.min(queue.length-1,Number(snap.index)));
+    if(queue[queueIndex]&&queue[queueIndex].id!==id){
+      var found=queue.findIndex(function(x){return x.id===id});if(found>=0)queueIndex=found
+    }
+  }
+  if(frame.parentNode!==fullStage)fullStage.appendChild(frame);
+  loadCurrent(id,title,true,opts.autoplay===true);
+  if(opts.surface==="full"){
+    mini.hidden=true;modal.hidden=false;inlineHost=null;document.body.classList.add("v331-player-open")
+  }else detachToMini();
+  pushed=false;
+  return true
+}
 function closePlayer(back){
   if(!modal)return;
   toggleVolumePopover(false);pipClosing=true;try{if(pipWindow&&!pipWindow.closed)pipWindow.close()}catch(e){}restoreFromPip(false);pipClosing=false;
@@ -393,6 +432,6 @@ function intercept(){
     var id=videoIdFromUrl(a.href);if(!id)return;var info=findSong(id,a),items=queueFromAnchor(a,id,info.title);e.preventDefault();e.stopPropagation();openPlayer(id,info.title,items);
   },true);
 }
-function boot(){build();intercept();window.VSANicoPlayer={open:openPlayer,openMini:openMiniPlayer,close:function(){closePlayer(true)},stop:function(){closePlayer(false)},collapse:collapsePlayer,expand:expandPlayer,returnToWatch:returnToWatch,detachToMini:detachToMini,adoptInlineFrame:adoptInlineFrame,attachInline:attachInline,ensureVisible:ensureVisiblePlayer,syncSurface:repairPlayerSurface,togglePlayback:togglePlayback,play:function(){sendNico("play");lastPlayerStatus=2;updatePlaybackUi();setMediaPlaybackState("playing")},pause:function(){sendNico("pause");lastPlayerStatus=3;updatePlaybackUi();setMediaPlaybackState("paused")},setQueue:setQueue,next:function(){playRelative(1)},prev:function(){playRelative(-1)},setMaxVolume:setMaxVolume,setVolume:setPlayerVolume,getVolume:function(){return playerVolume},state:function(){return{currentId:currentId,queue:queue.slice(),index:queueIndex,maxVolume:maxVolume,volume:playerVolume,inline:!!inlineHost,playing:playbackIsPlaying(),mini:!!(mini&&!mini.hidden)}}}}
+function boot(){build();intercept();window.VSANicoPlayer={open:openPlayer,openMini:openMiniPlayer,close:function(){closePlayer(true)},stop:function(){closePlayer(false)},collapse:collapsePlayer,expand:expandPlayer,returnToWatch:returnToWatch,detachToMini:detachToMini,adoptInlineFrame:adoptInlineFrame,attachInline:attachInline,ensureVisible:ensureVisiblePlayer,syncSurface:repairPlayerSurface,togglePlayback:togglePlayback,play:function(){sendNico("play");lastPlayerStatus=2;updatePlaybackUi();setMediaPlaybackState("playing")},pause:function(){sendNico("pause");lastPlayerStatus=3;updatePlaybackUi();setMediaPlaybackState("paused")},setQueue:setQueue,next:function(){playRelative(1)},prev:function(){playRelative(-1)},setMaxVolume:setMaxVolume,setVolume:setPlayerVolume,getVolume:function(){return playerVolume},snapshot:playbackSnapshot32,restore:restorePlaybackSnapshot32,state:function(){return{currentId:currentId,currentTitle:currentTitle,queue:queue.slice(),index:queueIndex,maxVolume:maxVolume,volume:playerVolume,inline:!!inlineHost,playing:playbackIsPlaying(),mini:!!(mini&&!mini.hidden),full:!!(modal&&!modal.hidden)}}}}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
 })();
