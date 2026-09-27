@@ -1,4 +1,4 @@
-/* VocaDive Dive Start v39.53 · Original/Cover Scope */
+/* VocaDive Dive Start v39.54 · Search Recall 2.0 */
 (function(){
 "use strict";
 var recentKey="vsa.universe.search.v28";
@@ -96,11 +96,31 @@ function exactSongMatch(song,q){
   var n=normalizedSearchText(q);
   return normalizedSearchText(song&&song.contentId)===n||normalizedSearchText(song&&song.title)===n
 }
+function compactTitle54(v){return normalizedSearchText(v).replace(/[\s　・·_\-—–:：/／\\|｜()[\]{}【】『』「」"'!?！？.,，。]+/g,"")}
+function strongTitleMatch54(song,q){
+  var n=normalizedSearchText(q),title=normalizedSearchText(song&&song.title),id=normalizedSearchText(song&&song.contentId);
+  if(!n)return false;
+  if(id===n||title===n)return true;
+  var cq=compactTitle54(q),ct=compactTitle54(song&&song.title);
+  if(cq.length>=3&&ct.indexOf(cq)>=0)return true;
+  return title.indexOf(n)>=0
+}
+function scopeMatch54(song,scope){
+  if(!scope||scope==="all"||scope==="all_voice_synth")return true;
+  try{return typeof songMatchesScope==="function"?songMatchesScope(song,scope):true}catch(e){return true}
+}
+function originalRecallEvidence54(song,q,scope){
+  if(!strongTitleMatch54(song,q)||!scopeMatch54(song,scope))return false;
+  try{
+    var ev=window.VSA54DiveSearchOriginalEvidence?window.VSA54DiveSearchOriginalEvidence(song):null;
+    return !!(ev&&ev.ok)
+  }catch(e){return false}
+}
 async function remoteSearch(q,scope){
   var isId=/^(sm|nm|so|lv)?\d+$/i.test(q),selected=scope||"all_voice_synth",contentMode=diveMode53();
   var targets=isId?["contentId","title,description,tags"]:["title","title,description,tags","tags"];
   var scopes=contentMode==="original"?(selected==="all"?["all"]:[selected,"all"]):["all"];
-  var out=[],seen=new Set();remoteSearch.expanded=false;
+  var out=[],seen=new Set();remoteSearch.expanded=false;remoteSearch.recallAttempted=false;
   for(var s=0;s<scopes.length;s++){
     var sc=scopes[s];
     for(var i=0;i<targets.length;i++){
@@ -119,6 +139,41 @@ async function remoteSearch(q,scope){
     if(selected==="all"&&out.length)break;
     if(s===1&&out.length)remoteSearch.expanded=true
   }
+  if(contentMode==="original"){
+    var hasRescuable=out.some(function(song){
+      if(!strongTitleMatch54(song,q))return false;
+      try{return filterDiveRows53([song],"universe_search_probe").length>0||originalRecallEvidence54(song,q,selected)}catch(e){return false}
+    });
+    if(!hasRescuable){
+      remoteSearch.recallAttempted=true;
+      try{
+        var broad=await fetchNico({
+          year:"all",limit:100,offset:0,mode:"free",query:q,scope:"all",
+          queryTargets:"title",sort:"-viewCounter",applyYear:false,applyTier:false
+        });
+        (broad.data||[]).forEach(function(song){
+          if(!song||!song.contentId||seen.has(song.contentId))return;
+          if(originalRecallEvidence54(song,q,selected)){
+            song.__diveRecall54=true;seen.add(song.contentId);out.push(song)
+          }
+        })
+      }catch(e){}
+      if(!out.some(function(song){return song&&song.__diveRecall54})){
+        try{
+          var broad2=await fetchNico({
+            year:"all",limit:100,offset:0,mode:"free",query:q,scope:"all",
+            queryTargets:"title,description,tags",sort:"-viewCounter",applyYear:false,applyTier:false
+          });
+          (broad2.data||[]).forEach(function(song){
+            if(!song||!song.contentId||seen.has(song.contentId))return;
+            if(originalRecallEvidence54(song,q,selected)){
+              song.__diveRecall54=true;seen.add(song.contentId);out.push(song)
+            }
+          })
+        }catch(e){}
+      }
+    }
+  }
   return out;
 }
 function merge(a,b,q,scope){
@@ -126,11 +181,21 @@ function merge(a,b,q,scope){
   a.concat(b).forEach(function(song){
     if(song&&song.contentId&&!map.has(song.contentId))map.set(song.contentId,song);
   });
-  var rows=Array.from(map.values());
-  rows=filterDiveRows53(rows,"universe_search");
-  var exact=rows.filter(function(song){return exactSongMatch(song,q)}),rest=rows.filter(function(song){return !exactSongMatch(song,q)});
-  rows=exact.concat(rest);
+  var raw=Array.from(map.values()),rows=[],rejected=0,rescued=0,mode=diveMode53();
+  raw.forEach(function(song){
+    var strict=filterDiveRows53([song],"universe_search_one").length>0;
+    if(strict){rows.push(song);return}
+    if(mode==="original"&&originalRecallEvidence54(song,q,scope)){
+      song.__diveRecall54=true;rows.push(song);rescued++;return
+    }
+    rejected++
+  });
+  var exact=rows.filter(function(song){return exactSongMatch(song,q)}),
+      strong=rows.filter(function(song){return !exactSongMatch(song,q)&&strongTitleMatch54(song,q)}),
+      rest=rows.filter(function(song){return !exactSongMatch(song,q)&&!strongTitleMatch54(song,q)});
+  rows=exact.concat(strong,rest);
   try{if(window.VSA37AdultFilterRows)rows=window.VSA37AdultFilterRows(rows,"universe_search").rows}catch(e){}
+  merge.lastStats={raw:raw.length,kept:rows.length,rescued:rescued,rejected:rejected,recall:!!remoteSearch.recallAttempted};
   return rows.slice(0,30);
 }
 function renderRecent(){
@@ -151,10 +216,15 @@ function render(rows){
   if(shell)shell.classList.add("has-results");
   var box=document.getElementById("universeSearchResults");
   var status=document.getElementById("universeSearchStatus");
-  if(status)status.textContent=rows.length?rows.length+"곡 찾음 · 중심곡을 선택하세요":"검색 결과 없음";
+  if(status){
+    var stats=merge.lastStats||{};
+    status.textContent=rows.length
+      ? rows.length+"곡 찾음"+(stats.rescued?" · 태그 누락 원곡 "+stats.rescued+"곡 확장 판정":"")+" · 중심곡을 선택하세요"
+      : "검색 결과 없음"+(stats.recall?" · 니코동 전체까지 재검색했지만 원곡 증거를 확인하지 못했습니다.":"");
+  }
   if(!box)return;
   if(!rows.length){
-    box.innerHTML='<div class="us-empty">검색 결과가 없습니다.<br><small>곡명·P명·보컬·태그·sm번호를 바꿔보세요.</small></div>';
+    box.innerHTML='<div class="us-empty">검색 결과가 없습니다.<br><small>오리지널곡 모드는 니코동 전체 제목까지 재검색합니다. 그래도 없으면 sm번호·P명 또는 다른 표기로 검색해보세요.</small></div>';
     return;
   }
   box.innerHTML=rows.map(function(song,i){
@@ -162,8 +232,9 @@ function render(rows){
     var raw=Array.isArray(song.tags)?song.tags:String(song.tags||"").split(/[\s,、]+/);
     var tagText=raw.filter(Boolean).slice(0,3).map(esc).join(" · ");
     var img=song.thumbnailUrl?'<img src="'+esc(song.thumbnailUrl)+'" loading="lazy" alt="">':'<span class="us-noimg">♪</span>';
+    var recall=song.__diveRecall54?'<em class="us-recall">확장 판정</em>':"";
     return '<button type="button" class="us-result" data-us-index="'+i+'">'+img+
-      '<span class="us-copy"><b>'+esc(song.title||song.contentId)+'</b><small>'+esc(song.contentId)+' · '+year+' · 조회 '+fmt(song.viewCounter||0)+'</small><i>'+tagText+'</i></span>'+
+      '<span class="us-copy"><b>'+esc(song.title||song.contentId)+recall+'</b><small>'+esc(song.contentId)+' · '+year+' · 조회 '+fmt(song.viewCounter||0)+'</small><i>'+tagText+'</i></span>'+
       '<strong>다이브 시작 ›</strong></button>';
   }).join("");
 }
@@ -189,7 +260,7 @@ async function runSearch(){
   var selectedScope=scope?scope.value:"all_voice_synth";
   var merged=merge(local,remote,q,selectedScope);
   render(merged);
-  if(status&&merged.length&&remoteSearch.expanded)status.textContent=merged.length+"곡 찾음 · 선택 범위에서 없어 니코동 전체까지 찾았습니다.";
+  if(status&&merged.length&&remoteSearch.expanded&&!(merge.lastStats&&merge.lastStats.rescued))status.textContent=merged.length+"곡 찾음 · 선택 범위에서 없어 니코동 전체까지 찾았습니다.";
   if(button)button.disabled=false;
 }
 
