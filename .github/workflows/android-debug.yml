@@ -8,17 +8,15 @@ on:
     tags:
       - "app-v*"
     paths:
-      - "package.json"
-      - "capacitor.config.json"
+      - "*.html"
+      - "*.js"
+      - "*.json"
+      - "*.webmanifest"
+      - "icons/**"
       - "assets/**"
       - "scripts/**"
-      - "native-shell-v3963.js"
-      - "app-platform-v3962.js"
-      - "entitlements-v3962.js"
-      - "account-v3962.js"
-      - "pwa-v21.js"
-      - "nico-player-v32.js"
-      - "index.html"
+      - "package.json"
+      - "capacitor.config.json"
       - ".github/workflows/android-debug.yml"
 
 permissions:
