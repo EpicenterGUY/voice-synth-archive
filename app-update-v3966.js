@@ -22,6 +22,9 @@ var state={
 function isAndroidNative(){
   try{return !!(window.VocaDivePlatform&&VocaDivePlatform.isNative&&VocaDivePlatform.isNative()&&VocaDivePlatform.platform()==="android")}catch(_){return false}
 }
+function isLiveShell(){
+  try{return isAndroidNative()&&String(location.hostname||"").toLowerCase()==="epicenterguy.github.io"}catch(_){return false}
+}
 function plugin(){
   try{return window.Capacitor&&Capacitor.Plugins&&Capacitor.Plugins.VocaDiveUpdater?Capacitor.Plugins.VocaDiveUpdater:null}catch(_){return null}
 }
@@ -63,7 +66,7 @@ function loadPending(){
   }catch(_){return null}
 }
 function phaseText(){
-  if(state.appInfo&&state.appInfo.debuggable)return"디버그 APK · 정식 서명 업데이트 채널 대기";
+  if(state.appInfo&&state.appInfo.debuggable)return isLiveShell()?"Live Shell · 웹 UI 자동 동기화":"디버그 APK · 정식 서명 업데이트 채널 대기";
   if(state.phase==="checking")return"새 버전 확인 중…";
   if(state.phase==="available")return"v"+state.latest.version+" 업데이트 사용 가능";
   if(state.phase==="downloading")return"업데이트 다운로드 "+Math.max(0,state.progress||0)+"%";
@@ -173,7 +176,7 @@ async function checkForUpdate(manual){
   await getAppInfo();ensureSettingsCard();
   if(state.appInfo&&state.appInfo.debuggable){
     state.phase="idle";updateSettings();
-    if(manual)toast3966("현재 디버그 APK입니다. 정식 서명 APK를 한 번 설치한 뒤 자동 업데이트가 활성화됩니다.");
+    if(manual)toast3966(isLiveShell()?"Live Shell은 GitHub Pages 최신 UI를 자동으로 불러옵니다. 네이티브 코드 변경만 새 APK가 필요합니다.":"현재 디버그 APK입니다. 정식 서명 APK를 한 번 설치한 뒤 직접 APK 업데이트가 활성화됩니다.");
     return false
   }
   state.phase="checking";state.error="";updateSettings();if(manual)renderBanner(true);
