@@ -1,8 +1,8 @@
-/* VocaDive Native Shell 0.1 · v39.68.0 */
+/* VocaDive Native Shell 0.1 · v39.71.0 */
 (function(){
 "use strict";
 
-var VERSION="39.68.0";
+var VERSION="39.71.0";
 var PLAYBACK_KEY="vocadive.native.playback.v1";
 var ROUTE_KEY="vocadive.native.routes.v1";
 var routeStack=["home"],suppressRoute=false,bound=false,lastBackgroundAt=0;
@@ -201,7 +201,7 @@ function boot(){
   });
   bindNative();
   if(isNative())setTimeout(restoreColdPlayback,650);
-  try{document.documentElement.dataset.vocadiveShell="39.63"}catch(_){}
+  try{document.documentElement.dataset.vocadiveShell=VERSION}catch(_){}
   try{window.dispatchEvent(new CustomEvent("vocadive:native-shell-ready",{detail:{version:VERSION,platform:platform(),native:isNative()}}))}catch(_){}
 }
 
