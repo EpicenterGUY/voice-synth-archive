@@ -1,7 +1,7 @@
 /* Voice Synth Archive PWA v21 */
 (function(){
 "use strict";
-const APP_VERSION="39.56.0";
+const APP_VERSION="39.63.0";
 const CHECK_MS=900000;
 const MIN_CHECK_GAP=45000;
 let lastCheckAt=0;
@@ -27,6 +27,12 @@ function escPwa(s){
 }
 function standalone(){
   return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone===true;
+}
+function nativeApp(){
+  try{
+    if(window.VocaDivePlatform&&VocaDivePlatform.isNative)return !!VocaDivePlatform.isNative();
+    return !!(window.Capacitor&&typeof Capacitor.isNativePlatform==="function"&&Capacitor.isNativePlatform())
+  }catch(e){return false}
 }
 function dismissedVersion(){
   try{return localStorage.getItem(DISMISS_KEY)||""}catch(e){return""}
@@ -255,6 +261,16 @@ navigator.serviceWorker?.addEventListener("controllerchange",()=>{
 });
 
 async function boot(){
+  if(nativeApp()){
+    // Native packages are updated by the app distribution channel, not by the PWA service worker.
+    try{
+      if("serviceWorker" in navigator&&navigator.serviceWorker.getRegistrations){
+        const regs=await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map(r=>r.unregister().catch(()=>false)))
+      }
+    }catch(e){}
+    return;
+  }
   try{
     localStorage.setItem(RUNNING_KEY,runtimeVersion());
     if(dismissedVersion()&&!newer(dismissedVersion(),APP_VERSION))setDismissedVersion("");
