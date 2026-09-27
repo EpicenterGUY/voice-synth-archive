@@ -3349,7 +3349,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.60.0 · Relation Trust 3.0 · Relation Pool 2.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.61.0 · Cross-Genre Bridge 1.0 · Relation Trust 3.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -9391,7 +9391,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.60.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
+var VER="39.61.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -11035,8 +11035,8 @@ function ensure(name){
   if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.45.0","./detective-v12.js?v=39.45.0","./detective-v13.js?v=39.45.0","./detective-v14.js?v=39.45.0","./detective-v16.js?v=39.45.0"]);
   else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.45.0","./smart-v23.js?v=39.45.0","./playlist-v24.js?v=39.45.0"]);
   else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.45.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.60.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.60.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.61.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.61.0");
   else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.45.0");
   else if(name==="deviceSync")groups[name]=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.45.0");
   else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.45.0");
@@ -12348,17 +12348,22 @@ window.addEventListener("popstate",function(){setTimeout(function(){ensure50();v
 .mr58-filter.active{border-color:#67d9ce;background:#154550;color:#effffc;box-shadow:inset 0 0 0 1px rgba(126,232,220,.08)}
 .mr58-filter[data-mr58-filter="similar"].active{background:#184d58}
 .mr58-filter[data-mr58-filter="genre"].active{background:#32456e}
+.mr58-filter[data-mr58-filter="bridge"].active{background:#315c66}
 .mr58-filter[data-mr58-filter="style"].active{background:#36526b}
 .mr58-filter[data-mr58-filter="mood"].active{background:#594568}
 .mr58-filter[data-mr58-filter="producer"].active{background:#4c365f}
 .mr58-filter[data-mr58-filter="vocal"].active{background:#5a3e51}
 .mr58-filter[data-mr58-filter="era"].active{background:#514b32}
 .mr58-filter[data-mr58-filter="depth"].active{background:#273f5e}
+.mr61-match{display:inline-flex;gap:2px;padding:2px;border:1px solid rgba(152,222,214,.12);border-radius:999px;background:rgba(3,22,29,.62)}
+.mr61-match button{min-height:27px;padding:0 8px;border:0;border-radius:999px;background:transparent;color:#769f9b;font-size:6px;font-weight:950}
+.mr61-match button.active{background:#1b5059;color:#effffc}
 .mr58-all{margin-left:auto}
 .mr58-map{position:relative;min-height:575px}
 .mr58-links{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:1}
 .mr58-links line{stroke:rgba(169,239,231,.18);stroke-width:1.2}
 .mr58-links line.genre{stroke:rgba(136,167,244,.34);stroke-width:1.8}
+.mr58-links line.bridge{stroke:rgba(124,226,210,.43);stroke-width:1.8;stroke-dasharray:7 6}
 .mr58-links line.style{stroke:rgba(116,205,221,.34);stroke-width:1.7}
 .mr58-links line.mood{stroke:rgba(211,145,231,.32);stroke-width:1.7}
 .mr58-links line.producer{stroke:rgba(217,147,239,.34);stroke-width:1.8}
@@ -12369,7 +12374,7 @@ window.addEventListener("popstate",function(){setTimeout(function(){ensure50();v
 .mr58-center small{color:#73dcd2;font-size:6px;font-weight:950;letter-spacing:.08em}.mr58-center h2{margin:4px 0;color:#f3fffd;font-size:15px;line-height:1.25}.mr58-center p{margin:0;color:#83aaa6;font-size:7px}
 .mr58-center-tags,.mr58-badges{display:flex;gap:4px;flex-wrap:wrap;margin-top:7px}
 .mr58-center-tags span,.mr58-badge{display:inline-flex;align-items:center;min-height:21px;padding:0 6px;border-radius:999px;background:rgba(19,67,76,.72);color:#bfe8e4;font-size:5.8px;font-weight:900}
-.mr58-badge.genre{background:rgba(56,75,128,.82);color:#e4e9ff}.mr58-badge.style{background:rgba(48,83,103,.84);color:#d9f4ff}.mr58-badge.mood{background:rgba(88,62,103,.84);color:#f3dcff}.mr58-badge.producer{background:rgba(87,51,105,.82);color:#f1dcff}.mr58-badge.vocal{background:rgba(100,57,79,.82);color:#ffe0ef}.mr58-badge.era{background:rgba(89,80,47,.82);color:#fff0bd}.mr58-badge.depth{background:rgba(38,63,94,.85);color:#d6e8ff}.mr58-badge.similar{background:rgba(20,77,87,.88);color:#d8fffa}
+.mr58-badge.genre{background:rgba(56,75,128,.82);color:#e4e9ff}.mr58-badge.bridge{background:rgba(47,92,102,.86);color:#ddfffa}.mr58-badge.style{background:rgba(48,83,103,.84);color:#d9f4ff}.mr58-badge.mood{background:rgba(88,62,103,.84);color:#f3dcff}.mr58-badge.producer{background:rgba(87,51,105,.82);color:#f1dcff}.mr58-badge.vocal{background:rgba(100,57,79,.82);color:#ffe0ef}.mr58-badge.era{background:rgba(89,80,47,.82);color:#fff0bd}.mr58-badge.depth{background:rgba(38,63,94,.85);color:#d6e8ff}.mr58-badge.similar{background:rgba(20,77,87,.88);color:#d8fffa}
 .mr58-center-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:8px}
 .mr58-center-actions button{min-height:37px;border:1px solid rgba(153,225,216,.16);border-radius:10px;background:#0b3039;color:#c7e4e0;font-size:7px;font-weight:950}.mr58-center-actions button.primary{border:0;background:linear-gradient(135deg,#70ddd2,#728fec);color:#06171b}
 .mr58-node{position:absolute;z-index:4;width:min(230px,25%);display:grid;grid-template-columns:68px minmax(0,1fr);gap:7px;align-items:center;padding:7px;border:1px solid rgba(164,231,223,.13);border-radius:14px;background:rgba(5,31,41,.82);color:#dff5f2;text-align:left;box-shadow:0 10px 25px rgba(0,8,16,.18);backdrop-filter:blur(10px)}
@@ -12378,13 +12383,14 @@ window.addEventListener("popstate",function(){setTimeout(function(){ensure50();v
 .mr58-node-copy{min-width:0}.mr58-node-copy b{display:block;color:#f0fffd;font-size:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mr58-node-copy small{display:block;margin-top:3px;color:#789f9b;font-size:6px}.mr58-node-score{display:block;margin-top:3px;color:#75ddd2;font-size:7px;font-weight:950}
 .mr58-node .mr58-badges{grid-column:1/-1;margin-top:0}
 .mr58-empty{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:#8eb0ad;font-size:8px}
-.mr58-side{display:grid;gap:9px}.mr58-side-cover img,.mr58-side-cover .noimg{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:14px;background:#11343d;display:grid;place-items:center}.mr58-side h3{margin:0;color:#effffc;font-size:15px;line-height:1.3}.mr58-side-meta{color:#789e9a;font-size:7px}.mr58-side-section{padding:8px;border:1px solid rgba(145,221,213,.12);border-radius:12px;background:#08252d}.mr58-side-section small{display:block;margin-bottom:5px;color:#6f9b96;font-size:6px;font-weight:900}.mr58-side-actions{display:grid;grid-template-columns:1fr 1fr;gap:5px}.mr58-side-actions button{min-height:39px;border:1px solid rgba(147,221,213,.14);border-radius:10px;background:#0b3039;color:#c3e1dd;font-size:7px;font-weight:950}.mr58-side-actions button.primary{grid-column:1/-1;border:0;background:linear-gradient(135deg,#70ded3,#738dea);color:#06171b}
+.mr58-side{display:grid;gap:9px}.mr58-side-cover img,.mr58-side-cover .noimg{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:14px;background:#11343d;display:grid;place-items:center}.mr58-side h3{margin:0;color:#effffc;font-size:15px;line-height:1.3}.mr58-side-meta{color:#789e9a;font-size:7px}.mr58-side-section{padding:8px;border:1px solid rgba(145,221,213,.12);border-radius:12px;background:#08252d}.mr58-side-section small{display:block;margin-bottom:5px;color:#6f9b96;font-size:6px;font-weight:900}.mr61-reason-list{display:grid;gap:5px}.mr61-reason-list>div{display:grid;grid-template-columns:76px minmax(0,1fr);gap:7px;align-items:start;padding:6px 7px;border-radius:9px;background:rgba(7,38,46,.72)}.mr61-reason-list b{color:#8ee0d7;font-size:6px}.mr61-reason-list span{color:#b8d5d1;font-size:6.5px;line-height:1.45}
+.mr58-side-actions{display:grid;grid-template-columns:1fr 1fr;gap:5px}.mr58-side-actions button{min-height:39px;border:1px solid rgba(147,221,213,.14);border-radius:10px;background:#0b3039;color:#c3e1dd;font-size:7px;font-weight:950}.mr58-side-actions button.primary{grid-column:1/-1;border:0;background:linear-gradient(135deg,#70ded3,#738dea);color:#06171b}
 @media(max-width:899px){.mr58-shell,.mr58-content{min-height:760px}.mr58-map{min-height:610px}.mr58-node{width:29%}.mr58-center{width:48%}}
 @media(max-width:699px){
  #universePanel.v3958-rel .universe-layout{grid-template-columns:1fr!important}
  #universePanel.v3958-rel .universe-side{position:relative!important;top:auto!important;max-height:none!important;margin-bottom:96px!important}
  .mr58-shell{min-height:790px;border-radius:18px}.mr58-content{min-height:790px;padding:9px 8px 88px}.mr58-head h3{font-size:18px}.mr58-head p{font-size:7px;max-width:90%}.mr58-summary{display:none}
- .mr58-filters{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding:6px;margin:7px 0}.mr58-filters::-webkit-scrollbar{display:none}.mr58-filters>small,.mr58-filter{flex:0 0 auto}.mr58-all{margin-left:0}
+ .mr58-filters{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding:6px;margin:7px 0}.mr58-filters::-webkit-scrollbar{display:none}.mr58-filters>small,.mr58-filter,.mr61-match{flex:0 0 auto}.mr58-all{margin-left:0}
  .mr58-map{min-height:650px}.mr58-center{top:51%;width:calc(100% - 18px);max-width:390px}.mr58-center-main{grid-template-columns:88px minmax(0,1fr)}.mr58-center img,.mr58-center .noimg{width:88px}.mr58-center h2{font-size:13px}
  .mr58-node{width:44%;max-width:180px;grid-template-columns:50px minmax(0,1fr);padding:6px}.mr58-node img,.mr58-node .noimg{width:50px}.mr58-node .mr58-badges{display:none}
  .mr58-node:nth-of-type(n+5){display:none}
@@ -12398,6 +12404,7 @@ window.addEventListener("popstate",function(){setTimeout(function(){ensure50();v
 var REL58={
  similar:{label:"유사곡",cls:"similar"},
  genre:{label:"같은 장르",cls:"genre"},
+ bridge:{label:"인접 장르",cls:"bridge"},
  style:{label:"같은 스타일",cls:"style"},
  mood:{label:"같은 분위기",cls:"mood"},
  producer:{label:"같은 P",cls:"producer"},
@@ -12405,7 +12412,7 @@ var REL58={
  era:{label:"같은 시대",cls:"era"},
  depth:{label:"같은 수층",cls:"depth"}
 };
-var active58=new Set(["similar","genre","style","mood","producer","vocal","era","depth"]),bound58=false,selected58=null;
+var active58=new Set(["similar","genre","bridge","style","mood","producer","vocal","era","depth"]),filterMode58="or",bound58=false,selected58=null;
 var GENRES58=[
  {key:"rock",label:"Rock",aliases:["VOCAROCK","ボカロック","VOCALOIDロック","ロック","ROCK","オルタナティブロック","ギターロック"]},
  {key:"metal",label:"Metal",aliases:["メタル","VOCAMETAL","ボカメタル","METAL","メタルコア","スクリーモ"]},
@@ -12429,6 +12436,29 @@ var GENRES58=[
  {key:"experimental",label:"Experimental",aliases:["変拍子","実験音楽","EXPERIMENTAL","プログレ","プログレッシブ"]},
  {key:"ambient",label:"Ambient",aliases:["アンビエント","AMBIENT","ドローン"]}
 ];
+var GENRE_BRIDGES58={
+ rock:["metal","shoegaze","pop","wafu","experimental"],
+ metal:["rock","experimental"],
+ electronic:["techno","trance","house","dnb","dubstep","chiptune","ambient","experimental","pop","hiphop"],
+ techno:["electronic","house","trance"],
+ trance:["electronic","techno","house","dnb"],
+ house:["electronic","techno","trance","funk"],
+ dnb:["electronic","dubstep","trance"],
+ dubstep:["electronic","dnb"],
+ pop:["rock","electronic","ballad","chiptune","funk"],
+ ballad:["pop","orchestral","jazz","folk","piano"],
+ jazz:["funk","ballad","hiphop","piano"],
+ piano:["ballad","jazz","orchestral"],
+ orchestral:["ballad","folk","ambient","piano"],
+ shoegaze:["rock","ambient","experimental"],
+ chiptune:["electronic","pop"],
+ hiphop:["funk","electronic","jazz"],
+ funk:["jazz","hiphop","house","pop"],
+ wafu:["rock","folk","orchestral"],
+ folk:["wafu","orchestral","ballad","ambient"],
+ experimental:["electronic","rock","ambient","shoegaze","metal"],
+ ambient:["electronic","shoegaze","experimental","orchestral","folk"]
+};
 var STYLES58=[
  {key:"piano",label:"Piano",aliases:["ピアノ","PIANO","ピアノミク","ピアノロック"]},
  {key:"experimental",label:"Experimental",aliases:["変拍子","実験音楽","EXPERIMENTAL","プログレ","プログレッシブ"]},
@@ -12467,6 +12497,21 @@ function moodProfile58(n){return profile58(n,MOODS58)}
 function genreKeys58(n){return genreProfile58(n).map(function(x){return x.key})}
 function styleKeys58(n){return styleProfile58(n).map(function(x){return x.key})}
 function moodKeys58(n){return moodProfile58(n).map(function(x){return x.key})}
+function genreLabel58(k){var g=GENRES58.find(function(x){return x.key===k});return g?g.label:k}
+function bridgePairs58(a,b){
+ var A=genreKeys58(a),B=genreKeys58(b),out=[],seen=new Set();
+ A.forEach(function(x){B.forEach(function(y){
+   if(x===y)return;
+   var ok=(GENRE_BRIDGES58[x]||[]).includes(y)||(GENRE_BRIDGES58[y]||[]).includes(x);
+   var key=x+"|"+y;if(ok&&!seen.has(key)){seen.add(key);out.push({from:x,to:y})}
+ })});
+ return out
+}
+function bridgeProfile58(n){
+ var own=genreKeys58(n),keys=[],seen=new Set(own);
+ own.forEach(function(k){(GENRE_BRIDGES58[k]||[]).forEach(function(x){if(!seen.has(x)){seen.add(x);keys.push(x)}})});
+ return keys.map(function(k){return GENRES58.find(function(x){return x.key===k})}).filter(Boolean)
+}
 function producerKeys58(n){
  var raw=tags58(n).map(function(x){return String(x||"").normalize("NFKC").trim()})
   .filter(function(x){return /(?:^|[^A-Za-z0-9])[\p{L}\p{N}_.・ー-]{1,28}P$/u.test(x)||/P名$|プロデューサー/.test(x)})
@@ -12500,30 +12545,42 @@ function depth58(n){
 }
 function rel58(c,n){
  var base=0,bd=null;try{bd=similarityBreakdown50(c,n);base=+bd.score||0}catch(_){base=+n.similarity||0}
- var g=shared58(c,n,"genre"),st=shared58(c,n,"style"),mo=shared58(c,n,"mood"),p=shared58(c,n,"producer"),v=shared58(c,n,"vocal");
+ var g=shared58(c,n,"genre"),bp=g.length?[]:bridgePairs58(c,n),st=shared58(c,n,"style"),mo=shared58(c,n,"mood"),p=shared58(c,n,"producer"),v=shared58(c,n,"vocal");
  var yc=year58(c),yn=year58(n),diff=(yc&&yn)?Math.abs(yc-yn):99;
- var genre=g.length?Math.min(1,.72+.14*(g.length-1)):0,style=st.length?Math.min(1,.70+.12*(st.length-1)):0,mood=mo.length?Math.min(1,.68+.12*(mo.length-1)):0;
+ var genre=g.length?Math.min(1,.72+.14*(g.length-1)):0,bridge=bp.length?Math.min(.78,.52+.08*(bp.length-1)):0;
+ var style=st.length?Math.min(1,.70+.12*(st.length-1)):0,mood=mo.length?Math.min(1,.68+.12*(mo.length-1)):0;
  var sourceProducer=Array.isArray(n&&n.__relSources59)&&n.__relSources59.includes("producer");
  var producer=p.length?1:(sourceProducer?.62:0),vocal=v.length?1:0,era=diff<=2?1:diff<=4?.68:diff<=7?.35:0;
  var dd=Math.abs(depth58(c)-depth58(n)),depth=dd===0?1:dd===1?.45:0;
  var aTags=0,bTags=0;try{aTags=informativeTags(c||{}).length;bTags=informativeTags(n||{}).length}catch(_){}
- var conf={base:Math.min(1,.35+Math.min(aTags,bTags)/6),genre:(genreKeys58(c).length&&genreKeys58(n).length)?1:0,style:(styleKeys58(c).length&&styleKeys58(n).length)?1:0,mood:(moodKeys58(c).length&&moodKeys58(n).length)?1:0,producer:p.length?1:(sourceProducer?.58:0),vocal:(vocalKeys58(c).length&&vocalKeys58(n).length)?1:0,era:(yc&&yn)?1:0,depth:.9};
- var vals={base:base,genre:genre,style:style,mood:mood,producer:producer,vocal:vocal,era:era,depth:depth};
- var weights={base:.40,genre:.18,style:.10,mood:.08,producer:.10,vocal:.06,era:.04,depth:.04},num=0,den=0;
+ var conf={
+   base:Math.min(1,.35+Math.min(aTags,bTags)/6),
+   genre:(genreKeys58(c).length&&genreKeys58(n).length)?1:0,
+   bridge:(genreKeys58(c).length&&genreKeys58(n).length)?1:0,
+   style:(styleKeys58(c).length&&styleKeys58(n).length)?1:0,
+   mood:(moodKeys58(c).length&&moodKeys58(n).length)?1:0,
+   producer:p.length?1:(sourceProducer?.58:0),
+   vocal:(vocalKeys58(c).length&&vocalKeys58(n).length)?1:0,
+   era:(yc&&yn)?1:0,
+   depth:.9
+ };
+ var vals={base:base,genre:genre,bridge:bridge,style:style,mood:mood,producer:producer,vocal:vocal,era:era,depth:depth};
+ var weights={base:.36,genre:.15,bridge:.10,style:.09,mood:.08,producer:.10,vocal:.06,era:.03,depth:.03},num=0,den=0;
  Object.keys(weights).forEach(function(k){var w=weights[k]*(conf[k]||0);if(w>0){num+=w*(vals[k]||0);den+=w}});
  var score=den?Math.max(0,Math.min(1,num/den)):base;
- var kinds=[];if(base>=.20)kinds.push("similar");if(genre>0)kinds.push("genre");if(style>0)kinds.push("style");if(mood>0)kinds.push("mood");if(producer)kinds.push("producer");if(vocal)kinds.push("vocal");if(era>=.68)kinds.push("era");if(depth===1)kinds.push("depth");
- return {score:score,base:base,genre:genre,style:style,mood:mood,producer:producer,vocal:vocal,era:era,depth:depth,kinds:kinds,genres:g,styles:st,moods:mo,producers:p,vocals:v,yearDiff:diff,confidence:conf,breakdown:bd}
+ var kinds=[];if(base>=.20)kinds.push("similar");if(genre>0)kinds.push("genre");if(bridge>0)kinds.push("bridge");if(style>0)kinds.push("style");if(mood>0)kinds.push("mood");if(producer)kinds.push("producer");if(vocal)kinds.push("vocal");if(era>=.68)kinds.push("era");if(depth===1)kinds.push("depth");
+ return {score:score,base:base,genre:genre,bridge:bridge,style:style,mood:mood,producer:producer,vocal:vocal,era:era,depth:depth,kinds:kinds,genres:g,bridgePairs:bp,styles:st,moods:mo,producers:p,vocals:v,yearDiff:diff,confidence:conf,breakdown:bd}
 }
 function visible58(r){
  if(!active58.size)return true;
+ if(filterMode58==="and")return [...active58].every(function(k){return r.kinds.includes(k)});
  return r.kinds.some(function(k){return active58.has(k)})
 }
 function relationRows58(d){
  var c=d.center,rows=(d.nodes||[]).slice(1).filter(function(n){return n&&n.contentId}).map(function(n){return {song:n,rel:rel58(c,n)}});
  rows=rows.filter(function(x){return visible58(x.rel)});
  var picked=[],used=new Set();
- active58.forEach(function(kind){
+ if(filterMode58!=="and")active58.forEach(function(kind){
    var hit=rows.filter(function(x){return x.rel.kinds.includes(kind)}).sort(function(a,b){return (b.rel[kind]||b.rel.base||0)-(a.rel[kind]||a.rel.base||0)})[0];
    if(hit&&!used.has(hit.song.contentId)){used.add(hit.song.contentId);picked.push(hit)}
  });
@@ -12535,7 +12592,8 @@ function badge58(kind,text){var x=REL58[kind];return '<span class="mr58-badge '+
 function badges58(r,limit){
  var out=[];
  if(r.base>=.20)out.push(badge58("similar","유사 "+Math.round(r.base*100)+"%"));
- if(r.genres.length){var labels=r.genres.map(function(k){var g=GENRES58.find(function(x){return x.key===k});return g?g.label:k});out.push(badge58("genre",labels.slice(0,2).join(" · ")))}
+ if(r.genres.length){var labels=r.genres.map(function(k){return genreLabel58(k)});out.push(badge58("genre",labels.slice(0,2).join(" · ")))}
+ if(r.bridgePairs&&r.bridgePairs.length){var br=r.bridgePairs[0];out.push(badge58("bridge",genreLabel58(br.from)+" ↔ "+genreLabel58(br.to)))}
  if(r.styles&&r.styles.length){var sl=r.styles.map(function(k){var g=STYLES58.find(function(x){return x.key===k});return g?g.label:k});out.push(badge58("style",sl.slice(0,2).join(" · ")))}
  if(r.moods&&r.moods.length){var ml=r.moods.map(function(k){var g=MOODS58.find(function(x){return x.key===k});return g?g.label:k});out.push(badge58("mood",ml.slice(0,2).join(" · ")))}
  if(r.producer)out.push(badge58("producer"));
@@ -12549,7 +12607,7 @@ function pos58(i,r){
  var bank=(r&&(r.producer||r.vocal))?identity:(r&&(r.era>=.68||r.depth===1)&&!(r.genre||r.style||r.mood))?discovery:music;
  return bank[i%bank.length]||[50,85]
 }
-function lineClass58(r){return r.producer?"producer":r.vocal?"vocal":r.mood?"mood":r.style?"style":r.genre?"genre":""}
+function lineClass58(r){return r.producer?"producer":r.vocal?"vocal":r.bridge?"bridge":r.mood?"mood":r.style?"style":r.genre?"genre":""}
 function links58(rows){
  var out="";rows.forEach(function(x,i){var p=pos58(i,x.rel);out+='<line class="'+lineClass58(x.rel)+'" x1="50%" y1="50%" x2="'+p[0]+'%" y2="'+p[1]+'%"></line>'});return out
 }
@@ -12570,27 +12628,55 @@ function filters58(d){
  var c=d.center,all=(d.nodes||[]).slice(1).map(function(n){return rel58(c,n)}),counts={};
  Object.keys(REL58).forEach(function(k){counts[k]=all.filter(function(r){return r.kinds.includes(k)}).length});
  return '<div class="mr58-filters"><small>연결 보기</small>'+
+  '<span class="mr61-match"><button type="button" class="'+(filterMode58==="or"?"active":"")+'" data-mr58-match="or">하나라도</button><button type="button" class="'+(filterMode58==="and"?"active":"")+'" data-mr58-match="and">모두</button></span>'+
   Object.keys(REL58).map(function(k){return '<button type="button" class="mr58-filter '+(active58.has(k)?"active":"")+'" data-mr58-filter="'+k+'">'+REL58[k].label+' '+counts[k]+'</button>'}).join("")+
   '<button type="button" class="mr58-filter mr58-all" data-mr58-all>전부 켜기</button></div>'
 }
-function summary58(rows){var c={genre:0,style:0,mood:0,producer:0,vocal:0,era:0,depth:0};rows.forEach(function(x){Object.keys(c).forEach(function(k){if(x.rel.kinds.includes(k))c[k]++})});return '<div class="mr58-summary"><span>장르 '+c.genre+'</span><span>스타일 '+c.style+'</span><span>무드 '+c.mood+'</span><span>P '+c.producer+'</span><span>보컬 '+c.vocal+'</span><span>시대 '+c.era+'</span><span>수층 '+c.depth+'</span></div>'}
+function summary58(rows){var c={genre:0,bridge:0,style:0,mood:0,producer:0,vocal:0,era:0,depth:0};rows.forEach(function(x){Object.keys(c).forEach(function(k){if(x.rel.kinds.includes(k))c[k]++})});return '<div class="mr58-summary"><span>장르 '+c.genre+'</span><span>브리지 '+c.bridge+'</span><span>스타일 '+c.style+'</span><span>무드 '+c.mood+'</span><span>P '+c.producer+'</span><span>보컬 '+c.vocal+'</span><span>시대 '+c.era+'</span><span>수층 '+c.depth+'</span></div>'}
 function scene58(d){
  var rows=relationRows58(d),c=d.center;
  return '<div class="mr58-shell"><div class="mr58-bg"></div><div class="mr58-rays"></div><div class="mr58-specks"></div><div class="mr58-vignette"></div><div class="mr58-content">'+
-  '<div class="mr58-head"><div><small>VOCADIVE · MULTI RELATION 1.0</small><h3>한 화면 다중 연결</h3><p>유사한 곡·비슷한 장르·같은 P·같은 보컬·동시대·같은 수층을 동시에 계산해 하나의 해역에 겹쳐 보여줍니다.</p></div>'+summary58(rows)+'</div>'+
+  '<div class="mr58-head"><div><small>VOCADIVE · RELATION BRIDGE 1.0</small><h3>한 화면 다중 연결</h3><p>같은 장르뿐 아니라 Rock ↔ Shoegaze처럼 가까운 장르 브리지까지 연결하고, OR/AND 조건으로 교집합을 좁힐 수 있습니다.</p></div>'+summary58(rows)+'</div>'+
   filters58(d)+'<div class="mr58-map"><svg class="mr58-links" viewBox="0 0 1000 650" preserveAspectRatio="none">'+links58(rows)+'</svg>'+rows.map(function(x,i){return node58(x,i,c)}).join("")+center58(c,d)+(rows.length?"":'<div class="mr58-empty">현재 켠 연결 조건에 맞는 후보가 없습니다.<br>위의 연결 칩을 다시 켜보세요.</div>')+'</div></div></div>'
 }
 function find58(id,d){return d&&(d.nodes||[]).find(function(n){return n&&n.contentId===id})}
+function producerDetails58(c,n){
+ var A=Array.isArray(c&&c.__producerResolved60)?c.__producerResolved60:[],B=Array.isArray(n&&n.__producerResolved60)?n.__producerResolved60:[];
+ var bm=new Map(B.map(function(x){return [norm58(x.id?("id:"+x.id):(x.name||x)),x]})),out=[];
+ A.forEach(function(x){var k=norm58(x.id?("id:"+x.id):(x.name||x)),y=bm.get(k);if(y)out.push({name:x.name||y.name||k,sources:[...new Set(String(x.source||"").split(" + ").concat(String(y.source||"").split(" + ")).filter(Boolean))]})});
+ return out
+}
+function relationReasonRows58(c,n,r){
+ if(!r)return [];
+ var out=[];
+ if(r.base>=.20){
+   var extra=(r.breakdown&&Array.isArray(r.breakdown.reasons)?r.breakdown.reasons:[]).slice(0,2).map(function(x){return x&&x.label}).filter(Boolean);
+   out.push({k:"유사곡",v:"태그 유사도 "+Math.round(r.base*100)+"%"+(extra.length?" · "+extra.join(" / "):"")})
+ }
+ if(r.genres.length)out.push({k:"장르",v:r.genres.map(genreLabel58).join(" · ")+" 공통"});
+ if(r.bridgePairs&&r.bridgePairs.length)out.push({k:"장르 브리지",v:r.bridgePairs.slice(0,2).map(function(x){return genreLabel58(x.from)+" ↔ "+genreLabel58(x.to)}).join(" · ")});
+ if(r.styles&&r.styles.length)out.push({k:"스타일",v:r.styles.map(function(k){var x=STYLES58.find(function(z){return z.key===k});return x?x.label:k}).join(" · ")});
+ if(r.moods&&r.moods.length)out.push({k:"분위기",v:r.moods.map(function(k){var x=MOODS58.find(function(z){return z.key===k});return x?x.label:k}).join(" · ")});
+ var pd=producerDetails58(c,n);
+ if(pd.length)out.push({k:"P 크레딧",v:pd.slice(0,2).map(function(x){return x.name+(x.sources.length?" · "+x.sources.slice(0,2).join("/"):"")}).join(" · ")});
+ else if(r.producer)out.push({k:"P 연결",v:"P명 검색에서 연결됨 · 크레딧 보강 중"});
+ if(r.vocal)out.push({k:"보컬",v:"공통 음원 태그 확인"});
+ if(r.era>=.68)out.push({k:"시대",v:r.yearDiff===0?"같은 연도":r.yearDiff+"년 차이"});
+ if(r.depth===1)out.push({k:"수층",v:"인지도·조회수 보정 기준 같은 수층"});
+ var cs=Object.keys(r.confidence||{}).filter(function(k){return (r.confidence[k]||0)>0&&(k==="base"||r.kinds.includes(k))});
+ if(cs.length){var av=cs.reduce(function(s,k){return s+(r.confidence[k]||0)},0)/cs.length;out.push({k:"근거 신뢰도",v:Math.round(av*100)+"% · 확인 가능한 축만 점수에 반영"})}
+ return out
+}
 function side58(n,d){
- var c=d.center,r=n.contentId===c.contentId?null:rel58(c,n),gs=genreProfile58(n);
- return '<div class="mr58-side"><div class="mr58-side-cover">'+(n.thumbnailUrl?'<img src="'+e58(n.thumbnailUrl)+'" alt="">':'<div class="noimg">♪</div>')+'</div><div class="mr58-badges">'+(r?badges58(r,8):badge58("similar","중심곡"))+'</div><h3>'+e58(n.title||n.contentId)+'</h3><div class="mr58-side-meta">'+(year58(n)||"연도 미상")+' · 조회 '+fmt58(views58(n))+(gs.length?' · '+gs.map(function(x){return x.label}).slice(0,3).join(" / "):"")+'</div>'+
-  '<div class="mr58-side-section"><small>연결 근거</small><div class="mr58-badges">'+(r?badges58(r,8):'<span class="mr58-badge similar">현재 다이브 기준곡</span>')+'</div></div>'+
+ var c=d.center,r=n.contentId===c.contentId?null:rel58(c,n),gs=genreProfile58(n),reasons=r?relationReasonRows58(c,n,r):[];
+ return '<div class="mr58-side"><div class="mr58-side-cover">'+(n.thumbnailUrl?'<img src="'+e58(n.thumbnailUrl)+'" alt="">':'<div class="noimg">♪</div>')+'</div><div class="mr58-badges">'+(r?badges58(r,9):badge58("similar","중심곡"))+'</div><h3>'+e58(n.title||n.contentId)+'</h3><div class="mr58-side-meta">'+(year58(n)||"연도 미상")+' · 조회 '+fmt58(views58(n))+(gs.length?' · '+gs.map(function(x){return x.label}).slice(0,3).join(" / "):"")+'</div>'+
+  '<div class="mr58-side-section"><small>왜 연결됐나</small>'+(r?'<div class="mr61-reason-list">'+reasons.map(function(x){return '<div><b>'+e58(x.k)+'</b><span>'+e58(x.v)+'</span></div>'}).join("")+'</div>':'<div class="mr58-badges"><span class="mr58-badge similar">현재 다이브 기준곡</span></div>')+'</div>'+
   '<div class="mr58-side-actions">'+(r?'<button type="button" class="primary" data-mr58-go="'+e58(n.contentId)+'">이 곡으로 다이브</button>':'')+'<button type="button" data-mr58-play="'+e58(n.contentId)+'">▶ 바로 듣기</button><button type="button" data-mr58-detail="'+e58(n.contentId)+'">곡 상세</button><button type="button" data-mr58-pin="'+e58(n.contentId)+'">'+((typeof isUniversePinned39==="function"&&isUniversePinned39(n.contentId))?"핀 해제":"핀 고정")+'</button></div></div>'
 }
 function render58(d){
  if(!d||!d.center)return;
  var p=q58("#universePanel");if(!p)return;p.classList.add("v3958-rel");
- try{var h=q58("#v394UniverseHeader",p),t=h&&h.querySelector(".v394-universe-title");if(t)t.innerHTML='<small>VOCADIVE · MULTI RELATION 1.0</small><h2>다이브</h2><p>유사곡과 비슷한 장르를 기본으로, P·보컬·시대·수층 관계까지 한 화면에서 동시에 연결합니다.</p>'}catch(_){}
+ try{var h=q58("#v394UniverseHeader",p),t=h&&h.querySelector(".v394-universe-title");if(t)t.innerHTML='<small>VOCADIVE · RELATION BRIDGE 1.0</small><h2>다이브</h2><p>같은 장르와 인접 장르 브리지를 함께 탐색하고, 장르·스타일·분위기·P·보컬·시대·수층을 교차해서 좁힙니다.</p>'}catch(_){}
  var ld=q58("#universeEmpty");if(ld)ld.style.display="none";
  var stage=q58(".universe-stage",p);if(stage)stage.innerHTML=scene58(d);
  var info=q58("#universeInfo",p);if(info)info.innerHTML=side58(d.center,d);
@@ -12607,6 +12693,7 @@ function random58(){
 function bind58(){
  var p=q58("#universePanel");if(!p||bound58)return;bound58=true;
  p.addEventListener("click",function(ev){
+   var match=ev.target.closest("[data-mr58-match]");if(match){ev.preventDefault();ev.stopImmediatePropagation();filterMode58=match.dataset.mr58Match==="and"?"and":"or";var dm=state.universeData;if(dm)render58(dm);return}
    var f=ev.target.closest("[data-mr58-filter]");if(f){ev.preventDefault();ev.stopImmediatePropagation();var k=f.dataset.mr58Filter;if(active58.has(k))active58.delete(k);else active58.add(k);var d=state.universeData;if(d)render58(d);return}
    if(ev.target.closest("[data-mr58-all]")){ev.preventDefault();ev.stopImmediatePropagation();active58=new Set(Object.keys(REL58));var da=state.universeData;if(da)render58(da);return}
    var s=ev.target.closest("[data-mr58-select]");if(s){ev.preventDefault();ev.stopImmediatePropagation();var d=state.universeData,n=find58(s.dataset.mr58Select,d);if(n){selected58=n.contentId;qa58(".mr58-node",p).forEach(function(x){x.classList.toggle("selected",x.dataset.mr58Select===selected58)});var info=q58("#universeInfo",p);if(info)info.innerHTML=side58(n,d)}return}
@@ -12618,8 +12705,9 @@ function bind58(){
  },true)
 }
 window.VSA58RelationQueryTags=function(center,base){
- var tags=Array.isArray(base)?base.slice():[],genres=genreProfile58(center),aliases=[];
- genres.slice(0,2).forEach(function(g){aliases=aliases.concat(g.aliases.slice(0,4))});
+ var tags=Array.isArray(base)?base.slice():[],genres=genreProfile58(center),bridges=bridgeProfile58(center),aliases=[];
+ genres.slice(0,2).forEach(function(g){aliases=aliases.concat(g.aliases.slice(0,3))});
+ bridges.slice(0,2).forEach(function(g){aliases=aliases.concat(g.aliases.slice(0,2))});
  var out=[],seen=new Set();
  tags.concat(aliases).forEach(function(x){x=String(x||"").trim();var k=norm58(x);if(x&&!seen.has(k)){seen.add(k);out.push(x)}});
  return out.slice(0,9)
@@ -12627,7 +12715,8 @@ window.VSA58RelationQueryTags=function(center,base){
 window.VSA58GenreProfile=genreProfile58;
 window.VSA58StyleProfile=styleProfile58;
 window.VSA58MoodProfile=moodProfile58;
-window.VSADiveRelations58={render:render58,relation:rel58,genres:genreProfile58,styles:styleProfile58,moods:moodProfile58,setActive:function(a){active58=new Set(a||[]);var d=state.universeData;if(d)render58(d)}};
+window.VSA58BridgeProfile=bridgeProfile58;
+window.VSADiveRelations58={render:render58,relation:rel58,genres:genreProfile58,bridges:bridgeProfile58,styles:styleProfile58,moods:moodProfile58,setActive:function(a){active58=new Set(a||[]);var d=state.universeData;if(d)render58(d)},setMode:function(m){filterMode58=m==="and"?"and":"or";var d=state.universeData;if(d)render58(d)}};
 window.renderUniverse=render58;
 function boot58(){var d=typeof state!=="undefined"?state.universeData:null;if(d)render58(d)}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(boot58,80)});else setTimeout(boot58,80);
@@ -12640,6 +12729,7 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
 .mr59-pool small{color:#779f9b;font-size:6px;font-weight:950;letter-spacing:.1em;margin-right:2px}
 .mr59-pool span{display:inline-flex;align-items:center;min-height:23px;padding:0 7px;border:1px solid rgba(148,221,214,.12);border-radius:999px;background:rgba(5,34,43,.55);color:#a9cfca;font-size:6px;font-weight:900}
 .mr59-pool span.genre{color:#d7e0ff;background:rgba(49,67,110,.52)}
+.mr59-pool span.bridge{color:#d9fff8;background:rgba(45,91,99,.55)}
 .mr59-pool span.producer{color:#f0dcff;background:rgba(78,51,96,.52)}
 .mr59-pool span.vocal{color:#ffe1ef;background:rgba(91,56,75,.52)}
 .mr59-pool span.era{color:#fff0c1;background:rgba(82,73,44,.52)}
@@ -12683,6 +12773,10 @@ function moodTags59(n){
  var out=[];try{(window.VSA58MoodProfile?window.VSA58MoodProfile(n):[]).slice(0,2).forEach(function(g){(g.aliases||[]).slice(0,3).forEach(function(x){if(!out.includes(x))out.push(x)})})}catch(_){}
  return out.slice(0,6)
 }
+function bridgeTags59(n){
+ var out=[];try{(window.VSA58BridgeProfile?window.VSA58BridgeProfile(n):[]).slice(0,4).forEach(function(g){(g.aliases||[]).slice(0,2).forEach(function(x){if(!out.includes(x))out.push(x)})})}catch(_){}
+ return out.slice(0,8)
+}
 function yearRange59(n){
  var y=null;try{y=n&&n.startTime?new Date(n.startTime).getFullYear():null}catch(_){}
  if(!y)return null;
@@ -12705,6 +12799,7 @@ function tasks59(center,tags,queryTags){
  }
  (queryTags||tags||[]).slice(0,5).forEach(function(t){add("similar",t)});
  genreTags59(center).forEach(function(t){add("genre",t)});
+ bridgeTags59(center).forEach(function(t){add("bridge",t)});
  styleTags59(center).forEach(function(t){add("style",t)});
  moodTags59(center).forEach(function(t){add("mood",t)});
  producerTags59(center).forEach(function(t){add("producer",t)});
@@ -12712,9 +12807,11 @@ function tasks59(center,tags,queryTags){
  var base=(queryTags&&queryTags[0])||(tags&&tags[0]);
  var yr=yearRange59(center);if(base&&yr)add("era",base,{dateRange:yr});
  if(base)add("depth",base,{numericFilters:{viewCounter:depthBand59(center)}});
- var priority={producer:0,vocal:1,genre:2,style:3,mood:4,similar:5,era:6,depth:7};
+ var priority={producer:0,vocal:1,genre:2,bridge:3,style:4,mood:5,similar:6,era:7,depth:8};
  tasks.sort(function(a,b){return priority[a.lane]-priority[b.lane]});
- return tasks.slice(0,20)
+ var caps={producer:3,vocal:3,genre:4,bridge:4,style:2,mood:2,similar:3,era:1,depth:1},used={},out=[];
+ tasks.forEach(function(t){used[t.lane]=used[t.lane]||0;if(used[t.lane]<(caps[t.lane]||2)&&out.length<23){used[t.lane]++;out.push(t)}});
+ return out
 }
 var taskCache59=new Map();
 function cacheKey59(t){return [t.lane,norm59(t.tag),JSON.stringify(t.dateRange||null),JSON.stringify(t.numericFilters||null)].join("|")}
@@ -12725,7 +12822,7 @@ async function fetchTask59(t){
    var ss=JSON.parse(sessionStorage.getItem("vsa59.task."+key)||"null");
    if(ss&&Date.now()-ss.at<900000&&Array.isArray(ss.rows)){taskCache59.set(key,ss);return ss.rows.map(function(x){return Object.assign({},x)})}
  }catch(_){}
- var sort=t.lane==="producer"?"-startTime":t.lane==="genre"||t.lane==="style"||t.lane==="mood"?"-mylistCounter":t.lane==="vocal"?"-commentCounter":t.lane==="era"?"-startTime":"-viewCounter";
+ var sort=t.lane==="producer"?"-startTime":t.lane==="genre"||t.lane==="bridge"||t.lane==="style"||t.lane==="mood"?"-mylistCounter":t.lane==="vocal"?"-commentCounter":t.lane==="era"?"-startTime":"-viewCounter";
  try{
    var d=await fetchNico({
      year:"all",limit:36,offset:0,mode:"free",query:t.tag,scope:"all",
@@ -12764,7 +12861,7 @@ window.VSA59SelectRelationCandidates=function(center,candidates,count,meta){
    return {song:s,rel:r}
  });
  rows.sort(function(a,b){return (+b.rel.score||0)-(+a.rel.score||0)||(+b.song.viewCounter||0)-(+a.song.viewCounter||0)});
- var picked=[],used=new Set(),kinds=["similar","genre","style","mood","producer","vocal","era","depth"];
+ var picked=[],used=new Set(),kinds=["similar","genre","bridge","style","mood","producer","vocal","era","depth"];
  kinds.forEach(function(k){
    var lane=rows.filter(function(x){return (x.rel.kinds||[]).includes(k)||(x.song.__relSources59||[]).includes(k)}).slice(0,2);
    lane.forEach(function(x){if(picked.length<count&&!used.has(x.song.contentId)){used.add(x.song.contentId);picked.push(x)}})
@@ -12776,7 +12873,7 @@ window.VSA59SelectRelationCandidates=function(center,candidates,count,meta){
 };
 function laneBar59(d){
  var m=d&&d.relationMeta59&&d.relationMeta59.laneStats;if(!m)return "";
- var order=[["similar","유사"],["genre","장르"],["style","스타일"],["mood","무드"],["producer","P"],["vocal","보컬"],["era","시대"],["depth","수층"]];
+ var order=[["similar","유사"],["genre","장르"],["bridge","브리지"],["style","스타일"],["mood","무드"],["producer","P"],["vocal","보컬"],["era","시대"],["depth","수층"]];
  return '<div class="mr59-pool"><small>후보 수집</small>'+order.map(function(x){return '<span class="'+x[0]+'">'+x[1]+' '+(m[x[0]]||0)+'</span>'}).join("")+'</div>'
 }
 window.renderUniverse=function(d){
@@ -12787,7 +12884,7 @@ window.renderUniverse=function(d){
  }catch(_){}
  return out
 };
-window.VSADiveCandidateEngine59={tasks:tasks59,producerTags:producerTags59,vocalTags:vocalTags59,genreTags:genreTags59,styleTags:styleTags59,moodTags:moodTags59};
+window.VSADiveCandidateEngine59={tasks:tasks59,producerTags:producerTags59,vocalTags:vocalTags59,genreTags:genreTags59,bridgeTags:bridgeTags59,styleTags:styleTags59,moodTags:moodTags59};
 })();
 </script>
 
