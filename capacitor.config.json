@@ -1,0 +1,14 @@
+{
+  "appId": "app.vocadive.mobile",
+  "appName": "VocaDive",
+  "webDir": "dist/app",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": true
+    }
+  }
+}
