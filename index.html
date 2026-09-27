@@ -12792,11 +12792,11 @@ function summary58(rows){var c={genre:0,bridge:0,style:0,mood:0,producer:0,vocal
 function depthNav58(d){
  var c=d.center,cur=depth58(c),counts=[0,0,0,0,0],nodes=(d.nodes||[]).slice(1).filter(Boolean);
  nodes.forEach(function(n){counts[depth58(n)]++});
- var shallower=nodes.some(function(n){return depth58(n)<cur}),deeper=nodes.some(function(n){return depth58(n)>cur});
+ var shallower=cur>0,deeper=cur<4;
  return '<section class="mr72-depth"><div class="mr72-depth-head"><div><small>DEPTH</small><b>현재 '+e58(DEPTH58[cur].name)+'</b><span>조회 '+fmt58(views58(c))+' · '+e58(DEPTH58[cur].range)+'</span></div><div class="mr72-depth-actions">'+
   '<button type="button" data-mr58-depth-step="-1" '+(shallower?"":"disabled")+'>↑ 더 얕게</button>'+
   '<button type="button" class="primary" data-mr58-depth-step="1" '+(deeper?"":"disabled")+'>'+(cur>=4?"최심해":"↓ 심층 이동")+'</button></div></div>'+
-  '<div class="mr72-depth-track">'+DEPTH58.map(function(x,i){return '<button type="button" class="'+(i===cur?"active":"")+'" data-mr58-depth-target="'+i+'" '+((i!==cur&&!counts[i])?"disabled":"")+'><span>'+e58(x.short)+'</span><small>'+(i===cur?"현재":counts[i]+"곡")+'</small></button>'}).join("")+'</div>'+
+  '<div class="mr72-depth-track">'+DEPTH58.map(function(x,i){return '<button type="button" class="'+(i===cur?"active":"")+'" data-mr58-depth-target="'+i+'" '+(i===cur?"disabled":"")+'><span>'+e58(x.short)+'</span><small>'+(i===cur?"현재":(counts[i]?counts[i]+"곡":"찾기"))+'</small></button>'}).join("")+'</div>'+
   '<div class="mr72-depth-status" aria-live="polite"></div></section>'
 }
 function scene58(d){
@@ -12893,22 +12893,56 @@ function go58(id){
   return Promise.resolve(buildUniverse(n,false)).then(function(){status58("");return true}).catch(function(e){status58("다이브 이동 실패 · "+String(e&&e.message||e),true);return false})
  }catch(e){status58("다이브 이동 실패 · "+String(e&&e.message||e),true);return Promise.resolve(false)}
 }
-function moveDepth58(target){
- var d=typeof state!=="undefined"?state.universeData:null;if(!d||!d.center)return Promise.resolve(false);
+function depthRange58(target){
+ return target===0?{gte:1000000}:target===1?{gte:250000,lte:999999}:target===2?{gte:50000,lte:249999}:target===3?{gte:5000,lte:49999}:{gte:0,lte:4999}
+}
+async function remoteDepthCandidate58(target,d){
+ if(typeof fetchNico!=="function")return null;
+ try{if(typeof relayBase==="function"&&!relayBase())return null}catch(_){}
+ var c=d.center,tags=[];
+ try{tags=(window.VSA58RelationQueryTags?window.VSA58RelationQueryTags(c,d.queryTags||[]):d.queryTags||[]).slice(0,6)}catch(_){tags=(d.queryTags||[]).slice(0,6)}
+ var queries=[];
+ if(tags.length)queries.push({q:tags.join(" OR "),targets:"tags"});
+ queries.push({q:"オリジナル曲",targets:"tags"});
+ for(var qi=0;qi<queries.length;qi++){
+  try{
+   var data=await fetchNico({year:"all",limit:80,offset:0,mode:"ranking",sort:target>=3?"+viewCounter":"-mylistCounter",applyYear:false,applyTier:false,numericFilters:{viewCounter:depthRange58(target)},overrideQuery:queries[qi].q,overrideTargets:queries[qi].targets});
+   var rows=(data&&data.data)||[];
+   try{if(window.VSA53DiveFilterRows)rows=window.VSA53DiveFilterRows(rows,"depth_move").rows}catch(_){}
+   try{if(window.VSA37AdultFilterRows)rows=window.VSA37AdultFilterRows(rows,"depth_move").rows}catch(_){}
+   rows=rows.filter(function(n){return n&&n.contentId!==c.contentId&&depth58(n)===target});
+   if(rows.length){
+    rows.sort(function(a,b){var A=rel58(c,a),B=rel58(c,b);return B.score-A.score||B.base-A.base||views58(b)-views58(a)});
+    return rows[0]
+   }
+  }catch(_){}
+ }
+ return null
+}
+async function moveDepth58(target){
+ var d=typeof state!=="undefined"?state.universeData:null;if(!d||!d.center)return false;
  target=Math.max(0,Math.min(4,Number(target)));
  var c=d.center,rows=(d.nodes||[]).slice(1).filter(function(n){return n&&n.contentId&&depth58(n)===target}).map(function(n){return {song:n,rel:rel58(c,n)}})
   .sort(function(a,b){return b.rel.score-a.rel.score||b.rel.base-a.rel.base||views58(b.song)-views58(a.song)});
- if(!rows.length){status58(DEPTH58[target].name+" 후보가 현재 경로에 없습니다. 다른 수층을 선택하거나 랜덤 다이브를 이용하세요.",true);return Promise.resolve(false)}
- status58(DEPTH58[target].name+"으로 이동 · "+(rows[0].song.title||rows[0].song.contentId));
- return go58(rows[0].song.contentId)
+ if(rows.length){status58(DEPTH58[target].name+"으로 이동 · "+(rows[0].song.title||rows[0].song.contentId));return await go58(rows[0].song.contentId)}
+ status58(DEPTH58[target].name+" 후보를 새로 찾는 중…");
+ var remote=await remoteDepthCandidate58(target,d);
+ if(remote){
+  try{
+   if(!find58(remote.contentId,d)){d.nodes=d.nodes||[];d.nodes.push(remote)}
+  }catch(_){}
+  status58(DEPTH58[target].name+" 후보 발견 · "+(remote.title||remote.contentId));
+  return await go58(remote.contentId)
+ }
+ var workerOk=true;try{workerOk=typeof relayBase!=="function"||!!relayBase()}catch(_){}
+ status58(workerOk?DEPTH58[target].name+" 후보를 찾지 못했습니다. 다른 수층이나 랜덤 다이브를 이용하세요.":"현재 경로에 후보가 없고 Worker가 연결되지 않아 새 후보를 검색할 수 없습니다.",true);
+ return false
 }
 function stepDepth58(delta){
  var d=typeof state!=="undefined"?state.universeData:null;if(!d||!d.center)return Promise.resolve(false);
- var cur=depth58(d.center),nodes=(d.nodes||[]).slice(1).filter(Boolean),targets=[];
- if(delta>0){for(var i=cur+1;i<5;i++)if(nodes.some(function(n){return depth58(n)===i})){targets.push(i);break}}
- else{for(var j=cur-1;j>=0;j--)if(nodes.some(function(n){return depth58(n)===j})){targets.push(j);break}}
- if(!targets.length){status58(delta>0?"현재 후보에서는 더 깊은 수층으로 내려갈 수 없습니다.":"현재 후보에서는 더 얕은 수층으로 올라갈 수 없습니다.",true);return Promise.resolve(false)}
- return moveDepth58(targets[0])
+ var cur=depth58(d.center),target=cur+(delta>0?1:-1);
+ if(target<0||target>4){status58(delta>0?"이미 가장 깊은 수층입니다.":"이미 수면층입니다.",true);return Promise.resolve(false)}
+ return moveDepth58(target)
 }
 function random58(){
  var d=typeof state!=="undefined"?state.universeData:null;if(!d)return startRandom58();var rows=relationRows58(d);if(!rows.length)return startRandom58();
