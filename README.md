@@ -33,7 +33,7 @@ worker/niconico-worker.js
 
 ## 현재 버전
 
-App: v39.67.0
+App: v39.68.0
 Worker: v10
 
 
@@ -93,6 +93,6 @@ v39.67.0부터 직접 설치한 Android APK는 앱 내부에서 새 GitHub Relea
 정식 업데이트 채널은 영구 Android 서명키가 필요합니다. 키 파일은 저장소에 커밋하지 않고 GitHub Actions Secrets로만 주입합니다. 필요한 secret 이름과 배포 절차는 `docs/app-foundation.md`에 정리되어 있습니다.
 
 
-## Search Hotfix 4.1
+## Search Hotfix 4.2
 
-v39.67.0부터 검색은 보카로·UTAU 순위/통계 로딩과 독립적으로 실행됩니다. 느린 순위 다운로드 중에도 검색 버튼이 즉시 동작하며, 이전 순위 응답이 늦게 끝나도 최신 검색 결과를 덮어쓰지 않습니다.
+v39.68.0부터 Search 4.0의 검색 버튼과 Enter 입력은 하나의 직접 검색 경로만 사용합니다. 숨겨진 구형 연도/빙산 체크 상태가 검색 조건에 섞이지 않으며, 모바일에서 Worker/API 검색이 실패하면 결과 영역에 원인이 바로 표시됩니다.
