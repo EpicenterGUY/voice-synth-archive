@@ -1,0 +1,179 @@
+name: Android signed release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (example: app-v39.66.0). Empty = package version."
+        required: false
+        type: string
+  push:
+    tags:
+      - "app-v*"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: android-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+      ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "21"
+
+      - name: Validate signing secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          for name in ANDROID_KEYSTORE_BASE64 ANDROID_KEYSTORE_PASSWORD ANDROID_KEY_ALIAS ANDROID_KEY_PASSWORD; do
+            if [ -z "${!name:-}" ]; then
+              echo "::error::Missing GitHub Actions secret: $name"
+              echo "::error::Direct APK updates require one permanent Android signing key. Do not commit the keystore to the repository."
+              exit 1
+            fi
+          done
+
+      - name: Resolve release version
+        id: meta
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="$(node -p "require('./package.json').version")"
+          INPUT_TAG="${{ inputs.tag }}"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "$INPUT_TAG" ]; then
+            TAG="$INPUT_TAG"
+          else
+            TAG="${{ github.ref_name }}"
+            if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then TAG="app-v$VERSION"; fi
+          fi
+          if [ "$TAG" != "app-v$VERSION" ]; then
+            echo "::error::Tag $TAG does not match package version $VERSION. Expected app-v$VERSION."
+            exit 1
+          fi
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+          VERSION_CODE=$((10#$MAJOR * 1000000 + 10#$MINOR * 1000 + 10#$PATCH))
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "version_code=$VERSION_CODE" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Prepare web bundle
+        run: npm run build:app
+
+      - name: Generate Android shell
+        run: npx cap add android
+
+      - name: Generate launcher icon and splash assets
+        run: npm run assets:android
+
+      - name: Sync Capacitor plugins and web bundle
+        run: npx cap sync android
+
+      - name: Patch updater bridge and Android version
+        run: npm run android:patch
+
+      - name: Verify version and updater permission
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q "versionName \"${{ steps.meta.outputs.version }}\"" android/app/build.gradle
+          grep -q "versionCode ${{ steps.meta.outputs.version_code }}" android/app/build.gradle
+          grep -q "REQUEST_INSTALL_PACKAGES" android/app/src/main/AndroidManifest.xml
+          test -f android/app/src/main/java/app/vocadive/mobile/VocaDiveUpdaterPlugin.java
+
+      - name: Build unsigned release APK
+        working-directory: android
+        run: |
+          chmod +x ./gradlew
+          ./gradlew assembleRelease --stacktrace
+
+      - name: Decode permanent signing key
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/vocadive-release.keystore
+          test -s android/vocadive-release.keystore
+
+      - name: Sign release APK
+        id: sign
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p release
+          UNSIGNED="android/app/build/outputs/apk/release/app-release-unsigned.apk"
+          test -f "$UNSIGNED"
+          BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
+          "$BUILD_TOOLS/zipalign" -f -p 4 "$UNSIGNED" release/VocaDive-aligned.apk
+          "$BUILD_TOOLS/apksigner" sign             --ks android/vocadive-release.keystore             --ks-key-alias "$ANDROID_KEY_ALIAS"             --ks-pass "pass:$ANDROID_KEYSTORE_PASSWORD"             --key-pass "pass:$ANDROID_KEY_PASSWORD"             --out release/VocaDive.apk             release/VocaDive-aligned.apk
+          "$BUILD_TOOLS/apksigner" verify --verbose --print-certs release/VocaDive.apk
+          SHA256="$(sha256sum release/VocaDive.apk | awk '{print $1}')"
+          SIZE="$(stat -c%s release/VocaDive.apk)"
+          echo "sha256=$SHA256" >> "$GITHUB_OUTPUT"
+          echo "size=$SIZE" >> "$GITHUB_OUTPUT"
+
+      - name: Generate update manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > release/latest.json <<EOF
+          {
+            "version": "${{ steps.meta.outputs.version }}",
+            "versionCode": ${{ steps.meta.outputs.version_code }},
+            "packageName": "app.vocadive.mobile",
+            "url": "https://github.com/${{ github.repository }}/releases/download/${{ steps.meta.outputs.tag }}/VocaDive.apk",
+            "sha256": "${{ steps.sign.outputs.sha256 }}",
+            "size": ${{ steps.sign.outputs.size }},
+            "channel": "direct",
+            "publishedAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          }
+          EOF
+          cat release/latest.json
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="${{ steps.meta.outputs.tag }}"
+          VERSION="${{ steps.meta.outputs.version }}"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" release/VocaDive.apk release/latest.json --clobber
+            gh release edit "$TAG" --title "VocaDive v$VERSION"
+          else
+            gh release create "$TAG" release/VocaDive.apk release/latest.json               --title "VocaDive v$VERSION"               --notes "Direct Android APK release for VocaDive v$VERSION. Existing direct-channel installs can check, download and open the Android installer from inside the app."
+          fi
+
+      - name: Upload signed build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: VocaDive-signed-${{ steps.meta.outputs.version }}
+          path: |
+            release/VocaDive.apk
+            release/latest.json
+          if-no-files-found: error
+          retention-days: 30
