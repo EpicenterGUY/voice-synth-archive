@@ -2,9 +2,9 @@
   "id": "./",
   "name": "VocaDive - Vocal Synth Discovery",
   "short_name": "VocaDive",
-  "description": "유사곡·장르·P·보컬·시대·수층별 후보를 따로 수집해 한 화면에서 다중 관계로 탐색하는 VocaDive 앱",
+  "description": "유사곡·장르·스타일·분위기·P·보컬·시대·수층을 신뢰도 기반으로 연결하고 심해곡을 균형 발굴하는 VocaDive 앱",
   "lang": "ko-KR",
-  "start_url": "./?appv=39.59.0",
+  "start_url": "./?appv=39.60.0",
   "scope": "./",
   "display": "standalone",
   "display_override": [
