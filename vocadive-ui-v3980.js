@@ -478,7 +478,12 @@ function closeMenu3982(){
 }
 function openSettings3982(){
   closeMenu3982();
-  try{if(typeof window.ensureCorePages37==="function")window.ensureCorePages37()}catch(_){}
+  try{
+    if(typeof window.ensureCorePages37==="function")window.ensureCorePages37();
+    else if(typeof window.openToolsModal==="function"){
+      window.openToolsModal("settings29");scheduleRepair();return
+    }
+  }catch(_){}
   openRoute("settings29")
 }
 function ensureMenu3982(){
@@ -582,11 +587,18 @@ function openRoute(name){
     if(needsV33&&!ok){
       if(name==="searchHub33")name="search29";
       else if(name==="libraryHub33")name="library22";
-      else name="studioHome"
+      else if(name==="tasteHub33")name="taste";
+      else name="hub37"
     }
-    openRaw(name);lastRoute=dockForRoute(name);setDock(lastRoute);scheduleRepair();
-    return true
-  }).catch(function(){openRaw(name);scheduleRepair();return false})
+    try{if(typeof window.ensureCorePages37==="function")window.ensureCorePages37()}catch(_){}
+    var opened=openRaw(name);
+    if(!opened&&name!=="hub37")opened=openRaw("hub37");
+    lastRoute=dockForRoute(name);setDock(lastRoute);scheduleRepair();
+    return !!opened
+  }).catch(function(){
+    try{openRaw("hub37")}catch(_){}
+    scheduleRepair();return false
+  })
 }
 function openLibrary(){
   try{
@@ -646,7 +658,7 @@ function repairRoute(){
         }}catch(_){target.classList.add("active");target.hidden=false}
       }
       if(!q(".tools-body>.tool-view.active",modal)){
-        var fallback=q('.tools-body>[data-tool-view="studioHome"]',modal)||q('.tools-body>[data-tool-view="explore33"]',modal)||q(".tools-body>.tool-view",modal);
+        var fallback=q('.tools-body>[data-tool-view="hub37"]',modal)||q('.tools-body>[data-tool-view="explore33"]',modal)||q(".tools-body>.tool-view",modal);
         if(fallback){
           try{if(typeof window.setToolView==="function"&&fallback.dataset.toolView)window.setToolView(fallback.dataset.toolView);else fallback.classList.add("active")}catch(_){fallback.classList.add("active")}
         }
