@@ -1,11 +1,29 @@
 {
   "current": {
-    "version": "39.62.0",
+    "version": "39.63.0",
     "releasedAt": "2026-09-27",
-    "title": "App Foundation 1.0 · Native / Account Base",
-    "summary": "기존 웹/PWA를 유지하면서 Android/iOS 앱으로 확장할 수 있도록 플랫폼, 계정, 권한, 동기화의 기본 계층을 분리했습니다."
+    "title": "Android Shell 0.1 · Back / Lifecycle / Playback Restore",
+    "summary": "Android 하드웨어 뒤로가기와 앱 백그라운드/복귀를 실제 네이티브 수명주기에 연결하고, 미니플레이어와 재생 상태를 저장·복구하는 첫 앱 셸을 추가했습니다."
   },
   "entries": [
+    {
+      "version": "39.63.0",
+      "date": "2026-09-27",
+      "title": "Android Shell 0.1 · Back / Lifecycle / Playback Restore",
+      "changes": [
+        "Capacitor App 플러그인을 이용하는 native-shell-v3963.js를 추가해 Android 하드웨어 뒤로가기와 앱 수명주기를 VocaDive 라우팅에 연결",
+        "전체 플레이어가 열려 있으면 뒤로가기 시 종료 대신 미니플레이어로 먼저 축소",
+        "기능 화면에서는 자체 라우트 스택을 따라 이전 화면으로 돌아가고 홈 루트에서는 Android 앱을 최소화하도록 처리",
+        "앱이 백그라운드로 갈 때 현재 곡, 큐, 인덱스, 음량, 재생 상태, 현재 라우트를 저장",
+        "앱 복귀 시 숨겨진/분리된 플레이어 표면을 재검사해 미니플레이어 또는 곡 상세 플레이어를 다시 보이게 복구",
+        "프로세스가 종료된 뒤 다시 실행된 경우 12시간 이내 마지막 재생곡을 자동재생 없이 일시정지 상태의 미니플레이어로 복원",
+        "nico-player-v32에 playback snapshot/restore API와 full/mini/inline 표면 상태를 추가",
+        "Android edge-to-edge 환경을 고려해 상단바, 전체 플레이어, 미니플레이어에 safe-area 보정 추가",
+        "Android debug APK GitHub Actions를 main의 앱 관련 변경에도 자동 실행하도록 변경",
+        "현재 WebView/iframe 기반 니코동 재생은 Android가 WebView 프로세스를 중단하면 연속 백그라운드 오디오가 보장되지 않으며, 이번 단계는 상태 보존/복구를 우선",
+        "PWA·서비스워커·설치 메타데이터와 앱 패키지 버전을 v39.63.0으로 갱신"
+      ]
+    },
     {
       "version": "39.62.0",
       "date": "2026-09-27",
