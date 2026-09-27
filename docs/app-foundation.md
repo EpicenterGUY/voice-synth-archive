@@ -1,6 +1,6 @@
 # VocaDive App Foundation
 
-Version: **39.63.0**
+Version: **39.64.0**
 
 This document describes the foundation for turning the existing VocaDive web/PWA codebase into a native Android/iOS app without rewriting the application from scratch.
 
@@ -132,6 +132,19 @@ An actual iOS build requires macOS/Xcode and Apple signing.
 5. Never place store secrets or verification credentials in the web bundle.
 6. Existing free features should not silently become paid during foundation work.
 
+## Native Brand 0.2
+
+v39.64.0 adds a reproducible Android branding pipeline instead of relying on Capacitor's default launcher resources.
+
+- `assets/logo.svg` is the canonical native logo source.
+- `@capacitor/assets` generates Android adaptive launcher icons and splash assets.
+- The generated launcher/splash background is VocaDive's dark shell color `#041115`.
+- `@capacitor/splash-screen` is installed and configured for a short 900 ms launch splash with no spinner.
+- CI now builds both a debug APK and a debug AAB so packaging problems are caught before store-signing work.
+- The current package id remains `app.vocadive.mobile`. Treat it as provisional until the Play Store identity is intentionally finalized.
+
+The app icon and splash resources are generated after `npx cap add android` and before the final `npx cap sync android`.
+
 ## Android Shell 0.1 status
 
 v39.63.0 adds the first native lifecycle layer:
@@ -148,7 +161,7 @@ The embedded NicoNico player is still a WebView/iframe playback surface. Android
 
 ## Next implementation milestones
 
-1. Verify the generated Android debug APK on a physical device.
+1. Verify the generated Android debug APK/AAB on a physical device and finalize the permanent Android package id.
 2. Fix any WebView-only navigation/player issues found in device testing.
 3. Account provider selection and `/app/bootstrap` implementation.
 4. Cloud sync migration for library/history/settings.
