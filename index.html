@@ -11883,7 +11883,7 @@ function render50(d){
  ensure50();sync50(d.center);var ld=q50("#universeEmpty");if(ld)ld.style.display="none";var stage=q50("#universePanel .universe-stage");if(stage){stage.innerHTML=scene50(d);if(enter50){var o=q50(".dg50-ocean",stage);if(o){o.classList.add("enter-"+enter50);setTimeout(function(){o.classList.remove("enter-"+enter50)},560)}enter50=""}}var info=q50("#universeInfo");if(info)info.innerHTML=side50(d.center,d)
 }
 function select50(id){var d=data50(),n=find50(id,d);if(!n)return;qa50(".dg50-node").forEach(function(x){x.classList.toggle("selected",x.dataset.dg50Select===id)});var info=q50("#universeInfo");if(info)info.innerHTML=side50(n,d)}
-function open50(dir){var d=data50();if(!d)return,r=ranks50(d,d.center),rows=dir==="up"?r.up:dir==="down"?r.down:r.side;gateway50={dir:dir,rows:rows};render50(d)}
+function open50(dir){var d=data50();if(!d)return;var r=ranks50(d,d.center),rows=dir==="up"?r.up:dir==="down"?r.down:r.side;gateway50={dir:dir,rows:rows};render50(d)}
 function go50(id,dir){
  if(busy50||!id)return;var d=data50(),n=find50(id,d);if(!n)return;busy50=true;gateway50=null;var o=q50(".dg50-ocean");if(o)o.classList.add("go-"+dir);enter50=dir;
  setTimeout(function(){var p;try{p=typeof buildUniverse==="function"?buildUniverse(n,false):(window.centerUniverseOnId39?window.centerUniverseOnId39(id):null)}catch(e){busy50=false;enter50="";return}Promise.resolve(p).catch(function(){enter50=""}).finally(function(){setTimeout(function(){busy50=false},80)})},480)
