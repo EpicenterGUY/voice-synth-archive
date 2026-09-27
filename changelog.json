@@ -1,11 +1,25 @@
 {
   "current": {
-    "version": "39.70.0",
+    "version": "39.71.0",
     "releasedAt": "2026-09-27",
-    "title": "Relation Bridge 1.1 · Mobile Layout Recovery",
-    "summary": "다이브의 다중 연결 화면에서 모바일 카드가 화면 밖으로 잘리고 중앙 카드·로딩창이 겹치던 문제를 정리하고, 모바일에서는 관계 카드를 2열/1열 반응형 흐름으로 재배치했습니다."
+    "title": "Dive Start Recovery · Random Start Fix",
+    "summary": "다이브 탭을 직접 열었을 때 빈 화면만 보이던 문제와 중심곡이 없을 때 랜덤 다이브 버튼이 아무 반응 없이 끝나던 문제를 수정했습니다."
   },
   "entries": [
+    {
+      "version": "39.71.0",
+      "date": "2026-09-27",
+      "title": "Dive Start Recovery · Random Start Fix",
+      "changes": [
+        "다이브 탭에 중심곡이 없을 때 Relation Bridge 전용 시작 화면을 표시하도록 변경",
+        "상단 랜덤 다이브가 중심곡/관계 데이터가 없어도 랜덤 시작곡 엔진을 불러와 즉시 새 다이브를 시작하도록 수정",
+        "랜덤 시작 기능을 lazy universe 모듈에서 외부 호출 가능하도록 공개해 상단 버튼과 시작 화면이 같은 실행 경로를 사용",
+        "다이브 탭 진입 시 Relation Bridge 헤더를 즉시 복구하고 이전 Dive Graph/Sea/Ocean 툴바를 숨겨 빈 구형 UI가 남지 않도록 수정",
+        "곡 검색 버튼은 universe 모듈 로딩 후 검색창으로 자동 포커스·스크롤되도록 연결",
+        "하단 다이브 탭의 route-change에서도 Relation Bridge 시작 화면과 이벤트를 재바인딩하도록 보강",
+        "PWA·서비스워커·앱 버전을 v39.71.0으로 갱신"
+      ]
+    },
     {
       "version": "39.70.0",
       "date": "2026-09-27",

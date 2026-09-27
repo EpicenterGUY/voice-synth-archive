@@ -3355,7 +3355,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.70.0 · Direct APK Update 1.0 · Search Fix · Rank Turbo 1.0 · Native Brand 0.2 · Android Shell 0.1 · App Foundation 1.0 · Cross-Genre Bridge 1.0 · Relation Trust 3.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.71.0 · Direct APK Update 1.0 · Search Fix · Rank Turbo 1.0 · Native Brand 0.2 · Android Shell 0.1 · App Foundation 1.0 · Cross-Genre Bridge 1.0 · Relation Trust 3.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -7132,11 +7132,23 @@ async function navigateUniverseHistory39(delta){
   try{await buildUniverse(song,false)}finally{state.universeHistoryNavigating=false;renderUniverseJourney39()}
 }
 function randomUniverseWarp39(){
-  if(!state.universeData||state.universeData.nodes.length<2)return;
+  if(!state.universeData||!Array.isArray(state.universeData.nodes)||state.universeData.nodes.length<2){
+    var launch=function(){
+      try{
+        if(window.VSADiveSearch65&&typeof window.VSADiveSearch65.randomStart==="function")return window.VSADiveSearch65.randomStart()
+      }catch(e){}
+      try{toast("랜덤 시작 기능을 준비하지 못했습니다. 잠시 후 다시 눌러주세요.")}catch(e){}
+      return false
+    };
+    try{
+      if(window.VSAEnsureFeatures)return Promise.resolve(VSAEnsureFeatures("universe")).then(launch).catch(function(){return launch()})
+    }catch(e){}
+    return launch()
+  }
   let pool=state.universeData.nodes.slice(1).filter(function(n){const x=+n.similarity||0;return x>=.18&&x<=.62});
   if(!pool.length)pool=state.universeData.nodes.slice(1);
   const song=pool[Math.floor(Math.random()*pool.length)];
-  if(song)buildUniverse(song,false)
+  if(song)return buildUniverse(song,false)
 }
 function renderUniverseJourney39(){
   const bar=document.getElementById("v39UniverseJourney");if(!bar)return;
@@ -9448,7 +9460,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.70.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
+var VER="39.71.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -11139,11 +11151,11 @@ function ensure(name){
   if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.45.0","./detective-v12.js?v=39.45.0","./detective-v13.js?v=39.45.0","./detective-v14.js?v=39.45.0","./detective-v16.js?v=39.45.0"]);
   else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.45.0","./smart-v23.js?v=39.45.0","./playlist-v24.js?v=39.45.0"]);
   else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.45.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.70.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.70.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.70.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.71.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.71.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.71.0");
   else if(name==="deviceSync")groups[name]=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.45.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.70.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.71.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
     return seq(["./voca-app-v33.js?v=39.45.0","./voca-app-v33-1.js?v=39.45.0","./voca-app-v33-2.js?v=39.45.0","./voca-app-v33-3.js?v=39.45.0"]);
   });
@@ -11190,12 +11202,12 @@ else setTimeout(function(){ensure("pwa")},12000);
 })();
 </script>
 <script src="./device-sync-v3938.js?v=39.45.0"></script>
-<script src="./app-platform-v3962.js?v=39.70.0"></script>
-<script src="./entitlements-v3962.js?v=39.70.0"></script>
-<script src="./account-v3962.js?v=39.70.0"></script>
-<script src="./native-shell-v3963.js?v=39.70.0"></script>
-<script src="./app-update-v3966.js?v=39.70.0"></script>
-<script src="./i18n-v3918.js?v=39.45.0"></script>\n<script src="./search-live-v3969.js?v=39.70.0"></script>
+<script src="./app-platform-v3962.js?v=39.71.0"></script>
+<script src="./entitlements-v3962.js?v=39.71.0"></script>
+<script src="./account-v3962.js?v=39.71.0"></script>
+<script src="./native-shell-v3963.js?v=39.71.0"></script>
+<script src="./app-update-v3966.js?v=39.71.0"></script>
+<script src="./i18n-v3918.js?v=39.45.0"></script>\n<script src="./search-live-v3969.js?v=39.71.0"></script>
 
 <style id="v3946DivePath">
 /* v39.46 · Dive Path 1.0 — graph-free guided discovery */
@@ -12747,7 +12759,7 @@ function summary58(rows){var c={genre:0,bridge:0,style:0,mood:0,producer:0,vocal
 function scene58(d){
  var rows=relationRows58(d),c=d.center;
  return '<div class="mr58-shell"><div class="mr58-bg"></div><div class="mr58-rays"></div><div class="mr58-specks"></div><div class="mr58-vignette"></div><div class="mr58-content">'+
-  '<div class="mr58-head"><div><small>VOCADIVE · RELATION BRIDGE 1.1</small><h3>한 화면 다중 연결</h3><p>같은 장르뿐 아니라 Rock ↔ Shoegaze처럼 가까운 장르 브리지까지 연결하고, OR/AND 조건으로 교집합을 좁힐 수 있습니다.</p></div>'+summary58(rows)+'</div>'+
+  '<div class="mr58-head"><div><small>VOCADIVE · RELATION BRIDGE 1.2</small><h3>한 화면 다중 연결</h3><p>같은 장르뿐 아니라 Rock ↔ Shoegaze처럼 가까운 장르 브리지까지 연결하고, OR/AND 조건으로 교집합을 좁힐 수 있습니다.</p></div>'+summary58(rows)+'</div>'+
   filters58(d)+'<div class="mr58-map"><svg class="mr58-links" viewBox="0 0 1000 650" preserveAspectRatio="none">'+links58(rows)+'</svg>'+rows.map(function(x,i){return node58(x,i,c)}).join("")+center58(c,d)+(rows.length?"":'<div class="mr58-empty">현재 켠 연결 조건에 맞는 후보가 없습니다.<br>위의 연결 칩을 다시 켜보세요.</div>')+'</div></div></div>'
 }
 function find58(id,d){return d&&(d.nodes||[]).find(function(n){return n&&n.contentId===id})}
@@ -12784,10 +12796,24 @@ function side58(n,d){
   '<div class="mr58-side-section"><small>왜 연결됐나</small>'+(r?'<div class="mr61-reason-list">'+reasons.map(function(x){return '<div><b>'+e58(x.k)+'</b><span>'+e58(x.v)+'</span></div>'}).join("")+'</div>':'<div class="mr58-badges"><span class="mr58-badge similar">현재 다이브 기준곡</span></div>')+'</div>'+
   '<div class="mr58-side-actions">'+(r?'<button type="button" class="primary" data-mr58-go="'+e58(n.contentId)+'">이 곡으로 다이브</button>':'')+'<button type="button" data-mr58-play="'+e58(n.contentId)+'">▶ 바로 듣기</button><button type="button" data-mr58-detail="'+e58(n.contentId)+'">곡 상세</button><button type="button" data-mr58-pin="'+e58(n.contentId)+'">'+((typeof isUniversePinned39==="function"&&isUniversePinned39(n.contentId))?"핀 해제":"핀 고정")+'</button></div></div>'
 }
+function startScreen58(p){
+ if(!p)return;
+ try{if(typeof ensureUniverseToolbar39==="function")ensureUniverseToolbar39()}catch(_){}
+ var h=q58("#v394UniverseHeader",p),t=h&&h.querySelector(".v394-universe-title");
+ if(t)t.innerHTML='<small>VOCADIVE · RELATION BRIDGE 1.2</small><h2>다이브</h2><p>곡 하나를 고르면 장르·스타일·P·보컬·시대·수층을 묶어 다음 곡으로 이어집니다.</p>';
+ var d=typeof state!=="undefined"?state.universeData:null;
+ if(d&&d.center)return;
+ var stage=q58(".universe-stage",p);
+ if(stage)stage.innerHTML='<div class="mr71-start"><div class="mr71-start-mark">↓</div><small>VOCADIVE · START</small><h3>다이브를 시작할 곡을 골라주세요</h3><p>곡을 직접 검색하거나 랜덤곡으로 바로 시작할 수 있습니다. 기본 모집단은 음성합성 오리지널곡입니다.</p><div class="mr71-start-actions"><button type="button" class="primary" data-mr58-random-start>🎲 랜덤 다이브</button><button type="button" data-mr58-search-start>곡 검색</button></div><div class="mr71-start-status" aria-live="polite"></div></div>';
+ var info=q58("#universeInfo",p);
+ if(info)info.innerHTML='<div class="mr71-empty-side"><small>RELATION BRIDGE</small><b>아직 중심곡이 없습니다.</b><span>시작곡을 고르면 관계곡과 연결 이유가 여기에 표시됩니다.</span></div>'
+}
 function normalizePanel58(){
  var p=q58("#universePanel");if(!p)return null;
  p.classList.remove("v3946-dive-panel","v3948-sea","v3949-current","v3950-graph");
  p.classList.add("v3958-rel");
+ ["#dg50Toolbar","#sea48Modebar","#oc49Toolbar"].forEach(function(s){var x=q58(s,p);if(x)x.style.setProperty("display","none","important")});
+ startScreen58(p);
  return p
 }
 function render58(d){
@@ -12799,7 +12825,7 @@ function render58(d){
    ld.style.display="none";
    if(layout&&ld.parentNode!==layout.parentNode)layout.parentNode.insertBefore(ld,layout)
  }
- try{var h=q58("#v394UniverseHeader",p),t=h&&h.querySelector(".v394-universe-title");if(t)t.innerHTML='<small>VOCADIVE · RELATION BRIDGE 1.1</small><h2>다이브</h2><p>같은 장르와 인접 장르 브리지를 함께 탐색하고, 장르·스타일·분위기·P·보컬·시대·수층을 교차해서 좁힙니다.</p>'}catch(_){}
+ try{var h=q58("#v394UniverseHeader",p),t=h&&h.querySelector(".v394-universe-title");if(t)t.innerHTML='<small>VOCADIVE · RELATION BRIDGE 1.2</small><h2>다이브</h2><p>같은 장르와 인접 장르 브리지를 함께 탐색하고, 장르·스타일·분위기·P·보컬·시대·수층을 교차해서 좁힙니다.</p>'}catch(_){}
  var stage=q58(".universe-stage",p);if(stage)stage.innerHTML=scene58(d);
  var info=q58("#universeInfo",p);if(info)info.innerHTML=side58(d.center,d);
  selected58=null;bind58()
@@ -12809,12 +12835,40 @@ function go58(id){
  try{Promise.resolve(buildUniverse(n,false)).catch(function(){})}catch(_){}
 }
 function random58(){
- var d=typeof state!=="undefined"?state.universeData:null;if(!d)return;var rows=relationRows58(d);if(!rows.length)return;
+ var d=typeof state!=="undefined"?state.universeData:null;if(!d)return startRandom58();var rows=relationRows58(d);if(!rows.length)return startRandom58();
  var pool=rows.slice(0,Math.min(6,rows.length)),x=pool[Math.floor(Math.random()*pool.length)];if(x)go58(x.song.contentId)
+}
+function startRandom58(){
+ var p=q58("#universePanel"),status=p&&q58(".mr71-start-status",p);
+ if(status)status.textContent="랜덤 시작곡을 찾는 중…";
+ var run=function(){
+   if(window.VSADiveSearch65&&typeof window.VSADiveSearch65.randomStart==="function")return Promise.resolve(window.VSADiveSearch65.randomStart()).finally(function(){if(status)status.textContent=""});
+   if(status)status.textContent="랜덤 시작 모듈을 불러오지 못했습니다.";
+   return Promise.resolve(false)
+ };
+ try{
+   if(window.VSAEnsureFeatures)return Promise.resolve(VSAEnsureFeatures("universe")).then(run).catch(function(e){if(status)status.textContent="랜덤 시작 실패 · "+String(e&&e.message||e);return false})
+ }catch(e){}
+ return run()
+}
+function focusSearch58(){
+ var p=q58("#universePanel"),status=p&&q58(".mr71-start-status",p);
+ if(status)status.textContent="검색창을 준비하는 중…";
+ var show=function(){
+   try{if(window.VSADiveSearch65&&typeof window.VSADiveSearch65.inject==="function")window.VSADiveSearch65.inject()}catch(_){}
+   var input=document.getElementById("universeSearchInput");
+   if(input){if(status)status.textContent="";input.focus();input.scrollIntoView({behavior:"smooth",block:"center"});return true}
+   if(status)status.textContent="검색창을 불러오지 못했습니다.";
+   return false
+ };
+ try{if(window.VSAEnsureFeatures)return Promise.resolve(VSAEnsureFeatures("universe")).then(show).catch(function(){return show()})}catch(e){}
+ return Promise.resolve(show())
 }
 function bind58(){
  var p=q58("#universePanel");if(!p||bound58)return;bound58=true;
  p.addEventListener("click",function(ev){
+   if(ev.target.closest("[data-mr58-random-start]")){ev.preventDefault();ev.stopImmediatePropagation();startRandom58();return}
+   if(ev.target.closest("[data-mr58-search-start]")){ev.preventDefault();ev.stopImmediatePropagation();focusSearch58();return}
    var match=ev.target.closest("[data-mr58-match]");if(match){
      ev.preventDefault();ev.stopImmediatePropagation();
      filterMode58=match.dataset.mr58Match==="and"?"and":"or";
@@ -12857,9 +12911,10 @@ window.VSA58MoodProfile=moodProfile58;
 window.VSA58BridgeProfile=bridgeProfile58;
 window.VSADiveRelations58={render:render58,relation:rel58,genres:genreProfile58,bridges:bridgeProfile58,styles:styleProfile58,moods:moodProfile58,setActive:function(a){active58=new Set(a||[]);var d=state.universeData;if(d)render58(d)},setMode:function(m){filterMode58=m==="and"?"and":"or";var d=state.universeData;if(d)render58(d)}};
 window.renderUniverse=render58;
-function boot58(){normalizePanel58();var d=typeof state!=="undefined"?state.universeData:null;if(d)render58(d)}
+function boot58(){normalizePanel58();bind58();var d=typeof state!=="undefined"?state.universeData:null;if(d)render58(d)}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(boot58,80)});else setTimeout(boot58,80);
-window.addEventListener("popstate",function(){setTimeout(function(){normalizePanel58();var d=typeof state!=="undefined"?state.universeData:null;if(d)render58(d)},90)});
+window.addEventListener("popstate",function(){setTimeout(function(){normalizePanel58();bind58();var d=typeof state!=="undefined"?state.universeData:null;if(d)render58(d)},90)});
+window.addEventListener("vsa:route-change",function(e){if(e&&e.detail&&e.detail.route==="universe29")setTimeout(function(){normalizePanel58();bind58();var d=typeof state!=="undefined"?state.universeData:null;if(d)render58(d)},30)});
 })();
 </script>
 
@@ -13147,6 +13202,40 @@ window.VSA60ProducerResolver={resolve:resolve60};
  #universePanel.v3958-rel .mr58-center-main{grid-template-columns:82px minmax(0,1fr)!important}
  #universePanel.v3958-rel .mr58-center img,
  #universePanel.v3958-rel .mr58-center .noimg{width:82px!important}
+}
+</style>
+
+<style id="v3971DiveStartRecovery">
+/* v39.71 · empty dive + random start recovery */
+#universePanel.v3958-rel #v39UniverseJourney,
+#universePanel.v3958-rel #dg50Toolbar,
+#universePanel.v3958-rel #sea48Modebar,
+#universePanel.v3958-rel #oc49Toolbar,
+#universePanel.v3958-rel #v3947SimilarToggle{display:none!important}
+#universePanel.v3958-rel .mr71-start{
+ min-height:440px;display:grid;place-items:center;align-content:center;gap:8px;padding:28px;
+ border:1px solid rgba(139,226,217,.15);border-radius:22px;
+ background:radial-gradient(circle at 50% 35%,rgba(85,206,198,.15),transparent 35%),linear-gradient(180deg,#0b5268,#092c4c 54%,#071426);
+ text-align:center;color:#eafffc
+}
+#universePanel.v3958-rel .mr71-start-mark{width:58px;height:58px;display:grid;place-items:center;border:1px solid rgba(129,225,216,.25);border-radius:50%;background:rgba(6,36,46,.72);font-size:26px;color:#74ded4}
+#universePanel.v3958-rel .mr71-start small{color:#76d8cf;font-size:8px;font-weight:950;letter-spacing:.15em}
+#universePanel.v3958-rel .mr71-start h3{margin:0;font-size:22px;letter-spacing:-.04em}
+#universePanel.v3958-rel .mr71-start p{max-width:520px;margin:0;color:#94bcb8;font-size:10px;line-height:1.55}
+#universePanel.v3958-rel .mr71-start-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;width:min(420px,100%);margin-top:8px}
+#universePanel.v3958-rel .mr71-start-actions button{min-height:46px;border:1px solid rgba(139,221,213,.18);border-radius:12px;background:#0b3039;color:#d7efeb;font-size:10px;font-weight:950}
+#universePanel.v3958-rel .mr71-start-actions button.primary{border:0;background:linear-gradient(135deg,#70dfd4,#748fea);color:#06171b}
+#universePanel.v3958-rel .mr71-start-status{min-height:18px;color:#80aaa5;font-size:9px}
+#universePanel.v3958-rel .mr71-empty-side{display:grid;gap:7px;padding:14px}
+#universePanel.v3958-rel .mr71-empty-side small{color:#70d9cf;font-size:8px;font-weight:950;letter-spacing:.12em}
+#universePanel.v3958-rel .mr71-empty-side b{font-size:15px;color:#effffc}
+#universePanel.v3958-rel .mr71-empty-side span{font-size:9px;line-height:1.5;color:#82aaa5}
+@media(max-width:699px){
+ #universePanel.v3958-rel .mr71-start{min-height:360px;padding:20px 14px;border-radius:18px}
+ #universePanel.v3958-rel .mr71-start h3{font-size:19px}
+ #universePanel.v3958-rel .mr71-start p{font-size:10px}
+ #universePanel.v3958-rel .mr71-start-actions{grid-template-columns:1fr}
+ #universePanel.v3958-rel .mr71-start-actions button{min-height:48px;font-size:11px}
 }
 </style>
 

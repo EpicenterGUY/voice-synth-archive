@@ -1,4 +1,4 @@
-/* VocaDive Dive Start v39.65 · Search Response 2.0 */
+/* VocaDive Dive Start v39.71 · Search Response 2.0 */
 (function(){
 "use strict";
 var recentKey="vsa.universe.search.v28";
@@ -321,7 +321,7 @@ async function runSearch(){
     if(seq===searchSeq65&&button){button.disabled=false;button.textContent="검색"}
   }
 }
-window.VSADiveSearch65={run:runSearch};
+window.VSADiveSearch65={run:runSearch,randomStart:randomStart,inject:inject};
 
 async function randomStart(){
   var button=document.getElementById("universeRandomStartBtn");
