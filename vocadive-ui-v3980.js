@@ -1,10 +1,10 @@
-/* VocaDive Unified UI v39.76.0
+/* VocaDive Unified UI v39.77.0
  * YouTube-style app shell, cards, player continuity and route recovery.
  */
 (function(){
 "use strict";
 
-var VERSION="39.76.0";
+var VERSION="39.77.0";
 var raf=0,observer=null,lastRoute="home";
 
 function q(sel,root){return (root||document).querySelector(sel)}
@@ -327,6 +327,38 @@ body.v37-ready :is(input,select,textarea):focus{border-color:rgba(108,221,210,.5
 #v3982WorkerPill[data-state="err"]{border-color:rgba(225,112,130,.28)!important;color:#efadb7!important}
 #v3982WorkerPill .dot{width:6px!important;height:6px!important}
 #v3982MenuBtn{flex:0 0 auto!important}
+
+#v3982WorkerPill{cursor:pointer!important;user-select:none!important}
+#v3982WorkerPill:hover{background:#132427!important}
+[data-tool-view="settings29"] .settings{display:block!important}
+[data-tool-view="settings29"] .settings>details{display:block!important;border:0!important;background:transparent!important}
+[data-tool-view="settings29"] .settings>details>summary{display:none!important}
+[data-tool-view="settings29"] .settings-grid{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important
+}
+[data-tool-view="settings29"] .settings-grid>.control,
+[data-tool-view="settings29"] .settings-grid>.help,
+[data-tool-view="settings29"] #v3966UpdateCard{
+ margin:0!important;padding:14px!important;border:1px solid var(--vd-line)!important;border-radius:14px!important;
+ background:var(--vd-surface)!important;box-shadow:none!important
+}
+[data-tool-view="settings29"] #v3966UpdateCard{grid-column:1/-1!important}
+[data-tool-view="settings29"] .route-info{
+ margin-top:9px!important;padding:10px!important;border-radius:10px!important;background:#091517!important;color:#95aaa7!important
+}
+#v3983SurfaceNotice{
+ position:fixed;z-index:30010;left:50%;bottom:calc(var(--vd-dock-h) + 88px + env(safe-area-inset-bottom));
+ transform:translateX(-50%);padding:7px 10px;border:1px solid var(--vd-line);border-radius:999px;
+ background:#0b181b;color:#c8ddda;font-size:8px;font-weight:800;box-shadow:0 10px 28px rgba(0,0,0,.34)
+}
+@media(max-width:699px){
+ [data-tool-view="settings29"] .settings-grid{grid-template-columns:1fr!important}
+ [data-tool-view="settings29"] #v3966UpdateCard{grid-column:auto!important}
+ [data-tool-view="settings29"] .settings-grid>.control,
+ [data-tool-view="settings29"] .settings-grid>.help,
+ [data-tool-view="settings29"] #v3966UpdateCard{padding:11px!important;border-radius:12px!important}
+}
+
 /* General motion restraint: interaction stays crisp. */
 body.v37-ready *{scrollbar-color:#34504e transparent}
 body.v37-ready :is(button,a){-webkit-tap-highlight-color:transparent}
@@ -481,10 +513,21 @@ function openSettings3982(){
   try{
     if(typeof window.ensureCorePages37==="function")window.ensureCorePages37();
     else if(typeof window.openToolsModal==="function"){
-      window.openToolsModal("settings29");scheduleRepair();return
+      window.openToolsModal("settings29");setTimeout(openSettingsDetails3983,30);scheduleRepair();return
     }
   }catch(_){}
-  openRoute("settings29")
+  openRoute("settings29").then(function(){setTimeout(openSettingsDetails3983,30)})
+}
+function openSettingsDetails3983(){
+  var page=document.querySelector('[data-tool-view="settings29"]');
+  if(!page)return;
+  qa("details",page).forEach(function(d){d.open=true});
+  try{
+    if(window.VocaDiveUpdater&&typeof window.VocaDiveUpdater.state==="function"){
+      var card=document.getElementById("v3966UpdateCard");
+      if(card&&card.parentElement)card.parentElement.appendChild(card)
+    }
+  }catch(_){}
 }
 function ensureMenu3982(){
   var m=document.getElementById("v3982Menu");
@@ -508,6 +551,45 @@ function ensureMenu3982(){
   });
   return m
 }
+
+var navObserver3983=null,playerHealAt3983=0;
+function watchLegacyNav3983(){
+  if(navObserver3983||!window.MutationObserver||!document.body)return;
+  navObserver3983=new MutationObserver(function(muts){
+    var needs=false;
+    for(var i=0;i<muts.length&&!needs;i++){
+      var added=muts[i].addedNodes||[];
+      for(var j=0;j<added.length;j++){
+        var n=added[j];
+        if(n&&n.nodeType===1){
+          if(n.matches&&n.matches(".v37-dock,.v36-dock,.v34-dock,.v33-dock,#v30BottomDock,.mobile-bottom-nav,.bottom-nav,.app-bottom-nav,.mobile-section-nav"))needs=true;
+          else if(n.querySelector&&n.querySelector(".v37-dock,.v36-dock,.v34-dock,.v33-dock,#v30BottomDock,.mobile-bottom-nav,.bottom-nav,.app-bottom-nav,.mobile-section-nav"))needs=true
+        }
+      }
+    }
+    if(needs){cleanupLegacyNav();ensureDock()}
+  });
+  navObserver3983.observe(document.body,{childList:true,subtree:true})
+}
+function healMissingPlayer3983(){
+  if(!window.VSANicoPlayer||typeof window.VSANicoPlayer.state!=="function")return false;
+  var st=null;try{st=window.VSANicoPlayer.state()}catch(_){return false}
+  if(!st||!st.currentId)return false;
+  if(st.full||st.mini||st.inline)return false;
+  var now=Date.now();if(now-playerHealAt3983<800)return false;playerHealAt3983=now;
+  try{
+    if(typeof window.VSANicoPlayer.ensureVisible==="function"){
+      var ok=window.VSANicoPlayer.ensureVisible();
+      if(ok){
+        var old=document.getElementById("v3983SurfaceNotice");if(old)old.remove();
+        var n=document.createElement("div");n.id="v3983SurfaceNotice";n.textContent="재생 화면을 복구했습니다";
+        document.body.appendChild(n);setTimeout(function(){if(n&&n.remove)n.remove()},1300)
+      }
+      return !!ok
+    }
+  }catch(_){}
+  return false
+}
 function ensureTopbar(){
   var top=q(".app>.topbar");if(!top)return;
   var brand=q(".brand h1",top);if(brand)brand.textContent="VocaDive";
@@ -529,7 +611,14 @@ function ensureTopbar(){
     });
     status.appendChild(b)
   }
-  ensureMenu3982();cleanupLegacyNav();syncWorkerPill()
+  ensureMenu3982();cleanupLegacyNav();syncWorkerPill();
+  var wp=document.getElementById("v3982WorkerPill");
+  if(wp&&!wp.dataset.v3983Bound){
+    wp.dataset.v3983Bound="1";wp.setAttribute("role","button");wp.tabIndex=0;
+    var open=function(){openSettings3982()};
+    wp.addEventListener("click",open);
+    wp.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();open()}})
+  }
 }
 
 function ensureDock(){
@@ -652,6 +741,14 @@ function repairRoute(){
     if(modalOpen){
       var active=q(".tools-body>.tool-view.active",modal);
       var target=route?q('.tools-body>[data-tool-view="'+CSS.escape(route)+'"]',modal):null;
+      if(route&&!target){
+        try{if(typeof window.ensureCorePages37==="function")window.ensureCorePages37()}catch(_){}
+        target=q('.tools-body>[data-tool-view="'+CSS.escape(route)+'"]',modal);
+        if(!target&&route!=="hub37"){
+          route="hub37";window.__VSA37_CURRENT_ROUTE="hub37";
+          target=q('.tools-body>[data-tool-view="hub37"]',modal)
+        }
+      }
       if(target&&active!==target){
         try{if(typeof window.setToolView==="function")window.setToolView(route);else{
           qa(".tools-body>.tool-view",modal).forEach(function(v){v.classList.toggle("active",v===target);v.hidden=v!==target});
@@ -676,7 +773,10 @@ function repairRoute(){
       if(typeof window.VSANicoPlayer.syncSurface==="function")window.VSANicoPlayer.syncSurface("ui3980");
       else if(typeof window.VSANicoPlayer.ensureVisible==="function")window.VSANicoPlayer.ensureVisible()
     }catch(_){}
+  }else{
+    healMissingPlayer3983()
   }
+  if(route==="settings29")openSettingsDetails3983();
 
   if(route){lastRoute=dockForRoute(route);setDock(lastRoute)}
   else if(!modal||modal.hidden){lastRoute="home";setDock("home")}
@@ -713,7 +813,7 @@ function bind(){
   }
 }
 function boot(){
-  addStyle();ensureTopbar();ensureDock();bind();scheduleRepair();
+  addStyle();ensureTopbar();ensureDock();watchLegacyNav3983();bind();scheduleRepair();
   document.documentElement.dataset.vocaUi=VERSION;
   setTimeout(function(){ensureTopbar();ensureDock();cleanupLegacyNav();scheduleRepair()},250);
   setTimeout(function(){ensureTopbar();ensureDock();cleanupLegacyNav();scheduleRepair()},900);
