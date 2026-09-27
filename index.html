@@ -12554,7 +12554,7 @@ var REL58={
  era:{label:"같은 시대",cls:"era"},
  depth:{label:"같은 수층",cls:"depth"}
 };
-var active58=new Set(["similar","genre","bridge","style","mood","producer","vocal","era","depth"]),filterMode58="or",bound58=false,selected58=null;
+var active58=new Set(["similar","genre","bridge","style","mood","producer","vocal","era","depth"]),filterMode58="or",bound58=false,selected58=null,moving58=false,depthSearch58=false,transitionSafety58=0;
 var GENRES58=[
  {key:"rock",label:"Rock",aliases:["VOCAROCK","ボカロック","VOCALOIDロック","ロック","ROCK","オルタナティブロック","ギターロック"]},
  {key:"metal",label:"Metal",aliases:["メタル","VOCAMETAL","ボカメタル","METAL","メタルコア","スクリーモ"]},
@@ -12775,12 +12775,12 @@ function center58(c,d){
   '<div class="mr58-center-actions"><button type="button" class="primary" data-mr58-play="'+e58(c.contentId)+'">▶ 재생</button><button type="button" data-mr58-detail="'+e58(c.contentId)+'">곡 상세</button><button type="button" data-mr58-random>랜덤 이동</button></div></div>'
 }
 function node58(x,i,c){
- var n=x.song,r=x.rel,p=pos58(i,r),dm=depthMeta58(n);
- return '<article class="mr58-node" style="left:'+p[0]+'%;top:'+p[1]+'%;transform:translate(-50%,-50%)" data-mr58-node-id="'+e58(n.contentId)+'">'+
+ var n=x.song,r=x.rel,p=pos58(i,r),dm=depthMeta58(n),delta=depth58(n)-depth58(c),dir=delta>0?"deeper":delta<0?"shallower":"same";
+ return '<article class="mr58-node mr75-'+dir+'" style="left:'+p[0]+'%;top:'+p[1]+'%;transform:translate(-50%,-50%);--mr75-order:'+i+'" data-mr58-node-id="'+e58(n.contentId)+'" data-mr75-dir="'+dir+'">'+
   '<button type="button" class="mr58-node-main" data-mr58-select="'+e58(n.contentId)+'">'+
    (n.thumbnailUrl?'<img src="'+e58(n.thumbnailUrl)+'" loading="lazy" alt="">':'<span class="noimg">♪</span>')+
    '<span class="mr58-node-copy"><b>'+e58(n.title||n.contentId)+'</b><small>'+(year58(n)||"연도 미상")+' · '+fmt58(views58(n))+'회 · '+e58(dm.name)+'</small><em class="mr58-node-score">'+e58(depthDirection58(c,n))+' · 연결 '+Math.round(r.score*100)+'%</em></span>'+
-  '</button><button type="button" class="mr58-node-go" data-mr58-go="'+e58(n.contentId)+'">이동 →</button>'+
+  '</button><button type="button" class="mr58-node-go" data-mr58-go="'+e58(n.contentId)+'">'+(delta>0?"잠수 ↓":delta<0?"상승 ↑":"이동 →")+'</button>'+
   '<span class="mr58-badges">'+badges58(r,3)+'</span></article>'
 }
 function filters58(d){
@@ -12905,16 +12905,23 @@ function transitionOverlay58(){
  var o=document.getElementById("mr74DiveTransition");
  if(o)return o;
  o=document.createElement("div");o.id="mr74DiveTransition";o.className="mr74-transition";o.setAttribute("aria-hidden","true");
- o.innerHTML='<div class="mr74-trans-water"><div class="mr74-trans-stream s1"></div><div class="mr74-trans-stream s2"></div><div class="mr74-trans-stream s3"></div><div class="mr74-trans-bubbles"></div></div><div class="mr74-trans-copy"><small>VOCADIVE</small><b></b><span></span></div>';
+ o.innerHTML='<div class="mr74-trans-water"><div class="mr74-trans-stream s1"></div><div class="mr74-trans-stream s2"></div><div class="mr74-trans-stream s3"></div><div class="mr74-trans-bubbles"></div></div><div class="mr74-trans-copy"><small>VOCADIVE</small><b></b><span></span><div class="mr75-trans-depth"><i></i><i></i><i></i><i></i><i></i></div></div>';
  document.body.appendChild(o);return o
 }
 function transitionName58(dir){return dir==="down"?"심층으로 하강 중":dir==="up"?"수면 방향으로 상승 중":"해류를 따라 이동 중"}
+function setMoving58(on){
+ moving58=!!on;
+ var p=q58("#universePanel");if(p)p.classList.toggle("mr75-moving",moving58);
+ if(!moving58&&transitionSafety58){clearTimeout(transitionSafety58);transitionSafety58=0}
+}
 function playTransition58(fromDepth,toDepth,title){
  var o=transitionOverlay58(),dir=toDepth>fromDepth?"down":toDepth<fromDepth?"up":"side";
  o.className="mr74-transition mr74-"+dir+" mr74-to-"+toDepth;
- var b=o.querySelector("b"),s=o.querySelector("span");
+ o.dataset.fromDepth=String(fromDepth);o.dataset.toDepth=String(toDepth);
+ var b=o.querySelector("b"),s=o.querySelector("span"),ticks=o.querySelectorAll(".mr75-trans-depth i");
  if(b)b.textContent=transitionName58(dir);
  if(s)s.textContent=(DEPTH58[toDepth]&&DEPTH58[toDepth].name?DEPTH58[toDepth].name:"다음 수층")+" · "+String(title||"다음 곡");
+ ticks.forEach(function(x,i){x.classList.toggle("from",i===fromDepth);x.classList.toggle("to",i===toDepth);x.classList.toggle("passed",dir==="down"?i>=fromDepth&&i<=toDepth:dir==="up"?i<=fromDepth&&i>=toDepth:i===toDepth)});
  document.body.classList.add("mr74-transitioning");
  requestAnimationFrame(function(){o.classList.add("show")});
  return new Promise(function(resolve){setTimeout(resolve,dir==="side"?360:560)})
@@ -12925,13 +12932,19 @@ function endTransition58(){
  document.body.classList.remove("mr74-transitioning");
  setTimeout(function(){if(o&&!o.classList.contains("show"))o.className="mr74-transition"},260)
 }
+function forceEndTransition58(){
+ endTransition58();setMoving58(false)
+}
 function go58(id){
+ if(moving58)return Promise.resolve(false);
  var d=typeof state!=="undefined"?state.universeData:null,n=find58(id,d);if(!n){status58("이동할 곡을 찾지 못했습니다.",true);return Promise.resolve(false)}
  var fromDepth=d&&d.center?depth58(d.center):depth58(n),toDepth=depth58(n);
+ setMoving58(true);
+ transitionSafety58=setTimeout(function(){forceEndTransition58();status58("이동 시간이 길어져 화면 전환을 복구했습니다.",true)},10000);
  status58(toDepth>fromDepth?"잠수 준비 중…":toDepth<fromDepth?"상승 준비 중…":"다음 곡으로 이동 중…");
  return Promise.resolve(playTransition58(fromDepth,toDepth,n.title||n.contentId)).then(function(){
   try{return Promise.resolve(buildUniverse(n,false))}catch(e){return Promise.reject(e)}
- }).then(function(){endTransition58();status58("");return true}).catch(function(e){endTransition58();status58("다이브 이동 실패 · "+String(e&&e.message||e),true);return false})
+ }).then(function(){endTransition58();setMoving58(false);status58("");return true}).catch(function(e){endTransition58();setMoving58(false);status58("다이브 이동 실패 · "+String(e&&e.message||e),true);return false})
 }
 function depthRange58(target){
  return target===0?{gte:1000000}:target===1?{gte:250000,lte:999999}:target===2?{gte:50000,lte:249999}:target===3?{gte:5000,lte:49999}:{gte:0,lte:4999}
@@ -12960,23 +12973,25 @@ async function remoteDepthCandidate58(target,d){
  return null
 }
 async function moveDepth58(target){
+ if(depthSearch58||moving58)return false;
  var d=typeof state!=="undefined"?state.universeData:null;if(!d||!d.center)return false;
- target=Math.max(0,Math.min(4,Number(target)));
- var c=d.center,rows=(d.nodes||[]).slice(1).filter(function(n){return n&&n.contentId&&depth58(n)===target}).map(function(n){return {song:n,rel:rel58(c,n)}})
-  .sort(function(a,b){return b.rel.score-a.rel.score||b.rel.base-a.rel.base||views58(b.song)-views58(a.song)});
- if(rows.length){status58(DEPTH58[target].name+"으로 이동 · "+(rows[0].song.title||rows[0].song.contentId));return await go58(rows[0].song.contentId)}
- status58(DEPTH58[target].name+" 후보를 새로 찾는 중…");
- var remote=await remoteDepthCandidate58(target,d);
- if(remote){
-  try{
-   if(!find58(remote.contentId,d)){d.nodes=d.nodes||[];d.nodes.push(remote)}
-  }catch(_){}
-  status58(DEPTH58[target].name+" 후보 발견 · "+(remote.title||remote.contentId));
-  return await go58(remote.contentId)
- }
- var workerOk=true;try{workerOk=typeof relayBase!=="function"||!!relayBase()}catch(_){}
- status58(workerOk?DEPTH58[target].name+" 후보를 찾지 못했습니다. 다른 수층이나 랜덤 다이브를 이용하세요.":"현재 경로에 후보가 없고 Worker가 연결되지 않아 새 후보를 검색할 수 없습니다.",true);
- return false
+ depthSearch58=true;
+ try{
+  target=Math.max(0,Math.min(4,Number(target)));
+  var c=d.center,rows=(d.nodes||[]).slice(1).filter(function(n){return n&&n.contentId&&depth58(n)===target}).map(function(n){return {song:n,rel:rel58(c,n)}})
+   .sort(function(a,b){return b.rel.score-a.rel.score||b.rel.base-a.rel.base||views58(b.song)-views58(a.song)});
+  if(rows.length){status58(DEPTH58[target].name+"으로 이동 · "+(rows[0].song.title||rows[0].song.contentId));return await go58(rows[0].song.contentId)}
+  status58(DEPTH58[target].name+" 후보를 새로 찾는 중…");
+  var remote=await remoteDepthCandidate58(target,d);
+  if(remote){
+   try{if(!find58(remote.contentId,d)){d.nodes=d.nodes||[];d.nodes.push(remote)}}catch(_){}
+   status58(DEPTH58[target].name+" 후보 발견 · "+(remote.title||remote.contentId));
+   return await go58(remote.contentId)
+  }
+  var workerOk=true;try{workerOk=typeof relayBase!=="function"||!!relayBase()}catch(_){}
+  status58(workerOk?DEPTH58[target].name+" 후보를 찾지 못했습니다. 다른 수층이나 랜덤 다이브를 이용하세요.":"현재 경로에 후보가 없고 Worker가 연결되지 않아 새 후보를 검색할 수 없습니다.",true);
+  return false
+ }finally{depthSearch58=false}
 }
 function stepDepth58(delta){
  var d=typeof state!=="undefined"?state.universeData:null;if(!d||!d.center)return Promise.resolve(false);
@@ -12985,6 +13000,7 @@ function stepDepth58(delta){
  return moveDepth58(target)
 }
 function random58(){
+ if(moving58||depthSearch58)return;
  var d=typeof state!=="undefined"?state.universeData:null;if(!d)return startRandom58();var rows=relationRows58(d);if(!rows.length)return startRandom58();
  var pool=rows.slice(0,Math.min(6,rows.length)),x=pool[Math.floor(Math.random()*pool.length)];if(x)go58(x.song.contentId)
 }
@@ -13067,7 +13083,12 @@ window.renderUniverse=render58;
 function boot58(){normalizePanel58();bind58();var d=typeof state!=="undefined"?state.universeData:null;if(d)render58(d)}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(boot58,80)});else setTimeout(boot58,80);
 window.addEventListener("popstate",function(){setTimeout(function(){normalizePanel58();bind58();var d=typeof state!=="undefined"?state.universeData:null;if(d)render58(d)},90)});
-window.addEventListener("vsa:route-change",function(e){if(e&&e.detail&&e.detail.route==="universe29")setTimeout(function(){normalizePanel58();bind58();var d=typeof state!=="undefined"?state.universeData:null;if(d)render58(d)},30)});
+window.addEventListener("vsa:route-change",function(e){
+ if(!e||!e.detail||e.detail.route!=="universe29"){if(moving58)forceEndTransition58();return}
+ setTimeout(function(){normalizePanel58();bind58();var d=typeof state!=="undefined"?state.universeData:null;if(d)render58(d)},30)
+});
+window.addEventListener("pagehide",forceEndTransition58);
+document.addEventListener("visibilitychange",function(){if(document.hidden&&moving58)forceEndTransition58()});
 })();
 </script>
 
@@ -13701,6 +13722,65 @@ body.mr74-transitioning{overflow:hidden!important}
 @media(prefers-reduced-motion:reduce){
  .mr74-light,.mr74-caustic,.mr74-current,.mr74-particles,.mr74-bubbles i,.mr74-biolume,.mr74-shadow,.mr58-node-go:after{animation:none!important}
  .mr74-transition.show .mr74-trans-water:before,.mr74-transition.show .mr74-trans-stream{animation:none!important}
+}
+</style>
+
+<style id="v3975OceanCardsAndStability">
+/* Ocean Dive 1.1 · compact cards, stream entry and transition stability */
+#universePanel.v3958-rel .mr58-map{align-content:start!important;grid-auto-rows:auto!important}
+#universePanel.v3958-rel .mr58-node{
+  height:auto!important;min-height:84px!important;max-height:none!important;align-self:start!important;
+  place-self:auto stretch!important;overflow:hidden!important;contain:layout paint;
+  animation:mr75NodeReveal .46s cubic-bezier(.2,.75,.25,1) both;
+  animation-delay:calc(var(--mr75-order,0) * 55ms)
+}
+#universePanel.v3958-rel .mr58-node.mr75-deeper{border-left:2px solid rgba(73,154,211,.42)!important}
+#universePanel.v3958-rel .mr58-node.mr75-shallower{border-left:2px solid rgba(106,221,210,.42)!important}
+#universePanel.v3958-rel .mr58-node.mr75-same{border-left:2px solid rgba(148,187,190,.24)!important}
+#universePanel.v3958-rel .mr58-node-main{
+  height:auto!important;min-height:64px!important;max-height:none!important;align-self:center!important;overflow:hidden!important;
+  touch-action:manipulation
+}
+#universePanel.v3958-rel .mr58-node-main img,
+#universePanel.v3958-rel .mr58-node-main .noimg{flex:none!important}
+#universePanel.v3958-rel .mr58-node-copy{overflow:hidden!important}
+#universePanel.v3958-rel .mr58-node-go{
+  height:auto!important;min-height:58px!important;max-height:82px!important;align-self:center!important;touch-action:manipulation;
+  transition:background .2s ease,border-color .2s ease,transform .2s ease
+}
+#universePanel.v3958-rel .mr75-deeper .mr58-node-go{background:linear-gradient(180deg,rgba(15,67,90,.92),rgba(8,45,66,.92))!important}
+#universePanel.v3958-rel .mr75-shallower .mr58-node-go{background:linear-gradient(180deg,rgba(18,76,73,.92),rgba(10,51,53,.92))!important}
+#universePanel.v3958-rel .mr58-node-go:active{transform:scale(.96)}
+#universePanel.v3958-rel.mr75-moving [data-mr58-go],
+#universePanel.v3958-rel.mr75-moving [data-mr58-depth-step],
+#universePanel.v3958-rel.mr75-moving [data-mr58-depth-target],
+#universePanel.v3958-rel.mr75-moving [data-mr58-random]{pointer-events:none!important;opacity:.48!important}
+#universePanel.v3958-rel .mr58-node-main{animation:mr75CardFloat 5.5s ease-in-out infinite;animation-delay:calc(var(--mr75-order,0) * -310ms)}
+#universePanel.v3958-rel .mr75-deeper .mr58-node-main{animation-duration:6.4s}
+#universePanel.v3958-rel .mr75-shallower .mr58-node-main{animation-duration:5.1s}
+.mr75-trans-depth{display:grid;grid-template-columns:repeat(5,22px);gap:5px;justify-content:center;margin-top:8px}
+.mr75-trans-depth i{position:relative;width:22px;height:3px;border-radius:999px;background:rgba(137,180,187,.22);overflow:hidden}
+.mr75-trans-depth i.passed{background:rgba(100,193,205,.46)}
+.mr75-trans-depth i.from:after,.mr75-trans-depth i.to:after{content:"";position:absolute;inset:0;border-radius:inherit;background:#8be4db}
+.mr75-trans-depth i.to:after{animation:mr75DepthPulse .6s ease-in-out infinite alternate}
+.mr74-transition.mr74-to-0{background:linear-gradient(180deg,#34bcd0,#167ba3 54%,#0a4d74)!important}
+.mr74-transition.mr74-to-1{background:linear-gradient(180deg,#1685a4,#0b5578 54%,#07334f)!important}
+.mr74-transition.mr74-to-2{background:linear-gradient(180deg,#0b5678,#073a5d 52%,#031d35)!important}
+.mr74-transition.mr74-to-3{background:linear-gradient(180deg,#07354f,#04213a 52%,#020f20)!important}
+.mr74-transition.mr74-to-4{background:linear-gradient(180deg,#041d30,#02111f 48%,#01050c)!important}
+@keyframes mr75NodeReveal{
+ from{opacity:0;clip-path:inset(14% 8% 14% 8% round 14px);filter:blur(3px)}
+ to{opacity:1;clip-path:inset(0 0 0 0 round 14px);filter:blur(0)}
+}
+@keyframes mr75CardFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@keyframes mr75DepthPulse{from{opacity:.55}to{opacity:1}}
+@media(max-width:699px){
+ #universePanel.v3958-rel .mr58-node{min-height:88px!important;padding:8px!important}
+ #universePanel.v3958-rel .mr58-node-main{min-height:68px!important}
+ #universePanel.v3958-rel .mr58-node-go{min-height:62px!important;max-height:72px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #universePanel.v3958-rel .mr58-node,#universePanel.v3958-rel .mr58-node-main,.mr75-trans-depth i.to:after{animation:none!important}
 }
 </style>
 
