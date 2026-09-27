@@ -1,10 +1,10 @@
-/* VocaDive Unified UI v39.74.1
+/* VocaDive Unified UI v39.75.0
  * YouTube-style app shell, cards, player continuity and route recovery.
  */
 (function(){
 "use strict";
 
-var VERSION="39.74.1";
+var VERSION="39.75.0";
 var raf=0,observer=null,lastRoute="home";
 
 function q(sel,root){return (root||document).querySelector(sel)}
@@ -87,7 +87,7 @@ body.v37-ready .topbar .status>.pill:first-child{
 }
 
 /* One authoritative navigation surface. */
-.v37-dock,.v36-dock,.v34-dock,.v33-dock,#v30BottomDock,#mobileSectionNav,.mobile-section-nav{display:none!important}
+.v37-dock,.v36-dock,.v34-dock,.v33-dock,#v30BottomDock,#mobileSectionNav,.mobile-section-nav,.mobile-bottom-nav,.bottom-nav,.app-bottom-nav{display:none!important}
 #v3980Dock{
  position:fixed;z-index:23500;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
  left:12px;right:12px;bottom:max(8px,env(safe-area-inset-bottom));
@@ -306,6 +306,27 @@ body.v37-ready :is(input,select,textarea):focus{border-color:rgba(108,221,210,.5
 .v399-player-shell{border-radius:12px!important;overflow:hidden!important;background:#000!important}
 .v399-watch-meta,.v399-song-info,.v399-detail-info{background:transparent!important;border-color:var(--vd-line)!important}
 
+
+#v3982Menu{
+ position:fixed;z-index:100200;top:58px;right:10px;width:min(280px,calc(100vw - 20px));
+ padding:7px;border:1px solid var(--vd-line);border-radius:14px;background:#0a1518;
+ box-shadow:0 18px 50px rgba(0,0,0,.46);backdrop-filter:blur(16px)
+}
+#v3982Menu[hidden]{display:none!important}
+#v3982Menu button{
+ width:100%;min-height:44px;display:grid;grid-template-columns:31px minmax(0,1fr) auto;gap:9px;align-items:center;
+ padding:0 10px;border:0;border-radius:10px;background:transparent;color:var(--vd-text);text-align:left
+}
+#v3982Menu button:hover{background:#142326}
+#v3982Menu button i{width:31px;height:31px;display:grid;place-items:center;border-radius:9px;background:#15272a;color:#9fe6de;font-style:normal}
+#v3982Menu button b{font-size:10px}
+#v3982Menu button small{display:block;margin-top:2px;color:var(--vd-muted);font-size:7px;font-weight:600}
+#v3982Menu button em{font-style:normal;color:#6f8d89;font-size:12px}
+#v3982WorkerPill[data-state="live"]{border-color:rgba(86,211,174,.28)!important;color:#a9e9d3!important}
+#v3982WorkerPill[data-state="warn"]{border-color:rgba(224,183,92,.28)!important;color:#ead18a!important}
+#v3982WorkerPill[data-state="err"]{border-color:rgba(225,112,130,.28)!important;color:#efadb7!important}
+#v3982WorkerPill .dot{width:6px!important;height:6px!important}
+#v3982MenuBtn{flex:0 0 auto!important}
 /* General motion restraint: interaction stays crisp. */
 body.v37-ready *{scrollbar-color:#34504e transparent}
 body.v37-ready :is(button,a){-webkit-tap-highlight-color:transparent}
@@ -313,7 +334,7 @@ body.v37-ready :is(button,a){-webkit-tap-highlight-color:transparent}
  body.v37-ready>.app>.topbar{
   grid-template-columns:auto minmax(0,1fr) auto!important;gap:8px!important;padding:8px 10px!important
  }
- body.v37-ready .topbar .status>.pill:first-child{display:none!important}
+ body.v37-ready .topbar .status>.pill:first-child{display:inline-flex!important}
  #v3980SearchForm{height:40px}
  .v37-grid,.v35-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
  .v37-hero,.v35-feature{min-height:300px!important}
@@ -321,11 +342,36 @@ body.v37-ready :is(button,a){-webkit-tap-highlight-color:transparent}
 }
 @media(max-width:699px){
  body.v37-ready>.app{
+
   padding:0 10px calc(92px + env(safe-area-inset-bottom))!important;margin:0!important;width:100%!important
  }
  body.v37-ready>.app>.topbar{
-  grid-template-columns:auto minmax(0,1fr) 36px!important;
-  margin:0 -10px 8px!important;padding:8px 10px!important;border-radius:0!important
+  grid-template-columns:minmax(0,1fr) auto!important;
+  grid-template-areas:"brand status" "search search"!important;
+  align-items:center!important;gap:7px 8px!important;
+  margin:0 -10px 8px!important;padding:8px 10px 10px!important;border-radius:0!important
+ }
+ body.v37-ready>.app>.topbar>.brand{grid-area:brand!important}
+ body.v37-ready>.app>.topbar>.status{grid-area:status!important;display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:5px!important}
+ body.v37-ready>.app>.topbar>.v39-global-search,
+ body.v37-ready>.app>.topbar>#v3980SearchForm{grid-area:search!important;width:100%!important;order:initial!important}
+ body.v37-ready .topbar .status>.pill:first-child{
+   display:inline-flex!important;min-height:30px!important;max-width:126px!important;padding:0 8px!important;
+   overflow:hidden!important;white-space:nowrap!important;text-overflow:ellipsis!important;
+   border:1px solid var(--vd-line)!important;border-radius:999px!important;background:#0d1b1e!important;
+   color:#a9bfbc!important;font-size:7px!important
+ }
+ body.v37-ready .topbar .status>#snapshotLabel,
+ body.v37-ready .topbar .status>#openToolsBtn{display:none!important}
+ body.v37-ready .topbar .status>.pill:first-child .dot{flex:0 0 auto!important}
+ .v39-global-search{
+   height:44px!important;padding:4px 5px 4px 11px!important;border-radius:12px!important;
+   background:#0a1518!important;box-shadow:none!important
+ }
+ .v39-global-search input{font-size:11px!important}
+ .v39-global-search button{
+   min-width:58px!important;height:36px!important;padding:0 10px!important;border-radius:9px!important;
+   background:#183239!important;font-size:9px!important
  }
  body.v37-ready .topbar .logo{width:34px!important;height:34px!important;min-width:34px!important}
  body.v37-ready .topbar .brand>div:last-child{display:none!important}
@@ -400,6 +446,63 @@ body.v37-ready :is(button,a){-webkit-tap-highlight-color:transparent}
   document.head.appendChild(s)
 }
 
+function syncWorkerPill(){
+  var old=q(".topbar .status>.pill:first-child"),txt=q("#statusText"),dot=q("#statusDot");
+  if(!old)return;
+  old.id="v3982WorkerPill";
+  var text=String(txt&&txt.textContent||"").trim();
+  var state=/연결됨|저장됨|live/i.test(text)?"live":/실패|오프라인|error/i.test(text)?"err":"warn";
+  old.dataset.state=state;
+  old.title=text||"Worker 상태";
+  if(dot&&!dot.className.includes("dot"))dot.classList.add("dot")
+}
+function cleanupLegacyNav(){
+  qa(".v37-dock,.v36-dock,.v34-dock,.v33-dock,#v30BottomDock,.mobile-bottom-nav,.bottom-nav,.app-bottom-nav").forEach(function(el){
+    if(el&&el.id!=="v3980Dock")try{el.remove()}catch(_){el.style.display="none"}
+  });
+  var top=q(".app>.topbar");
+  if(top){
+    var nativeSearch=q(".v39-global-search",top);
+    if(nativeSearch){
+      qa("#v3980SearchForm",top).forEach(function(x){x.remove()});
+      qa(".status button",top).forEach(function(btn){
+        if(btn.id==="v3980MenuBtn"||btn.classList.contains("v3911-theme-toggle"))return;
+        var t=(btn.getAttribute("aria-label")||"")+" "+(btn.textContent||"")+" "+(btn.className||"");
+        if(/검색|search/i.test(t))btn.remove()
+      })
+    }
+  }
+}
+function closeMenu3982(){
+  var m=document.getElementById("v3982Menu");if(m)m.hidden=true
+}
+function openSettings3982(){
+  closeMenu3982();
+  try{if(typeof window.ensureCorePages37==="function")window.ensureCorePages37()}catch(_){}
+  openRoute("settings29")
+}
+function ensureMenu3982(){
+  var m=document.getElementById("v3982Menu");
+  if(m)return m;
+  m=document.createElement("div");m.id="v3982Menu";m.hidden=true;
+  m.innerHTML=
+    '<button type="button" data-v3982="settings"><i>⚙</i><span><b>설정</b><small>Worker · 앱 업데이트 · 기기 동기화</small></span><em>›</em></button>'+
+    '<button type="button" data-v3982="update"><i>↻</i><span><b>업데이트</b><small>웹 UI 최신본 적용 / APK 확인</small></span><em>›</em></button>'+
+    '<button type="button" data-v3982="diagnostics"><i>＋</i><span><b>진단 센터</b><small>라우팅 · 모듈 · 서비스워커 상태</small></span><em>›</em></button>';
+  document.body.appendChild(m);
+  m.addEventListener("click",function(e){
+    var b=e.target.closest("button[data-v3982]");if(!b)return;
+    var v=b.dataset.v3982;
+    if(v==="settings"){openSettings3982();return}
+    if(v==="diagnostics"){closeMenu3982();openRoute("diagnostics37");return}
+    if(v==="update"){
+      closeMenu3982();
+      if(window.VocaDiveUpdater&&window.VocaDiveUpdater.applyWebUpdate){window.VocaDiveUpdater.applyWebUpdate();return}
+      openSettings3982()
+    }
+  });
+  return m
+}
 function ensureTopbar(){
   var top=q(".app>.topbar");if(!top)return;
   var brand=q(".brand h1",top);if(brand)brand.textContent="VocaDive";
@@ -414,10 +517,14 @@ function ensureTopbar(){
   }
   var status=q(".status",top);
   if(status&&!document.getElementById("v3980MenuBtn")){
-    var b=document.createElement("button");b.type="button";b.id="v3980MenuBtn";b.textContent="⋮";b.setAttribute("aria-label","전체 메뉴");
-    b.addEventListener("click",function(){openRoute("studioHome")});
+    var b=document.createElement("button");b.type="button";b.id="v3980MenuBtn";b.textContent="⋮";b.setAttribute("aria-label","설정 및 전체 메뉴");
+    b.addEventListener("click",function(e){
+      e.preventDefault();e.stopPropagation();
+      var m=ensureMenu3982();m.hidden=!m.hidden
+    });
     status.appendChild(b)
   }
+  ensureMenu3982();cleanupLegacyNav();syncWorkerPill()
 }
 
 function ensureDock(){
@@ -520,7 +627,7 @@ function raiseStyle(){
   if(st&&st.parentNode===document.head&&st!==document.head.lastElementChild)document.head.appendChild(st)
 }
 function repairRoute(){
-  raf=0;raiseStyle();
+  raf=0;raiseStyle();cleanupLegacyNav();syncWorkerPill();
   var modal=document.getElementById("toolsModal");
   var route=String(window.__VSA37_CURRENT_ROUTE||"");
   var player=q(".v331-player"),mini=q(".v331-mini");
@@ -533,8 +640,10 @@ function repairRoute(){
     if(modalOpen){
       var active=q(".tools-body>.tool-view.active",modal);
       var target=route?q('.tools-body>[data-tool-view="'+CSS.escape(route)+'"]',modal):null;
-      if(!active&&target){
-        try{if(typeof window.setToolView==="function")window.setToolView(route);else target.classList.add("active")}catch(_){target.classList.add("active")}
+      if(target&&active!==target){
+        try{if(typeof window.setToolView==="function")window.setToolView(route);else{
+          qa(".tools-body>.tool-view",modal).forEach(function(v){v.classList.toggle("active",v===target);v.hidden=v!==target});
+        }}catch(_){target.classList.add("active");target.hidden=false}
       }
       if(!q(".tools-body>.tool-view.active",modal)){
         var fallback=q('.tools-body>[data-tool-view="studioHome"]',modal)||q('.tools-body>[data-tool-view="explore33"]',modal)||q(".tools-body>.tool-view",modal);
@@ -573,7 +682,14 @@ function bind(){
   });
   window.addEventListener("popstate",scheduleRepair);
   window.addEventListener("pageshow",scheduleRepair);
+  window.addEventListener("vsa:worker-status",function(){setTimeout(function(){syncWorkerPill();scheduleRepair()},0)});
   document.addEventListener("visibilitychange",function(){if(!document.hidden)scheduleRepair()});
+  document.addEventListener("click",function(e){
+    var m=document.getElementById("v3982Menu"),b=document.getElementById("v3980MenuBtn");
+    if(m&&!m.hidden&&!m.contains(e.target)&&e.target!==b)closeMenu3982()
+  },true);
+  var statusText=document.getElementById("statusText");
+  if(statusText&&window.MutationObserver)new MutationObserver(syncWorkerPill).observe(statusText,{childList:true,subtree:true,characterData:true});
   document.addEventListener("click",function(e){
     var a=e.target.closest&&e.target.closest('a[href*="nicovideo.jp/watch/"]');
     if(a)setTimeout(scheduleRepair,80)
@@ -587,8 +703,9 @@ function bind(){
 function boot(){
   addStyle();ensureTopbar();ensureDock();bind();scheduleRepair();
   document.documentElement.dataset.vocaUi=VERSION;
-  setTimeout(function(){ensureTopbar();ensureDock();scheduleRepair()},250);
-  setTimeout(function(){ensureTopbar();ensureDock();scheduleRepair()},900)
+  setTimeout(function(){ensureTopbar();ensureDock();cleanupLegacyNav();scheduleRepair()},250);
+  setTimeout(function(){ensureTopbar();ensureDock();cleanupLegacyNav();scheduleRepair()},900);
+  setTimeout(function(){ensureTopbar();ensureDock();cleanupLegacyNav();scheduleRepair()},2200)
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
 })();
