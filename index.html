@@ -3349,7 +3349,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.46.0 · Mini Return · Dive Handoff · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Path 1.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.47.0 · Mini Return · Dive Handoff · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Path 1.1 · Similar Only 1.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -11066,6 +11066,145 @@ function labels46(){
 function boot46(){ensure46();labels46();if(typeof state!=="undefined"&&state.universeData)render46(state.universeData)}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(boot46,0)});else setTimeout(boot46,0);
 window.addEventListener("popstate",function(){setTimeout(function(){ensure46();labels46()},0)});
+})();
+</script>
+
+
+<style id="v3947SimilarOnlyStyle">
+/* v39.47 · Similar Only 1.0 */
+.v3947-mode-btn{border-color:rgba(121,218,209,.24)!important;background:#10343b!important}
+.v3947-mode-btn.active{border:0!important;background:linear-gradient(135deg,#69dcd1,#708ee8)!important;color:#061719!important}
+.sim47-shell{padding:15px;display:grid;gap:12px}
+.sim47-head{
+  display:grid;grid-template-columns:118px minmax(0,1fr) auto;gap:13px;align-items:center;
+  padding:12px;border:1px solid rgba(113,211,201,.15);border-radius:18px;
+  background:linear-gradient(140deg,rgba(13,50,57,.94),rgba(8,31,39,.95))
+}
+.sim47-head img,.sim47-head .noimg{width:118px;aspect-ratio:16/9;border-radius:12px;object-fit:cover;background:#10343b;display:grid;place-items:center;color:#71d5cc;font-size:24px}
+.sim47-head small{display:block;color:#6fd8ce;font-size:7px;font-weight:950;letter-spacing:.08em}
+.sim47-head h3{margin:5px 0 4px;color:#f2fcfa;font-size:17px;line-height:1.3;letter-spacing:-.03em}
+.sim47-head p{margin:0;color:#82a5a1;font-size:8px;line-height:1.5}
+.sim47-summary{display:grid;grid-template-columns:repeat(2,minmax(82px,1fr));gap:6px;min-width:190px}
+.sim47-stat{padding:9px 10px;border:1px solid rgba(113,205,197,.11);border-radius:11px;background:#09272d;text-align:center}
+.sim47-stat small{color:#688f8b;font-size:6px}.sim47-stat b{display:block;margin-top:2px;color:#e7f9f6;font-size:13px}
+.sim47-tools{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.sim47-tools button{min-height:34px;padding:0 11px;border:1px solid rgba(113,205,197,.14);border-radius:999px;background:#0d3036;color:#cbe8e4;font-size:8px;font-weight:900}
+.sim47-tools button.active{border-color:rgba(104,223,211,.46);background:#15454c;color:#effffc}
+.sim47-note{margin-left:auto;color:#6f938f;font-size:7px}
+.sim47-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.sim47-row{
+  min-width:0;display:grid;grid-template-columns:32px 92px minmax(0,1fr) auto;gap:9px;align-items:center;
+  padding:8px;border:1px solid rgba(113,205,197,.10);border-radius:15px;background:#082229;cursor:pointer
+}
+.sim47-row:hover,.sim47-row.active{border-color:rgba(111,220,209,.33);background:#0b2c33}
+.sim47-rank{font-size:12px;font-weight:950;color:#6b9c97;text-align:center}
+.sim47-row:nth-child(-n+3) .sim47-rank{color:#72ddd2}
+.sim47-row img,.sim47-row .noimg{width:92px;aspect-ratio:16/9;border-radius:9px;object-fit:cover;background:#11363d;display:grid;place-items:center;color:#6faea8}
+.sim47-copy{min-width:0}.sim47-copy b{display:block;color:#e8f9f6;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sim47-copy small{display:block;margin-top:4px;color:#749793;font-size:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sim47-score{text-align:right;min-width:48px}.sim47-score b{display:block;color:#70ddd2;font-size:13px}.sim47-score small{display:block;color:#668d89;font-size:6px;margin-top:2px}
+.sim47-empty{grid-column:1/-1;min-height:260px;display:grid;place-items:center;text-align:center;color:#789b97}
+@media(max-width:900px){.sim47-list{grid-template-columns:1fr}.sim47-head{grid-template-columns:100px minmax(0,1fr)}.sim47-head img,.sim47-head .noimg{width:100px}.sim47-summary{grid-column:1/-1;grid-template-columns:repeat(4,1fr)}}
+@media(max-width:699px){
+  .sim47-shell{padding:9px;gap:8px}.sim47-head{grid-template-columns:84px minmax(0,1fr);padding:9px;gap:9px}.sim47-head img,.sim47-head .noimg{width:84px}
+  .sim47-head h3{font-size:14px}.sim47-summary{grid-template-columns:repeat(2,1fr);min-width:0}.sim47-note{width:100%;margin-left:0}
+  .sim47-row{grid-template-columns:26px 72px minmax(0,1fr) auto;padding:7px;gap:7px}.sim47-row img,.sim47-row .noimg{width:72px}.sim47-score{min-width:42px}
+}
+</style>
+<script id="v3947SimilarOnly">
+(function(){
+"use strict";
+var previousRender47=window.renderUniverse;
+var similarMode47=false;
+var minSim47=0;
+function q47(s,r){return (r||document).querySelector(s)}
+function qa47(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))}
+function e47(s){return String(s==null?"":s).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
+function f47(v){try{return typeof fmt==="function"?fmt(v):Number(v||0).toLocaleString()}catch(e){return String(v||0)}}
+function y47(n){try{return n&&n.startTime?new Date(n.startTime).getFullYear():"연도 미상"}catch(e){return "연도 미상"}}
+function shared47(c,n){try{return typeof sharedTags==="function"?sharedTags(c,n).slice(0,4):((n&&n.shared)||[]).slice(0,4)}catch(e){return ((n&&n.shared)||[]).slice(0,4)}}
+function rows47(data){
+  return (data.nodes||[]).slice(1).filter(function(n){return n&&n.contentId&&(+n.similarity||0)>=minSim47}).sort(function(a,b){
+    return (+b.similarity||0)-(+a.similarity||0)||(+b.viewCounter||0)-(+a.viewCounter||0)
+  })
+}
+function ensureButton47(){
+  var header=q47("#v394UniverseHeader");if(!header)return;
+  var quick=header.querySelector(".v394-universe-quick");if(!quick)return;
+  var b=q47("#v3947SimilarToggle",quick);
+  if(!b){
+    b=document.createElement("button");b.type="button";b.id="v3947SimilarToggle";b.className="v3947-mode-btn";
+    b.textContent="유사곡만 보기";quick.insertBefore(b,quick.firstChild);
+    b.addEventListener("click",function(){
+      similarMode47=!similarMode47;
+      syncButton47();
+      var data=(typeof state!=="undefined"&&state.universeData)?state.universeData:null;
+      if(similarMode47&&data&&data.nodes&&data.nodes.length<25){
+        var size=q47("#universeSize");
+        if(size&&size.value!=="32"){size.value="32";try{size.dispatchEvent(new Event("change",{bubbles:true}))}catch(e){}}
+        if(typeof buildUniverse==="function"&&data.center){buildUniverse(data.center,true);return}
+      }
+      if(data)window.renderUniverse(data)
+    })
+  }
+  syncButton47()
+}
+function syncButton47(){
+  var b=q47("#v3947SimilarToggle");if(!b)return;
+  b.classList.toggle("active",similarMode47);
+  b.textContent=similarMode47?"다이브 경로 보기":"유사곡만 보기";
+  b.setAttribute("aria-pressed",similarMode47?"true":"false")
+}
+function side47(n,data){
+  var center=data.center,sh=shared47(center,n),sim=Math.round((+n.similarity||0)*100),pinned=typeof isUniversePinned39==="function"&&isUniversePinned39(n.contentId);
+  return '<div class="dive46-side"><div class="dive46-side-cover">'+(n.thumbnailUrl?'<img src="'+e47(n.thumbnailUrl)+'" alt="">':'<div class="noimg">♪</div>')+'</div>'+
+    '<div class="dive46-side-kicker"><span class="dive46-badge">SIMILAR</span><span class="dive46-badge">'+sim+'%</span></div>'+
+    '<h3>'+e47(n.title||n.contentId)+'</h3><div class="dive46-side-meta">'+e47(n.contentId)+' · '+y47(n)+' · 조회 '+f47(n.viewCounter||0)+'</div>'+
+    '<div class="dive46-side-reason"><small>중심곡과 비슷한 이유</small><div>'+(sh.length?sh.map(function(t){return"<span>"+e47(t)+"</span>"}).join(""):"<span>공통 태그가 적지만 종합 유사도가 높은 후보</span>")+'</div></div>'+
+    '<div class="dive46-side-actions"><button type="button" class="primary" data-sim47-center="'+e47(n.contentId)+'">이 곡 기준으로 다시 찾기</button>'+
+    '<button type="button" data-sim47-pin="'+e47(n.contentId)+'">'+(pinned?"핀 해제":"핀 고정")+'</button>'+
+    '<button type="button" data-sim47-detail="'+e47(n.contentId)+'">곡 상세</button></div></div>'
+}
+function bindSide47(data){
+  var info=q47("#universeInfo");if(!info)return;
+  qa47("[data-sim47-center]",info).forEach(function(b){b.onclick=function(){if(window.centerUniverseOnId39)window.centerUniverseOnId39(b.dataset.sim47Center)}});
+  qa47("[data-sim47-pin]",info).forEach(function(b){b.onclick=function(){if(window.toggleUniversePin39)window.toggleUniversePin39(b.dataset.sim47Pin);b.textContent=(typeof isUniversePinned39==="function"&&isUniversePinned39(b.dataset.sim47Pin))?"핀 해제":"핀 고정"}});
+  qa47("[data-sim47-detail]",info).forEach(function(b){b.onclick=function(){if(window.VSAOpenSong39)window.VSAOpenSong39(b.dataset.sim47Detail,true)}})
+}
+function select47(id,data){
+  var n=(data.nodes||[]).find(function(x){return x&&x.contentId===id});if(!n)return;
+  qa47(".sim47-row").forEach(function(x){x.classList.toggle("active",x.dataset.sim47Song===id)});
+  var info=q47("#universeInfo");if(info){info.innerHTML=side47(n,data);bindSide47(data)}
+}
+function renderSimilar47(data){
+  ensureButton47();
+  var panel=q47("#universePanel"),stage=panel&&panel.querySelector(".universe-stage");if(!stage)return;
+  var center=data.center,rows=rows47(data),avg=rows.length?Math.round(rows.reduce(function(s,n){return s+(+n.similarity||0)},0)/rows.length*100):0;
+  var top=rows.length?Math.round((+rows[0].similarity||0)*100):0;
+  stage.innerHTML='<div class="sim47-shell"><div class="sim47-head">'+
+    (center.thumbnailUrl?'<img src="'+e47(center.thumbnailUrl)+'" alt="">':'<div class="noimg">♪</div>')+
+    '<div><small>SIMILAR ONLY · 중심곡</small><h3>'+e47(center.title||center.contentId)+'</h3><p>다이브 갈래를 섞지 않고, 현재 곡과 계산상 가장 가까운 후보만 유사도 순으로 정렬합니다.</p></div>'+
+    '<div class="sim47-summary"><div class="sim47-stat"><small>후보</small><b>'+rows.length+'곡</b></div><div class="sim47-stat"><small>최고 유사도</small><b>'+top+'%</b></div><div class="sim47-stat"><small>평균</small><b>'+avg+'%</b></div><div class="sim47-stat"><small>기준</small><b>태그·연대</b></div></div></div>'+
+    '<div class="sim47-tools"><button type="button" data-sim47-min="0" class="'+(minSim47===0?"active":"")+'">전체</button><button type="button" data-sim47-min=".5" class="'+(minSim47===.5?"active":"")+'">50%+</button><button type="button" data-sim47-min=".7" class="'+(minSim47===.7?"active":"")+'">70%+</button><span class="sim47-note">※ 음원 파형이 아닌 태그·게시 연대 기반 근사 유사도</span></div>'+
+    '<div class="sim47-list">'+(rows.length?rows.map(function(n,i){var sh=shared47(center,n),sim=Math.round((+n.similarity||0)*100);return '<article class="sim47-row" data-sim47-song="'+e47(n.contentId)+'"><div class="sim47-rank">#'+(i+1)+'</div>'+
+      (n.thumbnailUrl?'<img src="'+e47(n.thumbnailUrl)+'" loading="lazy" alt="">':'<div class="noimg">♪</div>')+
+      '<div class="sim47-copy"><b>'+e47(n.title||n.contentId)+'</b><small>'+(sh.length?e47(sh.join(" · ")):e47(y47(n)+" · 조회 "+f47(n.viewCounter||0)))+'</small></div>'+
+      '<div class="sim47-score"><b>'+sim+'%</b><small>유사도</small></div></article>'}).join(""):'<div class="sim47-empty">현재 기준을 만족하는 유사곡이 없습니다.<br>필터를 낮추거나 경로를 다시 찾아보세요.</div>')+'</div></div>';
+  qa47(".sim47-row",stage).forEach(function(row){row.onclick=function(){select47(row.dataset.sim47Song,data)}});
+  qa47("[data-sim47-min]",stage).forEach(function(b){b.onclick=function(){minSim47=Number(b.dataset.sim47Min)||0;renderSimilar47(data)}});
+  var info=q47("#universeInfo");if(info){
+    info.innerHTML='<div class="dive46-side"><div class="dive46-side-reason"><small>유사곡만 보기</small><div><span>유사도 순</span><span>공통 태그</span><span>바로 재탐색</span></div></div><h3>'+e47(center.title||center.contentId)+'</h3><div class="dive46-side-meta">왼쪽 목록에서 곡을 누르면 왜 비슷한지 확인할 수 있습니다.</div></div>'
+  }
+  if(typeof renderUniverseJourney39==="function")renderUniverseJourney39()
+}
+window.renderUniverse=function(data){
+  ensureButton47();
+  if(similarMode47)return renderSimilar47(data);
+  return previousRender47(data)
+};
+function boot47(){ensureButton47();var data=(typeof state!=="undefined"&&state.universeData)?state.universeData:null;if(data)window.renderUniverse(data)}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(boot47,20)});else setTimeout(boot47,20);
+window.addEventListener("popstate",function(){setTimeout(ensureButton47,20)});
 })();
 </script>
 
