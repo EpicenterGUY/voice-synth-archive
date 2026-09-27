@@ -182,7 +182,7 @@ public class VocaDiveUpdaterPlugin extends Plugin {
                 }
 
                 String actualSha = hex(digest.digest());
-                if (expectedSha != null && !expectedSha.isBlank() && !actualSha.equalsIgnoreCase(expectedSha.trim())) {
+                if (expectedSha != null && !expectedSha.trim().isEmpty() && !actualSha.equalsIgnoreCase(expectedSha.trim())) {
                     temp.delete();
                     throw new SecurityException("SHA256_MISMATCH");
                 }
@@ -214,7 +214,7 @@ public class VocaDiveUpdaterPlugin extends Plugin {
     @PluginMethod
     public void install(PluginCall call) {
         final String path = call.getString("path", "");
-        if (path == null || path.isBlank()) {
+        if (path == null || path.trim().isEmpty()) {
             call.reject("APK_PATH_REQUIRED");
             return;
         }
@@ -265,7 +265,7 @@ public class VocaDiveUpdaterPlugin extends Plugin {
 
     private static String hex(byte[] bytes) {
         StringBuilder sb = new StringBuilder(bytes.length * 2);
-        for (byte b : bytes) sb.append(String.format(Locale.ROOT, "%02x", b));
+        for (byte b : bytes) sb.append(String.format(Locale.ROOT, "%02x", b & 0xff));
         return sb.toString();
     }
 }
