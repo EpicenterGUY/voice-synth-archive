@@ -3251,7 +3251,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
             <option value="voisona">VoiSona</option>
             <option value="neutrino">NEUTRINO</option><option value="voicevox">VOICEVOX 계열</option>
           </select>
-          <button class="btn primary" id="apiSearchBtn">앱에서 검색</button>
+          <button class="btn primary" id="apiSearchBtn">검색</button>
           <button class="btn web" id="nicoWebBtn">니코동에서 열기</button>
         </div>
         <div class="search-options">
@@ -3349,7 +3349,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.44.0 · Mini Return · Universe Handoff · Universe Search 3.1 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.45.0 · Mini Return · Universe Handoff · Universe Search 3.1 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -7608,7 +7608,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:"39.44.0",
+    version:"39.45.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -9193,7 +9193,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.44.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
+var VER="39.45.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -10052,7 +10052,12 @@ function ensureSearch397(){
       var top=document.getElementById("v39GlobalSearch");if(top&&top.value!==input.value)top.value=input.value;
       renderSearchAssist397(input.value)
     });
-    input.addEventListener("focus",function(){renderSearchAssist397(input.value)})
+    input.addEventListener("focus",function(){renderSearchAssist397(input.value)});
+    input.addEventListener("keydown",function(e){
+      if(e.key!=="Enter")return;
+      e.preventDefault();
+      var q=input.value.trim();if(q)executeSearch397(q,searchMode397)
+    })
   }
   if(panel&&!panel.dataset.v397){
     panel.dataset.v397="1";
@@ -10091,30 +10096,46 @@ function clearStaleSearch397(){
     var sub=document.getElementById("listSub");if(sub)sub.textContent="검색어를 입력하면 결과가 표시됩니다."
   }catch(_){}
 }
+async function runSearch397WhenReady(q,token){
+  var started=Date.now(),input=null;
+  while(Date.now()-started<12000){
+    if(window.__VSA_PENDING_SEARCH397!==token)return false;
+    input=syncSearchInputs397(q,{top:true,render:true});
+    try{if(typeof state!=="undefined")state.freeQuery=q}catch(_){}
+    var ready=!!input&&typeof freeSearch==="function"&&typeof state!=="undefined"&&!state.busy;
+    if(ready){
+      try{
+        await freeSearch(true);
+        if(window.__VSA_PENDING_SEARCH397===token)window.__VSA_PENDING_SEARCH397="";
+        try{patchSearchUi398()}catch(_){}
+        return true
+      }catch(e){
+        console.warn("auto search failed",e);
+      }
+    }
+    await new Promise(function(resolve){setTimeout(resolve,80)})
+  }
+  // Last-resort: use the same button path the user used manually.
+  if(window.__VSA_PENDING_SEARCH397===token){
+    input=syncSearchInputs397(q,{top:true,render:true});
+    var btn=document.getElementById("apiSearchBtn");
+    if(btn&&!btn.disabled){btn.click();window.__VSA_PENDING_SEARCH397="";return true}
+  }
+  return false
+}
 function executeSearch397(q,mode){
   q=String(q||"").trim();if(!q)return;
-  window.__VSA_PENDING_SEARCH397=q;
+  var token=q+"|"+Date.now()+"|"+Math.random();
+  window.__VSA_PENDING_SEARCH397=token;
   setSearchMode397(mode||searchMode397);
   rememberSearch397(q,searchMode397);
   ensureSearch397();ensureSearch398();
+  syncSearchInputs397(q,{top:true,render:true});
+  try{state.freeQuery=q}catch(_){}
   openToolsModal("search29");
-
-  function apply(){
-    syncSearchInputs397(q,{top:true,render:true});
-    try{state.freeQuery=q}catch(_){}
-  }
-  apply();
-  requestAnimationFrame(apply);
-  setTimeout(apply,35);
-  function runWhenReady(attempt){
-    apply();
-    if(typeof state!=="undefined"&&state.busy&&attempt<12){
-      setTimeout(function(){runWhenReady(attempt+1)},45);return
-    }
-    try{freeSearch(true)}catch(e){}
-    setTimeout(function(){if(window.__VSA_PENDING_SEARCH397===q)window.__VSA_PENDING_SEARCH397=""},160)
-  }
-  setTimeout(function(){runWhenReady(0)},75)
+  requestAnimationFrame(function(){syncSearchInputs397(q,{top:true,render:true})});
+  setTimeout(function(){syncSearchInputs397(q,{top:true,render:true})},40);
+  runSearch397WhenReady(q,token)
 }
 function chooseSuggestion397(type,value,id){
   if(type==="song"&&id&&window.VSAOpenSong39){window.VSAOpenSong39(id);return}
@@ -10247,6 +10268,13 @@ function ensureSearch398(){
     free.prepend(main);
     main.querySelector(".v398-main-input-wrap").appendChild(input);
     main.insertBefore(run,main.children[1]);
+    if(run&&!run.dataset.v3945Unified){
+      run.dataset.v3945Unified="1";
+      run.onclick=function(e){
+        if(e){e.preventDefault();e.stopPropagation()}
+        var q=input&&input.value.trim();if(q)executeSearch397(q,searchMode397)
+      }
+    }
     var filter=document.createElement("div");filter.id="v398FilterSheet";filter.className="v398-filter-sheet";
     var oldYear=document.getElementById("yearSelect"),oldTier=document.getElementById("tierSelect"),oldSort=document.getElementById("sortSelect");
     filter.innerHTML='<div class="v398-filter-head"><div><b>검색 필터</b><small>적용 중인 조건은 검색창 아래 칩으로 표시됩니다.</small></div><div class="v398-filter-head-actions"><button type="button" data-v398-reset-all>전체 초기화</button><button type="button" data-v398-close-filter>닫기</button></div></div>'+
@@ -10804,16 +10832,16 @@ var groups={};
 function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
-  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.44.0","./detective-v12.js?v=39.44.0","./detective-v13.js?v=39.44.0","./detective-v14.js?v=39.44.0","./detective-v16.js?v=39.44.0"]);
-  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.44.0","./smart-v23.js?v=39.44.0","./playlist-v24.js?v=39.44.0"]);
-  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.44.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.44.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.44.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.44.0");
-  else if(name==="deviceSync")groups[name]=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.44.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.44.0");
+  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.45.0","./detective-v12.js?v=39.45.0","./detective-v13.js?v=39.45.0","./detective-v14.js?v=39.45.0","./detective-v16.js?v=39.45.0"]);
+  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.45.0","./smart-v23.js?v=39.45.0","./playlist-v24.js?v=39.45.0"]);
+  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.45.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.45.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.45.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.45.0");
+  else if(name==="deviceSync")groups[name]=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.45.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.45.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
-    return seq(["./voca-app-v33.js?v=39.44.0","./voca-app-v33-1.js?v=39.44.0","./voca-app-v33-2.js?v=39.44.0","./voca-app-v33-3.js?v=39.44.0"]);
+    return seq(["./voca-app-v33.js?v=39.45.0","./voca-app-v33-1.js?v=39.45.0","./voca-app-v33-2.js?v=39.45.0","./voca-app-v33-3.js?v=39.45.0"]);
   });
   else groups[name]=Promise.resolve(false);
   groups[name]=Promise.resolve(groups[name]).then(function(v){
@@ -10857,4 +10885,4 @@ if("requestIdleCallback" in window)requestIdleCallback(function(){ensure("pwa")}
 else setTimeout(function(){ensure("pwa")},12000);
 })();
 </script>
-<script src="./device-sync-v3938.js?v=39.44.0"></script>\n<script src="./i18n-v3918.js?v=39.44.0"></script>\n</body>\n</html>
+<script src="./device-sync-v3938.js?v=39.45.0"></script>\n<script src="./i18n-v3918.js?v=39.45.0"></script>\n</body>\n</html>
