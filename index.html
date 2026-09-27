@@ -11141,7 +11141,7 @@ function ensureButton47(){
       var data=(typeof state!=="undefined"&&state.universeData)?state.universeData:null;
       if(similarMode47&&data&&data.nodes&&data.nodes.length<25){
         var size=q47("#universeSize");
-        if(size&&size.value!=="32"){size.value="32";try{size.dispatchEvent(new Event("change",{bubbles:true}))}catch(e){}}
+        if(size&&size.value!=="32"){size.value="32"}
         if(typeof buildUniverse==="function"&&data.center){buildUniverse(data.center,true);return}
       }
       if(data)window.renderUniverse(data)
