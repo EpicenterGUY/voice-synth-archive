@@ -2444,6 +2444,12 @@ body.v37-ready .v397-search-page>.v393-page-strip{display:none!important}
   background:#0c2b31;color:#9fc7c2;font-size:7px;font-weight:900
 }
 .v3910-history-actions button.danger{border-color:rgba(210,110,120,.20);color:#d9a8ae;background:#26191d}
+.v396-history-toolbar{justify-content:flex-end;margin:-2px 2px 9px}
+@media(max-width:699px){
+  .v396-history-toolbar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;margin:0 0 8px}
+  .v396-history-toolbar button{min-height:36px!important;padding:0 12px!important}
+  .v396-history-toolbar button:first-child{text-align:left}
+}
 .v3910-activity-title{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
 .v3910-activity-title>small{margin:0!important}.v3910-activity-title button{
   min-height:26px;padding:0 7px;border:1px solid rgba(113,205,197,.11);border-radius:8px;background:#0b2930;color:#8db7b2;font-size:6.5px;font-weight:900
@@ -3349,7 +3355,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.64.0 · Native Brand 0.2 · Android Shell 0.1 · App Foundation 1.0 · Cross-Genre Bridge 1.0 · Relation Trust 3.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.65.0 · Search Fix · Rank Turbo 1.0 · Native Brand 0.2 · Android Shell 0.1 · App Foundation 1.0 · Cross-Genre Bridge 1.0 · Relation Trust 3.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -8306,29 +8312,32 @@ function familyAcceptsEngine37(family,engine){
   if(family==="combined")return true;
   return {vocaloid:"VOCALOID",utau:"UTAU",synthv:"SynthV",cevio:"CeVIO",voisona:"VoiSona",neutrino:"NEUTRINO",voicevox:"VOICEVOX"}[family]===engine
 }
+async function fetchVocaDBArtistPage37(type,start){
+  const u=new URL("https://vocadb.net/api/artists");
+  u.searchParams.set("artistType",type);
+  u.searchParams.set("start",String(start||0));
+  u.searchParams.set("maxResults","50");
+  u.searchParams.set("getTotalCount","true");
+  u.searchParams.set("sort","Name");
+  u.searchParams.set("fields","AdditionalNames,Names,BaseVoicebank,Tags");
+  u.searchParams.set("lang","Japanese");
+  const r=await fetch(u.toString(),{headers:{"Accept":"application/json"}});
+  if(!r.ok)throw new Error("VocaDB artist "+r.status);
+  return r.json()
+}
 async function fetchVocaDBArtistType37(type){
-  const cacheKey="vsa37VocaArtists:"+type+":v2";
+  const cacheKey="vsa37VocaArtists:"+type+":v3";
   try{
-    const c=JSON.parse(localStorage.getItem(cacheKey)||"null");
-    if(c&&Date.now()-c.at<604800000&&Array.isArray(c.items))return c.items
+    const cached=JSON.parse(localStorage.getItem(cacheKey)||"null");
+    if(cached&&Date.now()-cached.at<604800000&&Array.isArray(cached.items))return cached.items
   }catch(_){}
-  const items=[];let start=0,total=Infinity;
-  while(start<total&&start<20000){
-    const u=new URL("https://vocadb.net/api/artists");
-    u.searchParams.set("artistType",type);
-    u.searchParams.set("start",String(start));
-    u.searchParams.set("maxResults","50");
-    u.searchParams.set("getTotalCount","true");
-    u.searchParams.set("sort","Name");
-    u.searchParams.set("fields","AdditionalNames,Names,BaseVoicebank,Tags");
-    u.searchParams.set("lang","Japanese");
-    const r=await fetch(u.toString(),{headers:{"Accept":"application/json"}});
-    if(!r.ok)throw new Error("VocaDB artist "+r.status);
-    const d=await r.json(),page=Array.isArray(d?.items)?d.items:[];
-    total=Number.isFinite(+d?.totalCount)?+d.totalCount:(page.length<50?start+page.length:Infinity);
-    items.push(...page);start+=page.length;
-    if(!page.length||page.length<50)break
-  }
+  const first=await fetchVocaDBArtistPage37(type,0),head=Array.isArray(first?.items)?first.items:[],total=Number.isFinite(+first?.totalCount)?+first.totalCount:head.length;
+  const starts=[];for(let start=50;start<Math.min(total,20000);start+=50)starts.push(start);
+  const pages=await mapLimit(starts,6,async function(start){
+    try{return await fetchVocaDBArtistPage37(type,start)}catch(_){return null}
+  });
+  const items=head.slice();
+  pages.forEach(function(d){if(d&&Array.isArray(d.items))items.push(...d.items)});
   try{localStorage.setItem(cacheKey,JSON.stringify({at:Date.now(),items:items}))}catch(_){}
   return items
 }
@@ -8346,10 +8355,12 @@ function dedupeCanonicalVoicebanks37(rows){
 async function loadCanonicalVoicebanks37(family,status){
   const types=VOCADB_TYPES37[family]||VOCADB_TYPES37.combined,map=new Map();
   try{
-    for(let ti=0;ti<types.length;ti++){
-      if(status)status.textContent="VocaDB 실제 음원명 목록 불러오는 중… "+(ti+1)+"/"+types.length;
-      const items=await fetchVocaDBArtistType37(types[ti]);
-      for(const raw of items){
+    const loaded=await mapLimit(types,3,async function(type,ti){
+      if(status)status.textContent="VocaDB 실제 음원명 병렬 수집… "+(ti+1)+"/"+types.length;
+      return fetchVocaDBArtistType37(type)
+    });
+    loaded.forEach(function(items,ti){
+      for(const raw of (items||[])){
         const a=raw?.artist||raw;if(!a)continue;
         const base=a.baseVoicebank?.artist||a.baseVoicebank||null;
         const root=base&&base.id?base:a;
@@ -8363,7 +8374,7 @@ async function loadCanonicalVoicebanks37(family,status){
         x.aliases=uniqueNames37(x.aliases.concat(vocadbNames37(a),vocadbNames37(root),[name]));
         map.set(key,x)
       }
-    }
+    });
     if(map.size)return dedupeCanonicalVoicebanks37([...map.values()])
   }catch(e){
     if(status)status.textContent="VocaDB 음원 목록 연결 실패 · 내장 목록으로 계속합니다.";
@@ -8431,34 +8442,47 @@ async function fetchRankPage37(opts){
   }
   throw last||new Error("전수집계 페이지를 불러오지 못했습니다.")
 }
-async function fetchRankChunkAll37(tags,family,index,totalChunks,status,uniq){
+async function fetchRankChunkAll37(tags,family,index,totalChunks,status,uniq,progress){
   const q=tags.join(" OR ");
   const first=await fetchRankPage37({year:"all",limit:100,offset:0,mode:"ranking",sort:"-viewCounter",applyYear:false,applyTier:false,overrideQuery:q,overrideTargets:"tagsExact"});
   const total=Math.min(100000,+first.meta?.totalCount||0);
   for(const song of (first.data||[]))if(song?.contentId)uniq.set(song.contentId,song);
-  let done=Math.min(100,total);
-  if(status)status.textContent="전곡 전수집계 · "+family+" 태그 묶음 "+index+"/"+totalChunks+" · "+fmt(done)+"/"+fmt(total)+"건";
   const offsets=[];for(let off=100;off<total;off+=100)offsets.push(off);
-  const groups=chunkArray(offsets,3);
+  if(progress){progress.pagesTotal+=1+offsets.length;progress.pagesDone+=1}
+  if(status)status.textContent="전곡 병렬 수집 · "+family+" "+index+"/"+totalChunks+" · 중복제거 "+fmt(uniq.size)+"곡";
+  const groups=chunkArray(offsets,4);
   for(const group of groups){
     const pages=await Promise.all(group.map(function(off){
       return fetchRankPage37({year:"all",limit:100,offset:off,mode:"ranking",sort:"-viewCounter",applyYear:false,applyTier:false,overrideQuery:q,overrideTargets:"tagsExact"})
     }));
     for(const d of pages)for(const song of (d?.data||[]))if(song?.contentId)uniq.set(song.contentId,song);
-    done=Math.min(total,done+group.length*100);
-    if(status)status.textContent="전곡 전수집계 · "+family+" 태그 묶음 "+index+"/"+totalChunks+" · "+fmt(done)+"/"+fmt(total)+"건 · 중복제거 "+fmt(uniq.size)+"곡";
+    if(progress)progress.pagesDone+=group.length;
+    if(status){
+      const pct=progress&&progress.pagesTotal?Math.min(99,Math.floor(progress.pagesDone/progress.pagesTotal*100)):0;
+      status.textContent="전곡 병렬 수집 "+pct+"% · "+family+" · 중복제거 "+fmt(uniq.size)+"곡"
+    }
     await new Promise(function(r){setTimeout(r,0)})
   }
 }
-async function fetchVocalRankCorpus37(family,status){
-  const uniq=new Map(),families=rankFamilies37(family);
-  for(let fi=0;fi<families.length;fi++){
-    const fam=families[fi],tags=[...new Set(vocalRankOriginalTags37(fam))],chunks=chunkArray(tags,8);
-    for(let ci=0;ci<chunks.length;ci++){
-      await fetchRankChunkAll37(chunks[ci],fam,ci+1,chunks.length,status,uniq)
+async function fetchVocalRankCorpus37(family,status,onProgress){
+  const uniq=new Map(),families=rankFamilies37(family),tasks=[],progress={pagesDone:0,pagesTotal:0,chunksDone:0,chunksTotal:0},proofTags=[];
+  families.forEach(function(fam){
+    const tags=[...new Set(vocalRankOriginalTags37(fam))],chunks=chunkArray(tags,8);
+    chunks.forEach(function(chunk,ci){tasks.push({fam:fam,tags:chunk,index:ci+1,total:chunks.length})});
+    proofTags.push(...vocalRankOriginalTags37(fam))
+  });
+  progress.chunksTotal=tasks.length;
+  let lastProgress=0;
+  await mapLimit(tasks,3,async function(task){
+    await fetchRankChunkAll37(task.tags,task.fam,task.index,task.total,status,uniq,progress);
+    progress.chunksDone++;
+    const now=Date.now();
+    if(typeof onProgress==="function"&&(now-lastProgress>800||progress.chunksDone===progress.chunksTotal)){
+      lastProgress=now;
+      try{onProgress([...uniq.values()],Object.assign({},progress))}catch(_){}
     }
-  }
-  const proof=new Set(families.flatMap(function(fam){return vocalRankOriginalTags37(fam)}).map(normalizeSourceTag37));
+  });
+  const proof=new Set(proofTags.map(normalizeSourceTag37));
   return [...uniq.values()].filter(function(song){
     return parseTags(song.tags).map(normalizeSourceTag37).some(function(t){return proof.has(t)})
   })
@@ -8539,7 +8563,15 @@ async function runVocalRank37(){
     if(status)status.textContent="새 전곡 데이터로 갱신 중… VocaDB 실제 음원 목록을 불러옵니다.";
     const registry=await loadCanonicalVoicebanks37(family,status);
     if(status)status.textContent="실제 음원 "+fmt(registry.length)+"개 확인 · 니코동 원곡 전수집계 시작…";
-    const songs=await fetchVocalRankCorpus37(family,status);
+    let partialLast=0;
+    const songs=await fetchVocalRankCorpus37(family,status,function(partial,progress){
+      const now=Date.now();if(now-partialLast<700&&progress.chunksDone!==progress.chunksTotal)return;partialLast=now;
+      const p=buildVocalRankRows37(family,partial,registry);
+      state.vocalRankRows=p.rows;
+      state.vocalRankMeta={family:family,songs:partial.length,matchedSongs:p.matchedSongs,unmatchedSongs:p.unmatchedSongs,voicebanks:registry.length,at:Date.now(),complete:false};
+      renderVocalRank37();
+      if(status)status.textContent="빠른 병렬 수집 중 · 묶음 "+progress.chunksDone+"/"+progress.chunksTotal+" · 현재 "+fmt(partial.length)+"곡 · 순위표는 실시간 갱신 중"
+    });
     if(status)status.textContent="전곡 "+fmt(songs.length)+"곡 수집 완료 · 실제 음원명으로 중복 통합 중…";
     const built=buildVocalRankRows37(family,songs,registry);
     state.vocalRankRows=built.rows;
@@ -9391,7 +9423,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.64.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
+var VER="39.65.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -9570,7 +9602,8 @@ function heroHtml396(hit){
     '<div class="v396-hero-actions"><button type="button" class="primary" data-v399-play="'+E(s.contentId)+'">▶ 재생</button><button type="button" data-v396-universe="'+E(s.contentId)+'">다이브 패스</button><button type="button" data-v396-save="'+E(s.contentId)+'">♡ 보관</button><button type="button" class="quiet" data-v396-dislike="'+E(s.contentId)+'">관심없음</button></div></div></section>'
 }
 function continueHtml396(rows){
-  return '<section class="v396-continue"><div class="v396-continue-head"><div><h2>이어보기</h2><p>최근에 본 곡이에요. 이어서 듣거나 주변 곡을 더 찾아보세요. <span class="v3910-device-note">이 기기에만 저장됨</span></p></div><div class="v3910-history-actions"><button type="button" data-v396-personal>최근 기록</button><button type="button" class="danger" data-v3910-clear-history="views">기록 지우기</button></div></div>'+
+  return '<section class="v396-continue"><div class="v396-continue-head"><div><h2>이어보기</h2><p>최근에 본 곡이에요. 이어서 듣거나 주변 곡을 더 찾아보세요. <span class="v3910-device-note">이 기기에만 저장됨</span></p></div></div>'+
+    '<div class="v3910-history-actions v396-history-toolbar"><button type="button" data-v396-personal>최근 기록</button><button type="button" class="danger" data-v3910-clear-history="views">기록 지우기</button></div>'+
     (rows.length?'<div class="v39-media-grid">'+rows.slice(0,5).map(function(x){return mediaCard39(x,"CONTINUE")}).join("")+'</div>':'<div class="v3910-continue-empty">아직 본 곡이 없어요.<br>곡을 하나 열면 여기에서 바로 이어볼 수 있어요.</div>')+
   '</section>'
 }
@@ -11035,11 +11068,11 @@ function ensure(name){
   if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.45.0","./detective-v12.js?v=39.45.0","./detective-v13.js?v=39.45.0","./detective-v14.js?v=39.45.0","./detective-v16.js?v=39.45.0"]);
   else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.45.0","./smart-v23.js?v=39.45.0","./playlist-v24.js?v=39.45.0"]);
   else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.45.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.64.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.64.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.64.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.65.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.65.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.65.0");
   else if(name==="deviceSync")groups[name]=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.45.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.64.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.65.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
     return seq(["./voca-app-v33.js?v=39.45.0","./voca-app-v33-1.js?v=39.45.0","./voca-app-v33-2.js?v=39.45.0","./voca-app-v33-3.js?v=39.45.0"]);
   });
@@ -11085,7 +11118,13 @@ if("requestIdleCallback" in window)requestIdleCallback(function(){ensure("pwa")}
 else setTimeout(function(){ensure("pwa")},12000);
 })();
 </script>
-<script src="./device-sync-v3938.js?v=39.45.0"></script>\n<script src="./app-platform-v3962.js?v=39.64.0"></script>\n<script src="./entitlements-v3962.js?v=39.64.0"></script>\n<script src="./account-v3962.js?v=39.64.0"></script>\n<script src="./native-shell-v3963.js?v=39.64.0"></script>\n<script src="./i18n-v3918.js?v=39.45.0"></script>\n
+<script src="./device-sync-v3938.js?v=39.45.0"></script>
+<script src="./app-platform-v3962.js?v=39.65.0"></script>
+<script src="./entitlements-v3962.js?v=39.65.0"></script>
+<script src="./account-v3962.js?v=39.65.0"></script>
+<script src="./native-shell-v3963.js?v=39.65.0"></script>
+<script src="./i18n-v3918.js?v=39.45.0"></script>
+
 <style id="v3946DivePath">
 /* v39.46 · Dive Path 1.0 — graph-free guided discovery */
 body.v37-ready .v3946-dive-panel .panel-head{display:none!important}
@@ -12954,4 +12993,5 @@ window.VSA60ProducerResolver={resolve:resolve60};
 })();
 </script>
 
-</body>\n</html>
+</body>
+</html>
