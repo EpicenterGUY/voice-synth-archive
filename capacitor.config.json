@@ -3,7 +3,11 @@
   "appName": "VocaDive",
   "webDir": "dist/app",
   "server": {
-    "androidScheme": "https"
+    "androidScheme": "https",
+    "url": "https://epicenterguy.github.io/voice-synth-archive/",
+    "allowNavigation": [
+      "epicenterguy.github.io"
+    ]
   },
   "plugins": {
     "SplashScreen": {
