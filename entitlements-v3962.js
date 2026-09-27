@@ -1,8 +1,8 @@
-/* VocaDive Entitlement Foundation · v39.63.0 */
+/* VocaDive Entitlement Foundation · v39.64.0 */
 (function(){
 "use strict";
 
-var VERSION="39.63.0";
+var VERSION="39.64.0";
 var STORAGE_KEY="vocadive.entitlements.session.v1";
 
 var FEATURES={
