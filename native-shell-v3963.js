@@ -1,8 +1,8 @@
-/* VocaDive Native Shell 0.1 · v39.74.0 */
+/* VocaDive Native Shell 0.1 · v39.74.1 */
 (function(){
 "use strict";
 
-var VERSION="39.74.0";
+var VERSION="39.74.1";
 var PLAYBACK_KEY="vocadive.native.playback.v1";
 var ROUTE_KEY="vocadive.native.routes.v1";
 var routeStack=["home"],suppressRoute=false,bound=false,lastBackgroundAt=0;
