@@ -3151,7 +3151,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     <button data-target="icebergPanel">빙산</button>
     <button data-target="resultsPanel">검색</button>
     <button data-action="tools">탐색 도구</button>
-    <button data-target="universePanel">우주</button>
+    <button data-target="universePanel">다이브</button>
     <button data-target="settingsPanel">설정</button>
   </nav>
 
@@ -3279,14 +3279,14 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
         <p>선택한 곡에서 여러 갈래의 탐색 경로를 만들고, 원하는 길을 골라 계속 깊게 들어갑니다.</p>
       </div>
       <div class="universe-head-actions">
-        <select id="universeSize" aria-label="우주 노드 수">
+        <select id="universeSize" aria-label="후보 곡 수">
           <option value="12">12곡</option>
           <option value="20" selected>20곡</option>
           <option value="32">32곡</option>
         </select>
         <div class="universe-density-control" aria-label="연결 밀도">
           <span>연결 밀도</span>
-          <div class="universe-density-segments" role="radiogroup" aria-label="우주 연결 밀도">
+          <div class="universe-density-segments" role="radiogroup" aria-label="경로 분류 방식">
             <button type="button" class="active" data-universe-density="minimal" aria-pressed="true">간단</button>
             <button type="button" data-universe-density="balanced" aria-pressed="false">보통</button>
             <button type="button" data-universe-density="dense" aria-pressed="false">촘촘</button>
@@ -6986,7 +6986,7 @@ function toggleUniversePin39(id){
   });
   renderUniverseJourney39();
   if(state.universeData)showUniverseNeighborById(id);
-  try{toast(state.universePinned.has(id)?"우주에 핀을 고정했습니다.":"핀을 해제했습니다.")}catch(_){}
+  try{toast(state.universePinned.has(id)?"다이브 패스에 핀을 고정했습니다.":"핀을 해제했습니다.")}catch(_){}
 }
 function centerUniverseOnId39(id){
   if(!state.universeData)return;
@@ -8760,7 +8760,7 @@ function openUniversePage37(song,force){
           resolve(true)
         }catch(e){
           const empty=document.getElementById("universeEmpty");
-          if(empty)empty.textContent="우주 3.0을 불러오지 못했습니다.";
+          if(empty)empty.textContent="다이브 패스를 불러오지 못했습니다.";
           resolve(false)
         }
       })
@@ -9382,7 +9382,7 @@ function render(){
   var order=homePriority396(),hero=heroPick396(f,order),cont=continueRows396(),heroId=hero&&hero.song&&hero.song.contentId;
   var intro=homeContext39.signals>=2?"지금 취향에 맞춰 홈 순서를 조금 바꿨어요.":"곡을 보관하거나 반응을 남기면 홈이 조금씩 취향에 맞춰져요.";
   var map={"DAILY":"daily","FOR YOU":"taste","NEW":"newer","DEEP":"hidden"};
-  r.innerHTML='<div class="v396-home-top"><div><small>VOCADIVE · HOME 3.1 · '+E(date)+'</small><h1>오늘은 뭘 들어볼까요?</h1><p>'+E(intro)+'</p></div><div class="v396-home-top-actions"><button type="button" data-v39-open-explore>찾아보기</button><button type="button" data-v39-open-universe>우주</button><button type="button" class="primary" data-v396-personal>MY</button></div></div>'+
+  r.innerHTML='<div class="v396-home-top"><div><small>VOCADIVE · HOME 3.1 · '+E(date)+'</small><h1>오늘은 뭘 들어볼까요?</h1><p>'+E(intro)+'</p></div><div class="v396-home-top-actions"><button type="button" data-v39-open-explore>찾아보기</button><button type="button" data-v39-open-universe>다이브</button><button type="button" class="primary" data-v396-personal>MY</button></div></div>'+
     '<div class="v396-topic-row"><button data-v39-open-explore>숨은 곡</button><button data-v39-open-universe>비슷한 곡</button><button data-v39-feature="vocalRank">보컬 순위</button><button data-v39-feature="producerDiscovery">숨은 P</button><button data-v39-feature="detective">잊은 곡 찾기</button><button data-v396-personal>내 취향</button></div>'+
     heroHtml396(hero)+continueHtml396(cont)+
     order.map(function(mark,i){return shelf39(mark,f[map[mark]],heroId,String(i+1))}).join("");
@@ -10353,7 +10353,7 @@ function personalSavedCard395(x){
     '<button type="button" class="v395-saved-thumb" data-v39-song="'+E(x.id)+'">'+(s.thumbnailUrl?'<img src="'+E(s.thumbnailUrl)+'" loading="lazy" alt="">':'<span class="v39-no-thumb">♪</span>')+'</button>'+
     '<div class="v395-saved-body"><button type="button" class="v395-saved-title" data-v39-song="'+E(x.id)+'">'+E(s.title||x.id)+'</button>'+
     '<div class="v395-saved-meta">조회 '+F(s.viewCounter||0)+' · '+year+'</div><span class="v395-status-chip">'+E(personalStatusLabel395(x.status))+'</span>'+
-    '<div class="v395-saved-actions"><button type="button" data-v39-song="'+E(x.id)+'">상세</button><button type="button" data-v395-universe="'+E(x.id)+'">우주</button></div></div></article>'
+    '<div class="v395-saved-actions"><button type="button" data-v39-song="'+E(x.id)+'">상세</button><button type="button" data-v395-universe="'+E(x.id)+'">다이브</button></div></div></article>'
 }
 function personalActivityHtml395(snap){
   var views=(snap.org.recentViews||[]).slice(0,5),searches=(snap.org.recentSearches||[]).slice(0,5);
@@ -10613,7 +10613,7 @@ function dock(){
   if(document.querySelector(".v37-dock"))return;
   var d=document.createElement("nav");d.className="v37-dock";
   d.innerHTML='<div class="v38-rail-brand"><img src="./icons/app-icon.svg" alt=""><small>VocaDive</small></div>'+
-    [["home","홈"],["explore","탐색"],["universe","우주"],["personal","MY"]].map(function(x){return'<button type="button" data-v37="'+x[0]+'" aria-label="'+x[1]+'"><i>'+dockIcon38(x[0])+'</i><span>'+x[1]+'</span></button>'}).join("");
+    [["home","홈"],["explore","탐색"],["universe","다이브"],["personal","MY"]].map(function(x){return'<button type="button" data-v37="'+x[0]+'" aria-label="'+x[1]+'"><i>'+dockIcon38(x[0])+'</i><span>'+x[1]+'</span></button>'}).join("");
   document.body.appendChild(d);setDock("home");
   d.addEventListener("click",function(e){
     var b=e.target.closest("button[data-v37]");if(!b)return;
@@ -11035,7 +11035,7 @@ function ensure46(){
   var note=panel.querySelector(".universe-note");if(note)note.innerHTML="다이브 패스의 연결은 <b>니코니코 태그·게시 연대·조회수</b>를 조합한 탐색용 근사치입니다. 음원 파형 자체를 복제하거나 분석한 그래프가 아니라, VOCADive 안에서 다음 곡을 발견하기 위한 경로형 탐색입니다.";
   var stage=panel.querySelector(".universe-stage");
   if(stage&&!stage.dataset.dive46){stage.dataset.dive46="1";stage.innerHTML='<div class="dive46-shell"><div class="dive46-empty" id="universeEmpty"><div><b>한 곡에서 다이브를 시작하세요</b>검색 결과나 곡 상세에서 <strong>다이브 패스</strong>를 누르면<br>네 갈래의 탐색 경로가 열립니다.</div></div></div>'}
-  var info=q46("#universeInfo",panel);if(info&&!window.state?.universeData)info.innerHTML='<div class="dive46-side"><div class="dive46-side-reason"><small>DIVE PATH</small><div><span>같은 결</span><span>같은 시대</span><span>딥 다이브</span><span>샛길</span></div></div><h3>아직 출발곡이 없습니다.</h3><div class="dive46-side-meta">곡 하나를 고르면 경로별 후보와 연결 이유가 여기에 표시됩니다.</div></div>'
+  var info=q46("#universeInfo",panel);if(info&&!(typeof state!=="undefined"&&state.universeData))info.innerHTML='<div class="dive46-side"><div class="dive46-side-reason"><small>DIVE PATH</small><div><span>같은 결</span><span>같은 시대</span><span>딥 다이브</span><span>샛길</span></div></div><h3>아직 출발곡이 없습니다.</h3><div class="dive46-side-meta">곡 하나를 고르면 경로별 후보와 연결 이유가 여기에 표시됩니다.</div></div>'
 }
 function render46(data){
   ensure46();
@@ -11053,7 +11053,7 @@ function render46(data){
   if(typeof renderUniverseJourney39==="function")renderUniverseJourney39()
 }
 window.renderUniverse=render46;
-window.showUniverseNeighborById=function(id){if(window.state&&state.universeData)select46(id,state.universeData)};
+window.showUniverseNeighborById=function(id){if(typeof state!=="undefined"&&state.universeData)select46(id,state.universeData)};
 function labels46(){
   q46All("button,a,span,h1,h2,h3,p,small,label").forEach(function(el){
     if(el.children.length>0)return;
@@ -11063,7 +11063,7 @@ function labels46(){
     else if(s==="랜덤 워프")el.textContent="랜덤 다이브";
   })
 }
-function boot46(){ensure46();labels46();if(window.state&&state.universeData)render46(state.universeData)}
+function boot46(){ensure46();labels46();if(typeof state!=="undefined"&&state.universeData)render46(state.universeData)}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(boot46,0)});else setTimeout(boot46,0);
 window.addEventListener("popstate",function(){setTimeout(function(){ensure46();labels46()},0)});
 })();
