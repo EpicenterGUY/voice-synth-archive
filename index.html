@@ -3355,7 +3355,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.72.0 · Dive Stability 2.0 · Direct APK Update 1.0 · Search Fix · Rank Turbo 1.0 · Native Brand 0.2 · Android Shell 0.1 · App Foundation 1.0 · Cross-Genre Bridge 1.0 · Relation Trust 3.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.73.0 · Ocean HUD 2.0 · Dive Performance 1.0 · Direct APK Update 1.0 · Search Fix · Rank Turbo 1.0 · Native Brand 0.2 · Android Shell 0.1 · App Foundation 1.0 · Cross-Genre Bridge 1.0 · Relation Trust 3.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -9463,7 +9463,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.72.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
+var VER="39.73.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -11165,11 +11165,11 @@ function ensure(name){
   if(name==="detective")base=seq(["./detective-v11.js?v=39.45.0","./detective-v12.js?v=39.45.0","./detective-v13.js?v=39.45.0","./detective-v14.js?v=39.45.0","./detective-v16.js?v=39.45.0"]);
   else if(name==="personal")base=seq(["./organizer-v22.js?v=39.45.0","./smart-v23.js?v=39.45.0","./playlist-v24.js?v=39.45.0"]);
   else if(name==="discovery")base=load("./discovery-v20.js?v=39.45.0");
-  else if(name==="homeData")base=load("./vocalo-home-v28.js?v=39.72.0");
-  else if(name==="universe")base=load("./universe-search-v28.js?v=39.72.0");
-  else if(name==="player")base=load("./nico-player-v32.js?v=39.72.0");
-  else if(name==="deviceSync")base=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.72.0");
-  else if(name==="pwa")base=load("./pwa-v21.js?v=39.72.0");
+  else if(name==="homeData")base=load("./vocalo-home-v28.js?v=39.73.0");
+  else if(name==="universe")base=load("./universe-search-v28.js?v=39.73.0");
+  else if(name==="player")base=load("./nico-player-v32.js?v=39.73.0");
+  else if(name==="deviceSync")base=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.73.0");
+  else if(name==="pwa")base=load("./pwa-v21.js?v=39.73.0");
   else if(name==="v33")base=Promise.all([ensure("personal"),ensure("discovery")]).then(function(rows){
     if(rows.some(function(x){return x===false}))return false;
     return seq(["./voca-app-v33.js?v=39.45.0","./voca-app-v33-1.js?v=39.45.0","./voca-app-v33-2.js?v=39.45.0","./voca-app-v33-3.js?v=39.45.0"]);
@@ -11220,13 +11220,13 @@ if("requestIdleCallback" in window)requestIdleCallback(function(){ensure("pwa")}
 else setTimeout(function(){ensure("pwa")},12000);
 })();
 </script>
-<script src="./device-sync-v3938.js?v=39.72.0"></script>
-<script src="./app-platform-v3962.js?v=39.72.0"></script>
-<script src="./entitlements-v3962.js?v=39.72.0"></script>
-<script src="./account-v3962.js?v=39.72.0"></script>
-<script src="./native-shell-v3963.js?v=39.72.0"></script>
-<script src="./app-update-v3966.js?v=39.72.0"></script>
-<script src="./i18n-v3918.js?v=39.45.0"></script>\n<script src="./search-live-v3969.js?v=39.72.0"></script>
+<script src="./device-sync-v3938.js?v=39.73.0"></script>
+<script src="./app-platform-v3962.js?v=39.73.0"></script>
+<script src="./entitlements-v3962.js?v=39.73.0"></script>
+<script src="./account-v3962.js?v=39.73.0"></script>
+<script src="./native-shell-v3963.js?v=39.73.0"></script>
+<script src="./app-update-v3966.js?v=39.73.0"></script>
+<script src="./i18n-v3918.js?v=39.45.0"></script>\n<script src="./search-live-v3969.js?v=39.73.0"></script>
 
 <style id="v3946DivePathStyle">
 /* v39.46 · Dive Path 1.0 — graph-free guided discovery */
@@ -12742,7 +12742,8 @@ function relationRows58(d){
  });
  rows.sort(function(a,b){return b.rel.score-a.rel.score||b.rel.base-a.rel.base||views58(b.song)-views58(a.song)});
  rows.forEach(function(x){if(!used.has(x.song.contentId)){used.add(x.song.contentId);picked.push(x)}});
- return picked.slice(0,8)
+ var cap=liteOcean58()?6:8;
+ return picked.slice(0,cap)
 }
 function badge58(kind,text){var x=REL58[kind];return '<span class="mr58-badge '+x.cls+'">'+e58(text||x.label)+'</span>'}
 function badges58(r,limit){
@@ -12769,17 +12770,26 @@ function links58(rows){
 }
 function fmt58(v){try{return Number(v||0).toLocaleString("ko-KR")}catch(_){return String(v||0)}}
 function center58(c,d){
- var gs=genreProfile58(c).slice(0,3),qt=(d.queryTags||[]).slice(0,4),dm=depthMeta58(c);
- return '<div class="mr58-center"><div class="mr58-center-main">'+(c.thumbnailUrl?'<img src="'+e58(c.thumbnailUrl)+'" alt="">':'<div class="noimg">♪</div>')+
-  '<div><small>현재 중심곡 · '+e58(dm.name)+'</small><h2>'+e58(c.title||c.contentId)+'</h2><p>'+(year58(c)||"연도 미상")+' · 조회 '+fmt58(views58(c))+' · '+e58(dm.range)+'</p><div class="mr58-center-tags">'+(gs.length?gs.map(function(g){return'<span>'+e58(g.label)+'</span>'}).join(""):qt.map(function(x){return'<span>'+e58(x)+'</span>'}).join(""))+'</div></div></div>'+
-  '<div class="mr58-center-actions"><button type="button" class="primary" data-mr58-play="'+e58(c.contentId)+'">▶ 재생</button><button type="button" data-mr58-detail="'+e58(c.contentId)+'">곡 상세</button><button type="button" data-mr58-random>랜덤 이동</button></div></div>'
+ var gs=genreProfile58(c).slice(0,3),qt=(d.queryTags||[]).slice(0,4),dm=depthMeta58(c),dep=depth58(c),year=year58(c)||"연도 미상";
+ var tags=gs.length?gs.map(function(g){return'<span>'+e58(g.label)+'</span>'}).join(""):qt.map(function(x){return'<span>'+e58(x)+'</span>'}).join("");
+ var depthPct=Math.round(((dep+1)/DEPTH58.length)*100);
+ return '<div class="mr58-center mr76-center" data-mr76-depth="'+dep+'">'+
+  '<div class="mr76-center-kicker"><span><i></i> NOW DIVING</span><em>DEPTH 0'+(dep+1)+' / 05</em></div>'+
+  '<div class="mr58-center-main mr76-center-main"><div class="mr76-cover-shell">'+(c.thumbnailUrl?'<img src="'+e58(c.thumbnailUrl)+'" alt="">':'<div class="noimg">♪</div>')+
+   '<span class="mr76-depth-badge">'+e58(dm.name)+'<small>'+e58(dm.range)+'</small></span></div>'+
+   '<div class="mr76-center-copy"><small>현재 중심곡</small><h2>'+e58(c.title||c.contentId)+'</h2>'+
+    '<div class="mr76-meta"><span>◷ '+e58(year)+'</span><span>◉ '+fmt58(views58(c))+'회</span><span>⌁ '+e58(dm.desc)+'</span></div>'+
+    '<div class="mr58-center-tags">'+tags+'</div></div></div>'+
+  '<div class="mr76-depth-gauge"><span><b>'+e58(dm.name)+'</b><small>현재 탐색 수심</small></span><i><b style="width:'+depthPct+'%"></b></i><em>'+depthPct+'%</em></div>'+
+  '<div class="mr58-center-actions"><button type="button" class="primary mr76-play" data-mr58-play="'+e58(c.contentId)+'">▶ 지금 듣기</button><button type="button" data-mr58-detail="'+e58(c.contentId)+'">곡 상세</button><button type="button" data-mr58-random>⤓ 랜덤 다이브</button></div></div>'
 }
 function node58(x,i,c){
- var n=x.song,r=x.rel,p=pos58(i,r),dm=depthMeta58(n),delta=depth58(n)-depth58(c),dir=delta>0?"deeper":delta<0?"shallower":"same";
- return '<article class="mr58-node mr75-'+dir+'" style="left:'+p[0]+'%;top:'+p[1]+'%;transform:translate(-50%,-50%);--mr75-order:'+i+';--mr75-enter-delay:'+(i*55)+'ms;--mr75-float-delay:-'+(i*310)+'ms" data-mr58-node-id="'+e58(n.contentId)+'" data-mr75-dir="'+dir+'">'+
+ var n=x.song,r=x.rel,p=pos58(i,r),dm=depthMeta58(n),delta=depth58(n)-depth58(c),dir=delta>0?"deeper":delta<0?"shallower":"same",match=Math.round(r.score*100);
+ var dirLabel=delta>0?"DEEPER":delta<0?"UPPER":"CURRENT";
+ return '<article class="mr58-node mr75-'+dir+'" style="left:'+p[0]+'%;top:'+p[1]+'%;transform:translate(-50%,-50%);--mr75-order:'+i+';--mr75-enter-delay:'+(i*55)+'ms;--mr75-float-delay:-'+(i*310)+'ms;--mr76-match:'+match+'%" data-mr58-node-id="'+e58(n.contentId)+'" data-mr75-dir="'+dir+'">'+
   '<button type="button" class="mr58-node-main" data-mr58-select="'+e58(n.contentId)+'">'+
    (n.thumbnailUrl?'<img src="'+e58(n.thumbnailUrl)+'" loading="lazy" alt="">':'<span class="noimg">♪</span>')+
-   '<span class="mr58-node-copy"><b>'+e58(n.title||n.contentId)+'</b><small>'+(year58(n)||"연도 미상")+' · '+fmt58(views58(n))+'회 · '+e58(dm.name)+'</small><em class="mr58-node-score">'+e58(depthDirection58(c,n))+' · 연결 '+Math.round(r.score*100)+'%</em></span>'+
+   '<span class="mr58-node-copy"><span class="mr76-node-kicker"><i>'+dirLabel+' · '+e58(dm.name)+'</i><em>'+match+'%</em></span><b>'+e58(n.title||n.contentId)+'</b><small>'+(year58(n)||"연도 미상")+' · '+fmt58(views58(n))+'회</small><em class="mr58-node-score">'+e58(depthDirection58(c,n))+'</em><span class="mr76-node-meter"><i></i></span></span>'+
   '</button><button type="button" class="mr58-node-go" data-mr58-go="'+e58(n.contentId)+'">'+(delta>0?"잠수 ↓":delta<0?"상승 ↑":"이동 →")+'</button>'+
   '<span class="mr58-badges">'+badges58(r,3)+'</span></article>'
 }
@@ -12802,6 +12812,26 @@ function depthNav58(d){
   '<div class="mr72-depth-track">'+DEPTH58.map(function(x,i){return '<button type="button" class="'+(i===cur?"active":"")+'" data-mr58-depth-target="'+i+'" '+(i===cur?"disabled":"")+'><span>'+e58(x.short)+'</span><small>'+(i===cur?"현재":(counts[i]?counts[i]+"곡":"찾기"))+'</small></button>'}).join("")+'</div>'+
   '<div class="mr72-depth-status" aria-live="polite"></div></section>'
 }
+function liteOcean58(){
+ try{
+  var coarse=window.matchMedia&&window.matchMedia("(pointer:coarse)").matches;
+  var narrow=window.matchMedia&&window.matchMedia("(max-width:699px)").matches;
+  var mem=Number(navigator.deviceMemory||0);
+  return !!(coarse||narrow||(mem&&mem<=4))
+ }catch(_){return (window.innerWidth||999)<700}
+}
+function bindOceanVisibility58(){
+ var shell=q58("#universePanel .mr58-shell");if(!shell)return;
+ try{
+  if(window.__VSA76_OCEAN_OBSERVER)window.__VSA76_OCEAN_OBSERVER.disconnect();
+  if("IntersectionObserver" in window){
+   window.__VSA76_OCEAN_OBSERVER=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){if(e.target===shell)shell.classList.toggle("mr76-paused",!e.isIntersecting||document.hidden)})
+   },{threshold:.01});
+   window.__VSA76_OCEAN_OBSERVER.observe(shell)
+  }
+ }catch(_){}
+}
 function seaLayers58(depth){
  return '<div class="mr74-seascape" aria-hidden="true">'+
   '<div class="mr74-light"></div><div class="mr74-caustic"></div>'+
@@ -12816,8 +12846,8 @@ function seaLayers58(depth){
 }
 function scene58(d){
  var rows=relationRows58(d),c=d.center,dep=depth58(c);
- return '<div class="mr58-shell mr74-depth-'+dep+'" data-mr74-depth="'+dep+'">'+seaLayers58(dep)+'<div class="mr58-content">'+
-  '<div class="mr58-head"><div><small>VOCADIVE · OCEAN DIVE 1.2</small><h3>다음 곡 선택</h3><p>수층을 고르고 <b>이동</b>을 누르면 실제 잠수하듯 다음 곡으로 넘어갑니다. 깊어질수록 빛과 해류 분위기도 달라집니다.</p></div>'+summary58(rows)+'</div>'+
+ return '<div class="mr58-shell mr74-depth-'+dep+(liteOcean58()?' mr76-lite':'')+'" data-mr74-depth="'+dep+'">'+seaLayers58(dep)+'<div class="mr58-content">'+
+  '<div class="mr58-head"><div><small>VOCADIVE · OCEAN DIVE 1.3</small><h3>다음 곡 선택</h3><p>수층을 고르고 <b>이동</b>을 누르면 실제 잠수하듯 다음 곡으로 넘어갑니다. 깊어질수록 빛과 해류 분위기도 달라집니다.</p></div>'+summary58(rows)+'</div>'+
   depthNav58(d)+'<details class="mr72-advanced"><summary>연결 조건 <span>유사곡 · 장르 · P · 보컬 · 시대</span></summary>'+filters58(d)+'</details>'+
   '<div class="mr58-map">'+rows.map(function(x,i){return node58(x,i,c)}).join("")+center58(c,d)+(rows.length?"":'<div class="mr58-empty">현재 조건에 맞는 후보가 없습니다.<br>연결 조건을 줄이거나 다른 수층을 선택하세요.</div>')+'</div></div></div>'
 }
@@ -12869,7 +12899,7 @@ function startScreen58(p){
  if(!p)return;
  try{if(typeof ensureUniverseToolbar39==="function")ensureUniverseToolbar39()}catch(_){}
  var h=q58("#v394UniverseHeader",p),t=h&&h.querySelector(".v394-universe-title");
- if(t)t.innerHTML='<small>VOCADIVE · OCEAN DIVE 1.2</small><h2>다이브</h2><p>곡 하나를 고르면 장르·스타일·P·보컬·시대·수층을 묶어 다음 곡으로 이어집니다.</p>';
+ if(t)t.innerHTML='<small>VOCADIVE · OCEAN DIVE 1.3</small><h2>다이브</h2><p>곡 하나를 고르면 장르·스타일·P·보컬·시대·수층을 묶어 다음 곡으로 이어집니다.</p>';
  var d=typeof state!=="undefined"?state.universeData:null;
  if(d&&d.center)return;
  var stage=q58(".universe-stage",p);
@@ -12891,8 +12921,9 @@ function render58(d){
  var p=normalizePanel58();if(!p)return;
  var layout=q58(".universe-layout",p),ld=ensureRelationLoader58(p);
  if(ld){ld.className="mr58-loader";ld.style.display="none"}
- try{var h=q58("#v394UniverseHeader",p),t=h&&h.querySelector(".v394-universe-title");if(t)t.innerHTML='<small>VOCADIVE · OCEAN DIVE 1.2</small><h2>다이브</h2><p>같은 장르와 인접 장르 브리지를 함께 탐색하고, 장르·스타일·분위기·P·보컬·시대·수층을 교차해서 좁힙니다.</p>'}catch(_){}
+ try{var h=q58("#v394UniverseHeader",p),t=h&&h.querySelector(".v394-universe-title");if(t)t.innerHTML='<small>VOCADIVE · OCEAN DIVE 1.3</small><h2>다이브</h2><p>같은 장르와 인접 장르 브리지를 함께 탐색하고, 장르·스타일·분위기·P·보컬·시대·수층을 교차해서 좁힙니다.</p>'}catch(_){}
  var stage=q58(".universe-stage",p);if(stage)stage.innerHTML=scene58(d);
+ bindOceanVisibility58();
  var info=q58("#universeInfo",p);if(info)info.innerHTML=side58(d.center,d);
  selected58=null;bind58()
 }
@@ -12924,7 +12955,8 @@ function playTransition58(fromDepth,toDepth,title){
  ticks.forEach(function(x,i){x.classList.toggle("from",i===fromDepth);x.classList.toggle("to",i===toDepth);x.classList.toggle("passed",dir==="down"?i>=fromDepth&&i<=toDepth:dir==="up"?i<=fromDepth&&i>=toDepth:i===toDepth)});
  document.body.classList.add("mr74-transitioning");
  requestAnimationFrame(function(){o.classList.add("show")});
- return new Promise(function(resolve){setTimeout(resolve,dir==="side"?360:560)})
+ var ms=liteOcean58()?(dir==="side"?220:360):(dir==="side"?360:560);
+ return new Promise(function(resolve){setTimeout(resolve,ms)})
 }
 function endTransition58(){
  var o=document.getElementById("mr74DiveTransition");
@@ -13103,7 +13135,7 @@ window.addEventListener("vsa:route-change",function(e){
  setTimeout(function(){normalizePanel58();bind58();var d=typeof state!=="undefined"?state.universeData:null;if(d)render58(d)},30)
 });
 window.addEventListener("pagehide",forceEndTransition58);
-document.addEventListener("visibilitychange",function(){if(document.hidden&&moving58)forceEndTransition58()});
+document.addEventListener("visibilitychange",function(){if(document.hidden&&moving58)forceEndTransition58();var sh=q58("#universePanel .mr58-shell");if(sh)sh.classList.toggle("mr76-paused",document.hidden)});
 })();
 </script>
 
@@ -13193,8 +13225,9 @@ function tasks59(center,tags,queryTags){
  if(base)add("depth",base,{numericFilters:{viewCounter:depthBand59(center)}});
  var priority={producer:0,vocal:1,genre:2,bridge:3,style:4,mood:5,similar:6,era:7,depth:8};
  tasks.sort(function(a,b){return priority[a.lane]-priority[b.lane]});
- var caps={producer:3,vocal:3,genre:4,bridge:4,style:2,mood:2,similar:3,era:1,depth:1},used={},out=[];
- tasks.forEach(function(t){used[t.lane]=used[t.lane]||0;if(used[t.lane]<(caps[t.lane]||2)&&out.length<23){used[t.lane]++;out.push(t)}});
+ var lite=false;try{lite=window.matchMedia&&window.matchMedia("(pointer:coarse)").matches}catch(_){}
+ var caps=lite?{producer:2,vocal:2,genre:3,bridge:2,style:1,mood:1,similar:2,era:1,depth:1}:{producer:3,vocal:3,genre:4,bridge:4,style:2,mood:2,similar:3,era:1,depth:1},used={},out=[],taskLimit=lite?14:23;
+ tasks.forEach(function(t){used[t.lane]=used[t.lane]||0;if(used[t.lane]<(caps[t.lane]||2)&&out.length<taskLimit){used[t.lane]++;out.push(t)}});
  return out
 }
 var taskCache59=new Map();
@@ -13796,6 +13829,72 @@ body.mr74-transitioning{overflow:hidden!important}
 }
 @media(prefers-reduced-motion:reduce){
  #universePanel.v3958-rel .mr58-node,#universePanel.v3958-rel .mr58-node-main,.mr75-trans-depth i.to:after{animation:none!important}
+}
+</style>
+
+
+<style id="v3976OceanHUDPerformance">
+#universePanel.v3958-rel .mr76-center{overflow:hidden!important;border:1px solid rgba(133,235,225,.24)!important;background:radial-gradient(circle at 8% 0%,rgba(97,226,216,.10),transparent 36%),linear-gradient(145deg,rgba(5,38,47,.96),rgba(4,23,33,.94))!important}
+#universePanel.v3958-rel .mr76-center:before{content:"";position:absolute;inset:0 0 auto;height:2px;background:linear-gradient(90deg,transparent,#77e2d8 38%,#7b98f4 65%,transparent);opacity:.75}
+#universePanel.v3958-rel .mr76-center-kicker{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:9px;color:#73cfc7;font-size:6.5px;font-weight:950;letter-spacing:.12em}
+#universePanel.v3958-rel .mr76-center-kicker span{display:flex;align-items:center;gap:5px}
+#universePanel.v3958-rel .mr76-center-kicker i{width:6px;height:6px;border-radius:50%;background:#77e4da;box-shadow:0 0 0 4px rgba(119,228,218,.08)}
+#universePanel.v3958-rel .mr76-center-kicker em{font-style:normal;color:#678f9a;letter-spacing:.08em}
+#universePanel.v3958-rel .mr76-center-main{grid-template-columns:150px minmax(0,1fr)!important;gap:13px!important;align-items:stretch!important}
+#universePanel.v3958-rel .mr76-cover-shell{position:relative;min-width:0;overflow:hidden;border-radius:15px;background:#0c3440;box-shadow:0 15px 34px rgba(0,6,14,.28)}
+#universePanel.v3958-rel .mr76-cover-shell img,#universePanel.v3958-rel .mr76-cover-shell .noimg{width:100%!important;height:100%!important;min-height:96px;aspect-ratio:16/10!important;border-radius:0!important;object-fit:cover!important}
+#universePanel.v3958-rel .mr76-cover-shell:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 38%,rgba(1,14,22,.82));pointer-events:none}
+#universePanel.v3958-rel .mr76-depth-badge{position:absolute;left:8px;right:8px;bottom:7px;z-index:2;display:flex;justify-content:space-between;align-items:end;gap:6px;color:#effffc;font-size:9px;font-weight:950}
+#universePanel.v3958-rel .mr76-depth-badge small{color:#8db5b8!important;font-size:6px!important;letter-spacing:0!important;font-weight:750}
+#universePanel.v3958-rel .mr76-center-copy{min-width:0;display:flex;flex-direction:column;justify-content:center}
+#universePanel.v3958-rel .mr76-center-copy>small{color:#74ddd3!important;font-size:6.5px!important;font-weight:950;letter-spacing:.09em}
+#universePanel.v3958-rel .mr76-center-copy h2{font-size:18px!important;line-height:1.2!important;margin:5px 0 7px!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#universePanel.v3958-rel .mr76-meta{display:flex;gap:5px;flex-wrap:wrap}
+#universePanel.v3958-rel .mr76-meta span{min-height:22px;display:inline-flex;align-items:center;padding:0 7px;border:1px solid rgba(127,207,202,.10);border-radius:999px;background:rgba(6,31,39,.72);color:#91b8b5;font-size:6.5px;font-weight:800}
+#universePanel.v3958-rel .mr76-depth-gauge{display:grid;grid-template-columns:auto minmax(70px,1fr) auto;gap:8px;align-items:center;margin-top:10px;padding:8px 9px;border:1px solid rgba(114,202,195,.10);border-radius:11px;background:rgba(3,21,29,.58)}
+#universePanel.v3958-rel .mr76-depth-gauge span{display:grid;line-height:1.1}
+#universePanel.v3958-rel .mr76-depth-gauge span b{color:#dcf7f3;font-size:7px}#universePanel.v3958-rel .mr76-depth-gauge span small{margin-top:2px;color:#628b89;font-size:5.5px}
+#universePanel.v3958-rel .mr76-depth-gauge>i{height:4px;border-radius:99px;background:#102f3a;overflow:hidden}
+#universePanel.v3958-rel .mr76-depth-gauge>i>b{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#73ddd2,#547fa8,#5168aa)}
+#universePanel.v3958-rel .mr76-depth-gauge>em{font-style:normal;color:#79bdb8;font-size:6px;font-weight:950}
+#universePanel.v3958-rel .mr76-play{background:linear-gradient(135deg,#75e6d9,#7a91f1)!important;box-shadow:0 7px 20px rgba(54,146,157,.16)!important}
+#universePanel.v3958-rel .mr76-node-kicker{display:flex;justify-content:space-between;gap:5px;align-items:center;margin-bottom:3px}
+#universePanel.v3958-rel .mr76-node-kicker i{font-style:normal;color:#6ebeb9;font-size:5.5px;font-weight:950;letter-spacing:.06em}
+#universePanel.v3958-rel .mr76-node-kicker em{font-style:normal;color:#dffaf6;font-size:6px;font-weight:950}
+#universePanel.v3958-rel .mr76-node-meter{display:block;height:3px;margin-top:5px;border-radius:99px;background:#102f38;overflow:hidden}
+#universePanel.v3958-rel .mr76-node-meter i{display:block;width:var(--mr76-match);height:100%;border-radius:inherit;background:linear-gradient(90deg,#64d9cf,#6389ce)}
+#universePanel.v3958-rel .mr75-deeper .mr76-node-kicker i{color:#75aee2}
+#universePanel.v3958-rel .mr75-shallower .mr76-node-kicker i{color:#71d9cd}
+#universePanel.v3958-rel .mr58-node:hover{transform:translateY(-1px)!important}
+#universePanel.v3958-rel .mr58-shell.mr76-lite .mr74-caustic,#universePanel.v3958-rel .mr58-shell.mr76-lite .mr74-current.c2,#universePanel.v3958-rel .mr58-shell.mr76-lite .mr74-current.c3,#universePanel.v3958-rel .mr58-shell.mr76-lite .mr74-shadow{display:none!important}
+#universePanel.v3958-rel .mr58-shell.mr76-lite .mr74-current.c1{filter:none!important;opacity:.10!important;animation-duration:20s!important}
+#universePanel.v3958-rel .mr58-shell.mr76-lite .mr74-particles{animation:none!important;opacity:.15!important}
+#universePanel.v3958-rel .mr58-shell.mr76-lite .mr74-biolume{animation:none!important;filter:none!important}
+#universePanel.v3958-rel .mr58-shell.mr76-lite .mr74-bubbles i:nth-child(n+5){display:none!important}
+#universePanel.v3958-rel .mr58-shell.mr76-lite .mr74-bubbles i{animation-duration:18s!important}
+#universePanel.v3958-rel .mr58-shell.mr76-lite .mr74-light{filter:none!important;animation-duration:18s!important}
+#universePanel.v3958-rel .mr58-shell.mr76-lite .mr58-center,#universePanel.v3958-rel .mr58-shell.mr76-lite .mr58-node,#universePanel.v3958-rel .mr58-shell.mr76-lite .mr72-depth,#universePanel.v3958-rel .mr58-shell.mr76-lite .mr72-advanced{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+#universePanel.v3958-rel .mr58-shell.mr76-lite .mr58-node,#universePanel.v3958-rel .mr58-shell.mr76-lite .mr58-node-main{animation:none!important;filter:none!important}
+#universePanel.v3958-rel .mr58-shell.mr76-lite .mr58-node-go:after{display:none!important}
+#universePanel.v3958-rel .mr58-shell.mr76-paused .mr74-light,#universePanel.v3958-rel .mr58-shell.mr76-paused .mr74-current,#universePanel.v3958-rel .mr58-shell.mr76-paused .mr74-particles,#universePanel.v3958-rel .mr58-shell.mr76-paused .mr74-bubbles i,#universePanel.v3958-rel .mr58-shell.mr76-paused .mr74-biolume,#universePanel.v3958-rel .mr58-shell.mr76-paused .mr74-shadow{animation-play-state:paused!important}
+@media(max-width:699px){
+ #universePanel.v3958-rel .mr76-center{padding:10px!important}
+ #universePanel.v3958-rel .mr76-center-main{grid-template-columns:112px minmax(0,1fr)!important;gap:10px!important}
+ #universePanel.v3958-rel .mr76-cover-shell img,#universePanel.v3958-rel .mr76-cover-shell .noimg{min-height:88px!important}
+ #universePanel.v3958-rel .mr76-center-copy h2{font-size:15px!important;margin:4px 0 6px!important}
+ #universePanel.v3958-rel .mr76-meta{gap:3px}
+ #universePanel.v3958-rel .mr76-meta span{min-height:20px;padding:0 6px;font-size:6px}
+ #universePanel.v3958-rel .mr76-depth-gauge{grid-template-columns:auto minmax(50px,1fr) auto;margin-top:8px}
+ #universePanel.v3958-rel .mr58-center-actions{grid-template-columns:1.15fr 1fr 1fr!important}
+ #universePanel.v3958-rel .mr58-center-actions button{min-height:43px!important;font-size:8.5px!important}
+ #universePanel.v3958-rel .mr58-node:hover{transform:none!important}
+ .mr74-transition .mr74-trans-stream.s2,.mr74-transition .mr74-trans-stream.s3{display:none!important}
+ .mr74-transition .mr74-trans-stream{filter:blur(8px)!important}
+}
+@media(max-width:420px){
+ #universePanel.v3958-rel .mr76-center-main{grid-template-columns:96px minmax(0,1fr)!important}
+ #universePanel.v3958-rel .mr76-center-kicker{font-size:6px}
+ #universePanel.v3958-rel .mr76-depth-badge{font-size:8px}
 }
 </style>
 
