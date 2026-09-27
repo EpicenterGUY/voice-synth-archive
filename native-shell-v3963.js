@@ -71,8 +71,8 @@ function ensurePlayer(){
   return Promise.resolve(false)
 }
 async function restoreColdPlayback(){
-  var snap=readPlayback();
-  if(!snap||currentPlayer())return false;
+  var snap=readPlayback(),ps=currentPlayer();
+  if(!snap||(ps&&ps.currentId))return false;
   var ok=await ensurePlayer();if(!ok||!window.VSANicoPlayer||!VSANicoPlayer.restore)return false;
   try{
     // Cold start always restores paused to avoid surprise autoplay after process death.
@@ -161,7 +161,21 @@ function bindNative(){
   }catch(_){}
   return true
 }
+function installNativeStyle(){
+  if(document.getElementById("v3963NativeStyle"))return;
+  var s=document.createElement("style");s.id="v3963NativeStyle";
+  s.textContent=[
+    "html.vocadive-native{overscroll-behavior:none;background:#041115}",
+    "html.vocadive-native body{min-height:100dvh;overscroll-behavior-y:none}",
+    "html.vocadive-native body.v37-ready>.app>.topbar{padding-top:calc(8px + env(safe-area-inset-top))!important}",
+    "html.vocadive-native .v331-player{padding-top:calc(18px + env(safe-area-inset-top));padding-bottom:calc(18px + env(safe-area-inset-bottom))}",
+    "html.vocadive-native .v331-mini{bottom:calc(76px + env(safe-area-inset-bottom))!important}",
+    "html.vocadive-native[data-vocadive-app-state=background] body{pointer-events:none}"
+  ].join("");
+  document.head.appendChild(s)
+}
 function boot(){
+  installNativeStyle();
   loadRoutes();
   window.addEventListener("vsa:route-change",function(e){
     var r=e&&e.detail&&e.detail.route?String(e.detail.route):currentRoute();
