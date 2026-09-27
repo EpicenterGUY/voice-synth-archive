@@ -33,7 +33,7 @@ worker/niconico-worker.js
 
 ## 현재 버전
 
-App: v39.64.0
+App: v39.66.0
 Worker: v10
 
 
@@ -77,3 +77,17 @@ v39.64.0부터 Android 앱 빌드에 VocaDive 전용 아이콘/스플래시 생�
 - 900ms 네이티브 스플래시, 로딩 스피너 없음
 - GitHub Actions에서 debug APK와 debug AAB를 함께 생성
 - 현재 패키지 ID `app.vocadive.mobile`은 스토어 등록 전까지 임시로 유지
+
+
+## Direct APK Update 1.0
+
+v39.66.0부터 직접 설치한 Android APK는 앱 내부에서 새 GitHub Release를 확인하고 업데이트 APK를 내려받은 뒤 Android 시스템 설치 확인창으로 이어질 수 있습니다.
+
+- 시작 시 자동 업데이트 확인
+- Wi-Fi에서 자동 다운로드
+- SHA-256 검증 지원
+- 설치 권한이 없으면 Android의 '알 수 없는 앱 설치' 설정으로 이동
+- 설치는 Android 시스템 확인창에서 사용자가 최종 승인
+- 디버그 APK에서는 서명 불일치 방지를 위해 직접 덮어쓰기를 비활성화
+
+정식 업데이트 채널은 영구 Android 서명키가 필요합니다. 키 파일은 저장소에 커밋하지 않고 GitHub Actions Secrets로만 주입합니다. 필요한 secret 이름과 배포 절차는 `docs/app-foundation.md`에 정리되어 있습니다.
