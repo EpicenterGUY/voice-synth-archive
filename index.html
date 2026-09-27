@@ -3349,7 +3349,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.56.0 · Mini Return · Dive Handoff · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.56.0 · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -8833,6 +8833,27 @@ function ensureCorePages37(){
   enhanceCorePages3923({archive:archive,search:search,universe:universe,settings:settings,producerDiscovery:producerDiscovery,vocalRank:vocalRank,diagnostics:diagnostics});
   return {archive,search,universe,settings,producerDiscovery,vocalRank,diagnostics}
 }
+function rememberPendingDive37(song){
+  if(!song||!song.contentId)return 0;
+  var seq=(Number(window.__VSA_DIVE_HANDOFF_SEQ)||0)+1;
+  window.__VSA_DIVE_HANDOFF_SEQ=seq;
+  window.__VSA_PENDING_DIVE={seq:seq,song:song};
+  try{state.universeCenter=song}catch(_){}
+  return seq
+}
+function pendingDiveSong37(seq,fallback){
+  try{
+    var p=window.__VSA_PENDING_DIVE;
+    if(p&&p.seq===seq&&p.song&&p.song.contentId)return p.song
+  }catch(_){}
+  return fallback||null
+}
+function finishPendingDive37(seq){
+  try{
+    var p=window.__VSA_PENDING_DIVE;
+    if(p&&p.seq===seq)window.__VSA_PENDING_DIVE=null
+  }catch(_){}
+}
 function openUniverseHub3931(){
   ensureCorePages37();
   var show=function(){
@@ -8841,29 +8862,57 @@ function openUniverseHub3931(){
     if(typeof setDock==="function")setDock("universe");
     return true
   };
+  // 라우트는 먼저 열어 탭이 먹지 않은 것처럼 보이는 지연을 없애고,
+  // 검색 모듈은 뒤에서 준비한다. openToolsModal도 같은 로더를 재사용한다.
+  show();
   if(window.VSAEnsureFeatures){
-    return Promise.resolve(VSAEnsureFeatures("universe")).then(show).catch(function(){return show()})
+    return Promise.resolve(VSAEnsureFeatures("universe")).then(function(){
+      try{ensureUniverseToolbar39()}catch(_){}
+      return true
+    }).catch(function(e){
+      try{recordRuntimeError37("dive-feature-load",String(e&&e.message||e),{})}catch(_){}
+      return true
+    })
   }
-  return Promise.resolve(show())
+  return Promise.resolve(true)
 }
 function openUniversePage37(song,force){
   if(!song)return Promise.resolve(false);
+  var ticket=rememberPendingDive37(song);
+  try{
+    var early=document.getElementById("universeEmpty");
+    if(early){early.style.display="grid";early.innerHTML="다이브로 이동 중…<br><small>"+esc(song.title||song.contentId)+"</small>"}
+  }catch(_){}
   return openUniverseHub3931().then(function(){
-    return new Promise(function(resolve){
-      requestAnimationFrame(function(){
-        try{
-          ensureUniverseToolbar39();
-          buildUniverse(song,!!force);
-          resolve(true)
-        }catch(e){
-          const empty=document.getElementById("universeEmpty");
-          if(empty)empty.textContent="다이브 패스를 불러오지 못했습니다.";
-          resolve(false)
-        }
-      })
+    if((Number(window.__VSA_DIVE_HANDOFF_SEQ)||0)!==ticket)return false;
+    var pending=pendingDiveSong37(ticket,song);
+    if(!pending)return false;
+    try{ensureUniverseToolbar39()}catch(_){}
+    try{state.universeCenter=pending}catch(_){}
+    return Promise.resolve(buildUniverse(pending,!!force)).then(function(){
+      if((Number(window.__VSA_DIVE_HANDOFF_SEQ)||0)!==ticket)return false;
+      var center=null;
+      try{center=state.universeData&&state.universeData.center?state.universeData.center:state.universeCenter}catch(_){}
+      if(!center||String(center.contentId)!==String(pending.contentId)){
+        throw new Error("선택한 곡이 다이브 중심곡으로 반영되지 않았습니다.")
+      }
+      finishPendingDive37(ticket);
+      try{
+        var stage=document.querySelector("#universePanel .universe-stage");
+        if(stage)stage.scrollIntoView({behavior:"smooth",block:"start"})
+      }catch(_){}
+      return true
     })
+  }).catch(function(e){
+    try{
+      var empty=document.getElementById("universeEmpty");
+      if(empty){empty.style.display="grid";empty.innerHTML="다이브 패스를 불러오지 못했습니다.<br><small>"+esc(String(e&&e.message||e))+"</small>"}
+      recordRuntimeError37("dive-handoff",String(e&&e.message||e),{songId:song&&song.contentId})
+    }catch(_){}
+    return false
   })
 }
+window.VSAOpenDiveWithSong39=openUniversePage37
 
 function syncDetectiveStep37(step){
   const sections=Array.from(document.querySelectorAll("#detectivePanel .detective-questionnaire .detective-section"));
@@ -10801,7 +10850,7 @@ function init(){
     if(e.target.closest("[data-v399-resume]")){var rs399=window.__VSA39_DETAIL_SONG;if(rs399)renderSongDetail39(rs399,true);return}
     if(e.target.closest("[data-v396-personal]")){openPersonal395();return}
     var hs396=e.target.closest("[data-v396-save]");if(hs396){keep(hs396.dataset.v396Save);render();return}
-    var hu396=e.target.closest("[data-v396-universe]");if(hu396){var hsu396=getAnySong39(hu396.dataset.v396Universe);if(hsu396)openUniversePage37(hsu396,false);return}
+    var hu396=e.target.closest("[data-v396-universe]");if(hu396){var hsu396=getAnySong39(hu396.dataset.v396Universe);if(hsu396)openUniversePage37(hsu396,false);else try{toast("선택한 곡 정보를 다시 불러온 뒤 시도해 주세요.")}catch(_){}return}
     var hd396=e.target.closest("[data-v396-dislike]");if(hd396){dislike(hd396.dataset.v396Dislike);return}
     var songOpen=e.target.closest("[data-v39-song]");
     if(songOpen&&!e.target.closest("[data-v39-refresh-section]")){openSongDetail39(songOpen.dataset.v39Song);return}
@@ -10817,7 +10866,9 @@ function init(){
     var save39=e.target.closest("[data-v39-detail-save]");if(save39){keep(save39.dataset.v39DetailSave);return}
     var uni39=e.target.closest("[data-v39-detail-universe]");if(uni39){
       var us=getAnySong39(uni39.dataset.v39DetailUniverse);
-      if(us)Promise.resolve(handoffWatchToMini399()).finally(function(){openUniversePage37(us,false)});
+      // 다이브 이동을 플레이어 미니 전환보다 먼저 시작한다.
+      // 라우트 전환 자체가 leaveWatchRoute399를 호출하므로 재생은 별도로 안전하게 승계된다.
+      if(us)openUniversePage37(us,false);
       return
     }
     var nico39=e.target.closest("[data-v39-detail-nico]");if(nico39){window.open("https://www.nicovideo.jp/watch/"+encodeURIComponent(nico39.dataset.v39DetailNico),"_blank","noopener");return}
