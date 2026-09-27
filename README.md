@@ -33,5 +33,22 @@ worker/niconico-worker.js
 
 ## 현재 버전
 
-App: v39.0.0
+App: v39.62.0
 Worker: v10
+
+
+## 네이티브 앱 토대
+
+v39.62.0부터 기존 웹/PWA를 유지하면서 Capacitor 기반 Android/iOS 앱으로 패키징할 수 있는 토대를 포함합니다.
+
+```bash
+npm install
+npm run build:app
+npx cap add android
+npx cap sync android
+npx cap open android
+```
+
+현재 단계에서는 기존 기능을 유료로 잠그지 않습니다. Free/Pro 권한 계층, 계정/클라우드 동기화 API 추상화, D1용 계정·구매·권한·동기화 스키마만 먼저 분리해 두었습니다.
+
+자세한 구조는 `docs/app-foundation.md`를 참고하세요.
