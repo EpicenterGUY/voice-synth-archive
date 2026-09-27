@@ -33,7 +33,7 @@ worker/niconico-worker.js
 
 ## 현재 버전
 
-App: v39.63.0
+App: v39.64.0
 Worker: v10
 
 
@@ -66,3 +66,14 @@ v39.63.0부터 Android 네이티브 수명주기와 하드웨어 뒤로가기를
 - 프로세스 재시작 시 마지막 곡을 자동재생 없이 미니플레이어로 복원
 
 Android debug APK는 `.github/workflows/android-debug.yml`에서 자동/수동 빌드할 수 있습니다.
+
+
+## Native Brand 0.2
+
+v39.64.0부터 Android 앱 빌드에 VocaDive 전용 아이콘/스플래시 생성 파이프라인이 들어갑니다.
+
+- `assets/logo.svg` → Android adaptive launcher icon / splash 자동 생성
+- VocaDive 다크 배경 `#041115`
+- 900ms 네이티브 스플래시, 로딩 스피너 없음
+- GitHub Actions에서 debug APK와 debug AAB를 함께 생성
+- 현재 패키지 ID `app.vocadive.mobile`은 스토어 등록 전까지 임시로 유지
