@@ -1,8 +1,31 @@
-/* VocaDive Dive Start v39.52 · Search + Random Start */
+/* VocaDive Dive Start v39.53 · Original/Cover Scope */
 (function(){
 "use strict";
 var recentKey="vsa.universe.search.v28";
 var results=[];
+function diveMode53(){try{return window.VSA53DiveContent?window.VSA53DiveContent.get():"original"}catch(e){return "original"}}
+function diveModeLabel53(){try{return window.VSA53DiveContent?window.VSA53DiveContent.label(diveMode53()):"오리지널곡"}catch(e){return "오리지널곡"}}
+function filterDiveRows53(rows,context){try{return window.VSA53DiveFilterRows?window.VSA53DiveFilterRows(rows,context,diveMode53()).rows:rows}catch(e){return rows}}
+function randomQuery53(){
+  var m=diveMode53();
+  if(m==="cover")return "歌ってみた OR カバー曲 OR VOCALOIDカバー曲 OR UTAUカバー曲 OR SynthesizerVカバー曲 OR cover";
+  if(m==="derivative")return "歌ってみた OR カバー曲 OR 踊ってみた OR 演奏してみた OR 弾いてみた OR 吹いてみた OR MMD OR ニコカラ";
+  return "オリジナル曲"
+}
+function syncDiveType53(){
+  var mode=diveMode53(),scope=document.getElementById("universeSearchScope");
+  document.querySelectorAll("[data-us-type]").forEach(function(b){b.classList.toggle("active",b.dataset.usType===mode)});
+  if(scope){
+    if(mode==="original"){
+      scope.disabled=false;
+      if(scope.value==="all")scope.value="all_voice_synth"
+    }else{
+      scope.value="all";scope.disabled=true
+    }
+  }
+  var badge=document.getElementById("universeTypeHint");
+  if(badge)badge.textContent=mode==="original"?"기본 · 오리지널곡만":mode==="cover"?"별도 · 歌ってみた/커버만":"별도 · 커버/연주/댄스/MMD 등 파생"
+}
 
 function esc(v){
   return String(v==null?"":v).replace(/[&<>"']/g,function(m){
@@ -74,9 +97,9 @@ function exactSongMatch(song,q){
   return normalizedSearchText(song&&song.contentId)===n||normalizedSearchText(song&&song.title)===n
 }
 async function remoteSearch(q,scope){
-  var isId=/^(sm|nm|so|lv)?\d+$/i.test(q),selected=scope||"all_voice_synth";
+  var isId=/^(sm|nm|so|lv)?\d+$/i.test(q),selected=scope||"all_voice_synth",contentMode=diveMode53();
   var targets=isId?["contentId","title,description,tags"]:["title","title,description,tags","tags"];
-  var scopes=selected==="all"?["all"]:[selected,"all"];
+  var scopes=contentMode==="original"?(selected==="all"?["all"]:[selected,"all"]):["all"];
   var out=[],seen=new Set();remoteSearch.expanded=false;
   for(var s=0;s<scopes.length;s++){
     var sc=scopes[s];
@@ -103,11 +126,10 @@ function merge(a,b,q,scope){
   a.concat(b).forEach(function(song){
     if(song&&song.contentId&&!map.has(song.contentId))map.set(song.contentId,song);
   });
-  var rows=Array.from(map.values()),exact=rows.filter(function(song){return exactSongMatch(song,q)}),rest=rows.filter(function(song){return !exactSongMatch(song,q)});
-  if(scope!=="all"){
-    try{if(window.VSA37DiscoveryOriginalRows)rest=window.VSA37DiscoveryOriginalRows(rest,"universe_search").rows}catch(e){}
-  }
-  rows=exact.concat(rest.filter(function(song){return !exact.some(function(x){return x.contentId===song.contentId})}));
+  var rows=Array.from(map.values());
+  rows=filterDiveRows53(rows,"universe_search");
+  var exact=rows.filter(function(song){return exactSongMatch(song,q)}),rest=rows.filter(function(song){return !exactSongMatch(song,q)});
+  rows=exact.concat(rest);
   try{if(window.VSA37AdultFilterRows)rows=window.VSA37AdultFilterRows(rows,"universe_search").rows}catch(e){}
   return rows.slice(0,30);
 }
@@ -156,8 +178,8 @@ async function runSearch(){
   remember(q);
   renderRecent();
   if(button)button.disabled=true;
-  if(status)status.textContent="다이브 시작곡을 찾는 중…";
-  var local=localSearch(q);
+  if(status)status.textContent=diveModeLabel53()+" 기준으로 시작곡을 찾는 중…";
+  var local=filterDiveRows53(localSearch(q),"universe_search_local");
   var remote=[];
   try{
     if(typeof relayBase!=="function"||relayBase()){
@@ -179,7 +201,7 @@ async function randomStart(){
   if(status)status.textContent="랜덤 시작곡을 찾는 중…";
   var recentIds=new Set();
   try{(state.universeHistory||[]).slice(-12).forEach(function(x){if(x&&x.contentId)recentIds.add(x.contentId)})}catch(e){}
-  var local=localPool().filter(function(x){return x&&x.contentId&&!recentIds.has(x.contentId)});
+  var local=filterDiveRows53(localPool(),"universe_random_local").filter(function(x){return x&&x.contentId&&!recentIds.has(x.contentId)});
   var bands=[
     {name:"수면층",min:1000000,max:null},
     {name:"얕은층",min:250000,max:999999},
@@ -192,22 +214,21 @@ async function randomStart(){
   try{
     if(typeof relayBase==="function"&&relayBase()){
       for(var bi=0;bi<bands.length;bi++){
-        var band=bands[bi],filters={viewCounter:{gte:band.min}};
+        var band=bands[bi],filters={viewCounter:{gte:band.min}},rq=randomQuery53();
         if(band.max!=null)filters.viewCounter.lte=band.max;
-        var probe=await fetchNico({year:"all",limit:1,offset:0,mode:"ranking",sort:"-viewCounter",applyYear:false,applyTier:false,numericFilters:filters});
+        var probe=await fetchNico({year:"all",limit:1,offset:0,mode:"ranking",sort:"-viewCounter",applyYear:false,applyTier:false,numericFilters:filters,overrideQuery:rq,overrideTargets:"tags"});
         var total=probe&&probe.meta?+probe.meta.totalCount||0:0;
         if(!total)continue;
         var span=Math.max(0,Math.min(total-1,1500)),offset=Math.floor(Math.random()*(span+1));
-        var data=await fetchNico({year:"all",limit:30,offset:offset,mode:"ranking",sort:"-viewCounter",applyYear:false,applyTier:false,numericFilters:filters});
-        var rows=(data.data||[]).filter(function(x){return x&&x.contentId&&!recentIds.has(x.contentId)});
-        try{if(window.VSA37DiscoveryOriginalRows)rows=window.VSA37DiscoveryOriginalRows(rows,"universe_random_start").rows}catch(e){}
+        var data=await fetchNico({year:"all",limit:30,offset:offset,mode:"ranking",sort:"-viewCounter",applyYear:false,applyTier:false,numericFilters:filters,overrideQuery:rq,overrideTargets:"tags"});
+        var rows=filterDiveRows53(data.data||[],"universe_random_start").filter(function(x){return x&&x.contentId&&!recentIds.has(x.contentId)});
         try{if(window.VSA37AdultFilterRows)rows=window.VSA37AdultFilterRows(rows,"universe_random_start").rows}catch(e){}
         if(!rows.length)continue;
         var song=rows[Math.floor(Math.random()*rows.length)];
         state.universeCenter=song;
         await Promise.resolve(buildUniverse(song,false));
         var shell=document.getElementById("universeSearchBar");if(shell)shell.classList.add("center-selected");
-        if(status)status.textContent="랜덤 시작 · "+band.name+" · "+(song.title||song.contentId);
+        if(status)status.textContent="랜덤 시작 · "+diveModeLabel53()+" · "+band.name+" · "+(song.title||song.contentId);
         var stage=document.querySelector(".universe-stage");if(stage)stage.scrollIntoView({behavior:"smooth",block:"start"});
         return
       }
@@ -251,11 +272,11 @@ function addStyle(){
   style.textContent=[
     ".v394-universe-panel .universe-search{display:block;margin:0 0 10px;padding:10px;border:1px solid rgba(113,209,200,.13);border-radius:15px;background:linear-gradient(145deg,rgba(10,39,46,.94),rgba(7,29,35,.94));box-shadow:none}",
     ".v394-universe-panel .us-main{min-width:0}.v394-universe-panel .us-title{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px}.v394-universe-panel .us-title b{display:block;color:#eafffb;font-size:10px}.v394-universe-panel .us-title small{display:block;margin-top:2px;color:#6f9692;font-size:7px}.v394-universe-panel .us-random-start{min-height:37px;padding:0 12px;border:1px solid rgba(111,223,212,.28);border-radius:11px;background:linear-gradient(135deg,#12444b,#263e72);color:#effffc;font-size:8px;font-weight:950;white-space:nowrap}.v394-universe-panel .us-random-start:disabled{opacity:.5}",
-    ".v394-universe-panel .us-row{display:grid;grid-template-columns:minmax(0,1fr) 165px auto;gap:7px;margin-top:8px}.v394-universe-panel .us-row input,.v394-universe-panel .us-row select{min-width:0;min-height:41px!important;border:1px solid rgba(121,206,199,.20)!important;border-radius:11px!important;background:#071f25!important;color:#effbf9!important;padding:0 10px!important}.v394-universe-panel .us-row select option{background:#0b252c;color:#eaf9f6}.v394-universe-panel .us-row button{min-height:41px;padding:0 15px;border:0;border-radius:11px;background:linear-gradient(135deg,#6edfd4,#758ff0);color:#061719;font-size:9px;font-weight:950}",
+    ".v394-universe-panel .us-types{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-top:8px}.v394-universe-panel .us-types button{min-height:31px;padding:0 9px;border:1px solid #285159;border-radius:999px;background:#08252c;color:#8eb5b1;font-size:7px;font-weight:900}.v394-universe-panel .us-types button.active{border-color:#5fcac0;background:#15444b;color:#effffc}.v394-universe-panel .us-types button em{margin-left:3px;color:#71ded3;font-size:5.5px;font-style:normal}.v394-universe-panel .us-types span{margin-left:auto;color:#628b87;font-size:6.5px}.v394-universe-panel .us-row{display:grid;grid-template-columns:minmax(0,1fr) 165px auto;gap:7px;margin-top:8px}.v394-universe-panel .us-row input,.v394-universe-panel .us-row select{min-width:0;min-height:41px!important;border:1px solid rgba(121,206,199,.20)!important;border-radius:11px!important;background:#071f25!important;color:#effbf9!important;padding:0 10px!important}.v394-universe-panel .us-row select option{background:#0b252c;color:#eaf9f6}.v394-universe-panel .us-row button{min-height:41px;padding:0 15px;border:0;border-radius:11px;background:linear-gradient(135deg,#6edfd4,#758ff0);color:#061719;font-size:9px;font-weight:950}",
     ".v394-universe-panel .us-recent{display:flex;gap:4px;align-items:center;overflow-x:auto;margin-top:6px;min-height:24px;scrollbar-width:none}.v394-universe-panel .us-recent::-webkit-scrollbar{display:none}.v394-universe-panel .us-recent:before{content:'최근';flex:0 0 auto;font-size:7px;color:#547b78;margin-right:2px}.v394-universe-panel .us-recent button{flex:0 0 auto;min-height:24px;border:1px solid #24484e;border-radius:999px;padding:0 7px;background:#0a262c;color:#8fb9b5;font-size:7px}.v394-universe-panel .us-recent span{font-size:7px;color:#557875}.v394-universe-panel .us-status{margin-top:4px;font-size:7px;color:#668f8b}",
     ".v394-universe-panel .us-results{display:flex;gap:7px;overflow-x:auto;overflow-y:hidden;margin-top:9px;padding:1px 1px 4px;scrollbar-width:none}.v394-universe-panel .us-results::-webkit-scrollbar{display:none}.v394-universe-panel .universe-search:not(.has-results) .us-results{display:none}.v394-universe-panel .universe-search.center-selected .us-results,.v394-universe-panel .universe-search.center-selected .us-recent{display:none!important}.v394-universe-panel .universe-search.center-selected{padding:8px 10px}.v394-universe-panel .universe-search.center-selected .us-status{margin-top:6px;color:#7fd9d0}",
     ".v394-universe-panel .us-result{flex:0 0 min(360px,42vw);min-width:0;display:grid;grid-template-columns:82px minmax(0,1fr);gap:8px;align-items:center;padding:7px;border:1px solid rgba(112,205,197,.14);border-radius:12px;background:#0a2930;color:#dff5f1;text-align:left}.v394-universe-panel .us-result:hover{border-color:rgba(111,225,213,.36);background:#10343b}.v394-universe-panel .us-result img,.v394-universe-panel .us-noimg{width:82px;aspect-ratio:16/9;object-fit:cover;border-radius:8px;background:#123037;display:grid;place-items:center}.v394-universe-panel .us-copy{min-width:0}.v394-universe-panel .us-copy b{display:block;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.v394-universe-panel .us-copy small,.v394-universe-panel .us-copy i{display:block;margin-top:2px;font-size:7px;color:#719492;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-style:normal}.v394-universe-panel .us-result strong{grid-column:2;font-size:7px;color:#75ded4;white-space:nowrap}.v394-universe-panel .us-empty{flex:1 0 100%;min-height:62px;display:grid;place-items:center;text-align:center;color:#678b88;font-size:8px;border:1px dashed #24464c;border-radius:11px}",
-    "@media(max-width:699px){.v394-universe-panel .universe-search{padding:8px;overscroll-behavior:contain}.v394-universe-panel .us-title{grid-template-columns:1fr}.v394-universe-panel .us-title small{display:none}.v394-universe-panel .us-random-start{width:100%;min-height:42px}.v394-universe-panel .us-row{grid-template-columns:1fr auto}.v394-universe-panel .us-row input{grid-column:1/-1}.v394-universe-panel .us-row select{min-height:39px!important}.v394-universe-panel .us-row button{min-height:39px}.v394-universe-panel .us-results{display:grid;grid-template-columns:1fr;gap:7px;max-height:46vh;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y;padding:2px 1px 8px}.v394-universe-panel .us-result{width:100%;max-width:100%;min-width:0;flex:none;grid-template-columns:72px minmax(0,1fr);box-sizing:border-box}.v394-universe-panel .us-result img,.v394-universe-panel .us-noimg{width:72px}.v394-universe-panel .us-empty{width:100%;box-sizing:border-box}}"
+    "@media(max-width:699px){.v394-universe-panel .universe-search{padding:8px;overscroll-behavior:contain}.v394-universe-panel .us-title{grid-template-columns:1fr}.v394-universe-panel .us-title small{display:none}.v394-universe-panel .us-random-start{width:100%;min-height:42px}.v394-universe-panel .us-types{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}.v394-universe-panel .us-types button{min-width:0;padding:0 4px;font-size:6.5px}.v394-universe-panel .us-types span{grid-column:1/-1;margin:0;text-align:center}.v394-universe-panel .us-row{grid-template-columns:1fr auto}.v394-universe-panel .us-row input{grid-column:1/-1}.v394-universe-panel .us-row select{min-height:39px!important}.v394-universe-panel .us-row button{min-height:39px}.v394-universe-panel .us-results{display:grid;grid-template-columns:1fr;gap:7px;max-height:46vh;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y;padding:2px 1px 8px}.v394-universe-panel .us-result{width:100%;max-width:100%;min-width:0;flex:none;grid-template-columns:72px minmax(0,1fr);box-sizing:border-box}.v394-universe-panel .us-result img,.v394-universe-panel .us-noimg{width:72px}.v394-universe-panel .us-empty{width:100%;box-sizing:border-box}}"
   ].join("");
   document.head.appendChild(style);
 }
@@ -267,7 +288,8 @@ function inject(){
   wrap.id="universeSearchBar";
   wrap.className="universe-search";
   wrap.innerHTML=
-    '<div class="us-main"><div class="us-title"><span><b>중심곡 검색</b><small>곡명·P명·보컬·태그·sm번호로 새 중심곡을 찾습니다.</small></span><button type="button" class="us-random-start" id="universeRandomStartBtn">🎲 랜덤곡으로 시작</button></div>'+
+    '<div class="us-main"><div class="us-title"><span><b>중심곡 검색</b><small>기본은 음성합성 오리지널곡. 커버·파생은 별도 모집단으로 탐색합니다.</small></span><button type="button" class="us-random-start" id="universeRandomStartBtn">🎲 랜덤곡으로 시작</button></div>'+
+    '<div class="us-types" id="universeContentTypes"><button type="button" data-us-type="original">오리지널곡 <em>기본</em></button><button type="button" data-us-type="cover">歌ってみた·커버</button><button type="button" data-us-type="derivative">파생 전체</button><span id="universeTypeHint">기본 · 오리지널곡만</span></div>'+
     '<div class="us-row"><input id="universeSearchInput" placeholder="곡명 · P명 · 보컬 · 태그 · sm번호">'+
     '<select id="universeSearchScope"><option value="all_voice_synth">음성합성 전체</option><option value="all">니코동 전체</option><option value="vocaloid">VOCALOID</option><option value="utau">UTAU</option><option value="synthv">Synthesizer V</option><option value="cevio">CeVIO</option><option value="voisona">VoiSona</option><option value="neutrino">NEUTRINO</option><option value="voicevox">VOICEVOX</option></select>'+
     '<button type="button" id="universeSearchBtn">검색</button></div>'+
@@ -278,6 +300,18 @@ function inject(){
   renderRecent();
   document.getElementById("universeSearchBtn").addEventListener("click",runSearch);
   document.getElementById("universeRandomStartBtn").addEventListener("click",randomStart);
+  document.getElementById("universeContentTypes").addEventListener("click",function(e){
+    var b=e.target.closest("[data-us-type]");if(!b)return;
+    if(window.VSA53DiveContent)window.VSA53DiveContent.set(b.dataset.usType);
+    results=[];
+    var shell=document.getElementById("universeSearchBar");if(shell)shell.classList.remove("has-results","center-selected");
+    var box=document.getElementById("universeSearchResults");if(box)box.innerHTML='<div class="us-empty">이 모집단에서 검색하거나 랜덤곡으로 시작하세요.</div>';
+    var stage=document.querySelector(".universe-stage");if(stage)stage.innerHTML='<div class="us-empty">새 중심곡을 고르면 다이브가 시작됩니다.</div>';
+    var info=document.getElementById("universeInfo");if(info)info.innerHTML="";
+    var status=document.getElementById("universeSearchStatus");if(status)status.textContent=(window.VSA53DiveContent?window.VSA53DiveContent.label():"오리지널곡")+" 모집단으로 전환했습니다.";
+    syncDiveType53()
+  });
+  syncDiveType53();
   document.getElementById("universeSearchInput").addEventListener("keydown",function(e){if(e.key==="Enter")runSearch();});
   wrap.addEventListener("click",function(e){
     var result=e.target.closest("[data-us-index]");
@@ -289,6 +323,7 @@ function inject(){
     }
   });
 }
-function boot(){addStyle();inject();}
+function boot(){addStyle();inject();syncDiveType53()}
+document.addEventListener("vsa:dive-content-mode",function(){syncDiveType53()});
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
 })();
