@@ -11217,6 +11217,9 @@ body.v37-ready #universePanel.v3948-sea{--sea-accent:#68ddd2;--sea-card:rgba(7,3
 #universePanel.v3948-sea .v394-universe-title p{max-width:700px}
 #universePanel.v3948-sea #v3947SimilarToggle{display:none!important}
 #universePanel.v3948-sea .universe-density-control{display:none!important}
+#universePanel.v3948-sea{position:relative}
+#universePanel.v3948-sea .sea48-loader{position:absolute;z-index:60;left:50%;top:190px;transform:translateX(-50%);width:min(460px,calc(100% - 28px));min-height:92px;place-items:center;text-align:center;padding:16px;border:1px solid rgba(129,226,216,.24);border-radius:16px;background:rgba(5,26,35,.94);color:#dffaf6;font-size:9px;line-height:1.6;box-shadow:0 18px 50px rgba(0,8,14,.38);backdrop-filter:blur(16px)}
+#universePanel.v3948-sea .sea48-loader small{color:#84aaa6}
 #universePanel.v3948-sea .universe-layout{grid-template-columns:minmax(0,1.65fr) minmax(280px,.35fr)!important;gap:12px!important;align-items:start!important}
 #universePanel.v3948-sea .universe-stage{min-height:0!important;overflow:visible!important;border:0!important;background:transparent!important;touch-action:pan-y!important}
 #universePanel.v3948-sea .universe-stage:after{display:none!important}
@@ -11372,6 +11375,11 @@ function ensure48(){
     if(title)title.innerHTML='<small>VOCADIVE · DIVE SEA 2.0</small><h2>다이브</h2><p>수면에서 출발해 음악의 해류를 따라 심해까지 내려가세요. 깊이는 현재 탐색에서의 인지도·발굴 난이도를 나타냅니다.</p>';
   }
   var layout=panel.querySelector(".universe-layout");
+  if(layout&&!q48("#universeEmpty",panel)){
+    var loader=document.createElement("div");loader.id="universeEmpty";loader.className="sea48-loader";loader.style.display="none";
+    loader.innerHTML="해류를 분석하는 중…<br><small>유사곡 후보와 탐색 수심을 계산합니다.</small>";
+    layout.parentNode.insertBefore(loader,layout)
+  }
   if(layout&&!q48("#sea48Modebar",panel)){
     var bar=document.createElement("div");bar.id="sea48Modebar";bar.className="sea48-modebar";
     bar.innerHTML='<button type="button" data-sea48-mode="dive">↓ 다이브</button><button type="button" data-sea48-mode="sonar">≈ 유사곡 소나</button><button type="button" data-sea48-random>랜덤 다이브</button><button type="button" data-sea48-surface>↑ 수면으로</button>'+
@@ -11449,7 +11457,8 @@ function sonarRows48(data){
   return (data.nodes||[]).slice(1).filter(function(n){return n&&n.contentId&&(+n.similarity||0)>=sonarMin48}).sort(function(a,b){return (+b.similarity||0)-(+a.similarity||0)||views48(b)-views48(a)})
 }
 function renderSonar48(data){
-  var stage=q48("#universePanel .universe-stage");if(!stage)return,rows=sonarRows48(data),center=data.center;
+  var stage=q48("#universePanel .universe-stage");if(!stage)return;
+  var rows=sonarRows48(data),center=data.center;
   var body='<div class="sea48-sonar"><div class="sea48-sonar-head">'+(center.thumbnailUrl?'<img src="'+e48(center.thumbnailUrl)+'" alt="">':'<div class="noimg">♪</div>')+
     '<div><small>SIMILAR SONAR · 중심곡</small><h3>'+e48(center.title||center.contentId)+'</h3><p>현재 곡과 가까운 후보만 유사도 순으로 탐지합니다.</p></div>'+
     '<div class="sea48-sonar-filter"><button type="button" data-sea48-sonar-min="0" class="'+(sonarMin48===0?"active":"")+'">전체</button><button type="button" data-sea48-sonar-min=".5" class="'+(sonarMin48===.5?"active":"")+'">50%+</button><button type="button" data-sea48-sonar-min=".7" class="'+(sonarMin48===.7?"active":"")+'">70%+</button></div></div>'+
@@ -11461,6 +11470,7 @@ function renderSonar48(data){
 }
 function renderSea48(data){
   ensure48();syncMode48();
+  var loader=q48("#universeEmpty");if(loader)loader.style.display="none";
   if(seaMode48==="sonar")renderSonar48(data);else renderDive48(data);
   if(typeof renderUniverseJourney39==="function")try{renderUniverseJourney39()}catch(e){}
 }
