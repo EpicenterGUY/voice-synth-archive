@@ -7141,6 +7141,14 @@ window.randomUniverseWarp39=randomUniverseWarp39;
 
 async function buildUniverse(center,force=false){
   if(!center)return;
+  try{
+    const currentDiveMode=diveContentMode53(),kind=diveSongKind53(center);
+    if(!diveSongMatchesContentMode53(center,currentDiveMode)){
+      if(kind==="original")setDiveContentMode53("original");
+      else if(kind==="cover")setDiveContentMode53("cover");
+      else if(kind==="derivative")setDiveContentMode53("derivative")
+    }
+  }catch(_){}
   ensureUniverseToolbar39();
   recordUniverseCenter39(center);
   state.universeCenter=center;
