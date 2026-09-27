@@ -1,8 +1,8 @@
-/* VocaDive App Platform Foundation · v39.62.0 */
+/* VocaDive App Platform Foundation · v39.63.0 */
 (function(){
 "use strict";
 
-var BUILD="39.62.0";
+var BUILD="39.63.0";
 var listeners=new Map();
 
 function cap(){
@@ -93,6 +93,7 @@ function capabilities(){
     billingBridge:false,
     accountBridge:false,
     cloudSyncBridge:false,
+    appLifecycle:native&&!!plugin("App"),
     haptics:native&&!!plugin("Haptics"),
     externalBrowser:native&&!!plugin("Browser"),
     nativePreferences:native&&!!plugin("Preferences")
