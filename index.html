@@ -12849,6 +12849,7 @@ function scene58(d){
  return '<div class="mr58-shell mr74-depth-'+dep+(liteOcean58()?' mr76-lite':'')+'" data-mr74-depth="'+dep+'">'+seaLayers58(dep)+'<div class="mr58-content">'+
   '<div class="mr58-head"><div><small>VOCADIVE · OCEAN DIVE 1.3</small><h3>다음 곡 선택</h3><p>수층을 고르고 <b>이동</b>을 누르면 실제 잠수하듯 다음 곡으로 넘어갑니다. 깊어질수록 빛과 해류 분위기도 달라집니다.</p></div>'+summary58(rows)+'</div>'+
   depthNav58(d)+'<details class="mr72-advanced"><summary>연결 조건 <span>유사곡 · 장르 · P · 보컬 · 시대</span></summary>'+filters58(d)+'</details>'+
+  '<div class="mr77-route-head"><span><small>NEXT CURRENT</small><b>다음 이동 후보</b></span><em>'+rows.length+' ROUTES</em></div>'+
   '<div class="mr58-map">'+rows.map(function(x,i){return node58(x,i,c)}).join("")+center58(c,d)+(rows.length?"":'<div class="mr58-empty">현재 조건에 맞는 후보가 없습니다.<br>연결 조건을 줄이거나 다른 수층을 선택하세요.</div>')+'</div></div></div>'
 }
 function find58(id,d){return d&&(d.nodes||[]).find(function(n){return n&&n.contentId===id})}
@@ -13895,6 +13896,108 @@ body.mr74-transitioning{overflow:hidden!important}
  #universePanel.v3958-rel .mr76-center-main{grid-template-columns:96px minmax(0,1fr)!important}
  #universePanel.v3958-rel .mr76-center-kicker{font-size:6px}
  #universePanel.v3958-rel .mr76-depth-badge{font-size:8px}
+}
+</style>
+
+
+<style id="v3977MobileDiveDeck">
+/* Mobile Dive Deck hotfix · authoritative mobile layout */
+#universePanel.v3958-rel .mr77-route-head{
+ display:flex;justify-content:space-between;align-items:end;gap:10px;margin:12px 2px 8px;
+}
+#universePanel.v3958-rel .mr77-route-head span{display:grid;gap:1px}
+#universePanel.v3958-rel .mr77-route-head small{color:#5f9e9a;font-size:6px;font-weight:950;letter-spacing:.14em}
+#universePanel.v3958-rel .mr77-route-head b{color:#e6fbf7;font-size:12px;letter-spacing:-.02em}
+#universePanel.v3958-rel .mr77-route-head em{font-style:normal;color:#6f9b98;font-size:6.5px;font-weight:950;letter-spacing:.08em}
+@media(max-width:699px){
+ #universePanel.v3958-rel .universe-stage,
+ #universePanel.v3958-rel .mr58-shell,
+ #universePanel.v3958-rel .mr58-content,
+ #universePanel.v3958-rel .mr58-map{touch-action:pan-y!important}
+ #universePanel.v3958-rel .mr58-content{padding:11px 9px 18px!important}
+ #universePanel.v3958-rel .mr77-route-head{margin:13px 1px 8px}
+ #universePanel.v3958-rel .mr77-route-head small{font-size:6.5px}
+ #universePanel.v3958-rel .mr77-route-head b{font-size:14px}
+ #universePanel.v3958-rel .mr77-route-head em{padding:5px 7px;border-radius:999px;background:rgba(6,33,42,.68);font-size:6.5px}
+
+ /* Kill all legacy absolute/2-column map rules. */
+ #universePanel.v3958-rel .mr58-map{
+   display:flex!important;flex-direction:column!important;gap:8px!important;
+   min-height:0!important;height:auto!important;position:relative!important;overflow:visible!important;
+   padding:0!important;align-items:stretch!important
+ }
+ #universePanel.v3958-rel .mr58-center{
+   order:-10!important;position:relative!important;left:auto!important;top:auto!important;transform:none!important;
+   width:100%!important;max-width:none!important;margin:0 0 3px!important
+ }
+ #universePanel.v3958-rel .mr76-center-main{
+   display:grid!important;grid-template-columns:1fr!important;gap:9px!important
+ }
+ #universePanel.v3958-rel .mr76-cover-shell{
+   width:100%!important;aspect-ratio:16/7!important;min-height:0!important;max-height:150px!important
+ }
+ #universePanel.v3958-rel .mr76-cover-shell img,
+ #universePanel.v3958-rel .mr76-cover-shell .noimg{
+   width:100%!important;height:100%!important;min-height:0!important;aspect-ratio:auto!important;object-fit:cover!important
+ }
+ #universePanel.v3958-rel .mr76-center-copy{padding:0 2px 1px}
+ #universePanel.v3958-rel .mr76-center-copy h2{font-size:17px!important;line-height:1.22!important;margin:4px 0 7px!important}
+ #universePanel.v3958-rel .mr76-meta span{font-size:7px!important;min-height:22px!important}
+ #universePanel.v3958-rel .mr76-depth-gauge{margin-top:9px!important}
+ #universePanel.v3958-rel .mr58-center-actions{grid-template-columns:1.2fr 1fr 1fr!important;gap:5px!important}
+ #universePanel.v3958-rel .mr58-center-actions button{min-height:44px!important;font-size:9px!important}
+
+ /* Explicit display:grid fixes stale nth-of-type rules from older Dive CSS. */
+ #universePanel.v3958-rel .mr58-map>.mr58-node{
+   display:grid!important;order:0!important;position:relative!important;left:auto!important;top:auto!important;transform:none!important;
+   width:100%!important;max-width:none!important;min-width:0!important;min-height:0!important;
+   grid-template-columns:minmax(0,1fr) 58px!important;gap:7px!important;padding:8px!important;
+   border-radius:14px!important;overflow:hidden!important;content-visibility:auto;contain-intrinsic-size:88px
+ }
+ #universePanel.v3958-rel .mr58-map>.mr58-node:nth-of-type(n+7){display:none!important}
+ #universePanel.v3958-rel .mr58-map>.mr58-node.mr75-deeper{
+   background:linear-gradient(100deg,rgba(7,38,50,.96),rgba(7,31,42,.92))!important
+ }
+ #universePanel.v3958-rel .mr58-map>.mr58-node.mr75-shallower{
+   background:linear-gradient(100deg,rgba(8,42,41,.96),rgba(7,31,36,.92))!important
+ }
+ #universePanel.v3958-rel .mr58-map>.mr58-node.mr75-same{
+   background:linear-gradient(100deg,rgba(9,37,43,.96),rgba(7,29,36,.92))!important
+ }
+ #universePanel.v3958-rel .mr58-node-main{
+   display:grid!important;grid-template-columns:86px minmax(0,1fr)!important;gap:9px!important;
+   min-width:0!important;min-height:64px!important;align-items:center!important;animation:none!important
+ }
+ #universePanel.v3958-rel .mr58-node-main img,
+ #universePanel.v3958-rel .mr58-node-main .noimg{
+   width:86px!important;height:56px!important;aspect-ratio:auto!important;border-radius:9px!important;object-fit:cover!important
+ }
+ #universePanel.v3958-rel .mr58-node-copy b{
+   font-size:10.5px!important;line-height:1.25!important;white-space:normal!important;
+   display:-webkit-box!important;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden!important
+ }
+ #universePanel.v3958-rel .mr58-node-copy small{font-size:7.5px!important;margin-top:3px!important}
+ #universePanel.v3958-rel .mr58-node-score{font-size:8px!important;margin-top:3px!important}
+ #universePanel.v3958-rel .mr76-node-kicker i{font-size:6px!important}
+ #universePanel.v3958-rel .mr76-node-kicker em{
+   min-width:31px;padding:2px 5px;border-radius:999px;background:rgba(111,211,202,.10);
+   text-align:center;font-size:6.5px!important
+ }
+ #universePanel.v3958-rel .mr76-node-meter{height:3px!important;margin-top:5px!important}
+ #universePanel.v3958-rel .mr58-node-go{
+   min-width:58px!important;width:58px!important;min-height:58px!important;max-height:none!important;
+   align-self:stretch!important;border-radius:11px!important;font-size:8px!important;line-height:1.2!important;
+   padding:0 4px!important
+ }
+ #universePanel.v3958-rel .mr58-node .mr58-badges{display:none!important}
+ #universePanel.v3958-rel .universe-side{content-visibility:auto;contain-intrinsic-size:360px}
+}
+@media(max-width:420px){
+ #universePanel.v3958-rel .mr76-cover-shell{max-height:128px!important}
+ #universePanel.v3958-rel .mr58-node-main{grid-template-columns:76px minmax(0,1fr)!important}
+ #universePanel.v3958-rel .mr58-node-main img,
+ #universePanel.v3958-rel .mr58-node-main .noimg{width:76px!important;height:50px!important}
+ #universePanel.v3958-rel .mr58-map>.mr58-node:nth-of-type(n+7){display:none!important}
 }
 </style>
 
