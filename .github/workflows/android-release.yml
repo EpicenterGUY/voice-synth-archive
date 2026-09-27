@@ -111,8 +111,22 @@ jobs:
       - name: Build unsigned release APK
         working-directory: android
         run: |
+          set -euo pipefail
           chmod +x ./gradlew
-          ./gradlew assembleRelease --stacktrace
+          ok=0
+          for attempt in 1 2 3; do
+            echo "Gradle release build attempt $attempt/3"
+            if ./gradlew assembleRelease --stacktrace; then
+              ok=1
+              break
+            fi
+            if [ "$attempt" -lt 3 ]; then
+              echo "::warning::Gradle build/download failed; retrying in $((attempt * 5)) seconds."
+              rm -f "$HOME/.gradle/wrapper/dists"/*/*/*.part 2>/dev/null || true
+              sleep $((attempt * 5))
+            fi
+          done
+          test "$ok" = "1"
 
       - name: Decode permanent signing key
         shell: bash
