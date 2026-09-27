@@ -3349,7 +3349,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.49.0 · Mini Return · Dive Handoff · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Ocean Current 3.0 · Similar Sonar 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.50.0 · Mini Return · Dive Handoff · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.0 · Similarity 2.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -11735,6 +11735,187 @@ window.VSADiveOcean49={render:render49,random:random49,go:go49,setMode:function(
 function boot49(){ensure49();var d=data49();if(d)render49(d)}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(boot49,40)});else setTimeout(boot49,40);
 window.addEventListener("popstate",function(){setTimeout(function(){ensure49();var d=data49();if(d)render49(d)},20)});
+})();
+</script>
+
+
+<style id="v3950DiveGraphStyle">
+/* v39.50 · Dive Graph 4.0 */
+#universePanel.v3950-graph #oc49Toolbar,#universePanel.v3950-graph #sea48Modebar,#universePanel.v3950-graph #v39UniverseJourney{display:none!important}
+.dg50-toolbar{position:sticky;top:5px;z-index:80;display:grid;grid-template-columns:auto auto auto auto minmax(0,1fr);gap:6px;align-items:center;margin:0 0 8px;padding:6px;border:1px solid rgba(142,225,216,.17);border-radius:14px;background:rgba(4,22,30,.93);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 12px 34px rgba(0,8,15,.2)}
+.dg50-toolbar button{min-height:38px;padding:0 11px;border:1px solid rgba(137,219,210,.14);border-radius:10px;background:#0a3039;color:#c3e1dd;font-size:8px;font-weight:950;cursor:pointer}
+.dg50-toolbar button.active{border:0;background:linear-gradient(135deg,#71dfd4,#708ee9);color:#06171b}
+.dg50-toolbar button:disabled{opacity:.35}
+.dg50-trail{min-width:0;display:flex;align-items:center;justify-content:flex-end;gap:5px;overflow:hidden}
+.dg50-trail>small{flex:0 0 auto;color:#6f9994;font-size:6px;font-weight:950;letter-spacing:.1em}
+.dg50-trail button{min-width:0;max-width:120px;min-height:30px;padding:0 8px;border-radius:999px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:6px}
+.dg50-trail button.active{border-color:#6fd8ce;color:#effffc;background:#15434b}
+.dg50-ocean{--dg-top:#146d8c;--dg-bottom:#071a2d;--dg-glow:rgba(111,226,216,.17);position:relative;min-height:700px;border-radius:24px;overflow:hidden;isolation:isolate;background:linear-gradient(180deg,var(--dg-top),var(--dg-bottom));box-shadow:0 20px 58px rgba(0,8,15,.24)}
+.dg50-ocean[data-layer="surface"]{--dg-top:#3bced0;--dg-bottom:#147da7;--dg-glow:rgba(235,255,250,.29)}
+.dg50-ocean[data-layer="shallow"]{--dg-top:#1794b9;--dg-bottom:#0c567f;--dg-glow:rgba(191,255,248,.22)}
+.dg50-ocean[data-layer="mid"]{--dg-top:#0d5d80;--dg-bottom:#092f56;--dg-glow:rgba(123,225,219,.16)}
+.dg50-ocean[data-layer="deep"]{--dg-top:#0a3559;--dg-bottom:#091938;--dg-glow:rgba(90,196,204,.13)}
+.dg50-ocean[data-layer="abyss"]{--dg-top:#111c3c;--dg-bottom:#050814;--dg-glow:rgba(117,96,221,.14)}
+.dg50-bg,.dg50-light,.dg50-specks,.dg50-bubbles,.dg50-rings,.dg50-transition{position:absolute;inset:0;pointer-events:none!important}
+.dg50-bg{z-index:0;background:radial-gradient(circle at 50% 40%,var(--dg-glow),transparent 32%),linear-gradient(180deg,rgba(255,255,255,.025),transparent 40%)}
+.dg50-light{z-index:1;top:-8%;height:42%;opacity:.28;background:linear-gradient(106deg,transparent 22%,rgba(236,255,250,.20) 29%,transparent 39%),linear-gradient(76deg,transparent 52%,rgba(220,255,251,.13) 60%,transparent 69%);animation:dg50Light 10s ease-in-out infinite alternate}
+.dg50-ocean[data-layer="deep"] .dg50-light,.dg50-ocean[data-layer="abyss"] .dg50-light{opacity:.05}
+.dg50-specks{z-index:1;opacity:.25;background-image:radial-gradient(circle,rgba(216,255,251,.8) 0 1px,transparent 1.3px),radial-gradient(circle,rgba(111,212,218,.7) 0 1px,transparent 1.3px);background-size:89px 91px,137px 131px;animation:dg50Specks 22s linear infinite}
+.dg50-bubble{position:absolute;bottom:-26px;border:1px solid rgba(225,255,252,.36);border-radius:50%;opacity:.34;animation:dg50Bubble var(--dur) linear infinite;animation-delay:var(--delay)}
+.dg50-content{position:relative;z-index:5;min-height:700px;padding:15px;display:grid;grid-template-rows:auto 1fr auto}
+.dg50-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.dg50-head small{display:block;color:rgba(230,255,252,.68);font-size:7px;font-weight:950;letter-spacing:.14em}.dg50-head h3{margin:4px 0 3px;color:#effffc;font-size:23px;letter-spacing:-.045em}.dg50-head p{margin:0;color:rgba(217,244,241,.70);font-size:8px;line-height:1.5;max-width:610px}
+.dg50-depth{text-align:right}.dg50-depth b{display:block;color:#f0fffd;font-size:18px}.dg50-depth span{font-size:7px;color:rgba(216,244,240,.65)}
+.dg50-map{position:relative;min-height:510px;margin-top:4px}
+.dg50-rings{z-index:2;left:50%;top:50%;inset:auto;width:520px;height:520px;transform:translate(-50%,-50%);border:1px solid rgba(204,250,245,.08);border-radius:50%}
+.dg50-rings:before,.dg50-rings:after{content:"";position:absolute;border:1px solid rgba(204,250,245,.08);border-radius:50%}.dg50-rings:before{inset:18%}.dg50-rings:after{inset:36%}
+.dg50-ocean.sonar .dg50-rings{border-color:rgba(112,229,218,.18);animation:dg50Pulse 2.8s ease-in-out infinite}.dg50-ocean.sonar .dg50-rings:before,.dg50-ocean.sonar .dg50-rings:after{border-color:rgba(112,229,218,.16)}
+.dg50-center{position:absolute;z-index:10;left:50%;top:50%;transform:translate(-50%,-50%);width:min(400px,47%);padding:11px;border:1px solid rgba(235,255,252,.22);border-radius:20px;background:rgba(4,24,34,.68);backdrop-filter:blur(14px);box-shadow:0 18px 44px rgba(0,8,17,.21)}
+.dg50-center-main{display:grid;grid-template-columns:126px minmax(0,1fr);gap:11px;align-items:center}.dg50-center img,.dg50-center .noimg{width:126px;aspect-ratio:16/9;border-radius:13px;object-fit:cover;background:#0d4654;display:grid;place-items:center;color:#a9eee8;font-size:25px}.dg50-center small{color:#8bdcd4;font-size:7px;font-weight:950}.dg50-center h2{margin:5px 0 4px;color:#f4fffd;font-size:17px;line-height:1.28}.dg50-center p{margin:0;color:#a9cfcb;font-size:7px}
+.dg50-center-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:9px}.dg50-center-actions button{min-height:35px;border:1px solid rgba(152,226,218,.15);border-radius:10px;background:#0d3540;color:#c8e6e2;font-size:7px;font-weight:950}.dg50-center-actions button.primary{border:0;background:linear-gradient(135deg,#72e0d5,#718ce8);color:#06171a}
+.dg50-node{position:absolute;z-index:8;width:190px;display:grid;grid-template-columns:70px minmax(0,1fr);gap:7px;align-items:center;padding:7px;border:1px solid rgba(218,252,248,.12);border-radius:14px;background:rgba(5,29,39,.62);backdrop-filter:blur(10px);box-shadow:0 10px 24px rgba(0,7,15,.13);cursor:pointer;transition:.18s transform,.18s border-color,.18s background,.35s left,.35s top}
+.dg50-node:hover,.dg50-node.selected{transform:translate(-50%,-50%) scale(1.035);border-color:rgba(128,231,221,.46);background:rgba(6,45,55,.80)}
+.dg50-node img,.dg50-node .noimg{width:70px;aspect-ratio:16/9;border-radius:8px;object-fit:cover;background:#0c3d49;display:grid;place-items:center;color:#89cfc8}.dg50-node-copy{min-width:0}.dg50-node b{display:block;color:#effcf9;font-size:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.dg50-node small{display:block;margin-top:3px;color:#84aaa6;font-size:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.dg50-node em{display:inline-flex;margin-top:5px;padding:3px 6px;border-radius:999px;background:#10414a;color:#a7d8d3;font-size:6px;font-style:normal}
+.dg50-node .why{grid-column:1/-1;display:flex;gap:4px;flex-wrap:wrap;margin-top:1px}.dg50-node .why i{padding:3px 5px;border-radius:999px;background:rgba(13,62,72,.62);color:#9bcac5;font-size:5.5px;font-style:normal}
+.dg50-nav{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-top:8px}.dg50-nav button{min-height:44px;border:1px solid rgba(218,250,246,.13);border-radius:13px;background:rgba(4,28,39,.62);color:#d5eeeb;font-size:8px;font-weight:950;cursor:pointer}.dg50-nav button:disabled{opacity:.34}
+.dg50-gateway{position:absolute;inset:0;z-index:40;display:grid;place-items:center;padding:16px;background:rgba(2,12,21,.62);backdrop-filter:blur(8px)}
+.dg50-gateway-card{width:min(760px,100%);padding:13px;border:1px solid rgba(139,226,217,.2);border-radius:20px;background:linear-gradient(160deg,#0a2b36,#071822);box-shadow:0 20px 55px rgba(0,5,12,.38)}
+.dg50-gateway-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.dg50-gateway-head small{display:block;color:#70d7ce;font-size:7px;font-weight:950}.dg50-gateway-head h3{margin:4px 0;color:#effffc;font-size:17px}.dg50-gateway-head p{margin:0;color:#82a8a4;font-size:8px}.dg50-gateway-head button{min-width:36px;min-height:36px;border:1px solid #28535a;border-radius:10px;background:#0a2931;color:#cce6e2}
+.dg50-gateway-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:11px}.dg50-candidate{display:grid;grid-template-columns:82px minmax(0,1fr);gap:8px;align-items:center;padding:8px;border:1px solid rgba(131,215,207,.12);border-radius:13px;background:#08242d;color:#eaf9f7;text-align:left;cursor:pointer}.dg50-candidate:hover{border-color:#4b8f8c;background:#0c323a}.dg50-candidate img,.dg50-candidate .noimg{width:82px;aspect-ratio:16/9;border-radius:8px;object-fit:cover;background:#0d3b48;display:grid;place-items:center}.dg50-candidate b{display:block;font-size:8px}.dg50-candidate small{display:block;margin-top:3px;color:#80a6a2;font-size:6px}.dg50-candidate span{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}.dg50-candidate i{padding:3px 5px;border-radius:999px;background:#103b45;color:#a5d2cd;font-size:5.5px;font-style:normal}
+.dg50-transition{z-index:50;display:grid;place-items:center;background:linear-gradient(180deg,rgba(76,196,205,.05),rgba(3,9,22,.62));opacity:0}.dg50-transition b{padding:9px 13px;border:1px solid rgba(225,255,251,.18);border-radius:999px;background:rgba(4,25,35,.84);color:#edfffc;font-size:9px;transform:translateY(22px);opacity:0}
+.dg50-ocean.go-down .dg50-transition,.dg50-ocean.go-up .dg50-transition,.dg50-ocean.go-side .dg50-transition{opacity:1}.dg50-ocean.go-down .dg50-content{animation:dg50LeaveDown .5s cubic-bezier(.25,.8,.3,1) both}.dg50-ocean.go-up .dg50-content{animation:dg50LeaveUp .5s cubic-bezier(.25,.8,.3,1) both}.dg50-ocean.go-side .dg50-content{animation:dg50LeaveSide .44s ease both}.dg50-ocean.go-down .dg50-transition b,.dg50-ocean.go-up .dg50-transition b,.dg50-ocean.go-side .dg50-transition b{animation:dg50Label .34s ease both}
+.dg50-ocean.enter-down .dg50-content{animation:dg50EnterDown .52s ease both}.dg50-ocean.enter-up .dg50-content{animation:dg50EnterUp .52s ease both}.dg50-ocean.enter-side .dg50-content{animation:dg50EnterSide .45s ease both}
+@keyframes dg50Light{from{transform:skewX(-5deg) translateX(-3%)}to{transform:skewX(5deg) translateX(4%)}}@keyframes dg50Specks{to{background-position:0 -300px,0 -440px}}@keyframes dg50Bubble{0%{transform:translate3d(0,0,0) scale(.8);opacity:0}10%{opacity:.35}100%{transform:translate3d(var(--drift),-770px,0) scale(1.15);opacity:0}}@keyframes dg50Pulse{50%{transform:translate(-50%,-50%) scale(1.08);opacity:.55}}
+@keyframes dg50LeaveDown{to{transform:translateY(-92px) scale(.97);filter:blur(2px);opacity:.18}}@keyframes dg50LeaveUp{to{transform:translateY(92px) scale(.97);filter:blur(2px);opacity:.18}}@keyframes dg50LeaveSide{to{transform:translateX(-72px);filter:blur(1px);opacity:.22}}@keyframes dg50EnterDown{from{transform:translateY(84px);filter:blur(2px);opacity:.08}to{transform:none;filter:none;opacity:1}}@keyframes dg50EnterUp{from{transform:translateY(-84px);filter:blur(2px);opacity:.08}to{transform:none;filter:none;opacity:1}}@keyframes dg50EnterSide{from{transform:translateX(72px);opacity:.08}to{transform:none;opacity:1}}@keyframes dg50Label{to{transform:none;opacity:1}}
+@media(max-width:1050px){#universePanel.v3950-graph .universe-layout{grid-template-columns:1fr!important}#universePanel.v3950-graph .universe-side{position:relative!important;top:auto!important;max-height:none!important}.dg50-ocean{min-height:680px}}
+@media(max-width:699px){
+ .dg50-toolbar{grid-template-columns:repeat(2,1fr);gap:4px}.dg50-toolbar button{min-height:39px;font-size:7px}.dg50-trail{grid-column:1/-1;justify-content:flex-start;overflow-x:auto;padding:2px}.dg50-ocean,.dg50-content{min-height:670px}.dg50-ocean{border-radius:18px}.dg50-content{padding:10px}.dg50-head h3{font-size:18px}.dg50-head p{font-size:7px}
+ .dg50-map{min-height:510px}.dg50-center{top:49%;width:calc(100% - 20px);max-width:390px}.dg50-center-main{grid-template-columns:90px minmax(0,1fr)}.dg50-center img,.dg50-center .noimg{width:90px}.dg50-center h2{font-size:13px}
+ .dg50-node{width:43%;grid-template-columns:54px minmax(0,1fr);padding:6px}.dg50-node img,.dg50-node .noimg{width:54px}.dg50-node .why{display:none}.dg50-rings{width:430px;height:430px}
+ .dg50-nav{grid-template-columns:1fr}.dg50-gateway-list{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){.dg50-light,.dg50-specks,.dg50-bubble,.dg50-ocean.sonar .dg50-rings,.dg50-ocean[class*="go-"] .dg50-content,.dg50-ocean[class*="enter-"] .dg50-content{animation:none!important}}
+</style>
+<script id="v3950DiveGraph">
+(function(){
+"use strict";
+var mode50="explore",busy50=false,bound50=false,enter50="",gateway50=null;
+var layers50=[
+ {key:"surface",label:"SURFACE",ko:"수면층",depth:"15m",range:"0–30m"},
+ {key:"shallow",label:"SHALLOW",ko:"얕은층",depth:"90m",range:"30–150m"},
+ {key:"mid",label:"MID",ko:"중층",depth:"420m",range:"150–700m"},
+ {key:"deep",label:"DEEP",ko:"심층",depth:"1,400m",range:"700–2,500m"},
+ {key:"abyss",label:"ABYSS",ko:"심해층",depth:"4,200m",range:"2,500m+"}
+];
+function q50(s,r){return (r||document).querySelector(s)}
+function qa50(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))}
+function e50(s){return String(s==null?"":s).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
+function data50(){return typeof state!=="undefined"&&state.universeData?state.universeData:null}
+function view50(n){return +((n&&n.viewCounter)||0)}
+function year50(n){try{return n&&n.startTime?new Date(n.startTime).getFullYear():"연도 미상"}catch(e){return "연도 미상"}}
+function fmt50(v){try{return typeof fmt==="function"?fmt(v):Number(v||0).toLocaleString()}catch(e){return String(v||0)}}
+function li50(n){var v=view50(n);return v>=1000000?0:v>=250000?1:v>=50000?2:v>=5000?3:4}
+function layer50(n){return layers50[li50(n)]}
+function find50(id,d){return d&&(d.nodes||[]).find(function(n){return n&&n.contentId===id})}
+function bd50(c,n){try{return n.similarityBreakdown||similarityBreakdown50(c,n)}catch(e){return {score:+n.similarity||0,reasons:[],shared:n.shared||[]}}}
+function bubbles50(){var s="";for(var i=0;i<16;i++){var w=4+(i%4)*2,left=4+(i*41)%92,dur=8+(i%6)*2,delay=-(i%8)*1.25,drift=((i%2)?1:-1)*(8+(i%5)*7);s+='<i class="dg50-bubble" style="width:'+w+'px;height:'+w+'px;left:'+left+'%;--dur:'+dur+'s;--delay:'+delay+'s;--drift:'+drift+'px"></i>'}return s}
+function reasons50(c,n,max){var b=bd50(c,n),r=(b.reasons||[]).slice(0,max||2);return r.map(function(x){return"<i>"+e50(x.label)+"</i>"}).join("")}
+function trail50(){
+ if(typeof state==="undefined")return "";
+ var h=state.universeHistory||[],start=Math.max(0,h.length-5);
+ return '<div class="dg50-trail"><small>DIVE TRAIL</small>'+h.slice(start).map(function(x,i){var idx=start+i,active=idx===state.universeHistoryIndex;return '<button type="button" class="'+(active?"active":"")+'" data-dg50-trail="'+idx+'" title="'+e50(x.title||x.contentId)+'">'+e50((x.title||x.contentId).slice(0,16))+'</button>'}).join("")+'</div>'
+}
+function ensure50(){
+ var p=q50("#universePanel");if(!p)return;p.classList.add("v3950-graph");
+ var h=q50("#v394UniverseHeader",p);if(h){var t=h.querySelector(".v394-universe-title");if(t)t.innerHTML='<small>VOCADIVE · DIVE GRAPH 4.0</small><h2>다이브</h2><p>한 곡을 중심으로 유사곡은 거리로, 수층 이동은 후보 선택으로, 지나온 길은 Dive Trail로 이어집니다.</p>'}
+ var layout=p.querySelector(".universe-layout");
+ if(layout&&!q50("#dg50Toolbar",p)){var b=document.createElement("div");b.id="dg50Toolbar";b.className="dg50-toolbar";b.innerHTML='<button type="button" data-dg50-back>← 이전</button><button type="button" data-dg50-forward>다음 →</button><button type="button" data-dg50-mode="explore">해류 탐색</button><button type="button" data-dg50-mode="similar">≈ 유사곡 소나</button><span id="dg50TrailMount"></span>';layout.parentNode.insertBefore(b,layout)}
+ bind50()
+}
+function sync50(c){
+ qa50("[data-dg50-mode]").forEach(function(b){b.classList.toggle("active",b.dataset.dg50Mode===mode50)});
+ if(typeof state!=="undefined"){var a=q50("[data-dg50-back]"),b=q50("[data-dg50-forward]");if(a)a.disabled=state.universeHistoryIndex<=0;if(b)b.disabled=state.universeHistoryIndex<0||state.universeHistoryIndex>=state.universeHistory.length-1}
+ var m=q50("#dg50TrailMount");if(m)m.outerHTML='<span id="dg50TrailMount">'+trail50()+'</span>'
+}
+function ranks50(d,c){
+ var ci=li50(c),all=(d.nodes||[]).slice(1).filter(function(n){return n&&n.contentId});
+ all.forEach(function(n){if(!n.similarityBreakdown&&typeof similarityBreakdown50==="function")n.similarityBreakdown=similarityBreakdown50(c,n);if(n.similarityBreakdown)n.similarity=n.similarityBreakdown.score});
+ var sim=all.slice().sort(function(a,b){return (+b.similarity||0)-(+a.similarity||0)||view50(b)-view50(a)});
+ var same=sim.filter(function(n){return li50(n)===ci});
+ var up=sim.filter(function(n){return li50(n)<ci}).sort(function(a,b){var da=ci-li50(a),db=ci-li50(b);return da-db||(+b.similarity||0)-(+a.similarity||0)});
+ var down=sim.filter(function(n){return li50(n)>ci}).sort(function(a,b){var da=li50(a)-ci,db=li50(b)-ci;return da-db||(+b.similarity||0)-(+a.similarity||0)});
+ var side=sim.filter(function(n){var s=+n.similarity||0;return li50(n)===ci&&s>=.18&&s<=.68});
+ return {similar:sim,same:same,up:up,down:down,side:side}
+}
+function sonarPos50(n,i){
+ var s=Math.max(0,Math.min(1,+n.similarity||0)),angle=(-Math.PI/2)+(i/Math.max(1,6))*Math.PI*2;
+ var radius=18+(1-s)*24;
+ return {left:(50+Math.cos(angle)*radius).toFixed(2)+"%",top:(50+Math.sin(angle)*radius).toFixed(2)+"%"}
+}
+function explorePos50(i){var p=[[20,20],[80,20],[15,57],[85,57],[28,84],[72,84]][i]||[50,82];return {left:p[0]+"%",top:p[1]+"%"}}
+function node50(n,c,i){
+ var b=bd50(c,n),sim=Math.round((b.score!=null?b.score:+n.similarity||0)*100),p=mode50==="similar"?sonarPos50(n,i):explorePos50(i),l=layer50(n);
+ return '<button type="button" class="dg50-node" style="left:'+p.left+';top:'+p.top+';transform:translate(-50%,-50%)" data-dg50-select="'+e50(n.contentId)+'">'+
+ (n.thumbnailUrl?'<img src="'+e50(n.thumbnailUrl)+'" loading="lazy" alt="">':'<span class="noimg">♪</span>')+
+ '<span class="dg50-node-copy"><b>'+e50(n.title||n.contentId)+'</b><small>'+year50(n)+' · '+fmt50(view50(n))+'회</small><em>'+sim+'% · '+l.ko+'</em></span><span class="why">'+reasons50(c,n,2)+'</span></button>'
+}
+function center50(c,d){
+ var l=layer50(c),tags=(d.queryTags||[]).slice(0,4);
+ return '<div class="dg50-center"><div class="dg50-center-main">'+(c.thumbnailUrl?'<img src="'+e50(c.thumbnailUrl)+'" alt="">':'<div class="noimg">♪</div>')+'<div><small>'+l.label+' · '+l.depth+'</small><h2>'+e50(c.title||c.contentId)+'</h2><p>'+year50(c)+' · 조회 '+fmt50(view50(c))+'</p><div class="oc49-tags">'+(tags.length?tags.map(function(x){return"<span>"+e50(x)+"</span>"}).join(""):"<span>해류 분석 중</span>")+'</div></div></div><div class="dg50-center-actions"><button type="button" data-dg50-detail="'+e50(c.contentId)+'">곡 상세</button><button type="button" class="primary" data-dg50-random>랜덤 다이브</button></div></div>'
+}
+function gatewayHtml50(dir,rows,c){
+ var title=dir==="down"?"더 깊은 수층 후보":dir==="up"?"더 얕은 수층 후보":"샛길 해류 후보";
+ var icon=dir==="down"?"↓":dir==="up"?"↑":"↝";
+ return '<div class="dg50-gateway" data-dg50-gateway><div class="dg50-gateway-card"><div class="dg50-gateway-head"><div><small>'+icon+' CURRENT SELECTOR</small><h3>'+title+'</h3><p>바로 이동하지 않고, 다음 해역에서 이어질 곡을 먼저 고릅니다.</p></div><button type="button" data-dg50-close>×</button></div><div class="dg50-gateway-list">'+
+ (rows.length?rows.slice(0,4).map(function(n){var l=layer50(n),sim=Math.round((+n.similarity||0)*100);return '<button type="button" class="dg50-candidate" data-dg50-go="'+e50(n.contentId)+'" data-dg50-dir="'+dir+'">'+(n.thumbnailUrl?'<img src="'+e50(n.thumbnailUrl)+'" loading="lazy" alt="">':'<span class="noimg">♪</span>')+'<span><b>'+e50(n.title||n.contentId)+'</b><small>'+l.ko+' · 유사도 '+sim+'% · 조회 '+fmt50(view50(n))+'</small><span>'+reasons50(c,n,2)+'</span></span></button>'}).join(""):'<div class="sea48-empty-layer">이 방향으로 이어질 후보가 부족합니다.</div>')+
+ '</div></div></div>'
+}
+function side50(n,d){
+ var c=d.center,l=layer50(n),b=bd50(c,n),sim=n.contentId===c.contentId?100:Math.round((b.score!=null?b.score:+n.similarity||0)*100);
+ return '<div class="sea48-side-card"><div class="dive46-side-cover">'+(n.thumbnailUrl?'<img src="'+e50(n.thumbnailUrl)+'" alt="">':'<div class="noimg">♪</div>')+'</div><div class="dive46-side-kicker"><span class="dive46-badge">'+l.label+' · '+l.ko+'</span><span class="dive46-badge">유사도 '+sim+'%</span></div><h3>'+e50(n.title||n.contentId)+'</h3><div class="dive46-side-meta">'+l.depth+' · '+year50(n)+' · 조회 '+fmt50(view50(n))+'</div><div class="dive46-side-reason"><small>'+((n.contentId===c.contentId)?"현재 곡의 핵심 태그":"유사도 2.0 근거")+'</small><div>'+((n.contentId===c.contentId)?(d.queryTags||[]).slice(0,5).map(function(x){return"<span>"+e50(x)+"</span>"}).join(""):(b.reasons||[]).slice(0,5).map(function(x){return"<span>"+e50(x.label)+" +"+x.points+"</span>"}).join("")||"<span>태그 기반 연결</span>")+'</div></div><div class="sea48-side-actions">'+(n.contentId!==c.contentId?'<button type="button" class="primary" data-dg50-go="'+e50(n.contentId)+'" data-dg50-dir="'+(li50(n)>li50(c)?"down":li50(n)<li50(c)?"up":"side")+'">이 곡으로 다이브</button>':'')+'<button type="button" data-dg50-detail="'+e50(n.contentId)+'">곡 상세</button><button type="button" data-dg50-pin="'+e50(n.contentId)+'">'+((typeof isUniversePinned39==="function"&&isUniversePinned39(n.contentId))?"핀 해제":"핀 고정")+'</button></div></div>'
+}
+function scene50(d){
+ var c=d.center,l=layer50(c),r=ranks50(d,c),nodes=(mode50==="similar"?r.similar:r.same).slice(0,6);
+ var title=mode50==="similar"?"유사곡 소나 · "+l.ko:"같은 수층 해류 · "+l.ko;
+ var desc=mode50==="similar"?"중심에 가까울수록 유사도가 높습니다. 링 바깥으로 갈수록 연결이 약해집니다.":"현재 곡과 같은 수층에 있는 연관곡만 먼저 보여줍니다.";
+ return '<div class="dg50-ocean '+(mode50==="similar"?"sonar":"")+'" data-layer="'+l.key+'"><div class="dg50-bg"></div><div class="dg50-light"></div><div class="dg50-specks"></div><div class="dg50-bubbles">'+bubbles50()+'</div><div class="dg50-rings"></div><div class="dg50-content"><div class="dg50-head"><div><small>'+l.label+' · '+l.range+'</small><h3>'+title+'</h3><p>'+desc+'</p></div><div class="dg50-depth"><b>'+l.depth+'</b><span>현재 탐색 수심</span></div></div><div class="dg50-map">'+nodes.map(function(n,i){return node50(n,c,i)}).join("")+center50(c,d)+'</div><div class="dg50-nav"><button type="button" data-dg50-open="up" '+(r.up.length?"":"disabled")+'>↑ 얕은 해류'+(r.up.length?" · "+r.up.length+"곡":"")+'</button><button type="button" data-dg50-open="side" '+(r.side.length?"":"disabled")+'>↝ 샛길'+(r.side.length?" · "+r.side.length+"곡":"")+'</button><button type="button" data-dg50-open="down" '+(r.down.length?"":"disabled")+'>↓ 깊은 해류'+(r.down.length?" · "+r.down.length+"곡":"")+'</button></div></div>'+(gateway50?gatewayHtml50(gateway50.dir,gateway50.rows,c):"")+'<div class="dg50-transition"><b>해류를 따라 이동 중…</b></div></div>'
+}
+function render50(d){
+ ensure50();sync50(d.center);var ld=q50("#universeEmpty");if(ld)ld.style.display="none";var stage=q50("#universePanel .universe-stage");if(stage){stage.innerHTML=scene50(d);if(enter50){var o=q50(".dg50-ocean",stage);if(o){o.classList.add("enter-"+enter50);setTimeout(function(){o.classList.remove("enter-"+enter50)},560)}enter50=""}}var info=q50("#universeInfo");if(info)info.innerHTML=side50(d.center,d)
+}
+function select50(id){var d=data50(),n=find50(id,d);if(!n)return;qa50(".dg50-node").forEach(function(x){x.classList.toggle("selected",x.dataset.dg50Select===id)});var info=q50("#universeInfo");if(info)info.innerHTML=side50(n,d)}
+function open50(dir){var d=data50();if(!d)return,r=ranks50(d,d.center),rows=dir==="up"?r.up:dir==="down"?r.down:r.side;gateway50={dir:dir,rows:rows};render50(d)}
+function go50(id,dir){
+ if(busy50||!id)return;var d=data50(),n=find50(id,d);if(!n)return;busy50=true;gateway50=null;var o=q50(".dg50-ocean");if(o)o.classList.add("go-"+dir);enter50=dir;
+ setTimeout(function(){var p;try{p=typeof buildUniverse==="function"?buildUniverse(n,false):(window.centerUniverseOnId39?window.centerUniverseOnId39(id):null)}catch(e){busy50=false;enter50="";return}Promise.resolve(p).catch(function(){enter50=""}).finally(function(){setTimeout(function(){busy50=false},80)})},480)
+}
+function random50(){
+ if(busy50)return;var d=data50();if(!d)return,r=ranks50(d,d.center),pool=[];
+ pool=pool.concat(r.same.slice(0,4),r.down.slice(0,3),r.side.slice(0,2),r.similar.slice(0,2)).filter(function(n,i,a){return n&&a.findIndex(function(x){return x.contentId===n.contentId})===i});
+ if(!pool.length)pool=(d.nodes||[]).slice(1);if(!pool.length)return;
+ var n=pool[Math.floor(Math.random()*pool.length)],dir=li50(n)>li50(d.center)?"down":li50(n)<li50(d.center)?"up":"side";go50(n.contentId,dir)
+}
+function bind50(){
+ var p=q50("#universePanel");if(!p||bound50)return;bound50=true;
+ p.addEventListener("click",function(ev){var t=ev.target.closest&&ev.target.closest("button,[data-dg50-select]");if(!t)return;
+  if(t.matches("[data-dg50-back]")){ev.preventDefault();ev.stopImmediatePropagation();if(typeof navigateUniverseHistory39==="function")navigateUniverseHistory39(-1);return}
+  if(t.matches("[data-dg50-forward]")){ev.preventDefault();ev.stopImmediatePropagation();if(typeof navigateUniverseHistory39==="function")navigateUniverseHistory39(1);return}
+  if(t.matches("[data-dg50-mode]")){ev.preventDefault();ev.stopImmediatePropagation();mode50=t.dataset.dg50Mode==="similar"?"similar":"explore";gateway50=null;var d=data50();if(d)render50(d);return}
+  if(t.matches("[data-dg50-random]")){ev.preventDefault();ev.stopImmediatePropagation();random50();return}
+  if(t.matches("[data-dg50-open]")){ev.preventDefault();ev.stopImmediatePropagation();open50(t.dataset.dg50Open);return}
+  if(t.matches("[data-dg50-close]")){ev.preventDefault();ev.stopImmediatePropagation();gateway50=null;var dc=data50();if(dc)render50(dc);return}
+  if(t.matches("[data-dg50-trail]")){ev.preventDefault();ev.stopImmediatePropagation();if(typeof state!=="undefined"){var idx=+t.dataset.dg50Trail,delta=idx-state.universeHistoryIndex;if(delta&&typeof navigateUniverseHistory39==="function")navigateUniverseHistory39(delta)}return}
+  var go=t.closest("[data-dg50-go]");if(go){ev.preventDefault();ev.stopImmediatePropagation();go50(go.dataset.dg50Go,go.dataset.dg50Dir||"side");return}
+  var sel=t.closest("[data-dg50-select]");if(sel){ev.preventDefault();ev.stopImmediatePropagation();select50(sel.dataset.dg50Select);return}
+  var det=t.closest("[data-dg50-detail]");if(det){ev.preventDefault();ev.stopImmediatePropagation();if(window.VSAOpenSong39)window.VSAOpenSong39(det.dataset.dg50Detail,true);return}
+  var pin=t.closest("[data-dg50-pin]");if(pin){ev.preventDefault();ev.stopImmediatePropagation();if(window.toggleUniversePin39)window.toggleUniversePin39(pin.dataset.dg50Pin);pin.textContent=(typeof isUniversePinned39==="function"&&isUniversePinned39(pin.dataset.dg50Pin))?"핀 해제":"핀 고정";return}
+ },true)
+}
+window.renderUniverse=render50;
+window.randomUniverseWarp39=random50;
+window.VSADiveGraph50={render:render50,random:random50,open:open50,go:go50,setMode:function(m){mode50=m==="similar"?"similar":"explore";gateway50=null;var d=data50();if(d)render50(d)}};
+function boot50(){ensure50();var size=q50("#universeSize");if(size&&+size.value<32)size.value="32";var d=data50();if(d)render50(d)}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(boot50,45)});else setTimeout(boot50,45);
+window.addEventListener("popstate",function(){setTimeout(function(){ensure50();var d=data50();if(d)render50(d)},20)});
 })();
 </script>
 
