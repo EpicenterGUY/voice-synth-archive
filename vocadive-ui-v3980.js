@@ -254,6 +254,61 @@ body.v37-ready :is(input,select,textarea):focus{border-color:rgba(108,221,210,.5
 .v33-search-box input{min-height:46px!important;border-radius:999px!important;padding:0 16px!important}
 .v33-search-box button{min-width:68px!important;border:0!important;border-radius:999px!important;background:#e7f6f4!important;color:#071012!important;font-weight:950!important}
 
+
+/* Search/result list: YouTube-like information density */
+body.v37-ready #songList.list{max-height:none!important;padding:0!important;overflow:visible!important}
+body.v37-ready #songList .song{
+ position:relative!important;display:grid!important;grid-template-columns:34px 156px minmax(0,1fr) auto!important;
+ gap:11px!important;align-items:center!important;padding:10px 2px!important;
+ border:0!important;border-bottom:1px solid var(--vd-line)!important;border-radius:0!important;background:transparent!important
+}
+body.v37-ready #songList .song:hover{background:#0b171a!important}
+body.v37-ready #songList .rank{font-size:11px!important;font-weight:900!important;color:#77928f!important;text-align:center!important}
+body.v37-ready #songList .thumb{
+ width:156px!important;height:88px!important;aspect-ratio:16/9!important;border-radius:10px!important;object-fit:cover!important;background:#101c1f!important
+}
+body.v37-ready #songList .song-title{
+ display:-webkit-box!important;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden!important;
+ color:var(--vd-text)!important;font-size:13px!important;line-height:1.35!important;font-weight:850!important
+}
+body.v37-ready #songList .meta{margin-top:5px!important;gap:7px!important;color:var(--vd-muted)!important;font-size:8.5px!important}
+body.v37-ready #songList .views{min-width:72px!important;color:#d9e7e5!important;font-size:12px!important;text-align:right!important}
+body.v37-ready #songList .views small{color:var(--vd-muted)!important;font-size:7px!important}
+body.v37-ready #songList .rankbox{margin-top:6px!important;gap:4px!important}
+body.v37-ready #songList .rankchip{
+ min-height:22px!important;padding:0 7px!important;border:0!important;border-radius:999px!important;
+ background:#132326!important;color:#aebfbd!important;font-size:7.5px!important
+}
+body.v37-ready #songList .rank-note{margin-top:5px!important;color:#657c79!important;font-size:7px!important;line-height:1.4!important}
+body.v37-ready #songList .song-actions{margin-top:7px!important;gap:5px!important}
+body.v37-ready #songList .mini-btn{
+ min-height:29px!important;padding:0 9px!important;border:0!important;border-radius:999px!important;
+ background:#152629!important;color:#c7d9d6!important;font-size:8px!important
+}
+body.v37-ready #songList .mini-btn:last-child{background:#17373c!important;color:#e4fbf7!important}
+body.v37-ready #songList+.loadmore{
+ width:100%!important;margin:10px 0!important;border:0!important;border-radius:12px!important;background:#142326!important;color:#dceae8!important
+}
+@media(max-width:699px){
+ body.v37-ready #songList .song{
+   grid-template-columns:24px 104px minmax(0,1fr)!important;gap:8px!important;padding:9px 0!important;align-items:start!important
+ }
+ body.v37-ready #songList .rank{font-size:9px!important;padding-top:4px!important}
+ body.v37-ready #songList .thumb{width:104px!important;height:59px!important;border-radius:8px!important}
+ body.v37-ready #songList .song-title{font-size:10.5px!important;line-height:1.3!important}
+ body.v37-ready #songList .meta{margin-top:3px!important;font-size:7px!important;gap:4px!important}
+ body.v37-ready #songList .meta span:nth-child(n+3){display:none!important}
+ body.v37-ready #songList .views{
+   grid-column:3!important;min-width:0!important;margin-top:3px!important;text-align:left!important;font-size:9px!important
+ }
+ body.v37-ready #songList .views small{display:inline!important;margin-left:3px!important;font-size:6.5px!important}
+ body.v37-ready #songList .rankbox{margin-top:4px!important}
+ body.v37-ready #songList .rankchip:nth-child(n+3){display:none!important}
+ body.v37-ready #songList .rank-note{display:none!important}
+ body.v37-ready #songList .song-actions{margin-top:5px!important;flex-wrap:nowrap!important;overflow-x:auto!important;scrollbar-width:none!important}
+ body.v37-ready #songList .mini-btn{flex:0 0 auto!important;min-height:27px!important;padding:0 8px!important;font-size:7px!important}
+}
+
 /* Dive keeps its world, but content follows the same product UI. */
 #universePanel.v3958-rel .mr58-shell{border:0!important;border-radius:16px!important;box-shadow:none!important}
 #universePanel.v3958-rel .mr58-content{padding:14px!important}
