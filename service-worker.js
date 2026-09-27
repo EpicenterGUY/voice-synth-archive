@@ -65,7 +65,7 @@ self.addEventListener("fetch",event=>{
   const url=new URL(req.url);
   if(url.origin!==self.location.origin)return;
 
-  if(url.pathname.endsWith("/changelog.json")||url.pathname.endsWith("/manifest.webmanifest")){
+  if(url.pathname.endsWith("/changelog.json")||url.pathname.endsWith("/web-latest.json")||url.pathname.endsWith("/manifest.webmanifest")){
     event.respondWith(networkFirst(req));
     return;
   }
