@@ -12776,7 +12776,7 @@ function center58(c,d){
 }
 function node58(x,i,c){
  var n=x.song,r=x.rel,p=pos58(i,r),dm=depthMeta58(n),delta=depth58(n)-depth58(c),dir=delta>0?"deeper":delta<0?"shallower":"same";
- return '<article class="mr58-node mr75-'+dir+'" style="left:'+p[0]+'%;top:'+p[1]+'%;transform:translate(-50%,-50%);--mr75-order:'+i+'" data-mr58-node-id="'+e58(n.contentId)+'" data-mr75-dir="'+dir+'">'+
+ return '<article class="mr58-node mr75-'+dir+'" style="left:'+p[0]+'%;top:'+p[1]+'%;transform:translate(-50%,-50%);--mr75-order:'+i+';--mr75-enter-delay:'+(i*55)+'ms;--mr75-float-delay:-'+(i*310)+'ms" data-mr58-node-id="'+e58(n.contentId)+'" data-mr75-dir="'+dir+'">'+
   '<button type="button" class="mr58-node-main" data-mr58-select="'+e58(n.contentId)+'">'+
    (n.thumbnailUrl?'<img src="'+e58(n.thumbnailUrl)+'" loading="lazy" alt="">':'<span class="noimg">♪</span>')+
    '<span class="mr58-node-copy"><b>'+e58(n.title||n.contentId)+'</b><small>'+(year58(n)||"연도 미상")+' · '+fmt58(views58(n))+'회 · '+e58(dm.name)+'</small><em class="mr58-node-score">'+e58(depthDirection58(c,n))+' · 연결 '+Math.round(r.score*100)+'%</em></span>'+
@@ -13732,7 +13732,7 @@ body.mr74-transitioning{overflow:hidden!important}
   height:auto!important;min-height:84px!important;max-height:none!important;align-self:start!important;
   place-self:auto stretch!important;overflow:hidden!important;contain:layout paint;
   animation:mr75NodeReveal .46s cubic-bezier(.2,.75,.25,1) both;
-  animation-delay:calc(var(--mr75-order,0) * 55ms)
+  animation-delay:var(--mr75-enter-delay,0ms)
 }
 #universePanel.v3958-rel .mr58-node.mr75-deeper{border-left:2px solid rgba(73,154,211,.42)!important}
 #universePanel.v3958-rel .mr58-node.mr75-shallower{border-left:2px solid rgba(106,221,210,.42)!important}
@@ -13755,7 +13755,7 @@ body.mr74-transitioning{overflow:hidden!important}
 #universePanel.v3958-rel.mr75-moving [data-mr58-depth-step],
 #universePanel.v3958-rel.mr75-moving [data-mr58-depth-target],
 #universePanel.v3958-rel.mr75-moving [data-mr58-random]{pointer-events:none!important;opacity:.48!important}
-#universePanel.v3958-rel .mr58-node-main{animation:mr75CardFloat 5.5s ease-in-out infinite;animation-delay:calc(var(--mr75-order,0) * -310ms)}
+#universePanel.v3958-rel .mr58-node-main{animation:mr75CardFloat 5.5s ease-in-out infinite;animation-delay:var(--mr75-float-delay,0ms)}
 #universePanel.v3958-rel .mr75-deeper .mr58-node-main{animation-duration:6.4s}
 #universePanel.v3958-rel .mr75-shallower .mr58-node-main{animation-duration:5.1s}
 .mr75-trans-depth{display:grid;grid-template-columns:repeat(5,22px);gap:5px;justify-content:center;margin-top:8px}
