@@ -81,6 +81,9 @@ jobs:
       - name: Install dependencies
         run: npm install --no-audit --no-fund
 
+      - name: Static smoke check
+        run: npm run check:static
+
       - name: Prepare web bundle
         run: npm run build:app
 
