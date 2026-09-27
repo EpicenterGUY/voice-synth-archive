@@ -1,11 +1,30 @@
 {
   "current": {
-    "version": "39.65.0",
+    "version": "39.66.0",
     "releasedAt": "2026-09-27",
-    "title": "Search Fix · Rank Turbo 1.0 · Home Polish",
-    "summary": "다이브 검색 반응 문제를 재바인딩·local-first 검색으로 수정하고, 보컬/UTAU 전수 랭킹 다운로드를 병렬화하면서 홈의 줄바꿈 문자와 이어보기 버튼 배치도 함께 정리했습니다."
+    "title": "Direct APK Update 1.0 · Signed Release Channel",
+    "summary": "직접 설치 Android APK가 새 버전을 확인해 Wi-Fi에서 자동 다운로드하고 Android 설치 확인창으로 이어지는 자체 업데이트 채널과 영구 서명 릴리스 파이프라인을 추가했습니다."
   },
   "entries": [
+    {
+      "version": "39.66.0",
+      "date": "2026-09-27",
+      "title": "Direct APK Update 1.0 · Signed Release Channel",
+      "changes": [
+        "Android 직접 배포 APK가 앱 시작 시 최신 GitHub Release를 확인하는 자동 업데이트 계층을 추가",
+        "새 버전이 있으면 앱 내부 배너와 설정 카드에서 현재 버전→최신 버전, 다운로드 상태, 설치 상태를 표시",
+        "Wi-Fi에서는 업데이트 APK를 자동 다운로드하고 다운로드 완료 뒤 Android 시스템 설치 확인창으로 이어지도록 구성",
+        "모바일 데이터에서는 자동 다운로드하지 않고 사용자가 직접 다운로드를 눌러 시작하도록 구성",
+        "Android 8 이상에서 '알 수 없는 앱 설치' 권한이 없으면 VocaDive 전용 설치 권한 설정 화면으로 이동하고 다운로드된 APK를 유지",
+        "업데이트 APK는 앱 전용 외부 저장 영역에 저장하고 GitHub Release가 제공하는 SHA-256 digest가 있으면 설치 전 무결성을 확인",
+        "native VocaDiveUpdater 플러그인을 빌드 시 자동 주입해 앱 버전 확인, 다운로드 진행률, 설치 권한, APK 설치 Intent를 처리",
+        "package.json 버전을 Android versionName/versionCode로 자동 변환해 v39.66.0은 versionCode 39066000으로 빌드",
+        "GitHub Actions에 영구 서명키 기반 android-release.yml을 추가해 signed VocaDive.apk + latest.json을 GitHub Release에 게시할 수 있게 준비",
+        "정식 서명 APK는 항상 같은 영구 서명키를 사용해야 기존 앱 위에 업데이트할 수 있으므로 debug APK에서는 직접 덮어쓰기를 의도적으로 비활성화",
+        "업데이트용 영구 keystore는 저장소에 넣지 않고 GitHub Actions Secrets 4종으로만 주입하도록 배포 파이프라인을 구성",
+        "앱·PWA·서비스워커·manifest·네이티브 런타임 버전을 v39.66.0으로 통일"
+      ]
+    },
     {
       "version": "39.65.0",
       "date": "2026-09-27",
