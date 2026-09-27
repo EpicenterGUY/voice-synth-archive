@@ -3349,7 +3349,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.51.0 · Mini Return · Dive Handoff · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.1 · Depth Engine 2.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.52.0 · Mini Return · Dive Handoff · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.2 · Mobile Dive UX · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -10846,7 +10846,7 @@ function ensure(name){
   else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.45.0","./smart-v23.js?v=39.45.0","./playlist-v24.js?v=39.45.0"]);
   else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.45.0");
   else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.45.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.45.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.52.0");
   else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.45.0");
   else if(name==="deviceSync")groups[name]=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.45.0");
   else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.45.0");
@@ -11840,7 +11840,7 @@ function trail50(){
 }
 function ensure50(){
  var p=q50("#universePanel");if(!p)return;p.classList.add("v3950-graph");
- var h=q50("#v394UniverseHeader",p);if(h){var t=h.querySelector(".v394-universe-title");if(t)t.innerHTML='<small>VOCADIVE · DIVE GRAPH 4.1</small><h2>다이브</h2><p>한 곡을 중심으로 유사곡은 거리로, 수층 이동은 후보 선택으로, 지나온 길은 Dive Trail로 이어집니다.</p>'}
+ var h=q50("#v394UniverseHeader",p);if(h){var t=h.querySelector(".v394-universe-title");if(t)t.innerHTML='<small>VOCADIVE · DIVE GRAPH 4.2</small><h2>다이브</h2><p>한 곡을 중심으로 유사곡은 거리로, 수층 이동은 후보 선택으로, 지나온 길은 Dive Trail로 이어집니다.</p>'}
  var layout=p.querySelector(".universe-layout");
  if(layout&&!q50("#dg50Toolbar",p)){var b=document.createElement("div");b.id="dg50Toolbar";b.className="dg50-toolbar";b.innerHTML='<button type="button" data-dg50-back>← 이전</button><button type="button" data-dg50-forward>다음 →</button><button type="button" data-dg50-mode="explore">해류 탐색</button><button type="button" data-dg50-mode="similar">≈ 유사곡 소나</button><span id="dg50TrailMount"></span>';layout.parentNode.insertBefore(b,layout)}
  bind50()
@@ -11953,5 +11953,91 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
 window.addEventListener("popstate",function(){setTimeout(function(){ensure50();var d=data50();if(d)render50(d)},20)});
 })();
 </script>
+
+
+<style id="v3952DiveMobilePolish">
+/* v39.52 · Dive mobile layout repair */
+#universePanel.v3950-graph{min-width:0;max-width:100%;overflow-x:hidden}
+#universePanel.v3950-graph .universe-layout,
+#universePanel.v3950-graph .universe-stage,
+#universePanel.v3950-graph .universe-side{min-width:0;max-width:100%;box-sizing:border-box}
+.dg50-toolbar{min-width:0;max-width:100%;box-sizing:border-box;overflow:hidden}
+.dg50-toolbar>*{min-width:0}
+#dg50TrailMount{min-width:0;overflow:hidden}
+.dg50-trail{max-width:100%;box-sizing:border-box}
+.dg50-nav{position:relative;z-index:12}
+@media(max-width:699px){
+  body.v37-ready .v37-universe-page{padding-bottom:calc(108px + env(safe-area-inset-bottom))!important}
+  body.v37-ready .v37-universe-page #universePanel{padding-bottom:14px!important}
+  .dg50-toolbar{
+    position:sticky!important;top:4px!important;
+    width:100%!important;max-width:100%!important;
+    display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:4px!important;padding:5px!important;overflow:hidden!important
+  }
+  .dg50-toolbar>button{
+    width:100%!important;min-width:0!important;max-width:100%!important;
+    min-height:39px!important;padding:0 4px!important;
+    font-size:7px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important
+  }
+  #dg50TrailMount{grid-column:1/-1!important;width:100%!important}
+  .dg50-trail{
+    width:100%!important;justify-content:flex-start!important;
+    overflow-x:auto!important;overflow-y:hidden!important;
+    padding:3px 1px!important;scrollbar-width:none!important
+  }
+  .dg50-trail::-webkit-scrollbar{display:none!important}
+  .dg50-trail>small{position:sticky;left:0;z-index:2;padding:0 5px 0 1px;background:rgba(4,22,30,.94)}
+  .dg50-trail button{flex:0 0 auto!important;width:auto!important;max-width:118px!important;min-height:30px!important;padding:0 8px!important}
+  .dg50-ocean{
+    width:100%!important;max-width:100%!important;
+    min-height:760px!important;margin-bottom:96px!important;border-radius:18px!important
+  }
+  .dg50-content{min-height:760px!important;padding:10px 9px 92px!important}
+  .dg50-head{gap:8px!important}.dg50-head h3{font-size:18px!important}.dg50-head p{font-size:7px!important;max-width:72%!important}.dg50-depth b{font-size:14px!important}
+  .dg50-map{min-height:590px!important;margin-top:4px!important}
+  .dg50-center{
+    top:49%!important;left:50%!important;
+    width:calc(100% - 28px)!important;max-width:390px!important;
+    padding:9px!important;z-index:14!important
+  }
+  .dg50-center-main{grid-template-columns:88px minmax(0,1fr)!important;gap:8px!important}
+  .dg50-center img,.dg50-center .noimg{width:88px!important}
+  .dg50-center h2{font-size:13px!important;line-height:1.24!important}
+  .dg50-center p{font-size:6.5px!important}
+  .dg50-center-actions button{min-height:40px!important;font-size:8px!important}
+  .dg50-map>.dg50-node{
+    width:44%!important;max-width:180px!important;
+    grid-template-columns:52px minmax(0,1fr)!important;
+    padding:6px!important;z-index:9!important
+  }
+  .dg50-map>.dg50-node img,.dg50-map>.dg50-node .noimg{width:52px!important}
+  .dg50-map>.dg50-node:nth-of-type(1){left:24%!important;top:13%!important}
+  .dg50-map>.dg50-node:nth-of-type(2){left:76%!important;top:13%!important}
+  .dg50-map>.dg50-node:nth-of-type(3){left:24%!important;top:86%!important}
+  .dg50-map>.dg50-node:nth-of-type(4){left:76%!important;top:86%!important}
+  .dg50-map>.dg50-node:nth-of-type(n+5){display:none!important}
+  .dg50-node .why{display:none!important}
+  .dg50-rings{width:410px!important;height:410px!important;opacity:.75}
+  .dg50-nav{
+    grid-template-columns:1fr 1fr 1fr!important;
+    gap:5px!important;margin-top:12px!important;padding-bottom:8px!important
+  }
+  .dg50-nav button{min-width:0!important;min-height:46px!important;padding:0 5px!important;font-size:7px!important}
+  .dg50-gateway{padding:10px!important;align-items:end!important;padding-bottom:calc(88px + env(safe-area-inset-bottom))!important}
+  .dg50-gateway-card{max-height:72dvh!important;overflow:auto!important;border-radius:18px!important}
+  .dg50-gateway-list{grid-template-columns:1fr!important}
+  #universePanel.v3950-graph .universe-side{margin-bottom:92px!important}
+}
+@media(max-width:420px){
+  .dg50-toolbar{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #dg50TrailMount{grid-column:1/-1!important}
+  .dg50-map{min-height:610px!important}
+  .dg50-map>.dg50-node{width:46%!important;grid-template-columns:48px minmax(0,1fr)!important}
+  .dg50-map>.dg50-node img,.dg50-map>.dg50-node .noimg{width:48px!important}
+  .dg50-nav{grid-template-columns:1fr!important}
+  .dg50-center{width:calc(100% - 20px)!important}
+}
+</style>
 
 </body>\n</html>
