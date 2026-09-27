@@ -1,4 +1,4 @@
-name: Android debug APK
+name: Android debug app bundle
 
 on:
   workflow_dispatch:
@@ -10,6 +10,7 @@ on:
     paths:
       - "package.json"
       - "capacitor.config.json"
+      - "assets/**"
       - "scripts/**"
       - "native-shell-v3963.js"
       - "app-platform-v3962.js"
@@ -59,18 +60,33 @@ jobs:
           if [ ! -d android ]; then
             npx cap add android
           fi
-          npx cap sync android
 
-      - name: Build debug APK
+      - name: Generate launcher icon and splash assets
+        run: npm run assets:android
+
+      - name: Sync Capacitor plugins and web bundle
+        run: npx cap sync android
+
+      - name: Verify native shell
+        shell: bash
+        run: |
+          test -f android/app/src/main/AndroidManifest.xml
+          test -f android/app/src/main/res/mipmap-hdpi/ic_launcher.png
+          test -f android/app/src/main/res/drawable/splash.png || test -f android/app/src/main/res/drawable-port-hdpi/splash.png || true
+          grep -R "app.vocadive.mobile" android/app/build.gradle android/app/build.gradle.kts >/dev/null 2>&1 || true
+
+      - name: Build debug APK and AAB
         working-directory: android
         run: |
           chmod +x ./gradlew
-          ./gradlew assembleDebug --stacktrace
+          ./gradlew assembleDebug bundleDebug --stacktrace
 
-      - name: Upload APK
+      - name: Upload Android debug artifacts
         uses: actions/upload-artifact@v4
         with:
           name: VocaDive-Android-debug-${{ github.sha }}
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          path: |
+            android/app/build/outputs/apk/debug/app-debug.apk
+            android/app/build/outputs/bundle/debug/app-debug.aab
           if-no-files-found: error
           retention-days: 14
