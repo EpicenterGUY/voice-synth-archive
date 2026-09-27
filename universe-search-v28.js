@@ -1,4 +1,4 @@
-/* VocaDive Dive Start v39.56 · Latin Title Recall */
+/* VocaDive Dive Start v39.65 · Search Response 2.0 */
 (function(){
 "use strict";
 var recentKey="vsa.universe.search.v28";
@@ -149,25 +149,28 @@ async function fetchVerifiedTitleIds56(q){
   }
   return out
 }
+async function remoteQuery65(q,scope,target,limit){
+  try{
+    return await fetchNico({
+      year:"all",limit:limit||50,offset:0,mode:"free",query:q,scope:scope,
+      queryTargets:target,sort:"-viewCounter",applyYear:false,applyTier:false
+    })
+  }catch(e){return null}
+}
 async function remoteSearch(q,scope){
   var isId=/^(sm|nm|so|lv)?\d+$/i.test(q),selected=scope||"all_voice_synth",contentMode=diveMode53();
-  var targets=isId?["contentId","title,description,tags"]:["title","title,description,tags","tags"];
+  var targets=isId?["contentId","title,description,tags"]:["title","tags","title,description,tags"];
   var scopes=contentMode==="original"?(selected==="all"?["all"]:[selected,"all"]):["all"];
   var out=[],seen=new Set();remoteSearch.expanded=false;remoteSearch.recallAttempted=false;remoteSearch.caseExpanded=false;
+  function addData(data){
+    (data&&data.data||[]).forEach(function(song){
+      if(song&&song.contentId&&!seen.has(song.contentId)){seen.add(song.contentId);out.push(song)}
+    })
+  }
   for(var s=0;s<scopes.length;s++){
     var sc=scopes[s];
-    for(var i=0;i<targets.length;i++){
-      try{
-        var data=await fetchNico({
-          year:"all",limit:50,offset:0,mode:"free",query:q,scope:sc,
-          queryTargets:targets[i],sort:"-viewCounter",applyYear:false,applyTier:false
-        });
-        (data.data||[]).forEach(function(song){
-          if(song&&song.contentId&&!seen.has(song.contentId)){seen.add(song.contentId);out.push(song)}
-        });
-        if(out.some(function(song){return exactSongMatch(song,q)}))break
-      }catch(e){}
-    }
+    var pages=await Promise.all(targets.map(function(target){return remoteQuery65(q,sc,target,50)}));
+    pages.forEach(addData);
     if(out.some(function(song){return exactSongMatch(song,q)}))break;
     if(selected==="all"&&out.length)break;
     if(s===1&&out.length)remoteSearch.expanded=true
@@ -282,31 +285,43 @@ function render(rows){
       '<strong>다이브 시작 ›</strong></button>';
   }).join("");
 }
+var searchSeq65=0;
 async function runSearch(){
+  var seq=++searchSeq65;
   var shell=document.getElementById("universeSearchBar");if(shell)shell.classList.remove("center-selected");
   var input=document.getElementById("universeSearchInput");
   var scope=document.getElementById("universeSearchScope");
   var status=document.getElementById("universeSearchStatus");
   var button=document.getElementById("universeSearchBtn");
   var q=input?input.value.trim():"";
-  if(!q)return;
-  remember(q);
-  renderRecent();
-  if(button)button.disabled=true;
-  if(status)status.textContent=diveModeLabel53()+" 기준으로 시작곡을 찾는 중…";
-  var local=filterDiveRows53(localSearch(q),"universe_search_local");
-  var remote=[];
-  try{
-    if(typeof relayBase!=="function"||relayBase()){
-      remote=await remoteSearch(q,scope?scope.value:"all_voice_synth");
-    }
-  }catch(e){}
+  if(!q){if(status)status.textContent="검색어를 입력해 주세요.";return}
+  remember(q);renderRecent();
+  if(button){button.disabled=true;button.textContent="검색 중…"}
+  if(status)status.textContent=diveModeLabel53()+" 기준 검색 시작…";
   var selectedScope=scope?scope.value:"all_voice_synth";
-  var merged=merge(local,remote,q,selectedScope);
-  render(merged);
-  if(status&&merged.length&&remoteSearch.expanded&&!(merge.lastStats&&merge.lastStats.rescued))status.textContent=merged.length+"곡 찾음 · 선택 범위에서 없어 니코동 전체까지 찾았습니다.";
-  if(button)button.disabled=false;
+  var local=[];
+  try{local=filterDiveRows53(localSearch(q),"universe_search_local")}catch(e){local=[]}
+  if(local.length){
+    render(merge(local,[],q,selectedScope));
+    if(status)status.textContent="기기에서 "+local.length+"곡 먼저 찾음 · 온라인 결과 합치는 중…"
+  }else if(status)status.textContent="온라인에서 "+q+" 검색 중…";
+  try{
+    var remote=[];
+    if(typeof relayBase!=="function"||relayBase())remote=await remoteSearch(q,selectedScope);
+    if(seq!==searchSeq65)return;
+    var merged=merge(local,remote,q,selectedScope);
+    render(merged);
+    if(status&&merged.length&&remoteSearch.expanded&&!(merge.lastStats&&merge.lastStats.rescued))status.textContent=merged.length+"곡 찾음 · 선택 범위에서 없어 니코동 전체까지 찾았습니다.";
+    if(status&&!merged.length&&typeof relayBase==="function"&&!relayBase())status.textContent="검색 결과 없음 · Worker 연결이 없어 기기 내 데이터만 검색했습니다.";
+  }catch(e){
+    if(seq!==searchSeq65)return;
+    var fallback=merge(local,[],q,selectedScope);render(fallback);
+    if(status)status.textContent=fallback.length?fallback.length+"곡 찾음 · 온라인 검색은 실패했습니다.":"검색 실패 · "+String(e&&e.message||e)
+  }finally{
+    if(seq===searchSeq65&&button){button.disabled=false;button.textContent="검색"}
+  }
 }
+window.VSADiveSearch65={run:runSearch};
 
 async function randomStart(){
   var button=document.getElementById("universeRandomStartBtn");
@@ -395,27 +410,16 @@ function addStyle(){
   ].join("");
   document.head.appendChild(style);
 }
-function inject(){
-  var panel=document.getElementById("universePanel");
-  var layout=panel&&panel.querySelector(".universe-layout");
-  if(!panel||!layout||document.getElementById("universeSearchBar"))return;
-  var wrap=document.createElement("div");
-  wrap.id="universeSearchBar";
-  wrap.className="universe-search";
-  wrap.innerHTML=
-    '<div class="us-main"><div class="us-title"><span><b>중심곡 검색</b><small>기본은 음성합성 오리지널곡. 커버·파생은 별도 모집단으로 탐색합니다.</small></span><button type="button" class="us-random-start" id="universeRandomStartBtn">🎲 랜덤곡으로 시작</button></div>'+
-    '<div class="us-types" id="universeContentTypes"><button type="button" data-us-type="original">오리지널곡 <em>기본</em></button><button type="button" data-us-type="cover">歌ってみた·커버</button><button type="button" data-us-type="derivative">파생 전체</button><span id="universeTypeHint">기본 · 오리지널곡만</span></div>'+
-    '<div class="us-row"><input id="universeSearchInput" placeholder="곡명 · P명 · 보컬 · 태그 · sm번호">'+
-    '<select id="universeSearchScope"><option value="all_voice_synth">음성합성 전체</option><option value="all">니코동 전체</option><option value="vocaloid">VOCALOID</option><option value="utau">UTAU</option><option value="synthv">Synthesizer V</option><option value="cevio">CeVIO</option><option value="voisona">VoiSona</option><option value="neutrino">NEUTRINO</option><option value="voicevox">VOICEVOX</option></select>'+
-    '<button type="button" id="universeSearchBtn">검색</button></div>'+
-    '<div class="us-recent" id="universeRecent"></div><div class="us-status" id="universeSearchStatus">곡명·P명·보컬·태그·sm번호로 중심곡을 검색할 수 있습니다.</div></div>'+
-    '<div class="us-results" id="universeSearchResults"><div class="us-empty">검색하면 후보곡이 여기에 표시됩니다.</div></div>';
-  var journey=document.getElementById("v39UniverseJourney");
-  panel.insertBefore(wrap,journey||layout);
-  renderRecent();
-  document.getElementById("universeSearchBtn").addEventListener("click",runSearch);
-  document.getElementById("universeRandomStartBtn").addEventListener("click",randomStart);
-  document.getElementById("universeContentTypes").addEventListener("click",function(e){
+function bindSearchUi65(wrap){
+  if(!wrap||wrap.dataset.usBound65==="1")return;
+  wrap.dataset.usBound65="1";
+  var searchBtn=document.getElementById("universeSearchBtn");
+  var randomBtn=document.getElementById("universeRandomStartBtn");
+  var types=document.getElementById("universeContentTypes");
+  var input=document.getElementById("universeSearchInput");
+  if(searchBtn)searchBtn.addEventListener("click",function(e){e.preventDefault();runSearch()});
+  if(randomBtn)randomBtn.addEventListener("click",function(e){e.preventDefault();randomStart()});
+  if(types)types.addEventListener("click",function(e){
     var b=e.target.closest("[data-us-type]");if(!b)return;
     if(window.VSA53DiveContent)window.VSA53DiveContent.set(b.dataset.usType);
     results=[];
@@ -426,19 +430,43 @@ function inject(){
     var status=document.getElementById("universeSearchStatus");if(status)status.textContent=(window.VSA53DiveContent?window.VSA53DiveContent.label():"오리지널곡")+" 모집단으로 전환했습니다.";
     syncDiveType53()
   });
-  syncDiveType53();
-  document.getElementById("universeSearchInput").addEventListener("keydown",function(e){if(e.key==="Enter")runSearch();});
+  if(input)input.addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();runSearch()}});
   wrap.addEventListener("click",function(e){
     var result=e.target.closest("[data-us-index]");
-    if(result){choose(Number(result.dataset.usIndex));return;}
+    if(result){choose(Number(result.dataset.usIndex));return}
     var chip=e.target.closest("[data-us-recent]");
     if(chip){
-      document.getElementById("universeSearchInput").value=chip.dataset.usRecent;
-      runSearch();
+      var input=document.getElementById("universeSearchInput");
+      if(input)input.value=chip.dataset.usRecent;
+      runSearch()
     }
-  });
+  })
 }
+function inject(){
+  var panel=document.getElementById("universePanel");
+  var layout=panel&&panel.querySelector(".universe-layout");
+  if(!panel||!layout)return;
+  var wrap=document.getElementById("universeSearchBar");
+  if(!wrap){
+    wrap=document.createElement("div");
+    wrap.id="universeSearchBar";
+    wrap.className="universe-search";
+    wrap.innerHTML=
+      '<div class="us-main"><div class="us-title"><span><b>중심곡 검색</b><small>기본은 음성합성 오리지널곡. 커버·파생은 별도 모집단으로 탐색합니다.</small></span><button type="button" class="us-random-start" id="universeRandomStartBtn">🎲 랜덤곡으로 시작</button></div>'+
+      '<div class="us-types" id="universeContentTypes"><button type="button" data-us-type="original">오리지널곡 <em>기본</em></button><button type="button" data-us-type="cover">歌ってみた·커버</button><button type="button" data-us-type="derivative">파생 전체</button><span id="universeTypeHint">기본 · 오리지널곡만</span></div>'+
+      '<div class="us-row"><input id="universeSearchInput" placeholder="곡명 · P명 · 보컬 · 태그 · sm번호" autocomplete="off">'+
+      '<select id="universeSearchScope"><option value="all_voice_synth">음성합성 전체</option><option value="all">니코동 전체</option><option value="vocaloid">VOCALOID</option><option value="utau">UTAU</option><option value="synthv">Synthesizer V</option><option value="cevio">CeVIO</option><option value="voisona">VoiSona</option><option value="neutrino">NEUTRINO</option><option value="voicevox">VOICEVOX</option></select>'+
+      '<button type="button" id="universeSearchBtn">검색</button></div>'+
+      '<div class="us-recent" id="universeRecent"></div><div class="us-status" id="universeSearchStatus">곡명·P명·보컬·태그·sm번호로 중심곡을 검색할 수 있습니다.</div></div>'+
+      '<div class="us-results" id="universeSearchResults"><div class="us-empty">검색하면 후보곡이 여기에 표시됩니다.</div></div>';
+    var journey=document.getElementById("v39UniverseJourney");
+    panel.insertBefore(wrap,journey||layout)
+  }
+  renderRecent();bindSearchUi65(wrap);syncDiveType53()
+}
+
 function boot(){addStyle();inject();syncDiveType53()}
-document.addEventListener("vsa:dive-content-mode",function(){syncDiveType53()});
+window.addEventListener("vsa:route-change",function(e){if(e&&e.detail&&e.detail.route==="universe29")setTimeout(inject,0)});
+document.addEventListener("vsa:dive-content-mode",function(){inject();syncDiveType53()});
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
 })();
