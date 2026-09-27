@@ -4948,6 +4948,7 @@ async function fetchNico(opts){
     state.route=null;
     state.lastError="중계 Worker 주소 없음";
     $("#routeInfo").textContent="중계 주소가 비어 있습니다. Worker를 배포한 뒤 주소를 붙여넣어 주세요.";
+    try{window.dispatchEvent(new CustomEvent("vsa:worker-status",{detail:{ok:false,reason:"missing",message:state.lastError}}))}catch(_){}
     throw new Error(state.lastError);
   }
   try{
@@ -4958,11 +4959,13 @@ async function fetchNico(opts){
     state.route={name:"전용 Cloudflare Worker", endpoint:base};
     state.mode="전용 Worker";
     $("#routeInfo").textContent=`연결됨: ${base}`;
+    try{window.dispatchEvent(new CustomEvent("vsa:worker-status",{detail:{ok:true,endpoint:base}}))}catch(_){}
     return data;
   }catch(e){
     state.route=null;
     state.lastError=String(e?.message||e);
     $("#routeInfo").textContent="Worker 연결 실패: "+state.lastError;
+    try{window.dispatchEvent(new CustomEvent("vsa:worker-status",{detail:{ok:false,reason:"network",endpoint:base,message:state.lastError}}))}catch(_){}
     throw e;
   }
 }
@@ -13411,6 +13414,130 @@ window.VSA60ProducerResolver={resolve:resolve60};
  #universePanel.v3958-rel .mr58-map>.mr58-node:nth-of-type(n+7){display:none!important}
 }
 </style>
+
+<style id="v3973DataBridgeStyle">
+.v3973-worker-note{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;margin:0 0 10px;padding:10px 11px;border:1px solid rgba(229,187,99,.22);border-radius:13px;background:#211c0d;color:#f4e4b5}
+.v3973-worker-note[hidden]{display:none!important}
+.v3973-worker-note.good{border-color:rgba(102,211,179,.18);background:#0a2926;color:#c8f0e3}
+.v3973-worker-note.bad{border-color:rgba(225,112,126,.22);background:#2b161b;color:#f0c1c7}
+.v3973-worker-copy{min-width:0}.v3973-worker-copy b{display:block;font-size:9px}.v3973-worker-copy span{display:block;margin-top:3px;color:#b9a97c;font-size:7px;line-height:1.45;overflow-wrap:anywhere}
+.v3973-worker-note.good .v3973-worker-copy span{color:#7eaaa0}.v3973-worker-note.bad .v3973-worker-copy span{color:#b88991}
+.v3973-worker-actions{display:flex;gap:5px}.v3973-worker-actions button{min-height:34px;padding:0 9px;border:1px solid rgba(221,202,145,.2);border-radius:9px;background:#342d16;color:#f0dfaa;font-size:7px;font-weight:950}
+.v3973-worker-note.good .v3973-worker-actions button{background:#103a35;color:#c9ede4;border-color:#24584f}.v3973-worker-note.bad .v3973-worker-actions button{background:#42232a;color:#f1c8ce;border-color:#68404a}
+@media(max-width:699px){.v3973-worker-note{grid-template-columns:1fr}.v3973-worker-actions{display:grid;grid-template-columns:1fr 1fr}.v3973-worker-actions button{min-height:39px;font-size:8px}}
+</style>
+<script id="v3973DataBridge">
+(function(){
+"use strict";
+var ROUTES=["search29","universe29","archive29","detective","producerDiscover37","vocalRank37"],last={ok:null,reason:"",message:"",endpoint:""},checking=false;
+
+function workerBase73(){
+ try{
+  if(typeof relayBase==="function")return relayBase();
+  return String(localStorage.getItem("vocaloidIcebergProxy")||"").trim().replace(/\/+$/,"").replace(/\/(api|health)$/i,"")
+ }catch(_){return""}
+}
+function currentRoute73(){return String(window.__VSA37_CURRENT_ROUTE||"home")}
+function routePage73(route){
+ try{return document.querySelector('#toolsModal [data-tool-view="'+CSS.escape(String(route))+'"]')}catch(_){return null}
+}
+function label73(route){
+ if(route==="universe29")return"다이브";
+ if(route==="archive29")return"빙산·랭킹";
+ if(route==="detective")return"곡 탐정";
+ if(route==="producerDiscover37")return"프로듀서 발굴";
+ if(route==="vocalRank37")return"보컬 순위";
+ return"검색"
+}
+function openSettings73(){
+ try{if(typeof openToolsModal==="function"){openToolsModal("settings29");return}}catch(_){}
+ var p=document.getElementById("settingsPanel");if(p)p.scrollIntoView({behavior:"smooth",block:"start"})
+}
+function ensureNote73(route){
+ var page=routePage73(route);if(!page)return null;
+ var note=page.querySelector(":scope > .v3973-worker-note");
+ if(!note){
+  note=document.createElement("div");note.className="v3973-worker-note";
+  note.innerHTML='<div class="v3973-worker-copy"><b></b><span></span></div><div class="v3973-worker-actions"><button type="button" data-v3973-check>연결 확인</button><button type="button" data-v3973-settings>Worker 설정</button></div>';
+  var head=page.querySelector(".v37-native-head,.v393-explore-hero,.panel-head");
+  if(head&&head.nextSibling)head.parentNode.insertBefore(note,head.nextSibling);else page.prepend(note);
+  note.addEventListener("click",function(e){
+   if(e.target.closest("[data-v3973-settings]")){openSettings73();return}
+   if(e.target.closest("[data-v3973-check]")){check73(true);return}
+  })
+ }
+ return note
+}
+function render73(route){
+ if(!ROUTES.includes(route))return;
+ var note=ensureNote73(route);if(!note)return;
+ var base=workerBase73(),b=note.querySelector("b"),s=note.querySelector("span"),check=note.querySelector("[data-v3973-check]");
+ note.classList.remove("good","bad");
+ if(check)check.disabled=checking;
+ if(!base){
+  note.hidden=false;
+  b.textContent=label73(route)+"의 온라인 데이터 연결이 필요합니다.";
+  s.textContent="Worker 주소가 비어 있습니다. 로컬 캐시만 있는 기능은 보일 수 있지만 새 검색·랜덤 시작·심층 후보 탐색은 제한됩니다.";
+  return
+ }
+ if(last.ok===true&&last.endpoint===base){
+  note.classList.add("good");
+  b.textContent="데이터 연결 정상";
+  s.textContent="Worker와 니코니코 검색 API가 응답 중입니다.";
+  note.hidden=true;
+  return
+ }
+ note.hidden=false;
+ if(last.ok===false&&last.endpoint===base){
+  note.classList.add("bad");
+  b.textContent="Worker 연결을 확인해주세요.";
+  s.textContent=last.message||"저장된 Worker 주소로 연결하지 못했습니다.";
+ }else{
+  b.textContent="Worker 주소가 저장되어 있습니다.";
+  s.textContent="온라인 검색이 안 되면 ‘연결 확인’을 눌러 상태를 검사하세요.";
+ }
+}
+async function check73(manual){
+ if(checking)return false;
+ var base=workerBase73(),route=currentRoute73();
+ if(!base){last={ok:false,reason:"missing",message:"Worker 주소가 없습니다.",endpoint:""};render73(route);if(manual)openSettings73();return false}
+ checking=true;render73(route);
+ try{
+  var ctl=new AbortController(),timer=setTimeout(function(){ctl.abort()},8000);
+  var r=await fetch(base+"/health?t="+Date.now(),{cache:"no-store",signal:ctl.signal,headers:{"Accept":"application/json"}});
+  clearTimeout(timer);
+  var data=await r.json().catch(function(){return{}});
+  if(!r.ok||!data||data.ok!==true)throw new Error("Worker /health 응답 이상");
+  last={ok:true,reason:"",message:"",endpoint:base};
+  try{window.dispatchEvent(new CustomEvent("vsa:worker-status",{detail:{ok:true,endpoint:base}}))}catch(_){}
+  render73(route);
+  try{if(manual&&typeof toast==="function")toast("Worker 연결 정상")}catch(_){}
+  return true
+ }catch(e){
+  last={ok:false,reason:"network",message:String(e&&e.message||e),endpoint:base};
+  render73(route);
+  try{if(manual&&typeof toast==="function")toast("Worker 연결 실패 · 설정을 확인하세요.")}catch(_){}
+  return false
+ }finally{checking=false;render73(route)}
+}
+function sync73(){
+ var route=currentRoute73();
+ if(!ROUTES.includes(route))return;
+ render73(route)
+}
+window.addEventListener("vsa:worker-status",function(e){
+ var d=e&&e.detail||{},base=workerBase73();
+ last={ok:d.ok===true,reason:String(d.reason||""),message:String(d.message||""),endpoint:String(d.endpoint||base||"")};
+ sync73()
+});
+window.addEventListener("vsa:route-change",function(){setTimeout(sync73,20)});
+window.addEventListener("popstate",function(){setTimeout(sync73,50)});
+window.addEventListener("storage",function(e){if(e&&e.key==="vocaloidIcebergProxy"){last={ok:null,reason:"",message:"",endpoint:""};sync73()}});
+document.addEventListener("change",function(e){if(e.target&&e.target.id==="proxyInput"){last={ok:null,reason:"",message:"",endpoint:""};setTimeout(sync73,20)}});
+window.VSADataBridge73={check:check73,status:function(){return Object.assign({configured:!!workerBase73()},last)}};
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(sync73,120)});else setTimeout(sync73,120);
+})();
+</script>
 
 </body>
 </html>
