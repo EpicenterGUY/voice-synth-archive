@@ -1,4 +1,4 @@
-const SW_VERSION="39.58.0"
+const SW_VERSION="39.59.0"
 const CACHE_NAME="voice-synth-archive-shell-"+SW_VERSION;
 const SHELL=[
   "./",
