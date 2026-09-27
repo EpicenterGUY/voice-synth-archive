@@ -1,6 +1,6 @@
 {
-  "version": "39.76.0",
+  "version": "39.77.0",
   "channel": "web",
-  "publishedAt": "2026-09-28T01:50:00+09:00",
-  "notes": "Route recovery, settings/menu/Worker header fixes and Live Shell update polish."
+  "publishedAt": "2026-09-28T02:00:00+09:00",
+  "notes": "Route self-heal, persistent nav cleanup, player-surface recovery and settings health summary."
 }
