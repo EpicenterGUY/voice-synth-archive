@@ -11402,9 +11402,9 @@ function labels46(){
     else if(s==="랜덤 워프")el.textContent="랜덤 다이브";
   })
 }
-function boot46(){ensure46();labels46();if(typeof state!=="undefined"&&state.universeData)render46(state.universeData)}
+function boot46(){if(window.__VSA_DIVE_RENDER_OWNER==="relation58")return;ensure46();labels46();if(typeof state!=="undefined"&&state.universeData)render46(state.universeData)}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(boot46,0)});else setTimeout(boot46,0);
-window.addEventListener("popstate",function(){setTimeout(function(){ensure46();labels46()},0)});
+window.addEventListener("popstate",function(){setTimeout(function(){if(window.__VSA_DIVE_RENDER_OWNER==="relation58")return;ensure46();labels46()},0)});
 })();
 </script>
 
@@ -11872,9 +11872,9 @@ function bindDelegate48(){
 }
 window.renderUniverse=renderSea48;
 window.VSADiveSea48={render:renderSea48,setMode:function(m){seaMode48=m==="sonar"?"sonar":"dive";var d=currentData48();if(d)renderSea48(d)},surface:surface48};
-function boot48(){ensure48();var d=currentData48();if(d)renderSea48(d)}
+function boot48(){if(window.__VSA_DIVE_RENDER_OWNER==="relation58")return;ensure48();var d=currentData48();if(d)renderSea48(d)}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(boot48,30)});else setTimeout(boot48,30);
-window.addEventListener("popstate",function(){setTimeout(function(){ensure48();var d=currentData48();if(d)renderSea48(d)},20)});
+window.addEventListener("popstate",function(){setTimeout(function(){if(window.__VSA_DIVE_RENDER_OWNER==="relation58")return;ensure48();var d=currentData48();if(d)renderSea48(d)},20)});
 })();
 </script>
 
@@ -12061,9 +12061,9 @@ function bind49(){
 }
 window.renderUniverse=render49;
 window.VSADiveOcean49={render:render49,random:random49,go:go49,setMode:function(m){ocMode49=m==="similar"?"similar":"explore";var d=data49();if(d)render49(d)}};
-function boot49(){ensure49();var d=data49();if(d)render49(d)}
+function boot49(){if(window.__VSA_DIVE_RENDER_OWNER==="relation58")return;ensure49();var d=data49();if(d)render49(d)}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(boot49,40)});else setTimeout(boot49,40);
-window.addEventListener("popstate",function(){setTimeout(function(){ensure49();var d=data49();if(d)render49(d)},20)});
+window.addEventListener("popstate",function(){setTimeout(function(){if(window.__VSA_DIVE_RENDER_OWNER==="relation58")return;ensure49();var d=data49();if(d)render49(d)},20)});
 })();
 </script>
 
@@ -12353,9 +12353,9 @@ window.renderUniverse=render50;
 window.randomUniverseWarp39=random50;
 window.VSADiveDiagnostics55=diagnostics55;
 window.VSADiveGraph50={render:render50,random:random50,open:open50,go:go50,setMode:function(m){mode50=m==="similar"?"similar":"explore";gateway50=null;var d=data50();if(d)render50(d)}};
-function boot50(){ensure50();var size=q50("#universeSize");if(size&&+size.value<32)size.value="32";var d=data50();if(d)render50(d)}
+function boot50(){if(window.__VSA_DIVE_RENDER_OWNER==="relation58")return;ensure50();var size=q50("#universeSize");if(size&&+size.value<32)size.value="32";var d=data50();if(d)render50(d)}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(boot50,45)});else setTimeout(boot50,45);
-window.addEventListener("popstate",function(){setTimeout(function(){ensure50();var d=data50();if(d)render50(d)},20)});
+window.addEventListener("popstate",function(){setTimeout(function(){if(window.__VSA_DIVE_RENDER_OWNER==="relation58")return;ensure50();var d=data50();if(d)render50(d)},20)});
 })();
 </script>
 
@@ -12812,6 +12812,16 @@ function side58(n,d){
   '<div class="mr58-side-section"><small>왜 연결됐나</small>'+(r?'<div class="mr61-reason-list">'+reasons.map(function(x){return '<div><b>'+e58(x.k)+'</b><span>'+e58(x.v)+'</span></div>'}).join("")+'</div>':'<div class="mr58-badges"><span class="mr58-badge similar">현재 다이브 기준곡</span></div>')+'</div>'+
   '<div class="mr58-side-actions">'+(r?'<button type="button" class="primary" data-mr58-go="'+e58(n.contentId)+'">이 곡으로 다이브</button>':'')+'<button type="button" data-mr58-play="'+e58(n.contentId)+'">▶ 바로 듣기</button><button type="button" data-mr58-detail="'+e58(n.contentId)+'">곡 상세</button><button type="button" data-mr58-pin="'+e58(n.contentId)+'">'+((typeof isUniversePinned39==="function"&&isUniversePinned39(n.contentId))?"핀 해제":"핀 고정")+'</button></div></div>'
 }
+function ensureRelationLoader58(p){
+ if(!p)return null;
+ var layout=q58(".universe-layout",p),ld=q58("#universeEmpty",p);
+ if(!ld){
+   ld=document.createElement("div");ld.id="universeEmpty";ld.className="mr58-loader";ld.style.display="none";
+   ld.innerHTML="관계 후보를 찾는 중…<br><small>장르·스타일·P·보컬·시대·수층을 계산합니다.</small>"
+ }
+ if(layout&&ld.parentNode!==layout.parentNode)layout.parentNode.insertBefore(ld,layout);
+ return ld
+}
 function startScreen58(p){
  if(!p)return;
  try{if(typeof ensureUniverseToolbar39==="function")ensureUniverseToolbar39()}catch(_){}
@@ -12829,18 +12839,15 @@ function normalizePanel58(){
  p.classList.remove("v3946-dive-panel","v3948-sea","v3949-current","v3950-graph");
  p.classList.add("v3958-rel");
  ["#dg50Toolbar","#sea48Modebar","#oc49Toolbar"].forEach(function(s){var x=q58(s,p);if(x)x.style.setProperty("display","none","important")});
+ ensureRelationLoader58(p);
  startScreen58(p);
  return p
 }
 function render58(d){
  if(!d||!d.center)return;
  var p=normalizePanel58();if(!p)return;
- var layout=q58(".universe-layout",p),ld=q58("#universeEmpty",p);
- if(ld){
-   ld.className="mr58-loader";
-   ld.style.display="none";
-   if(layout&&ld.parentNode!==layout.parentNode)layout.parentNode.insertBefore(ld,layout)
- }
+ var layout=q58(".universe-layout",p),ld=ensureRelationLoader58(p);
+ if(ld){ld.className="mr58-loader";ld.style.display="none"}
  try{var h=q58("#v394UniverseHeader",p),t=h&&h.querySelector(".v394-universe-title");if(t)t.innerHTML='<small>VOCADIVE · RELATION BRIDGE 1.2</small><h2>다이브</h2><p>같은 장르와 인접 장르 브리지를 함께 탐색하고, 장르·스타일·분위기·P·보컬·시대·수층을 교차해서 좁힙니다.</p>'}catch(_){}
  var stage=q58(".universe-stage",p);if(stage)stage.innerHTML=scene58(d);
  var info=q58("#universeInfo",p);if(info)info.innerHTML=side58(d.center,d);
@@ -12926,6 +12933,7 @@ window.VSA58StyleProfile=styleProfile58;
 window.VSA58MoodProfile=moodProfile58;
 window.VSA58BridgeProfile=bridgeProfile58;
 window.VSADiveRelations58={render:render58,relation:rel58,genres:genreProfile58,bridges:bridgeProfile58,styles:styleProfile58,moods:moodProfile58,setActive:function(a){active58=new Set(a||[]);var d=state.universeData;if(d)render58(d)},setMode:function(m){filterMode58=m==="and"?"and":"or";var d=state.universeData;if(d)render58(d)}};
+window.__VSA_DIVE_RENDER_OWNER="relation58";
 window.renderUniverse=render58;
 function boot58(){normalizePanel58();bind58();var d=typeof state!=="undefined"?state.universeData:null;if(d)render58(d)}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(boot58,80)});else setTimeout(boot58,80);
