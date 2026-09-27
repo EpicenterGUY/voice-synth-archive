@@ -4,6 +4,7 @@
   "private": true,
   "description": "VocaDive native app foundation for Android/iOS packaging.",
   "scripts": {
+    "check:static": "node scripts/smoke-check.mjs",
     "build:app": "node scripts/build-app.mjs",
     "cap:sync": "npm run build:app && npx cap sync",
     "cap:add:android": "npm run build:app && npx cap add android",
