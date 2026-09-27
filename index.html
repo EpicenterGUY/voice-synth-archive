@@ -12766,10 +12766,10 @@ function links58(rows){
 }
 function fmt58(v){try{return Number(v||0).toLocaleString("ko-KR")}catch(_){return String(v||0)}}
 function center58(c,d){
- var gs=genreProfile58(c).slice(0,3),qt=(d.queryTags||[]).slice(0,4);
+ var gs=genreProfile58(c).slice(0,3),qt=(d.queryTags||[]).slice(0,4),dm=depthMeta58(c);
  return '<div class="mr58-center"><div class="mr58-center-main">'+(c.thumbnailUrl?'<img src="'+e58(c.thumbnailUrl)+'" alt="">':'<div class="noimg">♪</div>')+
-  '<div><small>MULTI RELATION CENTER</small><h2>'+e58(c.title||c.contentId)+'</h2><p>'+(year58(c)||"연도 미상")+' · 조회 '+fmt58(views58(c))+'</p><div class="mr58-center-tags">'+(gs.length?gs.map(function(g){return'<span>'+e58(g.label)+'</span>'}).join(""):qt.map(function(x){return'<span>'+e58(x)+'</span>'}).join(""))+'</div></div></div>'+
-  '<div class="mr58-center-actions"><button type="button" class="primary" data-mr58-play="'+e58(c.contentId)+'">▶ 재생</button><button type="button" data-mr58-detail="'+e58(c.contentId)+'">곡 상세</button><button type="button" data-mr58-random>랜덤</button></div></div>'
+  '<div><small>현재 중심곡 · '+e58(dm.name)+'</small><h2>'+e58(c.title||c.contentId)+'</h2><p>'+(year58(c)||"연도 미상")+' · 조회 '+fmt58(views58(c))+' · '+e58(dm.range)+'</p><div class="mr58-center-tags">'+(gs.length?gs.map(function(g){return'<span>'+e58(g.label)+'</span>'}).join(""):qt.map(function(x){return'<span>'+e58(x)+'</span>'}).join(""))+'</div></div></div>'+
+  '<div class="mr58-center-actions"><button type="button" class="primary" data-mr58-play="'+e58(c.contentId)+'">▶ 재생</button><button type="button" data-mr58-detail="'+e58(c.contentId)+'">곡 상세</button><button type="button" data-mr58-random>랜덤 이동</button></div></div>'
 }
 function node58(x,i,c){
  var n=x.song,r=x.rel,p=pos58(i,r),dm=depthMeta58(n);
