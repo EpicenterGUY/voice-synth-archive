@@ -9391,7 +9391,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.45.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
+var VER="39.60.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -9429,10 +9429,10 @@ function balanceHomeViews3943(rows,bands,salt,count){
   return out.slice(0,count)
 }
 function normalizeDeepRows3944(rows,salt,count){
-  rows=(rows||[]).filter(function(s){var v=Number(s&&s.viewCounter)||0;return v>=100&&v<=50000});
+  rows=(rows||[]).filter(function(s){var v=Number(s&&s.viewCounter)||0;return v>=30&&v<=50000});
   var exact100=rows.filter(function(s){return Number(s.viewCounter)===100});
   var non100=rows.filter(function(s){return Number(s.viewCounter)!==100});
-  var mixed=balanceHomeViews3943(non100,[[101,499],[500,1999],[2000,9999],[10000,50000]],salt,count);
+  var mixed=balanceHomeViews3943(non100,[[30,499],[500,1999],[2000,9999],[10000,50000]],salt,count);
   if(mixed.length<count&&exact100.length){
     var one=pageRows3941(String(salt||"deep100"),exact100)[0];
     if(one&&!mixed.some(function(x){return x.contentId===one.contentId}))mixed.push(one)
@@ -9443,13 +9443,13 @@ function deepFeedNeedsRefresh3944(feed){
   var rows=feed&&Array.isArray(feed.hidden)?feed.hidden:[];
   if(rows.length<6)return true;
   var exact100=rows.filter(function(s){return Number(s&&s.viewCounter)===100}).length;
-  var bands=[[101,499],[500,1999],[2000,9999],[10000,50000]],hits=0;
+  var bands=[[30,499],[500,1999],[2000,9999],[10000,50000]],hits=0;
   bands.forEach(function(r){if(rows.some(function(s){var v=Number(s&&s.viewCounter)||0;return v>=r[0]&&v<=r[1]}))hits++});
   return exact100>1||hits<3
 }
 function k(mark){return mark==="DAILY"?"daily":mark==="FOR YOU"?"taste":mark==="NEW"?"newer":"hidden"}
 function label(mark){return mark==="DAILY"?"추천":mark==="FOR YOU"?"내 취향":mark==="NEW"?"신곡":mark==="CONTINUE"?"이어보기":"숨은 곡"}
-function sub(mark){return mark==="DAILY"?"오늘 골라볼 만한 곡":mark==="FOR YOU"?"보관함과 피드백을 반영":mark==="NEW"?"최근 올라온 음성합성곡":mark==="CONTINUE"?"최근에 보던 곡으로 돌아가기":"100~5만 조회수를 구간별로 섞어 발굴"}
+function sub(mark){return mark==="DAILY"?"오늘 골라볼 만한 곡":mark==="FOR YOU"?"보관함과 피드백을 반영":mark==="NEW"?"최근 올라온 음성합성곡":mark==="CONTINUE"?"최근에 보던 곡으로 돌아가기":"30~5만 조회수를 여러 구간에서 섞어 발굴"}
 function reason(song,mark){
   if(mark==="NEW")return"최근 업로드";
   if(mark==="DEEP")return"낮은 조회수에서 발견";
@@ -11035,7 +11035,7 @@ function ensure(name){
   if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.45.0","./detective-v12.js?v=39.45.0","./detective-v13.js?v=39.45.0","./detective-v14.js?v=39.45.0","./detective-v16.js?v=39.45.0"]);
   else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.45.0","./smart-v23.js?v=39.45.0","./playlist-v24.js?v=39.45.0"]);
   else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.45.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.45.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.60.0");
   else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.60.0");
   else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.45.0");
   else if(name==="deviceSync")groups[name]=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.45.0");
