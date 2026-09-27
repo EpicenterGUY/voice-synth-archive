@@ -1,11 +1,26 @@
 {
   "current": {
-    "version": "39.66.0",
+    "version": "39.67.0",
     "releasedAt": "2026-09-27",
-    "title": "Direct APK Update 1.0 · Signed Release Channel",
-    "summary": "직접 설치 Android APK가 새 버전을 확인해 Wi-Fi에서 자동 다운로드하고 Android 설치 확인창으로 이어지는 자체 업데이트 채널과 영구 서명 릴리스 파이프라인을 추가했습니다."
+    "title": "Search Hotfix 4.1 · Ranking/Search Race Fix",
+    "summary": "느린 보카로·UTAU 순위 로딩과 Search 4.0이 같은 전역 busy 상태를 공유해 검색이 멈추던 문제를 분리하고, 늦은 순위 응답이 검색 결과를 덮어쓰는 레이스까지 차단했습니다."
   },
   "entries": [
+    {
+      "version": "39.67.0",
+      "date": "2026-09-27",
+      "title": "Search Hotfix 4.1 · Ranking/Search Race Fix",
+      "changes": [
+        "보카로·UTAU 순위 데이터가 오래 내려받아지는 동안 전역 busy 플래그 때문에 Search 4.0 검색 버튼이 사실상 무반응이 되던 구조를 수정",
+        "자유검색에 전용 freeBusy와 검색 sequence를 추가해 순위·통계 로딩과 독립적으로 바로 검색 가능하도록 변경",
+        "검색을 시작하면 현재 결과 리스트의 소유권을 검색으로 즉시 전환하고, 늦게 끝난 이전 순위 요청은 검색 결과를 덮어쓰지 않고 폐기",
+        "검색어를 연속으로 바꿔도 이전 검색 응답이 최신 검색 결과를 덮어쓰지 않도록 검색 sequence guard 추가",
+        "Search 3/4 자동 실행 경로에서 전역 state.busy 대기를 제거해 상단 검색과 상세 검색 모두 같은 즉시 실행 경로를 사용",
+        "모바일에서 Search 4.0 아래에 남아 보이던 구형 '선택 연도 적용/선택 빙산 구간 적용' 옵션 패널을 강제로 숨김",
+        "검색 시작 즉시 '검색 중…' 상태를 표시하고 완료 후 모바일에서는 결과 영역으로 자동 이동",
+        "앱·PWA·서비스워커·manifest·네이티브 런타임 버전을 v39.67.0으로 통일"
+      ]
+    },
     {
       "version": "39.66.0",
       "date": "2026-09-27",
