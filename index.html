@@ -11889,7 +11889,7 @@ function go50(id,dir){
  setTimeout(function(){var p;try{p=typeof buildUniverse==="function"?buildUniverse(n,false):(window.centerUniverseOnId39?window.centerUniverseOnId39(id):null)}catch(e){busy50=false;enter50="";return}Promise.resolve(p).catch(function(){enter50=""}).finally(function(){setTimeout(function(){busy50=false},80)})},480)
 }
 function random50(){
- if(busy50)return;var d=data50();if(!d)return,r=ranks50(d,d.center),pool=[];
+ if(busy50)return;var d=data50();if(!d)return;var r=ranks50(d,d.center),pool=[];
  pool=pool.concat(r.same.slice(0,4),r.down.slice(0,3),r.side.slice(0,2),r.similar.slice(0,2)).filter(function(n,i,a){return n&&a.findIndex(function(x){return x.contentId===n.contentId})===i});
  if(!pool.length)pool=(d.nodes||[]).slice(1);if(!pool.length)return;
  var n=pool[Math.floor(Math.random()*pool.length)],dir=li50(n)>li50(d.center)?"down":li50(n)<li50(d.center)?"up":"side";go50(n.contentId,dir)
