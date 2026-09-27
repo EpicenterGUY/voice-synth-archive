@@ -329,6 +329,18 @@ body.v37-ready :is(input,select,textarea):focus{border-color:rgba(108,221,210,.5
 #v3982MenuBtn{flex:0 0 auto!important}
 
 #v3982WorkerPill{cursor:pointer!important;user-select:none!important}
+.v3983-settings-summary{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 12px!important
+}
+.v3983-settings-summary button{
+ min-width:0;min-height:86px;padding:12px;border:1px solid var(--vd-line);border-radius:13px;
+ background:var(--vd-surface);color:var(--vd-text);text-align:left
+}
+.v3983-settings-summary button:hover{background:var(--vd-hover);border-color:var(--vd-line-strong)}
+.v3983-settings-summary small{display:block;color:#6fa9a3;font-size:6.5px;font-weight:950;letter-spacing:.11em}
+.v3983-settings-summary b{display:block;margin-top:5px;font-size:12px}
+.v3983-settings-summary span{display:block;margin-top:4px;color:var(--vd-muted);font-size:7.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
 #v3982WorkerPill:hover{background:#132427!important}
 [data-tool-view="settings29"] .settings{display:block!important}
 [data-tool-view="settings29"] .settings>details{display:block!important;border:0!important;background:transparent!important}
@@ -352,6 +364,7 @@ body.v37-ready :is(input,select,textarea):focus{border-color:rgba(108,221,210,.5
  background:#0b181b;color:#c8ddda;font-size:8px;font-weight:800;box-shadow:0 10px 28px rgba(0,0,0,.34)
 }
 @media(max-width:699px){
+ .v3983-settings-summary{grid-template-columns:1fr!important}
  [data-tool-view="settings29"] .settings-grid{grid-template-columns:1fr!important}
  [data-tool-view="settings29"] #v3966UpdateCard{grid-column:auto!important}
  [data-tool-view="settings29"] .settings-grid>.control,
@@ -522,6 +535,38 @@ function openSettingsDetails3983(){
   var page=document.querySelector('[data-tool-view="settings29"]');
   if(!page)return;
   qa("details",page).forEach(function(d){d.open=true});
+  var summary=document.getElementById("v3983SettingsSummary");
+  if(!summary){
+    summary=document.createElement("section");summary.id="v3983SettingsSummary";summary.className="v3983-settings-summary";
+    var head=page.querySelector(".v37-native-head");
+    if(head)head.insertAdjacentElement("afterend",summary);else page.prepend(summary)
+  }
+  var worker=String((document.getElementById("statusText")||{}).textContent||"상태 확인 중");
+  var workerState=/연결됨/i.test(worker)?"정상":/실패/i.test(worker)?"오류":/저장됨/i.test(worker)?"미확인":"설정 필요";
+  var shell="",web=VERSION;
+  try{
+    var st=window.VocaDiveUpdater&&window.VocaDiveUpdater.state?window.VocaDiveUpdater.state():null;
+    shell=st&&st.appInfo&&st.appInfo.versionName?String(st.appInfo.versionName):"";
+  }catch(_){}
+  summary.innerHTML=
+   '<button type="button" data-v3983-setting="worker"><small>WORKER</small><b>'+esc(workerState)+'</b><span>'+esc(worker)+'</span></button>'+
+   '<button type="button" data-v3983-setting="web"><small>WEB UI</small><b>v'+esc(web)+'</b><span>Live Shell 최신 UI</span></button>'+
+   '<button type="button" data-v3983-setting="app"><small>APP SHELL</small><b>'+(shell?"v"+esc(shell):"확인 중")+'</b><span>Android 네이티브 셸</span></button>';
+  if(!summary.dataset.bound){
+    summary.dataset.bound="1";
+    summary.addEventListener("click",function(e){
+      var b=e.target.closest("[data-v3983-setting]");if(!b)return;
+      var v=b.dataset.v3983Setting;
+      if(v==="worker"){
+        var p=document.getElementById("settingsPanel");if(p)p.scrollIntoView({behavior:"smooth",block:"start"});
+        setTimeout(function(){var x=document.getElementById("proxyInput");if(x)try{x.focus()}catch(_){}},250)
+      }else if(v==="web"){
+        if(window.VocaDiveUpdater&&window.VocaDiveUpdater.applyWebUpdate)window.VocaDiveUpdater.applyWebUpdate()
+      }else{
+        var c=document.getElementById("v3966UpdateCard");if(c)c.scrollIntoView({behavior:"smooth",block:"center"})
+      }
+    })
+  }
   try{
     if(window.VocaDiveUpdater&&typeof window.VocaDiveUpdater.state==="function"){
       var card=document.getElementById("v3966UpdateCard");
