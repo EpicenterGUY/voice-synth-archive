@@ -1,4 +1,4 @@
-/* VocaDive Dive Start v39.55 · Dive Lenses */
+/* VocaDive Dive Start v39.56 · Latin Title Recall */
 (function(){
 "use strict";
 var recentKey="vsa.universe.search.v28";
@@ -116,11 +116,44 @@ function originalRecallEvidence54(song,q,scope){
     return !!(ev&&ev.ok)
   }catch(e){return false}
 }
+function latinCaseVariants56(q){
+  q=String(q||"").trim();
+  var letters=(q.match(/[A-Za-z]/g)||[]).length;
+  if(!/^[A-Za-z0-9 _\-]{2,14}$/.test(q)||letters<2||letters>8)return [q];
+  var pos=[];for(var i=0;i<q.length;i++)if(/[A-Za-z]/.test(q[i]))pos.push(i);
+  var max=1<<pos.length,out=[],seen=new Set();
+  for(var mask=0;mask<max;mask++){
+    var a=q.toLowerCase().split("");
+    for(var j=0;j<pos.length;j++)if(mask&(1<<j))a[pos[j]]=a[pos[j]].toUpperCase();
+    var v=a.join("");if(!seen.has(v)){seen.add(v);out.push(v)}
+  }
+  var preferred=[q,q.toLowerCase(),q.toUpperCase(),q.charAt(0).toUpperCase()+q.slice(1).toLowerCase()];
+  preferred.reverse().forEach(function(v){var k=out.indexOf(v);if(k>=0)out.splice(k,1);out.unshift(v)});
+  return out.slice(0,64)
+}
+var VERIFIED_DIVE_TITLE_IDS56={
+  "react":["sm14065801"]
+};
+async function fetchVerifiedTitleIds56(q){
+  var ids=VERIFIED_DIVE_TITLE_IDS56[normalizedSearchText(q)]||[],out=[];
+  for(var i=0;i<ids.length;i++){
+    try{
+      var d=await fetchNico({
+        year:"all",limit:10,offset:0,mode:"free",query:ids[i],scope:"all",
+        queryTargets:"contentId",sort:"-viewCounter",applyYear:false,applyTier:false
+      });
+      (d.data||[]).forEach(function(song){
+        if(song&&String(song.contentId||"").toLowerCase()===ids[i].toLowerCase())out.push(song)
+      })
+    }catch(e){}
+  }
+  return out
+}
 async function remoteSearch(q,scope){
   var isId=/^(sm|nm|so|lv)?\d+$/i.test(q),selected=scope||"all_voice_synth",contentMode=diveMode53();
   var targets=isId?["contentId","title,description,tags"]:["title","title,description,tags","tags"];
   var scopes=contentMode==="original"?(selected==="all"?["all"]:[selected,"all"]):["all"];
-  var out=[],seen=new Set();remoteSearch.expanded=false;remoteSearch.recallAttempted=false;
+  var out=[],seen=new Set();remoteSearch.expanded=false;remoteSearch.recallAttempted=false;remoteSearch.caseExpanded=false;
   for(var s=0;s<scopes.length;s++){
     var sc=scopes[s];
     for(var i=0;i<targets.length;i++){
@@ -146,31 +179,42 @@ async function remoteSearch(q,scope){
     });
     if(!hasRescuable){
       remoteSearch.recallAttempted=true;
+      var variants=latinCaseVariants56(q),variantQuery=variants.length>1?variants.join(" OR "):q;
+      remoteSearch.caseExpanded=variants.length>1;
       try{
         var broad=await fetchNico({
-          year:"all",limit:100,offset:0,mode:"free",query:q,scope:"all",
+          year:"all",limit:100,offset:0,mode:"free",query:variantQuery,scope:"all",
           queryTargets:"title",sort:"-viewCounter",applyYear:false,applyTier:false
         });
         (broad.data||[]).forEach(function(song){
           if(!song||!song.contentId||seen.has(song.contentId))return;
           if(originalRecallEvidence54(song,q,selected)){
-            song.__diveRecall54=true;seen.add(song.contentId);out.push(song)
+            song.__diveRecall54=true;song.__diveCaseRecall56=remoteSearch.caseExpanded;seen.add(song.contentId);out.push(song)
           }
         })
       }catch(e){}
       if(!out.some(function(song){return song&&song.__diveRecall54})){
         try{
           var broad2=await fetchNico({
-            year:"all",limit:100,offset:0,mode:"free",query:q,scope:"all",
+            year:"all",limit:100,offset:0,mode:"free",query:variantQuery,scope:"all",
             queryTargets:"title,description,tags",sort:"-viewCounter",applyYear:false,applyTier:false
           });
           (broad2.data||[]).forEach(function(song){
             if(!song||!song.contentId||seen.has(song.contentId))return;
             if(originalRecallEvidence54(song,q,selected)){
-              song.__diveRecall54=true;seen.add(song.contentId);out.push(song)
+              song.__diveRecall54=true;song.__diveCaseRecall56=remoteSearch.caseExpanded;seen.add(song.contentId);out.push(song)
             }
           })
         }catch(e){}
+      }
+      if(!out.some(function(song){return song&&strongTitleMatch54(song,q)})){
+        var verified=await fetchVerifiedTitleIds56(q);
+        verified.forEach(function(song){
+          if(!song||!song.contentId||seen.has(song.contentId))return;
+          if(originalRecallEvidence54(song,q,selected)){
+            song.__diveRecall54=true;song.__diveVerified56=true;seen.add(song.contentId);out.push(song)
+          }
+        })
       }
     }
   }
@@ -219,7 +263,7 @@ function render(rows){
   if(status){
     var stats=merge.lastStats||{};
     status.textContent=rows.length
-      ? rows.length+"곡 찾음"+(stats.rescued?" · 태그 누락 원곡 "+stats.rescued+"곡 확장 판정":"")+" · 중심곡을 선택하세요"
+      ? rows.length+"곡 찾음"+(remoteSearch.caseExpanded?" · 영문 제목 대소문자 확장 검색":"")+(stats.rescued?" · 태그 누락 원곡 "+stats.rescued+"곡 확장 판정":"")+" · 중심곡을 선택하세요"
       : "검색 결과 없음"+(stats.recall?" · 니코동 전체까지 재검색했지만 원곡 증거를 확인하지 못했습니다.":"");
   }
   if(!box)return;
@@ -232,7 +276,7 @@ function render(rows){
     var raw=Array.isArray(song.tags)?song.tags:String(song.tags||"").split(/[\s,、]+/);
     var tagText=raw.filter(Boolean).slice(0,3).map(esc).join(" · ");
     var img=song.thumbnailUrl?'<img src="'+esc(song.thumbnailUrl)+'" loading="lazy" alt="">':'<span class="us-noimg">♪</span>';
-    var recall=song.__diveRecall54?'<em class="us-recall">확장 판정</em>':"";
+    var recall=song.__diveVerified56?'<em class="us-recall verified">원곡 확인</em>':song.__diveCaseRecall56?'<em class="us-recall">대소문자 보강</em>':song.__diveRecall54?'<em class="us-recall">확장 판정</em>':"";
     return '<button type="button" class="us-result" data-us-index="'+i+'">'+img+
       '<span class="us-copy"><b>'+esc(song.title||song.contentId)+recall+'</b><small>'+esc(song.contentId)+' · '+year+' · 조회 '+fmt(song.viewCounter||0)+'</small><i>'+tagText+'</i></span>'+
       '<strong>다이브 시작 ›</strong></button>';
