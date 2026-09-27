@@ -416,8 +416,12 @@ function runSearch(value){
   })
 }
 
+function raiseStyle(){
+  var st=document.getElementById("v3980UnifiedUiStyle");
+  if(st&&st.parentNode===document.head&&st!==document.head.lastElementChild)document.head.appendChild(st)
+}
 function repairRoute(){
-  raf=0;
+  raf=0;raiseStyle();
   var modal=document.getElementById("toolsModal");
   var route=String(window.__VSA37_CURRENT_ROUTE||"");
   var player=q(".v331-player"),mini=q(".v331-mini");
@@ -434,8 +438,10 @@ function repairRoute(){
         try{if(typeof window.setToolView==="function")window.setToolView(route);else target.classList.add("active")}catch(_){target.classList.add("active")}
       }
       if(!q(".tools-body>.tool-view.active",modal)){
-        var fallback=q(".tools-body>.tool-view",modal);
-        if(fallback)fallback.classList.add("active")
+        var fallback=q('.tools-body>[data-tool-view="studioHome"]',modal)||q('.tools-body>[data-tool-view="explore33"]',modal)||q(".tools-body>.tool-view",modal);
+        if(fallback){
+          try{if(typeof window.setToolView==="function"&&fallback.dataset.toolView)window.setToolView(fallback.dataset.toolView);else fallback.classList.add("active")}catch(_){fallback.classList.add("active")}
+        }
       }
     }
   }
