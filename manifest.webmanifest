@@ -2,9 +2,9 @@
   "id": "./",
   "name": "VocaDive - Vocal Synth Discovery",
   "short_name": "VocaDive",
-  "description": "음성합성 오리지널곡을 기본으로 탐색하며 태그 누락 원곡도 Search Recall 2.0으로 복구하는 VocaDive 앱",
+  "description": "음성합성 오리지널곡을 중심으로 같은 P·보컬·시대 렌즈, 거리 기반 유사곡 소나와 즉시 재생으로 탐색하는 VocaDive 앱",
   "lang": "ko-KR",
-  "start_url": "./?appv=39.54.0",
+  "start_url": "./?appv=39.55.0",
   "scope": "./",
   "display": "standalone",
   "display_override": [
