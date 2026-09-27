@@ -8,8 +8,12 @@ on:
         required: false
         type: string
   push:
+    branches:
+      - main
     tags:
       - "app-v*"
+    paths:
+      - "package.json"
 
 permissions:
   contents: write
@@ -64,9 +68,12 @@ jobs:
           INPUT_TAG="${{ inputs.tag }}"
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "$INPUT_TAG" ]; then
             TAG="$INPUT_TAG"
-          else
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="app-v$VERSION"
+          elif [[ "${{ github.ref_name }}" == app-v* ]]; then
             TAG="${{ github.ref_name }}"
-            if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then TAG="app-v$VERSION"; fi
+          else
+            TAG="app-v$VERSION"
           fi
           if [ "$TAG" != "app-v$VERSION" ]; then
             echo "::error::Tag $TAG does not match package version $VERSION. Expected app-v$VERSION."
@@ -182,7 +189,7 @@ jobs:
             gh release upload "$TAG" release/VocaDive.apk release/latest.json --clobber
             gh release edit "$TAG" --title "VocaDive v$VERSION"
           else
-            gh release create "$TAG" release/VocaDive.apk release/latest.json               --title "VocaDive v$VERSION"               --notes "Direct Android APK release for VocaDive v$VERSION. Existing direct-channel installs can check, download and open the Android installer from inside the app."
+            gh release create "$TAG" release/VocaDive.apk release/latest.json --target "${{ github.sha }}" --title "VocaDive v$VERSION" --notes "Direct Android APK release for VocaDive v$VERSION. Existing direct-channel installs can check, download and open the Android installer from inside the app."
           fi
 
       - name: Upload signed build artifact
