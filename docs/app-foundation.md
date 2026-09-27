@@ -1,6 +1,6 @@
 # VocaDive App Foundation
 
-Version: **39.66.0**
+Version: **39.67.0**
 
 This document describes the foundation for turning the existing VocaDive web/PWA codebase into a native Android/iOS app without rewriting the application from scratch.
 
@@ -134,7 +134,7 @@ An actual iOS build requires macOS/Xcode and Apple signing.
 
 ## Direct APK Update 1.0
 
-v39.66.0 adds the direct-distribution update path for Android APK installs.
+v39.67.0 adds the direct-distribution update path for Android APK installs.
 
 Flow:
 
@@ -171,7 +171,7 @@ The keystore must never be committed to the repository. Keep an offline backup: 
 After the permanent signing secrets are configured, publish with a tag that exactly matches `package.json`:
 
 ```text
-app-v39.66.0
+app-v39.67.0
 ```
 
 `.github/workflows/android-release.yml` then:
@@ -219,3 +219,8 @@ The embedded NicoNico player is still a WebView/iframe playback surface. Android
 4. Cloud sync migration for library/history/settings.
 5. Store billing adapter with server verification.
 6. Only after the above is stable, decide which *new* advanced features become Pro.
+
+
+## Search 4.1 concurrency
+
+Search has its own busy flag and request sequence. Long ranking/stat requests no longer block Search 4.0, and stale ranking/search responses are discarded before they can replace the active search list.
