@@ -1,8 +1,8 @@
-/* VocaDive Direct APK Updater · v39.74.1 */
+/* VocaDive Direct APK Updater · v39.75.0 */
 (function(){
 "use strict";
 
-var VERSION="39.74.1";
+var VERSION="39.75.0";
 var RELEASE_API="https://api.github.com/repos/EpicenterGUY/voice-synth-archive/releases/latest";
 var PREF_CHECK="vocadive.update.autoCheck";
 var PREF_WIFI="vocadive.update.autoDownloadWifi";
@@ -66,7 +66,7 @@ function loadPending(){
   }catch(_){return null}
 }
 function phaseText(){
-  if(state.appInfo&&state.appInfo.debuggable)return isLiveShell()?"Live Shell · 웹 UI 자동 동기화":"디버그 APK · 정식 서명 업데이트 채널 대기";
+  if(state.appInfo&&state.appInfo.debuggable)return isLiveShell()?"Live Shell · 웹 UI v"+VERSION+" 자동 동기화":"디버그 APK · 정식 서명 업데이트 채널 대기";
   if(state.phase==="checking")return"새 버전 확인 중…";
   if(state.phase==="available")return"v"+state.latest.version+" 업데이트 사용 가능";
   if(state.phase==="downloading")return"업데이트 다운로드 "+Math.max(0,state.progress||0)+"%";
@@ -122,19 +122,23 @@ function ensureSettingsCard(){
   ensureStyle();
   var grid=document.querySelector("#settingsPanel .settings-grid");if(!grid||document.getElementById("v3966UpdateCard"))return;
   var card=document.createElement("div");card.id="v3966UpdateCard";card.className="v3966-update-card";
-  card.innerHTML='<div class="v3966-update-card-head"><h3>APK 자동 업데이트</h3><span data-v3966-current>v'+esc(VERSION)+'</span></div><p data-v3966-status>직접 배포 APK의 새 버전을 확인합니다.</p><div class="row"><label><input type="checkbox" data-v3966-auto-check> 시작할 때 자동 확인</label><label><input type="checkbox" data-v3966-auto-wifi> Wi-Fi에서 자동 다운로드</label><button type="button" data-v3966-check>지금 확인</button></div>';
+  card.innerHTML='<div class="v3966-update-card-head"><h3>앱 업데이트</h3><span data-v3966-current>웹 v'+esc(VERSION)+'</span></div><p data-v3966-status>앱 셸과 웹 UI 버전을 확인합니다.</p><div class="row"><label><input type="checkbox" data-v3966-auto-check> 시작할 때 자동 확인</label><label><input type="checkbox" data-v3966-auto-wifi> Wi-Fi에서 APK 자동 다운로드</label><button type="button" data-v3966-web-refresh>웹 업데이트 적용</button><button type="button" data-v3966-check>APK 확인</button></div>';
   grid.appendChild(card);
   var ac=card.querySelector("[data-v3966-auto-check]"),aw=card.querySelector("[data-v3966-auto-wifi]");
   ac.checked=pref(PREF_CHECK,true);aw.checked=pref(PREF_WIFI,true);
   ac.addEventListener("change",function(){setPref(PREF_CHECK,ac.checked)});
   aw.addEventListener("change",function(){setPref(PREF_WIFI,aw.checked)});
   card.querySelector("[data-v3966-check]").addEventListener("click",function(){checkForUpdate(true)});
+  card.querySelector("[data-v3966-web-refresh]").addEventListener("click",function(){applyWebUpdate()});
   updateSettings()
 }
 function updateSettings(){
   var card=document.getElementById("v3966UpdateCard");if(!card)return;
   var cur=card.querySelector("[data-v3966-current]"),st=card.querySelector("[data-v3966-status]");
-  if(cur)cur.textContent="v"+(state.appInfo&&state.appInfo.versionName||VERSION);
+  if(cur){
+    var shell=state.appInfo&&state.appInfo.versionName;
+    cur.textContent=isLiveShell()&&shell?("앱 셸 v"+shell+" · 웹 v"+VERSION):("v"+(shell||VERSION))
+  }
   if(st)st.textContent=phaseText()
 }
 async function releaseInfo(){
@@ -151,6 +155,30 @@ async function releaseInfo(){
 async function getAppInfo(){
   var p=plugin();if(!p||!p.getAppInfo)return null;
   try{state.appInfo=await p.getAppInfo();return state.appInfo}catch(_){return null}
+}
+
+async function applyWebUpdate(){
+  try{
+    toast3966("최신 웹 UI를 적용하는 중…");
+    if("serviceWorker" in navigator){
+      try{
+        var regs=await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map(function(r){try{return r.update()}catch(_){return null}}))
+      }catch(_){}
+    }
+    try{
+      if(window.caches){
+        var keys=await caches.keys();
+        await Promise.all(keys.filter(function(k){return /voca|vocadive|app-shell/i.test(k)}).map(function(k){return caches.delete(k)}))
+      }
+    }catch(_){}
+    var u=new URL(location.href);
+    u.searchParams.set("ui",VERSION);
+    u.searchParams.set("_refresh",String(Date.now()));
+    location.replace(u.toString())
+  }catch(e){
+    try{location.reload()}catch(_){}
+  }
 }
 async function onWifi(){
   try{
@@ -284,6 +312,7 @@ window.VocaDiveUpdater={
   check:checkForUpdate,
   download:downloadUpdate,
   install:installPending,
+  applyWebUpdate:applyWebUpdate,
   state:function(){return Object.assign({},state)}
 };
 
