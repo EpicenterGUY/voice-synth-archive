@@ -1,11 +1,26 @@
 {
   "current": {
-    "version": "39.67.0",
+    "version": "39.68.0",
     "releasedAt": "2026-09-27",
-    "title": "Search Hotfix 4.1 · Ranking/Search Race Fix",
-    "summary": "느린 보카로·UTAU 순위 로딩과 Search 4.0이 같은 전역 busy 상태를 공유해 검색이 멈추던 문제를 분리하고, 늦은 순위 응답이 검색 결과를 덮어쓰는 레이스까지 차단했습니다."
+    "title": "Search Hotfix 4.2 · Direct Search Path",
+    "summary": "Search 4.0의 버튼·Enter 입력을 단일 직접 실행 경로로 통합하고, 숨겨진 구형 연도/빙산 체크 상태가 검색에 섞이는 문제와 모바일에서 실패 원인이 보이지 않던 문제를 수정했습니다."
   },
   "entries": [
+    {
+      "version": "39.68.0",
+      "date": "2026-09-27",
+      "title": "Search Hotfix 4.2 · Direct Search Path",
+      "changes": [
+        "Search 4.0 검색 버튼을 Search 3 자동 라우팅 우회 없이 freeSearch로 직접 연결해 클릭 한 번당 검색 요청이 정확히 한 번만 실행되도록 변경",
+        "Enter 키도 캡처 단계에서 동일한 직접 검색 경로만 사용하도록 통합해 구형 keydown 핸들러와 중복 검색이 발생하지 않도록 수정",
+        "Search 4.0 필터 패널을 검색 조건의 단일 기준으로 사용하고, 화면에서 숨겨진 구형 '선택 연도/빙산 구간 적용' 체크 상태가 검색을 0건으로 좁히지 못하도록 차단",
+        "필터에서 연도/빙산을 해제하면 legacy state.year/state.tier도 각각 all로 확실히 초기화해 이전 선택값 잔류를 제거",
+        "구형 검색 옵션 패널은 매번 Search 4.0을 열 때 hidden + inline important로 다시 숨겨 모바일에서 재노출되지 않도록 수정",
+        "Worker/API 검색 실패 시 모바일에서 결과 영역으로 자동 이동하고 실패 원인을 결과 요약에 바로 표시",
+        "자유검색 전용 freeBusy 초기값을 명시해 검색 상태를 독립적으로 관리",
+        "서비스워커·PWA·manifest·네이티브 런타임 캐시 버전을 v39.68.0으로 올려 이전 Search 4.0 코드가 남는 문제를 차단"
+      ]
+    },
     {
       "version": "39.67.0",
       "date": "2026-09-27",
