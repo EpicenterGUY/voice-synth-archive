@@ -3355,7 +3355,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.67.0 · Direct APK Update 1.0 · Search Fix · Rank Turbo 1.0 · Native Brand 0.2 · Android Shell 0.1 · App Foundation 1.0 · Cross-Genre Bridge 1.0 · Relation Trust 3.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.68.0 · Direct APK Update 1.0 · Search Fix · Rank Turbo 1.0 · Native Brand 0.2 · Android Shell 0.1 · App Foundation 1.0 · Cross-Genre Bridge 1.0 · Relation Trust 3.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -4602,6 +4602,7 @@ const state = {
   songs:[],
   totalSongsInQuery:0,
   busy:false,
+  freeBusy:false,
   route:null,
   listMode:"ranking",
   freeQuery:"",
@@ -5299,7 +5300,7 @@ async function loadSongs(reset=false){
   if(reset){state.offset=0;state.songs=[];$("#titleFilter").value="";}
   state.busy=true; $("#songsBtn").disabled=true; $("#loadMoreBtn").disabled=true;
   const tier=TIERS.find(t=>t.id===state.tier)||null;
-  const sort=$("#sortSelect").value;
+  const sort=$("#sortSelect")?.value||"-viewCounter";
   $("#songList").innerHTML=state.songs.length?$("#songList").innerHTML:`<div class="empty">니코동에서 ${sourceDefinition().unit} 목록을 불러오는 중…</div>`;
   try{
     const d=await fetchNico({tier,year:state.year,sort,limit:100,offset:state.offset,mode:"ranking",applyYear:true,applyTier:true});
@@ -7505,9 +7506,16 @@ async function freeSearch(reset=false){
       return;
     }
     state.freeQuery=q;
-    state.freeScope=$("#searchScope").value;
-    state.freeApplyYear=$("#applyYearToSearch").checked;
-    state.freeApplyTier=$("#applyTierToSearch").checked;
+    const search4Filters=(typeof currentSearchFilters398==="function"&&document.getElementById("v398MainRow"))?currentSearchFilters398():null;
+    state.freeScope=search4Filters?search4Filters.scope:($("#searchScope")?.value||"all");
+    state.freeApplyYear=search4Filters?search4Filters.year!=="all":!!$("#applyYearToSearch")?.checked;
+    state.freeApplyTier=search4Filters?!!search4Filters.tier:!!$("#applyTierToSearch")?.checked;
+    if(search4Filters){
+      state.year=search4Filters.year||"all";
+      state.tier=search4Filters.tier||"all";
+      const legacySort=$("#sortSelect");
+      if(legacySort&&search4Filters.sort)legacySort.value=search4Filters.sort;
+    }
     state.offset=0;
     state.freeFetchOffset=0;
     state.freeHasMore=true;
@@ -7629,9 +7637,14 @@ async function freeSearch(reset=false){
   }catch(e){
     if(searchSeq!==(Number(window.__VSA_FREE_SEARCH_SEQ)||0)||state.listMode!=="free")return;
     showApiFallback("앱 내부 검색 연결에 실패했습니다.",searchQuery);
+    const summary=document.getElementById("v398ResultSummary");
+    if(summary)summary.textContent="검색 실패 · "+String(state.lastError||e?.message||e||"Worker 응답 없음");
     toast("Worker 연결이나 검색 조건을 확인해주세요.");
     console.warn(e);
     try{patchSearchUi398()}catch(_){}
+    if(window.matchMedia("(max-width:699px)").matches){
+      setTimeout(()=>$("#resultsPanel")?.scrollIntoView({behavior:"smooth",block:"start"}),70);
+    }
   }finally{
     if(searchSeq===(Number(window.__VSA_FREE_SEARCH_SEQ)||0)){
       state.freeBusy=false;
@@ -9435,7 +9448,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.67.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
+var VER="39.68.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -10442,13 +10455,20 @@ function currentSearchFilters398(){
 function syncLegacySearchFilters398(){
   var x=currentSearchFilters398(),ys=document.getElementById("yearSelect"),ts=document.getElementById("tierSelect"),ss=document.getElementById("sortSelect");
   var ay=document.getElementById("applyYearToSearch"),at=document.getElementById("applyTierToSearch");
-  if(ys&&Array.from(ys.options).some(function(o){return o.value===x.year}))ys.value=x.year;
-  if(ts&&x.tier&&Array.from(ts.options).some(function(o){return o.value===x.tier}))ts.value=x.tier;
+  var year=x.year||"all",tier=x.tier||"all";
+  if(ys&&Array.from(ys.options).some(function(o){return o.value===year}))ys.value=year;
+  if(ts&&Array.from(ts.options).some(function(o){return o.value===tier}))ts.value=tier;
   if(ss&&Array.from(ss.options).some(function(o){return o.value===x.sort}))ss.value=x.sort;
-  if(typeof state!=="undefined"){state.year=x.year; if(x.tier)state.tier=x.tier}
-  if(ay)ay.checked=x.year!=="all";
+  if(typeof state!=="undefined"){
+    state.year=year;
+    state.tier=tier;
+    state.freeScope=x.scope||"all_voice_synth";
+    state.freeApplyYear=year!=="all";
+    state.freeApplyTier=!!x.tier;
+  }
+  if(ay)ay.checked=year!=="all";
   if(at)at.checked=!!x.tier;
-  saveSearchFilters398(x)
+  saveSearchFilters398(Object.assign({},x,{year:year,tier:x.tier||""}))
 }
 function filterLabel398(kind,value){
   if(kind==="scope"){var s=document.getElementById("searchScope");return s&&s.selectedOptions[0]?s.selectedOptions[0].textContent:value}
@@ -10496,6 +10516,22 @@ function patchSearchUi398(){
   if(summary)summary.textContent=has?F(state.songs.length)+"곡 불러옴 · 결과 안에서 다시 좁힐 수 있습니다.":"검색 결과가 생기면 결과 내 좁히기가 활성화됩니다.";
   renderSearchFilterChips398()
 }
+async function runSearch398Direct(){
+  var input=document.getElementById("globalSearchInput"),q=String(input&&input.value||"").trim();
+  if(!q){
+    try{toast("검색어를 입력하세요.")}catch(_){}
+    try{input&&input.focus()}catch(_){}
+    return false
+  }
+  try{syncLegacySearchFilters398()}catch(_){}
+  try{rememberSearch397(q,searchMode397)}catch(_){}
+  try{if(typeof state!=="undefined")state.freeQuery=q}catch(_){}
+  await freeSearch(true);
+  try{patchSearchUi398()}catch(_){}
+  return true
+}
+window.VSARunSearch398=runSearch398Direct;
+
 function ensureSearch398(){
   var page=ensureSearch397();if(!page)return null;
   page.classList.add("v398-search-page");
@@ -10513,12 +10549,21 @@ function ensureSearch398(){
     free.prepend(main);
     main.querySelector(".v398-main-input-wrap").appendChild(input);
     main.insertBefore(run,main.children[1]);
-    if(run&&!run.dataset.v3945Unified){
-      run.dataset.v3945Unified="1";
-      run.onclick=function(e){
-        if(e){e.preventDefault();e.stopPropagation()}
-        var q=input&&input.value.trim();if(q)executeSearch397(q,searchMode397)
-      }
+    if(run&&!run.dataset.v398Direct){
+      run.dataset.v398Direct="1";
+      run.onclick=null;
+      run.addEventListener("click",function(e){
+        if(e){e.preventDefault();e.stopImmediatePropagation()}
+        runSearch398Direct()
+      },true)
+    }
+    if(input&&!input.dataset.v398Direct){
+      input.dataset.v398Direct="1";
+      input.addEventListener("keydown",function(e){
+        if(e.key!=="Enter")return;
+        e.preventDefault();e.stopImmediatePropagation();
+        runSearch398Direct()
+      },true)
     }
     var filter=document.createElement("div");filter.id="v398FilterSheet";filter.className="v398-filter-sheet";
     var oldYear=document.getElementById("yearSelect"),oldTier=document.getElementById("tierSelect"),oldSort=document.getElementById("sortSelect");
@@ -10527,7 +10572,7 @@ function ensureSearch398(){
       '<label>연도<select id="v398Year"><option value="all">전체 연도</option>'+optionClone398(oldYear,true)+'</select></label>'+
       '<label>빙산 구간<select id="v398Tier"><option value="">모든 구간</option>'+optionClone398(oldTier,false)+'</select></label>'+
       '<label>정렬<select id="v398Sort">'+optionClone398(oldSort,false)+'</select></label></div>'+
-      '<div class="v398-filter-help"><b>TIP</b> 연도와 빙산 구간을 선택하면 기존 체크박스를 자동으로 적용합니다. 태그 빙산과 니코동 열기는 더보기에 있습니다.</div>';
+      '<div class="v398-filter-help"><b>TIP</b> 연도와 빙산 구간은 이 필터 패널의 값만 검색에 적용됩니다. 태그 빙산과 니코동 열기는 더보기에 있습니다.</div>';
     main.insertAdjacentElement("afterend",filter);
     filter.querySelector("#v398ScopeSlot").appendChild(scope);
     scope.style.width="100%";scope.style.marginTop="4px";
@@ -10562,6 +10607,12 @@ function ensureSearch398(){
       rt.addEventListener("click",function(e){if(e.target.closest("[data-v398-focus-narrow]"))document.getElementById("titleFilter")?.focus();if(e.target.closest("[data-v398-open-filter]"))toggleSearchFilter398()})
     }
     syncLegacySearchFilters398();
+  }
+  var legacyOptions=page.querySelector(".search-options");
+  if(legacyOptions){
+    legacyOptions.hidden=true;
+    legacyOptions.setAttribute("aria-hidden","true");
+    legacyOptions.style.setProperty("display","none","important");
   }
   if(typeof freeSearch==="function"&&!window.__VSA398_FREE_PATCHED){
     window.__VSA398_FREE_PATCHED=true;var oldFree398=freeSearch;
@@ -11082,11 +11133,11 @@ function ensure(name){
   if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.45.0","./detective-v12.js?v=39.45.0","./detective-v13.js?v=39.45.0","./detective-v14.js?v=39.45.0","./detective-v16.js?v=39.45.0"]);
   else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.45.0","./smart-v23.js?v=39.45.0","./playlist-v24.js?v=39.45.0"]);
   else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.45.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.67.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.67.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.67.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.68.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.68.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.68.0");
   else if(name==="deviceSync")groups[name]=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.45.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.67.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.68.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
     return seq(["./voca-app-v33.js?v=39.45.0","./voca-app-v33-1.js?v=39.45.0","./voca-app-v33-2.js?v=39.45.0","./voca-app-v33-3.js?v=39.45.0"]);
   });
@@ -11133,11 +11184,11 @@ else setTimeout(function(){ensure("pwa")},12000);
 })();
 </script>
 <script src="./device-sync-v3938.js?v=39.45.0"></script>
-<script src="./app-platform-v3962.js?v=39.67.0"></script>
-<script src="./entitlements-v3962.js?v=39.67.0"></script>
-<script src="./account-v3962.js?v=39.67.0"></script>
-<script src="./native-shell-v3963.js?v=39.67.0"></script>
-<script src="./app-update-v3966.js?v=39.67.0"></script>
+<script src="./app-platform-v3962.js?v=39.68.0"></script>
+<script src="./entitlements-v3962.js?v=39.68.0"></script>
+<script src="./account-v3962.js?v=39.68.0"></script>
+<script src="./native-shell-v3963.js?v=39.68.0"></script>
+<script src="./app-update-v3966.js?v=39.68.0"></script>
 <script src="./i18n-v3918.js?v=39.45.0"></script>
 
 <style id="v3946DivePath">
