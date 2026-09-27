@@ -3349,7 +3349,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.55.0 · Mini Return · Dive Handoff · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.5 · Dive Lenses · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.56.0 · Mini Return · Dive Handoff · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -10933,7 +10933,7 @@ function ensure(name){
   else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.45.0","./smart-v23.js?v=39.45.0","./playlist-v24.js?v=39.45.0"]);
   else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.45.0");
   else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.45.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.55.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.56.0");
   else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.45.0");
   else if(name==="deviceSync")groups[name]=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.45.0");
   else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.45.0");
@@ -11927,7 +11927,7 @@ function trail50(){
 }
 function ensure50(){
  var p=q50("#universePanel");if(!p)return;p.classList.add("v3950-graph");
- var h=q50("#v394UniverseHeader",p);if(h){var t=h.querySelector(".v394-universe-title");if(t)t.innerHTML='<small>VOCADIVE · DIVE GRAPH 4.5</small><h2>다이브</h2><p>기본은 음성합성 오리지널곡. 커버·歌ってみた·파생 영상은 별도 모드로 분리하며, 유사곡과 수층 이동도 같은 모집단 안에서 이어집니다.</p>'}
+ var h=q50("#v394UniverseHeader",p);if(h){var t=h.querySelector(".v394-universe-title");if(t)t.innerHTML='<small>VOCADIVE · DIVE GRAPH 4.6</small><h2>다이브</h2><p>기본은 음성합성 오리지널곡. 커버·歌ってみた·파생 영상은 별도 모드로 분리하며, 유사곡과 수층 이동도 같은 모집단 안에서 이어집니다.</p>'}
  var layout=p.querySelector(".universe-layout");
  if(layout&&!q50("#dg50Toolbar",p)){var b=document.createElement("div");b.id="dg50Toolbar";b.className="dg50-toolbar";b.innerHTML='<button type="button" data-dg50-back>← 이전</button><button type="button" data-dg50-forward>다음 →</button><button type="button" data-dg50-mode="explore">해류 탐색</button><button type="button" data-dg50-mode="similar">≈ 유사곡 소나</button><span id="dg50TrailMount"></span>';layout.parentNode.insertBefore(b,layout)}
  bind50()
