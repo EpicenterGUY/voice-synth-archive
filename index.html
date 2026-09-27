@@ -11125,51 +11125,67 @@ var jobs={},assetState={},groupState={};
 function load(src){
   if(jobs[src])return jobs[src];
   assetState[src]="loading";
-  jobs[src]=new Promise(function(resolve){
+  var job=new Promise(function(resolve){
     var settled=false;
     var el=document.createElement("script");
     var finish=function(ok){
       if(settled)return;settled=true;
-      clearTimeout(timer);assetState[src]=ok?"loaded":"failed";resolve(ok)
+      clearTimeout(timer);assetState[src]=ok?"loaded":"failed";
+      if(!ok)setTimeout(function(){if(jobs[src]===job)delete jobs[src]},0);
+      resolve(ok)
     };
     var timer=setTimeout(function(){
       console.warn("feature load timeout",src);
+      try{el.remove()}catch(_){}
       finish(false)
     },7000);
     el.src=src;el.async=false;
     el.onload=function(){finish(true)};
-    el.onerror=function(){console.warn("feature load failed",src);finish(false)};
+    el.onerror=function(){console.warn("feature load failed",src);try{el.remove()}catch(_){}finish(false)};
     document.body.appendChild(el);
   });
-  return jobs[src];
+  jobs[src]=job;
+  return job;
 }
-async function seq(list){for(var i=0;i<list.length;i++)await load(list[i]);return true}
+async function seq(list){
+  for(var i=0;i<list.length;i++){
+    var ok=await load(list[i]);
+    if(!ok)return false
+  }
+  return true
+}
 var groups={};
 function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
-  if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.45.0","./detective-v12.js?v=39.45.0","./detective-v13.js?v=39.45.0","./detective-v14.js?v=39.45.0","./detective-v16.js?v=39.45.0"]);
-  else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.45.0","./smart-v23.js?v=39.45.0","./playlist-v24.js?v=39.45.0"]);
-  else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.45.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.71.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.71.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.71.0");
-  else if(name==="deviceSync")groups[name]=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.45.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.71.0");
-  else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
+  var base;
+  if(name==="detective")base=seq(["./detective-v11.js?v=39.45.0","./detective-v12.js?v=39.45.0","./detective-v13.js?v=39.45.0","./detective-v14.js?v=39.45.0","./detective-v16.js?v=39.45.0"]);
+  else if(name==="personal")base=seq(["./organizer-v22.js?v=39.45.0","./smart-v23.js?v=39.45.0","./playlist-v24.js?v=39.45.0"]);
+  else if(name==="discovery")base=load("./discovery-v20.js?v=39.45.0");
+  else if(name==="homeData")base=load("./vocalo-home-v28.js?v=39.71.0");
+  else if(name==="universe")base=load("./universe-search-v28.js?v=39.71.0");
+  else if(name==="player")base=load("./nico-player-v32.js?v=39.71.0");
+  else if(name==="deviceSync")base=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.45.0");
+  else if(name==="pwa")base=load("./pwa-v21.js?v=39.71.0");
+  else if(name==="v33")base=Promise.all([ensure("personal"),ensure("discovery")]).then(function(rows){
+    if(rows.some(function(x){return x===false}))return false;
     return seq(["./voca-app-v33.js?v=39.45.0","./voca-app-v33-1.js?v=39.45.0","./voca-app-v33-2.js?v=39.45.0","./voca-app-v33-3.js?v=39.45.0"]);
   });
-  else groups[name]=Promise.resolve(false);
-  groups[name]=Promise.resolve(groups[name]).then(function(v){
-    groupState[name]=v===false?"failed":"loaded";
+  else base=Promise.resolve(false);
+  var job=Promise.resolve(base).then(function(v){
+    var ok=v!==false;
+    groupState[name]=ok?"loaded":"failed";
+    if(!ok)setTimeout(function(){if(groups[name]===job)delete groups[name]},0);
     try{if(typeof healPageLocks37==="function")healPageLocks37()}catch(_){}
-    return v
+    return ok
   }).catch(function(err){
     groupState[name]="failed";
+    setTimeout(function(){if(groups[name]===job)delete groups[name]},0);
     try{if(typeof recordRuntimeError37==="function")recordRuntimeError37("feature",name+": "+(err&&err.message?err.message:String(err)),"")}catch(_){}
     return false
   });
-  return groups[name];
+  groups[name]=job;
+  return job;
 }
 window.VSAEnsureFeatures=ensure;
 window.VSAFeatureLoaderStatus=function(){return{groups:Object.assign({},groupState),assets:Object.assign({},assetState)}};
@@ -11209,7 +11225,7 @@ else setTimeout(function(){ensure("pwa")},12000);
 <script src="./app-update-v3966.js?v=39.71.0"></script>
 <script src="./i18n-v3918.js?v=39.45.0"></script>\n<script src="./search-live-v3969.js?v=39.71.0"></script>
 
-<style id="v3946DivePath">
+<style id="v3946DivePathStyle">
 /* v39.46 · Dive Path 1.0 — graph-free guided discovery */
 body.v37-ready .v3946-dive-panel .panel-head{display:none!important}
 .v3946-dive-panel .v394-universe-header{background:
@@ -11273,7 +11289,7 @@ body.v37-ready .v3946-dive-panel .panel-head{display:none!important}
   .v3946-dive-panel .universe-stage{border-radius:17px!important;touch-action:pan-y}.dive46-empty{min-height:330px}
 }
 </style>
-<script id="v3946DivePath">
+<script id="v3946DivePathScript">
 (function(){
 "use strict";
 function q46(s,r){return (r||document).querySelector(s)}
