@@ -2,15 +2,19 @@
   "current": {
     "version": "39.71.0",
     "releasedAt": "2026-09-27",
-    "title": "Dive Route 1.0 · Reliability Patch",
-    "summary": "심층 이동을 직접 선택할 수 있는 단순한 다이브 경로 UI로 개편하고, 지연 로딩·구형 렌더 충돌·이동 실패 처리 오류를 함께 수정했습니다."
+    "title": "Dive Route 1.0 · Reliability & Data Bridge",
+    "summary": "심층 이동 UI 개편에 더해 Worker 연결 상태를 화면에서 직접 확인하고, 정적 스모크 검사로 반복 회귀를 빌드 전에 차단하도록 강화했습니다."
   },
   "entries": [
     {
       "version": "39.71.0",
       "date": "2026-09-27",
-      "title": "Dive Route 1.0 · Reliability Patch",
+      "title": "Dive Route 1.0 · Reliability & Data Bridge",
       "changes": [
+        "검색·다이브·빙산·탐정 등 온라인 데이터가 필요한 화면에 Worker 연결 상태 안내를 추가하고, 미설정/연결 실패를 버튼 무반응처럼 보이지 않게 표시",
+        "Worker 연결 확인과 설정 이동 버튼을 추가하고 fetchNico 성공·실패 상태를 전역 이벤트로 공유하도록 변경",
+        "정적 스모크 검사를 추가해 JS/인라인 스크립트 문법, JSON, 로컬 리소스 누락, 중복 DOM ID, 앱 버전 불일치, 다이브 렌더러 회귀를 Android 빌드 전에 자동 검사",
+        "Android debug/release 워크플로가 정적 스모크 검사 실패 시 빌드를 중단하도록 CI 게이트 추가",
         "다이브 화면을 애니메이션형 관계 그래프 대신 현재곡 + 수층 선택 + 후보 카드 중심의 탐색 UI로 단순화",
         "수면·얕은층·중층·심층·심해를 직접 선택할 수 있고 ‘심층 이동’ 버튼으로 한 단계씩 내려가도록 추가",
         "현재 경로에 목표 수층 후보가 없으면 Worker를 통해 해당 조회수 수층 후보를 새로 검색한 뒤 이동하도록 보강",
