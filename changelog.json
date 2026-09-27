@@ -1,11 +1,27 @@
 {
   "current": {
-    "version": "39.63.0",
+    "version": "39.64.0",
     "releasedAt": "2026-09-27",
-    "title": "Android Shell 0.1 · Back / Lifecycle / Playback Restore",
-    "summary": "Android 하드웨어 뒤로가기와 앱 백그라운드/복귀를 네이티브 수명주기에 연결하고, 인라인/미니플레이어 재생 상태 복구와 네이티브 전용 캐시 분리를 추가했습니다."
+    "title": "Native Brand 0.2 · Launcher / Splash / APK+AAB",
+    "summary": "VocaDive 전용 Android 아이콘과 스플래시 생성 파이프라인을 추가하고 CI에서 APK와 AAB를 함께 빌드하도록 네이티브 패키징 단계를 확장했습니다."
   },
   "entries": [
+    {
+      "version": "39.64.0",
+      "date": "2026-09-27",
+      "title": "Native Brand 0.2 · Launcher / Splash / APK+AAB",
+      "changes": [
+        "기존 VocaDive 로고 SVG를 네이티브 앱의 단일 브랜딩 소스로 사용하는 assets/logo.svg를 추가",
+        "@capacitor/assets를 빌드 도구에 추가해 Android adaptive launcher icon과 splash 리소스를 자동 생성",
+        "@capacitor/splash-screen을 추가하고 900ms 네이티브 스플래시, VocaDive 다크 배경 #041115, 스피너 없음으로 설정",
+        "Android CI가 기본 Capacitor 아이콘이 아니라 VocaDive 전용 아이콘/스플래시를 생성한 뒤 cap sync를 수행하도록 변경",
+        "Gradle 빌드를 assembleDebug + bundleDebug로 확장해 debug APK와 debug AAB를 동시에 생성",
+        "CI 아티팩트에 APK와 AAB를 함께 업로드하도록 변경해 스토어 패키징 단계의 문제를 조기에 확인 가능",
+        "네이티브 브랜딩 소스나 package/config가 바뀌면 Android 빌드가 자동으로 다시 돌도록 workflow path 조건 확장",
+        "현재 Android package id app.vocadive.mobile은 스토어 등록 전까지 임시로 유지하고 영구 ID 확정은 별도 단계로 남김",
+        "앱·PWA·서비스워커·manifest 버전을 v39.64.0으로 맞춤"
+      ]
+    },
     {
       "version": "39.63.0",
       "date": "2026-09-27",
