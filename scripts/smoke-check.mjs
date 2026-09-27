@@ -75,10 +75,16 @@ for(const [path,re,label] of versionFiles){
 if(!index.includes("v"+expected))fail("index.html does not expose package version "+expected);
 
 // 7. Critical Dive ownership / lazy loader invariants.
-const lastRender=index.lastIndexOf("window.renderUniverse=");
-const finalRender=index.lastIndexOf("window.renderUniverse=render58");
-if(finalRender<0||finalRender!==lastRender)fail("Relation Bridge is not the final window.renderUniverse owner");
+const relationRender=index.lastIndexOf("window.renderUniverse=render58");
+if(relationRender<0)fail("Relation Bridge render assignment missing");
 if(!index.includes('window.__VSA_DIVE_RENDER_OWNER="relation58"'))fail("Dive render owner guard missing");
+for(const legacy of ["window.renderUniverse=render46","window.renderUniverse=renderSea48","window.renderUniverse=render49","window.renderUniverse=render50"]){
+  const p=index.lastIndexOf(legacy);
+  if(p>relationRender)fail("legacy Dive renderer reclaims UI after Relation Bridge: "+legacy)
+}
+const wrap59=index.lastIndexOf("var oldRender59=window.renderUniverse");
+const wrap60=index.lastIndexOf("var oldRender60=window.renderUniverse");
+if(wrap59<relationRender||wrap60<wrap59)fail("Relation candidate/trust wrappers are not chained after Relation Bridge");
 if(!index.includes("if(!ok)return false"))fail("lazy sequential loader does not fail closed");
 if(!index.includes("delete jobs[src]"))fail("failed lazy asset is not retryable");
 if(!index.includes("delete groups[name]"))fail("failed lazy feature group is not retryable");
