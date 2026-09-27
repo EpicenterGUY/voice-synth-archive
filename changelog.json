@@ -1,11 +1,26 @@
 {
   "current": {
-    "version": "39.55.0",
+    "version": "39.56.0",
     "releasedAt": "2026-09-27",
-    "title": "Dive Lenses · Instant Play · Weighted Random",
-    "summary": "다이브에서 곡을 바로 재생하고 같은 P·보컬·시대 렌즈로 주변곡을 좁히며, 랜덤 다이브도 목적별 가중치로 더 다양하게 이동하도록 개선했습니다."
+    "title": "Legacy Title Recall · ReAct Fix",
+    "summary": "React처럼 니코동 원곡 제목의 내부 대소문자가 다른 짧은 영문 제목을 놓치지 않도록 대소문자 변형 검색과 검증된 canonical ID fallback을 추가했습니다."
   },
   "entries": [
+    {
+      "version": "39.56.0",
+      "date": "2026-09-27",
+      "title": "Legacy Title Recall · ReAct Fix",
+      "changes": [
+        "짧은 영문 곡명 검색에서 대소문자 조합이 다른 니코동 제목을 놓치던 문제를 수정",
+        "영문 2~8자 검색어는 가능한 대소문자 변형을 생성해 제목 재검색하는 보강 경로 추가",
+        "React 검색 시 ReAct처럼 내부 대문자가 섞인 제목도 후보로 회수",
+        "黒うさP의 ReAct 원곡 sm14065801을 검증된 canonical fallback으로 등록해 전역 검색 실패 시에도 회수 가능",
+        "검증된 원곡 fallback은 니코동 contentId로 다시 조회한 뒤 오리지널 증거 검사를 통과한 경우에만 결과에 포함",
+        "대소문자 보강 결과에는 ‘대소문자 보강’, canonical 회수 결과에는 ‘원곡 확인’ 배지를 표시",
+        "기존 오리지널/커버/파생 모집단 분리와 성인 콘텐츠 필터는 그대로 유지",
+        "검색 모듈 캐시 버전을 v39.56.0으로 갱신"
+      ]
+    },
     {
       "version": "39.55.0",
       "date": "2026-09-27",
