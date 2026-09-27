@@ -11165,7 +11165,7 @@ function ensure(name){
   else if(name==="homeData")base=load("./vocalo-home-v28.js?v=39.71.0");
   else if(name==="universe")base=load("./universe-search-v28.js?v=39.71.0");
   else if(name==="player")base=load("./nico-player-v32.js?v=39.71.0");
-  else if(name==="deviceSync")base=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.45.0");
+  else if(name==="deviceSync")base=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.71.0");
   else if(name==="pwa")base=load("./pwa-v21.js?v=39.71.0");
   else if(name==="v33")base=Promise.all([ensure("personal"),ensure("discovery")]).then(function(rows){
     if(rows.some(function(x){return x===false}))return false;
@@ -11217,7 +11217,7 @@ if("requestIdleCallback" in window)requestIdleCallback(function(){ensure("pwa")}
 else setTimeout(function(){ensure("pwa")},12000);
 })();
 </script>
-<script src="./device-sync-v3938.js?v=39.45.0"></script>
+<script src="./device-sync-v3938.js?v=39.71.0"></script>
 <script src="./app-platform-v3962.js?v=39.71.0"></script>
 <script src="./entitlements-v3962.js?v=39.71.0"></script>
 <script src="./account-v3962.js?v=39.71.0"></script>
