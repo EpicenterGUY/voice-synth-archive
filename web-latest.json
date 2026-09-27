@@ -1,0 +1,6 @@
+{
+  "version": "39.75.0",
+  "channel": "web",
+  "publishedAt": "2026-09-28T00:00:00+09:00",
+  "notes": "Unified shell recovery: settings, Worker status, single navigation, header search and Live Shell update UI."
+}
