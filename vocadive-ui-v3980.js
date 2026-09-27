@@ -57,7 +57,9 @@ body.v37-ready .topbar .logo{
 }
 body.v37-ready .topbar .brand h1{font-size:18px!important;letter-spacing:-.04em!important;color:var(--vd-text)!important}
 body.v37-ready .topbar .brand .sub{display:none!important}
-body.v37-ready .topbar .status{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:7px!important;min-width:0!important}
+body.v37-ready .topbar .status{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:7px!important;min-width:0!important;flex-wrap:nowrap!important;white-space:nowrap!important}
+#v3982WorkerPill{cursor:pointer!important;user-select:none;flex:0 1 auto!important}
+#v3982WorkerPill:focus-visible{outline:2px solid var(--vd-accent);outline-offset:2px}
 body.v37-ready .topbar .status>#snapshotLabel,
 body.v37-ready .topbar .status>#openToolsBtn,
 body.v37-ready .topbar .status>.pwa-actions{display:none!important}
@@ -539,6 +541,38 @@ body.v37-ready :is(button,a){-webkit-tap-highlight-color:transparent}
  .v3981-explore-copy em{font-size:7.5px}
  .v3981-producer-section .v397-producer-grid{grid-template-columns:1fr!important}
 }
+
+/* Fold / compact viewport recovery · v39.78 */
+@media(min-width:700px) and (max-width:1099px){
+ body.v37-ready>.app>.topbar{grid-template-columns:auto minmax(240px,1fr) auto!important;grid-template-areas:"brand search status"!important;align-items:center!important}
+ body.v37-ready>.app>.topbar>.brand{grid-area:brand!important}
+ body.v37-ready>.app>.topbar>.v39-global-search,body.v37-ready>.app>.topbar>#v3980SearchForm{grid-area:search!important;width:100%!important;min-width:0!important}
+ body.v37-ready>.app>.topbar>.status{grid-area:status!important;flex-wrap:nowrap!important;max-width:100%!important}
+ body.v37-ready .topbar #v3918LangSwitch .v3918-lang-full{display:none!important}
+ body.v37-ready .topbar #v3918LangSwitch .v3918-lang-short{display:inline!important}
+ body.v37-ready .topbar .v3911-theme-toggle span{display:none!important}
+}
+@media(max-width:699px){
+ body.v37-ready>.app>.topbar>.status{flex-wrap:nowrap!important;white-space:nowrap!important;overflow:visible!important;min-width:0!important}
+ #v3982WorkerPill{max-width:112px!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important}
+ #v3918LangSwitch{flex:0 0 auto!important}
+ body.v37-ready .topbar .v3911-theme-toggle{flex:0 0 auto!important;min-width:32px!important;width:32px!important;padding:0!important;overflow:hidden!important}
+ body.v37-ready .topbar .v3911-theme-toggle span{display:none!important}
+ #v3980MenuBtn{flex:0 0 34px!important}
+ body.v37-ready .main,body.v37-ready #resultsPanel,body.v37-ready #resultsPanel .list,body.v37-ready #songList{width:100%!important;max-width:none!important;min-width:0!important;box-sizing:border-box!important}
+ body.v37-ready #songList .song{width:100%!important;max-width:none!important;min-width:0!important;grid-template-columns:104px minmax(0,1fr)!important;grid-template-rows:auto auto!important;gap:5px 10px!important;padding:10px 0!important;align-items:start!important}
+ body.v37-ready #songList .rank{position:absolute!important;z-index:3!important;left:5px!important;top:5px!important;width:auto!important;min-width:0!important;padding:3px 6px!important;border-radius:999px!important;background:rgba(4,18,22,.84)!important;color:#d9eeeb!important;font-size:7px!important;line-height:1!important}
+ body.v37-ready #songList .thumb{grid-column:1!important;grid-row:1 / span 2!important;width:104px!important;height:59px!important;min-width:104px!important}
+ body.v37-ready #songList .song>div:not(.rank):not(.views){grid-column:2!important;grid-row:1!important;min-width:0!important;width:100%!important}
+ body.v37-ready #songList .views{grid-column:2!important;grid-row:2!important;min-width:0!important;margin:0!important;text-align:left!important;font-size:9px!important}
+ body.v37-ready #songList .song-actions{max-width:100%!important;min-width:0!important;flex-wrap:wrap!important;overflow:visible!important}
+ body.v37-ready #songList .mini-btn{min-width:0!important}
+}
+@media(max-width:420px){
+ body.v37-ready #songList .song{grid-template-columns:94px minmax(0,1fr)!important;gap:5px 8px!important}
+ body.v37-ready #songList .thumb{width:94px!important;height:53px!important;min-width:94px!important}
+ body.v37-ready #songList .song-title{font-size:10.5px!important}
+}
 @media(prefers-reduced-motion:reduce){
  *{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
@@ -586,6 +620,26 @@ function openSettings3982(){
   }catch(_){}
   openRoute("settings29").then(function(){setTimeout(openSettingsDetails3983,30)})
 }
+function focusWorkerInput3984(){
+  var page=document.querySelector('[data-tool-view="settings29"]'),panel=document.getElementById("settingsPanel");
+  if(page)qa("details",page).forEach(function(d){d.open=true});
+  if(panel){
+    var d=panel.closest("details");if(d)d.open=true;
+    panel.scrollIntoView({behavior:"smooth",block:"start"});
+  }
+  var x=document.getElementById("proxyInput");
+  if(x){
+    try{x.focus({preventScroll:true})}catch(_){try{x.focus()}catch(__){}}
+    try{x.select()}catch(_){}
+    x.scrollIntoView({behavior:"smooth",block:"center"});
+    return true
+  }
+  return false
+}
+function openWorkerSettings3984(){
+  openSettings3982();
+  [70,220,520].forEach(function(ms){setTimeout(function(){openSettingsDetails3983();focusWorkerInput3984()},ms)})
+}
 function openSettingsDetails3983(){
   var page=document.querySelector('[data-tool-view="settings29"]');
   if(!page)return;
@@ -603,8 +657,11 @@ function openSettingsDetails3983(){
     var st=window.VocaDiveUpdater&&window.VocaDiveUpdater.state?window.VocaDiveUpdater.state():null;
     shell=st&&st.appInfo&&st.appInfo.versionName?String(st.appInfo.versionName):"";
   }catch(_){}
+  var autoNext=true;try{autoNext=localStorage.getItem("vsa.player.autoNext")!=="0"}catch(_){}
+  try{if(window.VSANicoPlayer&&VSANicoPlayer.getAutoNext)autoNext=!!VSANicoPlayer.getAutoNext()}catch(_){}
   summary.innerHTML=
    '<button type="button" data-v3983-setting="worker"><small>WORKER</small><b>'+esc(workerState)+'</b><span>'+esc(worker)+'</span></button>'+
+   '<button type="button" data-v3983-setting="autonext" aria-pressed="'+(autoNext?"true":"false")+'"><small>PLAYER</small><b>다음 곡 자동재생 '+(autoNext?"켬":"끔")+'</b><span>곡이 끝나면 재생 큐의 다음 곡으로 자동 이동</span></button>'+
    '<button type="button" data-v3983-setting="web"><small>WEB UI</small><b>v'+esc(web)+'</b><span>Live Shell 최신 UI</span></button>'+
    '<button type="button" data-v3983-setting="app"><small>APP SHELL</small><b>'+(shell?"v"+esc(shell):"확인 중")+'</b><span>Android 네이티브 셸</span></button>';
   if(!summary.dataset.bound){
@@ -613,8 +670,19 @@ function openSettingsDetails3983(){
       var b=e.target.closest("[data-v3983-setting]");if(!b)return;
       var v=b.dataset.v3983Setting;
       if(v==="worker"){
-        var p=document.getElementById("settingsPanel");if(p)p.scrollIntoView({behavior:"smooth",block:"start"});
-        setTimeout(function(){var x=document.getElementById("proxyInput");if(x)try{x.focus()}catch(_){}},250)
+        openWorkerSettings3984()
+      }else if(v==="autonext"){
+        var next=true;try{next=localStorage.getItem("vsa.player.autoNext")==="0"}catch(_){}
+        try{
+          if(window.VSANicoPlayer&&VSANicoPlayer.getAutoNext)next=!VSANicoPlayer.getAutoNext();
+          if(window.VSANicoPlayer&&VSANicoPlayer.setAutoNext)VSANicoPlayer.setAutoNext(next,false);
+          else{
+            localStorage.setItem("vsa.player.autoNext",next?"1":"0");
+            window.dispatchEvent(new CustomEvent("vsa:player-autonext",{detail:{enabled:next}}));
+            if(typeof toast==="function")toast(next?"다음 곡 자동재생을 켰습니다.":"다음 곡 자동재생을 껐습니다.")
+          }
+        }catch(_){}
+        setTimeout(openSettingsDetails3983,0)
       }else if(v==="web"){
         if(window.VocaDiveUpdater&&window.VocaDiveUpdater.applyWebUpdate)window.VocaDiveUpdater.applyWebUpdate()
       }else{
@@ -715,7 +783,7 @@ function ensureTopbar(){
   var wp=document.getElementById("v3982WorkerPill");
   if(wp&&!wp.dataset.v3983Bound){
     wp.dataset.v3983Bound="1";wp.setAttribute("role","button");wp.tabIndex=0;
-    var open=function(){openSettings3982()};
+    var open=function(){openWorkerSettings3984()};
     wp.addEventListener("click",open);
     wp.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();open()}})
   }
