@@ -1,8 +1,8 @@
-/* VocaDive Account + Cloud Foundation · v39.67.0 */
+/* VocaDive Account + Cloud Foundation · v39.68.0 */
 (function(){
 "use strict";
 
-var VERSION="39.67.0";
+var VERSION="39.68.0";
 var DEVICE_KEY="vocadive.device.id.v1";
 var API_KEY="vocadive.app.apiBase.v1";
 var SESSION_KEY="vocadive.account.session.v1";
