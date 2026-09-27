@@ -6874,24 +6874,33 @@ function informativeTags(song){
     .filter(t=>!isGenericTag(t))
     .sort((a,b)=>tagWeight(b)-tagWeight(a));
 }
-function weightedTagSimilarity(a,b){
-  const A=new Set(informativeTags(a)), B=new Set(informativeTags(b));
-  let inter=0, union=0;
+function similarityBreakdown50(a,b){
+  const at=[...new Set(parseTags(a&&a.tags))],bt=[...new Set(parseTags(b&&b.tags))];
+  const A=new Set(informativeTags(a||{})),B=new Set(informativeTags(b||{}));
+  let inter=0,union=0;
   const all=new Set([...A,...B]);
-  for(const t of all){
-    const w=tagWeight(t);
-    union+=w;
-    if(A.has(t)&&B.has(t)) inter+=w;
-  }
-  let score=union?inter/union:0;
-  const ya=a.startTime?new Date(a.startTime).getFullYear():null;
-  const yb=b.startTime?new Date(b.startTime).getFullYear():null;
-  if(ya&&yb){
-    const era=Math.max(0,1-Math.abs(ya-yb)/12);
-    score=score*.9+era*.1;
-  }
-  return Math.max(0,Math.min(1,score));
+  for(const t of all){const w=tagWeight(t);union+=w;if(A.has(t)&&B.has(t))inter+=w}
+  const tag=union?inter/union:0;
+  const vocalRe=/(初音ミク|鏡音リン|鏡音レン|巡音ルカ|GUMI|Megpoid|IA|flower|v flower|KAITO|MEIKO|音街ウナ|結月ゆかり|重音テト|波音リツ|可不|星界|裏命|知声|小春六花|夏色花梨|花隈千冬)/i;
+  const prodRe=/(?:^|[^A-Za-z0-9])[A-Za-z0-9ぁ-んァ-ヶ一-龠々ー・_.-]{1,24}P$|P名|プロデューサー/i;
+  const musicRe=/(ロック|ROCK|VOCAROCK|ポップ|テクノ|エレクトロ|トランス|EDM|ハウス|バラード|ジャズ|メタル|ピアノ|和風|民族調|オーケストラ|シューゲイザー|ドラムンベース|DnB|ダブステップ|チップチューン|ファンク|ラップ|ヒップホップ|爽やか|切ない|泣ける|疾走感|中毒性|かわいい|可愛い|ダーク|鬱|幻想|綺麗|アップテンポ|スローテンポ|変拍子)/i;
+  const sharedRaw=at.filter(function(t){return bt.includes(t)});
+  const vocal=sharedRaw.some(function(t){return vocalRe.test(t)})?1:0;
+  const producer=sharedRaw.some(function(t){return prodRe.test(t)})?1:0;
+  const musicShared=sharedRaw.filter(function(t){return musicRe.test(t)}).length;
+  const music=Math.min(1,musicShared/2);
+  const ya=a&&a.startTime?new Date(a.startTime).getFullYear():null,yb=b&&b.startTime?new Date(b.startTime).getFullYear():null;
+  const era=ya&&yb?Math.max(0,1-Math.abs(ya-yb)/10):0;
+  const score=Math.max(0,Math.min(1,tag*.58+music*.14+era*.12+vocal*.09+producer*.07));
+  const reasons=[];
+  if(producer)reasons.push({key:"producer",label:"같은 P/프로듀서 태그",points:Math.round(.07*100)});
+  if(vocal)reasons.push({key:"vocal",label:"같은 보컬",points:Math.round(.09*100)});
+  if(musicShared)reasons.push({key:"music",label:"장르·분위기 "+musicShared+"개 공통",points:Math.round(music*.14*100)});
+  if(era>.55&&ya&&yb)reasons.push({key:"era",label:"투고 시기 근접 · "+ya+"↔"+yb,points:Math.round(era*.12*100)});
+  if(tag>0)reasons.push({key:"tag",label:"핵심 태그 겹침",points:Math.round(tag*.58*100)});
+  return {score:score,tag:tag,music:music,era:era,vocal:vocal,producer:producer,shared:sharedRaw.slice(0,6),reasons:reasons.sort(function(x,y){return y.points-x.points})}
 }
+function weightedTagSimilarity(a,b){return similarityBreakdown50(a,b).score}
 
 
 function universeDensityConfig(){
@@ -7080,7 +7089,7 @@ async function buildUniverse(center,force=false){
   const cacheKey=sourceIdentity()+"|"+center.contentId+"|"+$("#universeSize").value+"|"+($("#universeDensity")?.value||"minimal");
   if(!force && state.universeCache.has(cacheKey)){
     state.universeData=state.universeCache.get(cacheKey);
-    renderUniverse(state.universeData);
+    (window.renderUniverse||renderUniverse)(state.universeData);
     if(universeRebuildBtn)universeRebuildBtn.disabled=false;
     return;
   }
@@ -7102,6 +7111,7 @@ async function buildUniverse(center,force=false){
     let candidates=[...map.values()].map(s=>({
       ...s,
       similarity:weightedTagSimilarity(center,s),
+      similarityBreakdown:similarityBreakdown50(center,s),
       shared:sharedTags(center,s)
     }));
     candidates.sort((a,b)=>b.similarity-a.similarity || (+b.viewCounter||0)-(+a.viewCounter||0));
@@ -7121,7 +7131,7 @@ async function buildUniverse(center,force=false){
     const data={center,nodes,links,queryTags};
     state.universeCache.set(cacheKey,data);
     state.universeData=data;
-    renderUniverse(data);
+    (window.renderUniverse||renderUniverse)(data);
   }catch(e){
     if(universeLoader){universeLoader.style.display="grid";universeLoader.innerHTML=`경로 생성 실패<br><small>${esc(String(e?.message||e))}</small>`}
   }finally{
