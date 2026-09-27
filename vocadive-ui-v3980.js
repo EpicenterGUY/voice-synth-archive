@@ -1,10 +1,10 @@
-/* VocaDive Unified UI v39.75.0
+/* VocaDive Unified UI v39.76.0
  * YouTube-style app shell, cards, player continuity and route recovery.
  */
 (function(){
 "use strict";
 
-var VERSION="39.75.0";
+var VERSION="39.76.0";
 var raf=0,observer=null,lastRoute="home";
 
 function q(sel,root){return (root||document).querySelector(sel)}
