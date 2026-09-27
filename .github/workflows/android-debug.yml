@@ -3,16 +3,31 @@ name: Android debug APK
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
     tags:
       - "app-v*"
+    paths:
+      - "package.json"
+      - "capacitor.config.json"
+      - "scripts/**"
+      - "native-shell-v3963.js"
+      - "app-platform-v3962.js"
+      - "nico-player-v32.js"
+      - "index.html"
+      - ".github/workflows/android-debug.yml"
 
 permissions:
   contents: read
 
+concurrency:
+  group: android-debug-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
 
     steps:
       - name: Checkout
@@ -28,14 +43,15 @@ jobs:
         with:
           distribution: "temurin"
           java-version: "21"
+          cache: gradle
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --no-audit --no-fund
 
       - name: Prepare web bundle
         run: npm run build:app
 
-      - name: Generate Android project if missing
+      - name: Generate Android shell
         shell: bash
         run: |
           if [ ! -d android ]; then
@@ -47,11 +63,12 @@ jobs:
         working-directory: android
         run: |
           chmod +x ./gradlew
-          ./gradlew assembleDebug
+          ./gradlew assembleDebug --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: VocaDive-debug-${{ github.ref_name }}
+          name: VocaDive-Android-debug-${{ github.sha }}
           path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+          retention-days: 14
