@@ -3349,7 +3349,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.59.0 · Relation Pool 2.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.60.0 · Relation Trust 3.0 · Relation Pool 2.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -9391,7 +9391,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.45.0",HK="vsa.home.v28",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
+var VER="39.45.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -11036,7 +11036,7 @@ function ensure(name){
   else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.45.0","./smart-v23.js?v=39.45.0","./playlist-v24.js?v=39.45.0"]);
   else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.45.0");
   else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.45.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.59.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.60.0");
   else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.45.0");
   else if(name==="deviceSync")groups[name]=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.45.0");
   else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.45.0");
@@ -12653,9 +12653,10 @@ var oldRender59=window.renderUniverse;
 function norm59(v){return String(v||"").normalize("NFKC").toLowerCase().replace(/[\s　・･_\-\/／]+/g,"")}
 function raw59(n){try{return parseTags(n&&n.tags)||[]}catch(_){return Array.isArray(n&&n.tags)?n.tags:[]}}
 function producerTags59(n){
- return raw59(n).map(function(x){return String(x||"").normalize("NFKC").trim()})
-  .filter(function(x){return /(?:^|[^A-Za-z0-9])[\p{L}\p{N}_.・ー-]{1,28}P$/u.test(x)||/P名$|プロデューサー/.test(x)})
-  .slice(0,3)
+ var raw=raw59(n).map(function(x){return String(x||"").normalize("NFKC").trim()})
+  .filter(function(x){return /(?:^|[^A-Za-z0-9])[\p{L}\p{N}_.・ー-]{1,28}P$/u.test(x)||/P名$|プロデューサー/.test(x)});
+ var resolved=Array.isArray(n&&n.__producerResolved60)?n.__producerResolved60.map(function(x){return String(x&&x.name||x||"").trim()}):[];
+ return [...new Set(resolved.concat(raw))].filter(Boolean).slice(0,4)
 }
 function vocalTags59(n){
  var tags=raw59(n),bank=[];
@@ -12673,6 +12674,14 @@ function genreTags59(n){
    })
  }catch(_){}
  return out.slice(0,8)
+}
+function styleTags59(n){
+ var out=[];try{(window.VSA58StyleProfile?window.VSA58StyleProfile(n):[]).slice(0,2).forEach(function(g){(g.aliases||[]).slice(0,3).forEach(function(x){if(!out.includes(x))out.push(x)})})}catch(_){}
+ return out.slice(0,6)
+}
+function moodTags59(n){
+ var out=[];try{(window.VSA58MoodProfile?window.VSA58MoodProfile(n):[]).slice(0,2).forEach(function(g){(g.aliases||[]).slice(0,3).forEach(function(x){if(!out.includes(x))out.push(x)})})}catch(_){}
+ return out.slice(0,6)
 }
 function yearRange59(n){
  var y=null;try{y=n&&n.startTime?new Date(n.startTime).getFullYear():null}catch(_){}
@@ -12696,28 +12705,41 @@ function tasks59(center,tags,queryTags){
  }
  (queryTags||tags||[]).slice(0,5).forEach(function(t){add("similar",t)});
  genreTags59(center).forEach(function(t){add("genre",t)});
+ styleTags59(center).forEach(function(t){add("style",t)});
+ moodTags59(center).forEach(function(t){add("mood",t)});
  producerTags59(center).forEach(function(t){add("producer",t)});
  vocalTags59(center).forEach(function(t){add("vocal",t)});
  var base=(queryTags&&queryTags[0])||(tags&&tags[0]);
  var yr=yearRange59(center);if(base&&yr)add("era",base,{dateRange:yr});
  if(base)add("depth",base,{numericFilters:{viewCounter:depthBand59(center)}});
- var priority={producer:0,vocal:1,genre:2,similar:3,era:4,depth:5};
+ var priority={producer:0,vocal:1,genre:2,style:3,mood:4,similar:5,era:6,depth:7};
  tasks.sort(function(a,b){return priority[a.lane]-priority[b.lane]});
- return tasks.slice(0,16)
+ return tasks.slice(0,20)
 }
+var taskCache59=new Map();
+function cacheKey59(t){return [t.lane,norm59(t.tag),JSON.stringify(t.dateRange||null),JSON.stringify(t.numericFilters||null)].join("|")}
 async function fetchTask59(t){
- var sort=t.lane==="producer"?"-startTime":t.lane==="genre"?"-mylistCounter":t.lane==="vocal"?"-commentCounter":t.lane==="era"?"-startTime":"-viewCounter";
+ var key=cacheKey59(t),hit=taskCache59.get(key);
+ if(hit&&Date.now()-hit.at<900000)return hit.rows.map(function(x){return Object.assign({},x)});
+ try{
+   var ss=JSON.parse(sessionStorage.getItem("vsa59.task."+key)||"null");
+   if(ss&&Date.now()-ss.at<900000&&Array.isArray(ss.rows)){taskCache59.set(key,ss);return ss.rows.map(function(x){return Object.assign({},x)})}
+ }catch(_){}
+ var sort=t.lane==="producer"?"-startTime":t.lane==="genre"||t.lane==="style"||t.lane==="mood"?"-mylistCounter":t.lane==="vocal"?"-commentCounter":t.lane==="era"?"-startTime":"-viewCounter";
  try{
    var d=await fetchNico({
      year:"all",limit:36,offset:0,mode:"free",query:t.tag,scope:"all",
-     queryTargets:"tagsExact",sort:sort,applyYear:false,applyTier:false,
+     queryTargets:t.lane==="producer"?"title,description,tags":"tagsExact",sort:sort,applyYear:false,applyTier:false,
      dateRange:t.dateRange||null,numericFilters:t.numericFilters||null
    });
-   return (d.data||[]).map(function(s){
+   var rows=(d.data||[]).map(function(s){
      var x=Object.assign({},s),old=Array.isArray(x.__relSources59)?x.__relSources59:[];
      x.__relSources59=[...new Set(old.concat([t.lane]))];
      return x
-   })
+   });
+   var pack={at:Date.now(),rows:rows};taskCache59.set(key,pack);
+   try{sessionStorage.setItem("vsa59.task."+key,JSON.stringify(pack))}catch(_){}
+   return rows
  }catch(_){return[]}
 }
 window.VSA59CollectRelationCandidates=async function(center,tags,queryTags){
@@ -12742,7 +12764,7 @@ window.VSA59SelectRelationCandidates=function(center,candidates,count,meta){
    return {song:s,rel:r}
  });
  rows.sort(function(a,b){return (+b.rel.score||0)-(+a.rel.score||0)||(+b.song.viewCounter||0)-(+a.song.viewCounter||0)});
- var picked=[],used=new Set(),kinds=["similar","genre","producer","vocal","era","depth"];
+ var picked=[],used=new Set(),kinds=["similar","genre","style","mood","producer","vocal","era","depth"];
  kinds.forEach(function(k){
    var lane=rows.filter(function(x){return (x.rel.kinds||[]).includes(k)||(x.song.__relSources59||[]).includes(k)}).slice(0,2);
    lane.forEach(function(x){if(picked.length<count&&!used.has(x.song.contentId)){used.add(x.song.contentId);picked.push(x)}})
@@ -12754,7 +12776,7 @@ window.VSA59SelectRelationCandidates=function(center,candidates,count,meta){
 };
 function laneBar59(d){
  var m=d&&d.relationMeta59&&d.relationMeta59.laneStats;if(!m)return "";
- var order=[["similar","유사"],["genre","장르"],["producer","P"],["vocal","보컬"],["era","시대"],["depth","수층"]];
+ var order=[["similar","유사"],["genre","장르"],["style","스타일"],["mood","무드"],["producer","P"],["vocal","보컬"],["era","시대"],["depth","수층"]];
  return '<div class="mr59-pool"><small>후보 수집</small>'+order.map(function(x){return '<span class="'+x[0]+'">'+x[1]+' '+(m[x[0]]||0)+'</span>'}).join("")+'</div>'
 }
 window.renderUniverse=function(d){
@@ -12765,7 +12787,56 @@ window.renderUniverse=function(d){
  }catch(_){}
  return out
 };
-window.VSADiveCandidateEngine59={tasks:tasks59,producerTags:producerTags59,vocalTags:vocalTags59,genreTags:genreTags59};
+window.VSADiveCandidateEngine59={tasks:tasks59,producerTags:producerTags59,vocalTags:vocalTags59,genreTags:genreTags59,styleTags:styleTags59,moodTags:moodTags59};
+})();
+</script>
+
+
+<script id="v3960RelationTrustAndProducer">
+(function(){
+"use strict";
+var producerJobs60=new Map();
+function norm60(v){return String(v||"").normalize("NFKC").toLowerCase().replace(/[\s　・･_\-\/／]+/g,"")}
+function producerKey60(p){return p&&p.id?"id:"+p.id:norm60(p&&p.name||p)}
+async function resolve60(song){
+ if(!song||!song.contentId)return[];
+ if(Array.isArray(song.__producerResolved60))return song.__producerResolved60;
+ var id=String(song.contentId),job=producerJobs60.get(id);if(job)return job;
+ job=(async function(){
+   var rows=[];
+   try{if(typeof resolveSongProducers37==="function")rows=await resolveSongProducers37(song)}catch(_){}
+   rows=(rows||[]).filter(function(x){return x&&x.name}).map(function(x){return{id:x.id||0,name:String(x.name),source:String(x.source||"메타데이터"),key:producerKey60(x)}});
+   song.__producerResolved60=rows;
+   song.__producerAliases60=[...new Set(rows.map(function(x){return x.name}).filter(Boolean))];
+   return rows
+ })().finally(function(){producerJobs60.delete(id)});
+ producerJobs60.set(id,job);return job
+}
+window.VSA60PrepareCenterMetadata=async function(center){
+ if(!center)return center;
+ await resolve60(center);
+ return center
+};
+var oldRender60=window.renderUniverse;
+window.renderUniverse=function(d){
+ var out=oldRender60?oldRender60(d):undefined;
+ try{
+   var center=d&&d.center,nodes=d&&d.nodes;
+   if(center&&Array.isArray(nodes)&&!d.__producerEnrichStarted60){
+     d.__producerEnrichStarted60=true;
+     var target=nodes.slice(1).filter(function(n){return n&&!n.__producerHydrated60&&Array.isArray(n.__relSources59)&&n.__relSources59.includes("producer")}).slice(0,8);
+     if(target.length){
+       Promise.all(target.map(function(n){n.__producerHydrated60=true;return resolve60(n)})).then(function(){
+         if(typeof state!=="undefined"&&state.universeData===d&&window.__VSA37_CURRENT_ROUTE==="universe29"){
+           try{oldRender60&&oldRender60(d)}catch(_){}
+         }
+       })
+     }
+   }
+ }catch(_){}
+ return out
+};
+window.VSA60ProducerResolver={resolve:resolve60};
 })();
 </script>
 
