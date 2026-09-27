@@ -1,11 +1,24 @@
 {
   "current": {
-    "version": "39.68.0",
+    "version": "39.70.0",
     "releasedAt": "2026-09-27",
-    "title": "Search Hotfix 4.2 · Direct Search Path",
-    "summary": "Search 4.0의 버튼·Enter 입력을 단일 직접 실행 경로로 통합하고, 숨겨진 구형 연도/빙산 체크 상태가 검색에 섞이는 문제와 모바일에서 실패 원인이 보이지 않던 문제를 수정했습니다."
+    "title": "Relation Bridge 1.1 · Mobile Layout Recovery",
+    "summary": "다이브의 다중 연결 화면에서 모바일 카드가 화면 밖으로 잘리고 중앙 카드·로딩창이 겹치던 문제를 정리하고, 모바일에서는 관계 카드를 2열/1열 반응형 흐름으로 재배치했습니다."
   },
   "entries": [
+    {
+      "version": "39.70.0",
+      "date": "2026-09-27",
+      "title": "Relation Bridge 1.1 · Mobile Layout Recovery",
+      "changes": [
+        "이전 Dive Sea/Ocean/Dive Graph 화면의 클래스가 Relation Bridge와 동시에 남아 서로 다른 CSS가 겹치던 상태를 렌더 시 정리",
+        "모바일 Relation Bridge를 절대좌표 그래프 대신 중앙곡 + 관계곡 카드의 2열 반응형 레이아웃으로 변경해 좌우 잘림과 큰 빈 공간 제거",
+        "420px 이하 화면에서는 관계곡을 1열로 전환하고 제목·메타·점수 글자를 모바일에서 읽기 쉬운 크기로 상향",
+        "다이브 전환 로더를 화면 위에 겹치는 큰 오버레이 대신 레이아웃 흐름 안의 compact 상태 카드로 변경",
+        "Relation Bridge 로더를 stage 밖에 안정적으로 유지해 다음 곡으로 이동할 때 이전 UI와 로딩 문구가 겹치는 문제를 줄임",
+        "서비스워커·PWA·웹 런타임 버전을 v39.70.0으로 갱신"
+      ]
+    },
     {
       "version": "39.68.0",
       "date": "2026-09-27",
