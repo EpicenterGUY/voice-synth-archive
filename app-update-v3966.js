@@ -180,6 +180,24 @@ async function applyWebUpdate(){
     try{location.reload()}catch(_){}
   }
 }
+
+async function checkWebUiVersion(auto){
+  try{
+    var r=await fetch("./web-latest.json?t="+Date.now(),{cache:"no-store"});
+    if(!r.ok)return false;
+    var info=await r.json();
+    var remote=String(info&&info.version||"");
+    if(!/^\d+\.\d+\.\d+/.test(remote))return false;
+    if(compareVersion(remote,VERSION)<=0)return false;
+    var key="vocadive.web.refresh."+remote;
+    if(auto){
+      try{if(sessionStorage.getItem(key)==="1")return false;sessionStorage.setItem(key,"1")}catch(_){}
+      await applyWebUpdate();return true
+    }
+    toast3966("웹 UI v"+remote+" 업데이트가 있습니다.");
+    return true
+  }catch(_){return false}
+}
 async function onWifi(){
   try{
     var n=networkPlugin();if(n&&n.getStatus){var s=await n.getStatus();return s&&s.connected&&s.connectionType==="wifi"}
@@ -290,6 +308,7 @@ async function resumeInstall(){
 function boot(){
   ensureStyle();
   var tries=0,t=setInterval(function(){tries++;ensureSettingsCard();if(document.getElementById("v3966UpdateCard")||tries>30)clearInterval(t)},500);
+  setTimeout(function(){checkWebUiVersion(true)},1800);
   if(!isAndroidNative())return;
   bindProgress();getAppInfo().then(function(){
     ensureSettingsCard();
@@ -302,6 +321,7 @@ function boot(){
   });
   window.addEventListener("vocadive:native-resume",function(){
     resumeInstall();
+    setTimeout(function(){checkWebUiVersion(true)},350);
     var last=Number(localStorage.getItem(LAST_CHECK)||0);
     if(pref(PREF_CHECK,true)&&Date.now()-last>6*60*60*1000)setTimeout(function(){checkForUpdate(false)},800)
   })
@@ -313,6 +333,7 @@ window.VocaDiveUpdater={
   download:downloadUpdate,
   install:installPending,
   applyWebUpdate:applyWebUpdate,
+  checkWebUi:checkWebUiVersion,
   state:function(){return Object.assign({},state)}
 };
 
