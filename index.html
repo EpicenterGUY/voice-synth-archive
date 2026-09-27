@@ -1917,7 +1917,7 @@ body.v37-ready .v393-native-search .song:hover{border-color:rgba(112,224,212,.34
 @media(max-width:390px){.v393-explore-primary{grid-template-columns:1fr}.v393-native-ranking .v37-vocal-rank-summary{grid-template-columns:1fr 1fr!important}}
 </style>
 <style id="v394Universe3">
-/* v39.4 · VocaDive Universe 3.0 */
+/* v39.4 · VocaDive Dive Path 1.0 */
 body.v37-ready .v37-universe-page{max-width:1460px!important}
 body.v37-ready .v37-universe-page>.v37-native-head{display:none!important}
 body.v37-ready .v394-universe-panel{
@@ -3275,8 +3275,8 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
   <section class="panel universe-panel" id="universePanel">
     <div class="panel-head">
       <div>
-        <h2>음성합성 우주</h2>
-        <p>선택한 곡을 중심으로 장르·분위기·템포·보컬·연대 태그가 비슷한 곡을 연결합니다.</p>
+        <h2>다이브 패스</h2>
+        <p>선택한 곡에서 여러 갈래의 탐색 경로를 만들고, 원하는 길을 골라 계속 깊게 들어갑니다.</p>
       </div>
       <div class="universe-head-actions">
         <select id="universeSize" aria-label="우주 노드 수">
@@ -3299,7 +3299,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
             <option value="very_dense">매우 촘촘 연결</option>
           </select>
         </div>
-        <button class="btn" id="rebuildUniverseBtn" disabled>우주 다시 만들기</button>
+        <button class="btn" id="rebuildUniverseBtn" disabled>경로 다시 찾기</button>
       </div>
     </div>
     <div class="universe-layout">
@@ -3308,7 +3308,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
           <g id="universeLinks"></g>
           <g id="universeNodes"></g>
         </svg>
-        <div class="universe-empty" id="universeEmpty">검색 결과에서 <b>‘우주 보기’</b>를 누르면<br>비슷한 곡을 별자리처럼 이어서 보여줍니다.</div>
+        <div class="universe-empty" id="universeEmpty">검색 결과에서 <b>‘다이브 패스’</b>를 누르면<br>비슷한 곡을 여러 갈래의 다이브 경로로 보여줍니다.</div>
       </div>
       <aside class="universe-side">
         <div id="universeInfo">
@@ -3349,7 +3349,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.45.0 · Mini Return · Universe Handoff · Universe Search 3.1 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Universe 3.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.46.0 · Mini Return · Universe Handoff · Universe Search 3.1 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Path 1.0 · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -6547,7 +6547,7 @@ async function buildGuide(){
 function renderGuide(preset){
   const summary=$("#guideSummary"),meta=state.guideLastMeta||{},tier=meta.tier,terms=meta.terms||[];
   if(summary)summary.innerHTML='<b>'+esc(preset.label)+'</b> · <b>'+esc(guideScopeLabel37(meta.scope||guideScopeValue37()))+'</b> · '+(tier?('<b>'+esc(tier.name)+'</b> '+esc(tier.range)):'빙산 전체')+' · '+(terms.length?('키워드 '+terms.slice(0,4).map(esc).join(" · ")+(terms.length>4?' 외 '+(terms.length-4)+'개':'')):'키워드 자동')+' · '+state.guideSongs.length+'곡 랜덤 추천';
-  $("#guideGrid").innerHTML=state.guideSongs.map((x,i)=>{const s=x.song,tags=informativeTags(s).slice(0,4);return`<article class="discovery-card"><img src="${esc(s.thumbnailUrl||"")}" loading="lazy" onerror="this.style.visibility='hidden'"><div class="discovery-body"><a class="discovery-title" href="https://www.nicovideo.jp/watch/${encodeURIComponent(s.contentId)}" target="_blank" rel="noopener">${i+1}. ${esc(s.title||s.contentId)}</a><div class="discovery-meta"><span>조회 ${fmt(s.viewCounter||0)}</span><span>${songYear(s)||"-"}년</span></div><div class="discovery-tags">${tags.map(t=>`<span class="discovery-tag">${esc(t)}</span>`).join("")}</div><div class="discovery-reason">${esc(preset.reason)}</div><div class="gem-actions"><button class="mini-btn" onclick="openGuideUniverse('${esc(s.contentId)}')">우주 보기</button><button class="mini-btn" onclick="window.open('https://www.nicovideo.jp/watch/${encodeURIComponent(s.contentId)}','_blank','noopener')">듣기</button></div></div></article>`}).join("");
+  $("#guideGrid").innerHTML=state.guideSongs.map((x,i)=>{const s=x.song,tags=informativeTags(s).slice(0,4);return`<article class="discovery-card"><img src="${esc(s.thumbnailUrl||"")}" loading="lazy" onerror="this.style.visibility='hidden'"><div class="discovery-body"><a class="discovery-title" href="https://www.nicovideo.jp/watch/${encodeURIComponent(s.contentId)}" target="_blank" rel="noopener">${i+1}. ${esc(s.title||s.contentId)}</a><div class="discovery-meta"><span>조회 ${fmt(s.viewCounter||0)}</span><span>${songYear(s)||"-"}년</span></div><div class="discovery-tags">${tags.map(t=>`<span class="discovery-tag">${esc(t)}</span>`).join("")}</div><div class="discovery-reason">${esc(preset.reason)}</div><div class="gem-actions"><button class="mini-btn" onclick="openGuideUniverse('${esc(s.contentId)}')">다이브 패스</button><button class="mini-btn" onclick="window.open('https://www.nicovideo.jp/watch/${encodeURIComponent(s.contentId)}','_blank','noopener')">듣기</button></div></div></article>`}).join("");
 }
 function openGuideUniverse(id){const x=state.guideSongs.find(x=>x.song.contentId===id);if(!x)return;openUniversePage37(x.song,false)}
 function parseTastePrompt(){
@@ -6807,7 +6807,7 @@ function renderHiddenGems(){
         <div class="gem-rankline" id="gemRank_${esc(s.contentId)}">현재 모집단 전체 순위는 버튼을 누르면 계산합니다.</div>
         <div class="gem-actions">
           <button class="mini-btn" onclick="calculateGemRank('${esc(s.contentId)}')">전체 순위 계산</button>
-          <button class="mini-btn" onclick="openGemUniverse('${esc(s.contentId)}')">우주 보기</button>
+          <button class="mini-btn" onclick="openGemUniverse('${esc(s.contentId)}')">다이브 패스</button>
           <button class="mini-btn" onclick="window.open('https://www.nicovideo.jp/watch/${encodeURIComponent(s.contentId)}','_blank','noopener')">니코동 열기</button>
         </div>
       </div>
@@ -7030,8 +7030,8 @@ function ensureUniverseToolbar39(){
   let header=document.getElementById("v394UniverseHeader");
   if(!header){
     header=document.createElement("div");header.id="v394UniverseHeader";header.className="v394-universe-header";
-    header.innerHTML='<div><div class="v394-universe-title"><small>VOCADIVE · UNIVERSE 3.0</small><h2>보카로 우주</h2><p>한 곡을 중심으로 비슷한 원곡을 별자리처럼 펼쳐볼 수 있어요. 마음에 드는 곡을 새 중심으로 바꾸면서 계속 찾아보세요.</p></div><div class="v394-universe-controls"></div></div>'+
-      '<div class="v394-universe-quick"><button type="button" data-u394-search>곡 검색</button><button type="button" data-u39-warp>랜덤 워프</button><button type="button" class="primary" data-u394-center-detail>중심곡 상세</button></div>';
+    header.innerHTML='<div><div class="v394-universe-title"><small>VOCADIVE · DIVE PATH 1.0</small><h2>다이브 패스</h2><p>한 곡을 중심으로 한 곡에서 출발해 비슷한 결·같은 시대·숨은 곡·의외의 샛길로 계속 파고들 수 있어요.</p></div><div class="v394-universe-controls"></div></div>'+
+      '<div class="v394-universe-quick"><button type="button" data-u394-search>곡 검색</button><button type="button" data-u39-warp>랜덤 다이브</button><button type="button" class="primary" data-u394-center-detail>중심곡 상세</button></div>';
     panel.prepend(header);
     const controls=header.querySelector(".v394-universe-controls"),old=panel.querySelector(".universe-head-actions");
     if(controls&&old)controls.appendChild(old);
@@ -7047,14 +7047,14 @@ function ensureUniverseToolbar39(){
   let bar=document.getElementById("v39UniverseJourney");
   if(!bar){
     bar=document.createElement("div");bar.id="v39UniverseJourney";bar.className="v39-universe-journey";
-    bar.innerHTML='<div class="u39-nav"><button type="button" data-u39-back aria-label="이전 중심곡">←</button><button type="button" data-u39-forward aria-label="다음 중심곡">→</button><button type="button" data-u39-warp>랜덤 워프</button><span class="u39-pin-count">핀 0</span></div><div class="u39-trail"></div>';
+    bar.innerHTML='<div class="u39-nav"><button type="button" data-u39-back aria-label="이전 중심곡">←</button><button type="button" data-u39-forward aria-label="다음 중심곡">→</button><button type="button" data-u39-warp>랜덤 다이브</button><span class="u39-pin-count">핀 0</span></div><div class="u39-trail"></div>';
     const layout=panel.querySelector(".universe-layout");
     if(layout)panel.insertBefore(bar,layout);else panel.appendChild(bar)
   }
   const stage=panel.querySelector(".universe-stage");
   if(stage&&!stage.querySelector("#v394UniverseCenter")){
     const center=document.createElement("div");center.id="v394UniverseCenter";center.className="v394-stage-center";
-    center.innerHTML='<div class="noimg">♪</div><div><small>현재 중심곡</small><b>곡을 선택하면 우주가 시작됩니다.</b></div>';
+    center.innerHTML='<div class="noimg">♪</div><div><small>현재 중심곡</small><b>곡을 선택하면 경로가 시작됩니다.</b></div>';
     stage.appendChild(center);
     const legend=document.createElement("div");legend.className="v394-stage-legend";
     legend.innerHTML='<i></i> 중심곡 <i class="alt"></i> 유사곡 · 선이 굵을수록 연결이 강함';
@@ -7123,7 +7123,7 @@ async function buildUniverse(center,force=false){
     renderUniverse(data);
   }catch(e){
     $("#universeEmpty").style.display="grid";
-    $("#universeEmpty").innerHTML=`우주 생성 실패<br><small>${esc(String(e?.message||e))}</small>`;
+    $("#universeEmpty").innerHTML=`경로 생성 실패<br><small>${esc(String(e?.message||e))}</small>`;
   }finally{
     $("#rebuildUniverseBtn").disabled=false;
   }
@@ -7260,7 +7260,7 @@ function renderUniverse(data){
 }
 function universeNeighborListHtml(neighbors,selectedId){
   const rows=(neighbors||[]).filter(function(n){return n&&n.contentId}).slice(0,14);
-  return '<div class="u394-neighbor-head"><b>이 우주의 가까운 곡</b><small>'+rows.length+'곡</small></div>'+
+  return '<div class="u394-neighbor-head"><b>현재 곡과 이어지는 길</b><small>'+rows.length+'곡</small></div>'+
     '<div class="u394-neighbor-list">'+rows.map(function(n){
       const shared=(n.shared&&n.shared.length?n.shared:state.universeData?sharedTags(state.universeData.center,n):[]).slice(0,2);
       return '<button type="button" class="u394-neighbor '+(n.contentId===selectedId?"active":"")+'" onclick="showUniverseNeighborById(\''+esc(n.contentId)+'\')">'+
@@ -7499,7 +7499,7 @@ function renderSongs(){
         <div class="rank-note">${esc(sourceDefinition().label)} 전체연도 기준 · 조회수 동률은 마이리스트 → 좋아요 → 댓글 순으로 보정</div>
         <div class="song-actions">
           <button class="mini-btn" onclick="queueRankById('${esc(s.contentId)}')">순위 다시 계산</button>
-          <button class="mini-btn" onclick="openUniverseById('${esc(s.contentId)}')">우주 보기</button>
+          <button class="mini-btn" onclick="openUniverseById('${esc(s.contentId)}')">다이브 패스</button>
         </div>
       </div>
       <div class="views">${fmt(s.viewCounter||0)}<small>조회</small></div>
@@ -7528,7 +7528,7 @@ const VSA37_FEATURES={
   gems:{id:"gems",label:"숨은 곡 발굴",route:"gems",dock:"explore",lazy:null},
   guide:{id:"guide",label:"노래 추천",route:"guide",dock:"explore",lazy:null},
   taste:{id:"taste",label:"내 취향 추천",route:"taste",dock:"personal",lazy:null},
-  universe:{id:"universe",label:"보카로 우주",route:"universe29",dock:"explore",lazy:"universe"},
+  universe:{id:"universe",label:"다이브 패스",route:"universe29",dock:"explore",lazy:"universe"},
   producer:{id:"producer",label:"프로듀서 도감",route:"explore33",dock:"explore",lazy:"v33"},
   producerDiscovery:{id:"producerDiscovery",label:"숨은 프로듀서 발굴",route:"producerDiscover37",dock:"explore",lazy:null},
   vocalRank:{id:"vocalRank",label:"음원 순위",route:"vocalRank37",dock:"explore",lazy:null},
@@ -8085,7 +8085,7 @@ async function pickAbyss37(mode){
     rows=filterAdultRows37(rows,"abyss_pick").rows;
     if(!rows.length)throw new Error("조건을 통과한 심해곡이 없습니다.");
     const song=mode==="reaction"?rows.slice().sort(function(a,b){return((+b.mylistCounter||0)+2)/(+b.viewCounter||1)-(((+a.mylistCounter||0)+2)/(+a.viewCounter||1))})[0]:rows[Math.floor(Math.random()*rows.length)];
-    if(box)box.innerHTML='<article>'+(song.thumbnailUrl?'<img src="'+esc(song.thumbnailUrl)+'" loading="lazy">':'')+'<div><b>'+esc(song.title||song.contentId)+'</b><small>조회 '+fmt(song.viewCounter||0)+' · 마이리스트 '+fmt(song.mylistCounter||0)+'</small><div class="v37-producer-actions"><button type="button" onclick="window.open(\'https://www.nicovideo.jp/watch/'+encodeURIComponent(song.contentId)+'\',\'_blank\',\'noopener\')">니코동 열기</button><button type="button" data-v37-abyss-universe="'+esc(song.contentId)+'">우주 보기</button></div></div></article>';
+    if(box)box.innerHTML='<article>'+(song.thumbnailUrl?'<img src="'+esc(song.thumbnailUrl)+'" loading="lazy">':'')+'<div><b>'+esc(song.title||song.contentId)+'</b><small>조회 '+fmt(song.viewCounter||0)+' · 마이리스트 '+fmt(song.mylistCounter||0)+'</small><div class="v37-producer-actions"><button type="button" onclick="window.open(\'https://www.nicovideo.jp/watch/'+encodeURIComponent(song.contentId)+'\',\'_blank\',\'noopener\')">니코동 열기</button><button type="button" data-v37-abyss-universe="'+esc(song.contentId)+'">다이브 패스</button></div></div></article>';
     if(box)box.dataset.songId=song.contentId;
     window.__VSA37_ABYSS_SONG=song
   }catch(e){if(box)box.innerHTML='<div class="v37-diag-card"><b>탐사 실패</b><p>'+esc(String(e?.message||e))+'</p></div>'}
@@ -8546,7 +8546,7 @@ function showReactionTier37(id){
   const t=state.reactionIcebergTiers.find(function(x){return x.id===id}),box=document.getElementById("v37ReactionResults");if(!t||!box)return;
   box.innerHTML=t.items.slice(0,12).map(function(x,i){
     const s=x.song;
-    return '<div class="v37-reaction-song">'+(s.thumbnailUrl?'<img src="'+esc(s.thumbnailUrl)+'" loading="lazy">':'<div></div>')+'<div><b>'+(i+1)+'. '+esc(s.title||s.contentId)+'</b><small>반응점수 '+x.score.toFixed(2)+' · 조회 '+fmt(s.viewCounter||0)+' · 마이리스트 '+fmt(s.mylistCounter||0)+' · 댓글 '+fmt(s.commentCounter||0)+'</small></div><button type="button" data-v37-reaction-universe="'+esc(s.contentId)+'">우주 보기</button></div>'
+    return '<div class="v37-reaction-song">'+(s.thumbnailUrl?'<img src="'+esc(s.thumbnailUrl)+'" loading="lazy">':'<div></div>')+'<div><b>'+(i+1)+'. '+esc(s.title||s.contentId)+'</b><small>반응점수 '+x.score.toFixed(2)+' · 조회 '+fmt(s.viewCounter||0)+' · 마이리스트 '+fmt(s.mylistCounter||0)+' · 댓글 '+fmt(s.commentCounter||0)+'</small></div><button type="button" data-v37-reaction-universe="'+esc(s.contentId)+'">다이브 패스</button></div>'
   }).join("")||'<div class="v37-diag-card"><b>이 구간 표본 없음</b></div>';
   window.__VSA37_REACTION_MAP=new Map(t.items.map(function(x){return[x.song.contentId,x.song]}))
 }
@@ -8714,7 +8714,7 @@ function enhanceCorePages3923(pages){
 function ensureCorePages37(){
   const archive=makeCorePage37("archive29","빙산 · 통계","조회수 층과 모집단을 직접 설정해 음성합성곡 분포를 탐색합니다.","v37-archive-page");
   const search=makeCorePage37("search29","검색","곡명·P명·보컬·태그·sm번호를 바로 검색합니다. 탐정 시스템과 분리된 일반 검색입니다.","v37-search-page");
-  const universe=makeCorePage37("universe29","보카로 우주","선택한 곡을 중심으로 비슷한 곡을 연결해 탐색합니다.","v37-universe-page");
+  const universe=makeCorePage37("universe29","다이브 패스","선택한 곡을 중심으로 비슷한 곡을 연결해 탐색합니다.","v37-universe-page");
   const settings=makeCorePage37("settings29","설정","Worker 연결과 기술 설정을 관리합니다.","v37-settings-page");
   const producerDiscovery=makeCorePage37("producerDiscover37","프로듀서 발굴","저조회수 음성합성 원곡을 VocaDB의 실제 Producer 크레딧과 연결해 덜 알려진 프로듀서를 찾습니다.","v37-producer-discovery-page");
   const vocalRank=makeCorePage37("vocalRank37","음원 순위","VOCALOID, UTAU, SynthV 등 음성합성 보컬을 원곡 데이터 기반으로 비교합니다.","v37-vocal-rank-page");
@@ -9369,7 +9369,7 @@ function heroHtml396(hit){
     '<div class="v396-hero-meta"><span>'+E(s.contentId)+'</span><span>'+y+'</span><span>조회 '+F(s.viewCounter||0)+'</span></div>'+
     '<div class="v396-hero-tags">'+(ts.length?ts.map(function(t){return'<span>'+E(t)+'</span>'}).join(""):'<span>태그 정보 없음</span>')+'</div>'+
     (badges?'<div class="v396-hero-status">'+badges+'</div>':'')+
-    '<div class="v396-hero-actions"><button type="button" class="primary" data-v399-play="'+E(s.contentId)+'">▶ 재생</button><button type="button" data-v396-universe="'+E(s.contentId)+'">보카로 우주</button><button type="button" data-v396-save="'+E(s.contentId)+'">♡ 보관</button><button type="button" class="quiet" data-v396-dislike="'+E(s.contentId)+'">관심없음</button></div></div></section>'
+    '<div class="v396-hero-actions"><button type="button" class="primary" data-v399-play="'+E(s.contentId)+'">▶ 재생</button><button type="button" data-v396-universe="'+E(s.contentId)+'">다이브 패스</button><button type="button" data-v396-save="'+E(s.contentId)+'">♡ 보관</button><button type="button" class="quiet" data-v396-dislike="'+E(s.contentId)+'">관심없음</button></div></div></section>'
 }
 function continueHtml396(rows){
   return '<section class="v396-continue"><div class="v396-continue-head"><div><h2>이어보기</h2><p>최근에 본 곡이에요. 이어서 듣거나 주변 곡을 더 찾아보세요. <span class="v3910-device-note">이 기기에만 저장됨</span></p></div><div class="v3910-history-actions"><button type="button" data-v396-personal>최근 기록</button><button type="button" class="danger" data-v3910-clear-history="views">기록 지우기</button></div></div>'+
@@ -9400,7 +9400,7 @@ function similar(id){
   if(window.VSAEnsureFeatures){
     Promise.all([VSAEnsureFeatures("universe"),VSAEnsureFeatures("v33")]).then(function(){
       if(window.VSAV33&&VSAV33.openView)VSAV33.openView("explore33");
-      if(st)st.textContent="보카로 우주 기능이 준비되었습니다. 탐색에서 보카로 우주를 열어주세요."
+      if(st)st.textContent="다이브 패스 기능이 준비되었습니다. 탐색에서 다이브 패스를 열어주세요."
     })
   }
 }
@@ -10885,4 +10885,188 @@ if("requestIdleCallback" in window)requestIdleCallback(function(){ensure("pwa")}
 else setTimeout(function(){ensure("pwa")},12000);
 })();
 </script>
-<script src="./device-sync-v3938.js?v=39.45.0"></script>\n<script src="./i18n-v3918.js?v=39.45.0"></script>\n</body>\n</html>
+<script src="./device-sync-v3938.js?v=39.45.0"></script>\n<script src="./i18n-v3918.js?v=39.45.0"></script>\n
+<style id="v3946DivePath">
+/* v39.46 · Dive Path 1.0 — graph-free guided discovery */
+body.v37-ready .v3946-dive-panel .panel-head{display:none!important}
+.v3946-dive-panel .v394-universe-header{background:
+  radial-gradient(circle at 12% 10%,rgba(104,224,211,.16),transparent 25rem),
+  radial-gradient(circle at 85% 30%,rgba(119,137,238,.13),transparent 28rem),
+  linear-gradient(150deg,#0a262d,#071a21)!important}
+.v3946-dive-panel .v394-universe-title small{color:#70ddd2!important}
+.v3946-dive-panel .v394-universe-controls .universe-density-control{display:none!important}
+.v3946-dive-panel .universe-layout{grid-template-columns:minmax(0,1.55fr) minmax(280px,.45fr)!important;gap:12px!important;min-height:0!important}
+.v3946-dive-panel .universe-stage{
+  min-height:0!important;border:1px solid rgba(115,211,201,.14)!important;border-radius:22px!important;
+  background:linear-gradient(155deg,#071d24,#06161d 60%,#081923)!important;overflow:visible!important
+}
+.v3946-dive-panel .universe-stage:after,.v3946-dive-panel #universeSvg,.v3946-dive-panel .v394-stage-center,.v3946-dive-panel .v394-stage-legend{display:none!important}
+.dive46-shell{padding:15px;display:grid;gap:12px}
+.dive46-empty{min-height:420px;display:grid;place-items:center;padding:30px;text-align:center;color:#82aaa6;font-size:11px;line-height:1.7}
+.dive46-empty b{display:block;color:#e8fbf7;font-size:20px;margin-bottom:5px}
+.dive46-center{
+  display:grid;grid-template-columns:132px minmax(0,1fr) auto;gap:14px;align-items:center;
+  padding:12px;border:1px solid rgba(112,218,207,.16);border-radius:18px;
+  background:linear-gradient(135deg,rgba(15,55,62,.90),rgba(9,35,43,.92))
+}
+.dive46-center img,.dive46-center .noimg{width:132px;aspect-ratio:16/9;border-radius:13px;object-fit:cover;background:#10343b;display:grid;place-items:center;color:#75d9cf;font-size:26px}
+.dive46-center-copy{min-width:0}.dive46-kicker{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.dive46-badge{display:inline-flex;align-items:center;min-height:23px;padding:0 8px;border-radius:999px;background:#123b42;color:#83d9d1;font-size:7px;font-weight:950}
+.dive46-depth{background:#151f42;color:#aeb9ff}
+.dive46-center h3{margin:6px 0 4px;color:#f1fcfa;font-size:18px;line-height:1.3;letter-spacing:-.035em}
+.dive46-center p{margin:0;color:#7fa39f;font-size:8px}
+.dive46-center-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.dive46-center-tags span{padding:4px 7px;border-radius:999px;background:#0a2c33;color:#90bdb8;font-size:7px}
+.dive46-center-actions{display:grid;gap:6px;min-width:112px}.dive46-center-actions button{min-height:36px;padding:0 10px;border:1px solid rgba(111,211,202,.15);border-radius:10px;background:#10353c;color:#d9f2ee;font-size:8px;font-weight:900}
+.dive46-center-actions button.primary{border:0;background:linear-gradient(135deg,#6adbd0,#718fe8);color:#061719}
+.dive46-branches{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.dive46-branch{min-width:0;padding:10px;border:1px solid rgba(113,205,197,.11);border-radius:17px;background:rgba(6,27,33,.72)}
+.dive46-branch-head{display:flex;justify-content:space-between;gap:8px;align-items:end;margin-bottom:8px}
+.dive46-branch-head h4{margin:0;color:#e9faf7;font-size:12px}.dive46-branch-head p{margin:3px 0 0;color:#668f8a;font-size:7px}
+.dive46-branch-head span{font-size:17px}
+.dive46-list{display:grid;gap:6px}
+.dive46-card{
+  width:100%;display:grid;grid-template-columns:76px minmax(0,1fr) auto;gap:8px;align-items:center;
+  padding:7px;border:1px solid transparent;border-radius:12px;background:#09242a;color:#e7f8f5;text-align:left;cursor:pointer
+}
+.dive46-card:hover,.dive46-card.active{border-color:rgba(111,220,209,.34);background:#0c3037}
+.dive46-card img,.dive46-card .noimg{width:76px;aspect-ratio:16/9;border-radius:8px;object-fit:cover;background:#12343b;display:grid;place-items:center;color:#6eaaa4}
+.dive46-card-copy{min-width:0}.dive46-card-copy b{display:block;font-size:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dive46-card-copy small{display:block;margin-top:3px;color:#6f9995;font-size:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dive46-score{text-align:right}.dive46-score b{display:block;color:#72dbd1;font-size:10px}.dive46-score small{display:block;margin-top:2px;color:#718f9d;font-size:6px}
+.dive46-side{padding:13px}.dive46-side-cover{aspect-ratio:16/9;border-radius:15px;overflow:hidden;background:#10343b}
+.dive46-side-cover img{width:100%;height:100%;object-fit:cover}.dive46-side-cover .noimg{height:100%;display:grid;place-items:center;color:#72cfc6;font-size:28px}
+.dive46-side-kicker{display:flex;gap:5px;flex-wrap:wrap;margin-top:11px}.dive46-side h3{margin:7px 0 5px;color:#f0fcfa;font-size:16px;line-height:1.35}
+.dive46-side-meta{color:#789b97;font-size:8px;line-height:1.55}.dive46-side-reason{margin-top:10px;padding:9px;border:1px solid rgba(113,205,197,.12);border-radius:12px;background:#071d23}
+.dive46-side-reason small{display:block;color:#678d89;font-size:7px;font-weight:900}.dive46-side-reason div{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}.dive46-side-reason span{padding:4px 7px;border-radius:999px;background:#10343a;color:#9bcac5;font-size:7px}
+.dive46-side-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}.dive46-side-actions button{min-height:36px;border:1px solid rgba(116,207,198,.16);border-radius:10px;background:#0e3036;color:#c9e5e1;font-size:8px;font-weight:900}
+.dive46-side-actions button.primary{grid-column:1/-1;border:0;background:linear-gradient(135deg,#65d8ce,#748de9);color:#061719}
+.v3946-dive-panel .universe-note{line-height:1.6!important}
+@media(max-width:1050px){.v3946-dive-panel .universe-layout{grid-template-columns:minmax(0,1fr) 300px!important}.dive46-center{grid-template-columns:110px minmax(0,1fr)}.dive46-center img,.dive46-center .noimg{width:110px}.dive46-center-actions{grid-column:1/-1;display:flex}.dive46-center-actions button{flex:1}}
+@media(max-width:820px){.v3946-dive-panel .universe-layout{grid-template-columns:1fr!important}.v3946-dive-panel .universe-side{max-height:none!important}.dive46-branches{grid-template-columns:1fr 1fr}}
+@media(max-width:699px){
+  .dive46-shell{padding:9px;gap:8px}.dive46-center{grid-template-columns:92px minmax(0,1fr);gap:9px;padding:9px}.dive46-center img,.dive46-center .noimg{width:92px}
+  .dive46-center h3{font-size:14px}.dive46-center-actions{grid-column:1/-1}.dive46-branches{grid-template-columns:1fr;gap:8px}
+  .dive46-branch{padding:8px}.dive46-card{grid-template-columns:68px minmax(0,1fr) auto;min-height:62px}.dive46-card img,.dive46-card .noimg{width:68px}
+  .v3946-dive-panel .universe-stage{border-radius:17px!important;touch-action:pan-y}.dive46-empty{min-height:330px}
+}
+</style>
+<script id="v3946DivePath">
+(function(){
+"use strict";
+function q46(s,r){return (r||document).querySelector(s)}
+function esc46(s){return String(s==null?"":s).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
+function views46(n){return +((n&&n.viewCounter)||0)}
+function year46(n){try{return n&&n.startTime?new Date(n.startTime).getFullYear():0}catch(e){return 0}}
+function depth46(n){
+  var v=views46(n);
+  if(v>=1000000)return ["SURFACE","수면"];
+  if(v>=250000)return ["SHALLOW","얕은 층"];
+  if(v>=50000)return ["MID","중층"];
+  if(v>=5000)return ["DEEP","심층"];
+  return ["ABYSS","심연"];
+}
+function shared46(center,n){
+  try{return typeof sharedTags==="function"?sharedTags(center,n).slice(0,3):((n&&n.shared)||[]).slice(0,3)}catch(e){return ((n&&n.shared)||[]).slice(0,3)}
+}
+function fmt46(v){try{return typeof fmt==="function"?fmt(v):Number(v||0).toLocaleString()}catch(e){return String(v||0)}}
+function card46(n,center,active){
+  var d=depth46(n),sim=Math.round((+n.similarity||0)*100),sh=shared46(center,n);
+  return '<button type="button" class="dive46-card '+(active?"active":"")+'" data-dive46-song="'+esc46(n.contentId)+'">'+
+    (n.thumbnailUrl?'<img src="'+esc46(n.thumbnailUrl)+'" loading="lazy" alt="">':'<span class="noimg">♪</span>')+
+    '<span class="dive46-card-copy"><b>'+esc46(n.title||n.contentId)+'</b><small>'+(sh.length?esc46(sh.join(" · ")):esc46((year46(n)||"연도 미상")+" · 조회 "+fmt46(views46(n))))+'</small></span>'+
+    '<span class="dive46-score"><b>'+sim+'%</b><small>'+d[1]+'</small></span></button>'
+}
+function uniquePick46(source,used,count){
+  var out=[];
+  for(var i=0;i<source.length&&out.length<count;i++){var n=source[i];if(!n||!n.contentId||used.has(n.contentId))continue;used.add(n.contentId);out.push(n)}
+  return out
+}
+function groups46(data){
+  var center=data.center,all=data.nodes.slice(1),used=new Set(),cy=year46(center);
+  var close=uniquePick46(all.slice().sort(function(a,b){return (+b.similarity||0)-(+a.similarity||0)}),used,4);
+  var era=uniquePick46(all.slice().sort(function(a,b){var ay=year46(a),by=year46(b);return Math.abs((ay||cy)-cy)-Math.abs((by||cy)-cy)||(+b.similarity||0)-(+a.similarity||0)}),used,4);
+  var deep=uniquePick46(all.slice().sort(function(a,b){return views46(a)-views46(b)||(+b.similarity||0)-(+a.similarity||0)}),used,4);
+  var side=uniquePick46(all.slice().sort(function(a,b){var as=shared46(center,a).length,bs=shared46(center,b).length;return as-bs||(+a.similarity||0)-(+b.similarity||0)}),used,4);
+  var fallback=all.slice().sort(function(a,b){return (+b.similarity||0)-(+a.similarity||0)});
+  [[close,4],[era,4],[deep,4],[side,4]].forEach(function(x){if(x[0].length<x[1])x[0].push.apply(x[0],uniquePick46(fallback,used,x[1]-x[0].length))});
+  return [
+    {key:"close",icon:"≈",title:"같은 결",desc:"태그와 분위기가 가장 가까운 길",rows:close},
+    {key:"era",icon:"↺",title:"같은 시대",desc:"비슷한 시기에 함께 들을 만한 길",rows:era},
+    {key:"deep",icon:"↓",title:"딥 다이브",desc:"조회수가 낮은 쪽으로 더 깊게",rows:deep},
+    {key:"side",icon:"↗",title:"샛길",desc:"조금 의외지만 연결점이 있는 길",rows:side}
+  ]
+}
+function side46(n,data){
+  var center=data.center,isCenter=n.contentId===center.contentId,d=depth46(n),sh=isCenter?(data.queryTags||[]).slice(0,6):shared46(center,n),sim=isCenter?100:Math.round((+n.similarity||0)*100);
+  return '<div class="dive46-side"><div class="dive46-side-cover">'+
+    (n.thumbnailUrl?'<img src="'+esc46(n.thumbnailUrl)+'" alt="">':'<div class="noimg">♪</div>')+'</div>'+
+    '<div class="dive46-side-kicker"><span class="dive46-badge">'+(isCenter?"START":"PATH")+'</span><span class="dive46-badge dive46-depth">'+d[0]+' · '+d[1]+'</span><span class="dive46-badge">'+sim+'%</span></div>'+
+    '<h3>'+esc46(n.title||n.contentId)+'</h3><div class="dive46-side-meta">'+esc46(n.contentId)+' · '+(year46(n)||"연도 미상")+' · 조회 '+fmt46(views46(n))+'</div>'+
+    '<div class="dive46-side-reason"><small>'+(isCenter?"이 다이브의 출발 태그":"이 길로 이어지는 이유")+'</small><div>'+(sh.length?sh.map(function(t){return"<span>"+esc46(t)+"</span>"}).join(""):"<span>공통 태그가 적은 의외의 샛길</span>")+'</div></div>'+
+    '<div class="dive46-side-actions">'+(!isCenter?'<button type="button" class="primary" data-dive46-go="'+esc46(n.contentId)+'">이 경로로 다이브</button>':'')+
+    '<button type="button" data-dive46-pin="'+esc46(n.contentId)+'">'+((typeof isUniversePinned39==="function"&&isUniversePinned39(n.contentId))?"핀 해제":"핀 고정")+'</button>'+
+    '<button type="button" data-dive46-detail="'+esc46(n.contentId)+'">곡 상세</button></div></div>'
+}
+function bindSide46(data){
+  var info=q46("#universeInfo");if(!info)return;
+  info.querySelectorAll("[data-dive46-go]").forEach(function(b){b.onclick=function(){if(window.centerUniverseOnId39)window.centerUniverseOnId39(b.dataset.dive46Go)}});
+  info.querySelectorAll("[data-dive46-pin]").forEach(function(b){b.onclick=function(){if(window.toggleUniversePin39)window.toggleUniversePin39(b.dataset.dive46Pin);b.textContent=(typeof isUniversePinned39==="function"&&isUniversePinned39(b.dataset.dive46Pin))?"핀 해제":"핀 고정"}});
+  info.querySelectorAll("[data-dive46-detail]").forEach(function(b){b.onclick=function(){if(window.VSAOpenSong39)window.VSAOpenSong39(b.dataset.dive46Detail,true)}});
+}
+function select46(id,data){
+  var n=data.nodes.find(function(x){return x.contentId===id});if(!n)return;
+  q46All("[data-dive46-song]").forEach(function(b){b.classList.toggle("active",b.dataset.dive46Song===id)});
+  var info=q46("#universeInfo");if(info){info.innerHTML=side46(n,data);bindSide46(data)}
+}
+function q46All(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))}
+function ensure46(){
+  var panel=q46("#universePanel");if(!panel)return;
+  panel.classList.add("v3946-dive-panel");
+  var nativeHead=panel.querySelector(".panel-head");if(nativeHead){var h=nativeHead.querySelector("h2"),p=nativeHead.querySelector("p");if(h)h.textContent="다이브 패스";if(p)p.textContent="한 곡에서 출발해 네 갈래 길을 고르고, 원하는 방향으로 계속 깊게 들어갑니다."}
+  var header=q46("#v394UniverseHeader",panel);
+  if(header){
+    var t=header.querySelector(".v394-universe-title");
+    if(t)t.innerHTML='<small>VOCADIVE · DIVE PATH 1.0</small><h2>다이브 패스</h2><p>별자리 그래프 대신, 한 곡에서 출발해 “같은 결 · 같은 시대 · 딥 다이브 · 샛길” 중 원하는 방향을 직접 고릅니다.</p>';
+    q46All("[data-u39-warp], [data-u394-search]",header).forEach(function(b){if(b.hasAttribute("data-u39-warp"))b.textContent="랜덤 다이브"});
+  }
+  var bar=q46("#v39UniverseJourney",panel);if(bar){var wb=bar.querySelector("[data-u39-warp]");if(wb)wb.textContent="랜덤 다이브"}
+  var rebuild=q46("#rebuildUniverseBtn",panel);if(rebuild)rebuild.textContent="경로 다시 찾기";
+  var size=q46("#universeSize",panel);if(size){size.setAttribute("aria-label","한 번에 찾을 후보 수")}
+  var note=panel.querySelector(".universe-note");if(note)note.innerHTML="다이브 패스의 연결은 <b>니코니코 태그·게시 연대·조회수</b>를 조합한 탐색용 근사치입니다. 음원 파형 자체를 복제하거나 분석한 그래프가 아니라, VOCADive 안에서 다음 곡을 발견하기 위한 경로형 탐색입니다.";
+  var stage=panel.querySelector(".universe-stage");
+  if(stage&&!stage.dataset.dive46){stage.dataset.dive46="1";stage.innerHTML='<div class="dive46-shell"><div class="dive46-empty" id="universeEmpty"><div><b>한 곡에서 다이브를 시작하세요</b>검색 결과나 곡 상세에서 <strong>다이브 패스</strong>를 누르면<br>네 갈래의 탐색 경로가 열립니다.</div></div></div>'}
+  var info=q46("#universeInfo",panel);if(info&&!window.state?.universeData)info.innerHTML='<div class="dive46-side"><div class="dive46-side-reason"><small>DIVE PATH</small><div><span>같은 결</span><span>같은 시대</span><span>딥 다이브</span><span>샛길</span></div></div><h3>아직 출발곡이 없습니다.</h3><div class="dive46-side-meta">곡 하나를 고르면 경로별 후보와 연결 이유가 여기에 표시됩니다.</div></div>'
+}
+function render46(data){
+  ensure46();
+  var panel=q46("#universePanel"),stage=panel&&panel.querySelector(".universe-stage");if(!stage)return;
+  var center=data.center,d=depth46(center),tags=(data.queryTags||[]).slice(0,5),groups=groups46(data);
+  stage.innerHTML='<div class="dive46-shell"><div class="dive46-center">'+
+    (center.thumbnailUrl?'<img src="'+esc46(center.thumbnailUrl)+'" alt="">':'<div class="noimg">♪</div>')+
+    '<div class="dive46-center-copy"><div class="dive46-kicker"><span class="dive46-badge">START</span><span class="dive46-badge dive46-depth">'+d[0]+' · '+d[1]+'</span></div><h3>'+esc46(center.title||center.contentId)+'</h3><p>'+(year46(center)||"연도 미상")+' · 조회 '+fmt46(views46(center))+'</p><div class="dive46-center-tags">'+(tags.length?tags.map(function(t){return"<span>"+esc46(t)+"</span>"}).join(""):"<span>연결 태그 분석 중</span>")+'</div></div>'+
+    '<div class="dive46-center-actions"><button type="button" class="primary" data-dive46-random>랜덤 다이브</button><button type="button" data-dive46-center-detail>곡 상세</button></div></div>'+
+    '<div class="dive46-branches">'+groups.map(function(g){return '<section class="dive46-branch" data-dive46-group="'+g.key+'"><div class="dive46-branch-head"><div><h4>'+g.title+'</h4><p>'+g.desc+'</p></div><span>'+g.icon+'</span></div><div class="dive46-list">'+(g.rows.length?g.rows.map(function(n){return card46(n,center,false)}).join(""):'<div class="dive46-side-meta">후보가 부족합니다.</div>')+'</div></section>'}).join("")+'</div></div>';
+  q46All("[data-dive46-song]",stage).forEach(function(b){b.onclick=function(){select46(b.dataset.dive46Song,data)}});
+  var rb=q46("[data-dive46-random]",stage);if(rb)rb.onclick=function(){if(window.randomUniverseWarp39)window.randomUniverseWarp39()};
+  var db=q46("[data-dive46-center-detail]",stage);if(db)db.onclick=function(){if(window.VSAOpenSong39)window.VSAOpenSong39(center.contentId,true)};
+  var info=q46("#universeInfo");if(info){info.innerHTML=side46(center,data);bindSide46(data)}
+  if(typeof renderUniverseJourney39==="function")renderUniverseJourney39()
+}
+window.renderUniverse=render46;
+window.showUniverseNeighborById=function(id){if(window.state&&state.universeData)select46(id,state.universeData)};
+function labels46(){
+  q46All("button,a,span,h1,h2,h3,p,small,label").forEach(function(el){
+    if(el.children.length>0)return;
+    var s=(el.textContent||"").trim();
+    if(s==="보카로 우주"||s==="음성합성 우주")el.textContent="다이브 패스";
+    else if(s==="우주 보기")el.textContent="다이브 패스";
+    else if(s==="랜덤 워프")el.textContent="랜덤 다이브";
+  })
+}
+function boot46(){ensure46();labels46();if(window.state&&state.universeData)render46(state.universeData)}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(boot46,0)});else setTimeout(boot46,0);
+window.addEventListener("popstate",function(){setTimeout(function(){ensure46();labels46()},0)});
+})();
+</script>
+
+</body>\n</html>
