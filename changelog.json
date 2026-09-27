@@ -1,11 +1,26 @@
 {
   "current": {
-    "version": "39.76.0",
+    "version": "39.77.0",
     "releasedAt": "2026-09-28",
-    "title": "Route Recovery 2.0 · Shell Polish",
-    "summary": "존재하지 않는 studioHome fallback을 제거하고 설정·Worker 상태·단일 메뉴·웹 업데이트 복구를 v39.76.0으로 묶었습니다."
+    "title": "Self-Heal 1.0 · Settings Polish",
+    "summary": "라우팅·플레이어·중복 메뉴를 자동 복구하고 설정 화면에 Worker/Web UI/App Shell 상태 요약을 추가했습니다."
   },
   "entries": [
+    {
+      "version": "39.77.0",
+      "date": "2026-09-28",
+      "title": "Self-Heal 1.0 · Settings Polish",
+      "changes": [
+        "지연 로드된 구형 하단 메뉴가 다시 생성돼도 MutationObserver로 즉시 제거",
+        "현재 route의 대상 페이지가 없으면 코어 페이지를 재생성하고 hub37로 자동 복구",
+        "재생 중 플레이어와 미니플레이어가 모두 사라지면 현재 재생 상태를 읽어 미니플레이어 자동 복구",
+        "설정 진입 시 Worker 기술 설정을 자동으로 펼쳐 바로 수정 가능",
+        "Worker 상태 pill을 눌러 설정으로 바로 이동 가능",
+        "설정 상단에 Worker / Web UI / App Shell 상태 요약 카드 추가",
+        "진단 센터의 앱 버전을 현재 런타임 버전에서 읽도록 수정",
+        "앱 셸·PWA·서비스워커·업데이터·공통 UI 버전을 v39.77.0으로 동기화"
+      ]
+    },
     {
       "version": "39.76.0",
       "date": "2026-09-28",
