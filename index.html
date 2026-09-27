@@ -3355,7 +3355,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.66.0 · Direct APK Update 1.0 · Search Fix · Rank Turbo 1.0 · Native Brand 0.2 · Android Shell 0.1 · App Foundation 1.0 · Cross-Genre Bridge 1.0 · Relation Trust 3.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.67.0 · Direct APK Update 1.0 · Search Fix · Rank Turbo 1.0 · Native Brand 0.2 · Android Shell 0.1 · App Foundation 1.0 · Cross-Genre Bridge 1.0 · Relation Trust 3.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -5293,6 +5293,8 @@ function setupRankObserver(){
 
 async function loadSongs(reset=false){
   if(state.busy)return;
+  const rankListSeq=(Number(window.__VSA_RANK_LIST_SEQ)||0)+1;
+  window.__VSA_RANK_LIST_SEQ=rankListSeq;
   state.listMode="ranking";
   if(reset){state.offset=0;state.songs=[];$("#titleFilter").value="";}
   state.busy=true; $("#songsBtn").disabled=true; $("#loadMoreBtn").disabled=true;
@@ -5301,6 +5303,7 @@ async function loadSongs(reset=false){
   $("#songList").innerHTML=state.songs.length?$("#songList").innerHTML:`<div class="empty">니코동에서 ${sourceDefinition().unit} 목록을 불러오는 중…</div>`;
   try{
     const d=await fetchNico({tier,year:state.year,sort,limit:100,offset:state.offset,mode:"ranking",applyYear:true,applyTier:true});
+    if(rankListSeq!==(Number(window.__VSA_RANK_LIST_SEQ)||0)||state.listMode!=="ranking")return;
     state.totalSongsInQuery=+d.meta.totalCount||0;
     const safeBatch=filterAdultRows37(d.data||[],"ranking");
     const rows=safeBatch.rows.map((x,i)=>({...x,__rank:state.offset+i+1}));
@@ -5312,6 +5315,7 @@ async function loadSongs(reset=false){
     $("#listSub").textContent=`${state.year==="all"?"전체 연도":state.year+"년"} · 총 ${fmt(state.totalSongsInQuery)}${sourceDefinition().unit} · ${sort.includes("viewCounter")?"조회수":"게시일"} 기준${adultFilterMode37()==="block"?" · 19+ 차단":""}`;
     setStatus("live","최신 스냅샷 연결");
   }catch(e){
+    if(rankListSeq!==(Number(window.__VSA_RANK_LIST_SEQ)||0)||state.listMode!=="ranking")return;
     showApiFallback("빙산 조건 곡 목록을 불러오지 못했습니다.", TAG);
     toast("앱 내부 API 연결 실패. 니코동 웹검색 버튼은 사용할 수 있습니다.");
     console.warn(e);
@@ -5319,7 +5323,6 @@ async function loadSongs(reset=false){
     state.busy=false; $("#songsBtn").disabled=false; $("#loadMoreBtn").disabled=false;
   }
 }
-
 
 
 
@@ -7490,7 +7493,9 @@ function showApiFallback(message,query){
   $("#loadMoreBtn").style.display="none";
 }
 async function freeSearch(reset=false){
-  if(state.busy)return;
+  if(state.freeBusy&&!reset)return;
+  const searchSeq=(Number(window.__VSA_FREE_SEARCH_SEQ)||0)+1;
+  window.__VSA_FREE_SEARCH_SEQ=searchSeq;
 
   if(reset){
     const q=$("#globalSearchInput").value.trim();
@@ -7510,46 +7515,51 @@ async function freeSearch(reset=false){
     $("#titleFilter").value="";
   }
 
+  // Search owns the result list immediately. Slow ranking requests are discarded when they finish.
   state.listMode="free";
-  state.busy=true;
+  state.freeBusy=true;
   $("#apiSearchBtn").disabled=true;
   $("#loadMoreBtn").disabled=true;
 
-  const tier=state.freeApplyTier ? (TIERS.find(t=>t.id===state.tier)||null) : null;
-  const year=state.freeApplyYear ? state.year : "all";
+  const searchQuery=String(state.freeQuery||"");
+  const searchScope=String(state.freeScope||"all_voice_synth");
+  const applyYear=!!state.freeApplyYear;
+  const applyTier=!!state.freeApplyTier;
+  const tier=applyTier ? (TIERS.find(t=>t.id===state.tier)||null) : null;
+  const year=applyYear ? state.year : "all";
   const sort=$("#sortSelect").value;
   const fetchOffset=state.freeFetchOffset||0;
+  const priorSongs=reset?[]:state.songs.slice();
 
-  $("#songList").innerHTML=state.songs.length?$("#songList").innerHTML:`<div class="empty">‘${esc(state.freeQuery)}’ 넓게 검색 중…</div>`;
+  $("#songList").innerHTML=priorSongs.length?$("#songList").innerHTML:`<div class="empty">‘${esc(searchQuery)}’ 검색 중…</div>`;
+  const summary=document.getElementById("v398ResultSummary");
+  if(summary)summary.textContent="검색 중… Worker에서 결과를 불러오고 있습니다.";
 
   try{
     let rawRows=[];
     let exactTotal=0;
     let pageHasMore=false;
 
-    if(state.freeScope==="all"){
+    if(searchScope==="all"){
       const d=await fetchNico({
         tier,year,sort,limit:100,offset:fetchOffset,
-        mode:"free",query:state.freeQuery,scope:"all",
-        applyYear:state.freeApplyYear,applyTier:state.freeApplyTier
+        mode:"free",query:searchQuery,scope:"all",
+        applyYear,applyTier
       });
       rawRows=d.data||[];
       exactTotal=+d.meta.totalCount||rawRows.length||0;
       pageHasMore=fetchOffset+rawRows.length<exactTotal;
     }else{
-      // 1) 대표 태그로 빠르게 범위 수색
-      // 2) 니코동 전체에서 같은 검색어를 한 번 더 찾은 뒤 전체 세부 태그로 로컬 판정
-      // 두 결과를 합쳐 대표 태그 누락곡을 회수한다.
       const [scoped,broad]=await Promise.all([
         fetchNico({
           tier,year,sort,limit:100,offset:fetchOffset,
-          mode:"free",query:state.freeQuery,scope:state.freeScope,
-          applyYear:state.freeApplyYear,applyTier:state.freeApplyTier
+          mode:"free",query:searchQuery,scope:searchScope,
+          applyYear,applyTier
         }).catch(()=>({data:[],meta:{totalCount:0}})),
         fetchNico({
           tier,year,sort,limit:100,offset:fetchOffset,
-          mode:"free",query:state.freeQuery,scope:"all",
-          applyYear:state.freeApplyYear,applyTier:state.freeApplyTier
+          mode:"free",query:searchQuery,scope:"all",
+          applyYear,applyTier
         }).catch(()=>({data:[],meta:{totalCount:0}}))
       ]);
 
@@ -7558,16 +7568,12 @@ async function freeSearch(reset=false){
         if(s?.contentId)merged.set(s.contentId,s);
       }
       for(const s of (broad.data||[])){
-        if(s?.contentId && songMatchesScope(s,state.freeScope))merged.set(s.contentId,s);
+        if(s?.contentId && songMatchesScope(s,searchScope))merged.set(s.contentId,s);
       }
       rawRows=[...merged.values()];
       exactTotal=+scoped.meta?.totalCount||0;
+      pageHasMore=(scoped.data||[]).length===100||(broad.data||[]).length===100;
 
-      const scopedMore=(scoped.data||[]).length===100;
-      const broadMore=(broad.data||[]).length===100;
-      pageHasMore=scopedMore||broadMore;
-
-      // 정렬 순서는 두 요청을 합친 뒤 다시 맞춘다.
       if(sort==="-viewCounter")rawRows.sort((a,b)=>(+b.viewCounter||0)-(+a.viewCounter||0));
       else if(sort==="+viewCounter")rawRows.sort((a,b)=>(+a.viewCounter||0)-(+b.viewCounter||0));
       else if(sort==="-startTime")rawRows.sort((a,b)=>new Date(b.startTime||0)-new Date(a.startTime||0));
@@ -7577,8 +7583,10 @@ async function freeSearch(reset=false){
       else if(sort==="-commentCounter")rawRows.sort((a,b)=>(+b.commentCounter||0)-(+a.commentCounter||0));
     }
 
+    if(searchSeq!==(Number(window.__VSA_FREE_SEARCH_SEQ)||0)||state.listMode!=="free")return;
+
     rawRows=filterAdultRows37(rawRows,"search").rows;
-    const existing=new Map(state.songs.map(x=>[x.contentId,x]));
+    const existing=new Map(priorSongs.map(x=>[x.contentId,x]));
     for(const s of rawRows){
       if(!s?.contentId)continue;
       existing.set(s.contentId,s);
@@ -7587,45 +7595,49 @@ async function freeSearch(reset=false){
     state.freeFetchOffset=fetchOffset+100;
     state.offset=state.songs.length;
     state.freeHasMore=pageHasMore;
-
-    // 전체 니코동 검색만 API의 정확 총건수를 표시.
-    // 엔진 제한 검색은 두 검색 경로를 병합하므로 '현재 확인된 곡 수+'로 표시한다.
-    state.totalSongsInQuery=state.freeScope==="all"?exactTotal:state.songs.length;
+    state.totalSongsInQuery=searchScope==="all"?exactTotal:state.songs.length;
 
     renderSongs();
     $("#loadMoreBtn").style.display=state.freeHasMore?"block":"none";
 
     const filters=[];
-    if(state.freeApplyYear && state.year!=="all") filters.push(state.year+"년");
-    if(state.freeApplyTier){
+    if(applyYear && state.year!=="all") filters.push(state.year+"년");
+    if(applyTier){
       const t=TIERS.find(x=>x.id===state.tier); if(t) filters.push(t.name);
     }
     const scopeLabel=
-      state.freeScope==="all_voice_synth"?"음성합성 오리지널 전체":
-      state.freeScope==="voice_synth"?"VOCALOID+UTAU+SynthV":
-      state.freeScope==="vocaloid"?"VOCALOID 오리지널곡":
-      state.freeScope==="utau"?"UTAU 오리지널곡":
-      state.freeScope==="synthv"?"Synthesizer V 오리지널곡":
-      state.freeScope==="cevio"?"CeVIO / CeVIO AI":
-      state.freeScope==="voisona"?"VoiSona":
-      state.freeScope==="neutrino"?"NEUTRINO":
-      state.freeScope==="voicevox"?"VOICEVOX 계열":"니코동 전체";
+      searchScope==="all_voice_synth"?"음성합성 오리지널 전체":
+      searchScope==="voice_synth"?"VOCALOID+UTAU+SynthV":
+      searchScope==="vocaloid"?"VOCALOID 오리지널곡":
+      searchScope==="utau"?"UTAU 오리지널곡":
+      searchScope==="synthv"?"Synthesizer V 오리지널곡":
+      searchScope==="cevio"?"CeVIO / CeVIO AI":
+      searchScope==="voisona"?"VoiSona":
+      searchScope==="neutrino"?"NEUTRINO":
+      searchScope==="voicevox"?"VOICEVOX 계열":"니코동 전체";
 
-    $("#listTitle").textContent=`검색: ${state.freeQuery}`;
-    $("#listSub").textContent=state.freeScope==="all"
+    $("#listTitle").textContent=`검색: ${searchQuery}`;
+    $("#listSub").textContent=searchScope==="all"
       ? `${scopeLabel} · 총 ${fmt(exactTotal)}건${filters.length?" · "+filters.join(" · "):" · 연도/빙산 조건 없음"}`
       : `${scopeLabel} · 현재 확인 ${fmt(state.songs.length)}곡+${filters.length?" · "+filters.join(" · "):" · 넓은 수색 병합"}`;
 
-    setStatus("live","광역 검색 연결");
-    if(isFoldedLayout())setTimeout(()=>$("#resultsPanel")?.scrollIntoView({behavior:"smooth",block:"start"}),80);
+    setStatus("live","검색 연결");
+    try{patchSearchUi398()}catch(_){}
+    if(window.matchMedia("(max-width:699px)").matches){
+      setTimeout(()=>$("#resultsPanel")?.scrollIntoView({behavior:"smooth",block:"start"}),70);
+    }
   }catch(e){
-    showApiFallback("앱 내부 검색 연결에 실패했습니다.",state.freeQuery);
+    if(searchSeq!==(Number(window.__VSA_FREE_SEARCH_SEQ)||0)||state.listMode!=="free")return;
+    showApiFallback("앱 내부 검색 연결에 실패했습니다.",searchQuery);
     toast("Worker 연결이나 검색 조건을 확인해주세요.");
     console.warn(e);
+    try{patchSearchUi398()}catch(_){}
   }finally{
-    state.busy=false;
-    $("#apiSearchBtn").disabled=false;
-    $("#loadMoreBtn").disabled=false;
+    if(searchSeq===(Number(window.__VSA_FREE_SEARCH_SEQ)||0)){
+      state.freeBusy=false;
+      $("#apiSearchBtn").disabled=false;
+      $("#loadMoreBtn").disabled=false;
+    }
   }
 }
 function retryCurrentSearch(){
@@ -9423,7 +9435,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.66.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
+var VER="39.67.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -10333,7 +10345,7 @@ async function runSearch397WhenReady(q,token){
     if(window.__VSA_PENDING_SEARCH397!==token)return false;
     input=syncSearchInputs397(q,{top:true,render:true});
     try{if(typeof state!=="undefined")state.freeQuery=q}catch(_){}
-    var ready=!!input&&typeof freeSearch==="function"&&typeof state!=="undefined"&&!state.busy;
+    var ready=!!input&&typeof freeSearch==="function"&&typeof state!=="undefined";
     if(ready){
       try{
         await freeSearch(true);
@@ -10346,11 +10358,13 @@ async function runSearch397WhenReady(q,token){
     }
     await new Promise(function(resolve){setTimeout(resolve,80)})
   }
-  // Last-resort: use the same button path the user used manually.
   if(window.__VSA_PENDING_SEARCH397===token){
     input=syncSearchInputs397(q,{top:true,render:true});
-    var btn=document.getElementById("apiSearchBtn");
-    if(btn&&!btn.disabled){btn.click();window.__VSA_PENDING_SEARCH397="";return true}
+    try{
+      await freeSearch(true);
+      window.__VSA_PENDING_SEARCH397="";
+      return true
+    }catch(_){}
   }
   return false
 }
@@ -11068,11 +11082,11 @@ function ensure(name){
   if(name==="detective")groups[name]=seq(["./detective-v11.js?v=39.45.0","./detective-v12.js?v=39.45.0","./detective-v13.js?v=39.45.0","./detective-v14.js?v=39.45.0","./detective-v16.js?v=39.45.0"]);
   else if(name==="personal")groups[name]=seq(["./organizer-v22.js?v=39.45.0","./smart-v23.js?v=39.45.0","./playlist-v24.js?v=39.45.0"]);
   else if(name==="discovery")groups[name]=load("./discovery-v20.js?v=39.45.0");
-  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.66.0");
-  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.66.0");
-  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.66.0");
+  else if(name==="homeData")groups[name]=load("./vocalo-home-v28.js?v=39.67.0");
+  else if(name==="universe")groups[name]=load("./universe-search-v28.js?v=39.67.0");
+  else if(name==="player")groups[name]=load("./nico-player-v32.js?v=39.67.0");
   else if(name==="deviceSync")groups[name]=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.45.0");
-  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.66.0");
+  else if(name==="pwa")groups[name]=load("./pwa-v21.js?v=39.67.0");
   else if(name==="v33")groups[name]=Promise.all([ensure("personal"),ensure("discovery")]).then(function(){
     return seq(["./voca-app-v33.js?v=39.45.0","./voca-app-v33-1.js?v=39.45.0","./voca-app-v33-2.js?v=39.45.0","./voca-app-v33-3.js?v=39.45.0"]);
   });
@@ -11119,11 +11133,11 @@ else setTimeout(function(){ensure("pwa")},12000);
 })();
 </script>
 <script src="./device-sync-v3938.js?v=39.45.0"></script>
-<script src="./app-platform-v3962.js?v=39.66.0"></script>
-<script src="./entitlements-v3962.js?v=39.66.0"></script>
-<script src="./account-v3962.js?v=39.66.0"></script>
-<script src="./native-shell-v3963.js?v=39.66.0"></script>
-<script src="./app-update-v3966.js?v=39.66.0"></script>
+<script src="./app-platform-v3962.js?v=39.67.0"></script>
+<script src="./entitlements-v3962.js?v=39.67.0"></script>
+<script src="./account-v3962.js?v=39.67.0"></script>
+<script src="./native-shell-v3963.js?v=39.67.0"></script>
+<script src="./app-update-v3966.js?v=39.67.0"></script>
 <script src="./i18n-v3918.js?v=39.45.0"></script>
 
 <style id="v3946DivePath">
@@ -12994,5 +13008,10 @@ window.VSA60ProducerResolver={resolve:resolve60};
 })();
 </script>
 
+<style id="v3967SearchFixStyle">
+.v398-search-page .search-options[hidden]{display:none!important}
+.v398-search-page #resultsPanel{scroll-margin-top:12px}
+.v398-search-page #songList>.empty{min-height:92px;display:grid;place-items:center;text-align:center}
+</style>
 </body>
 </html>
