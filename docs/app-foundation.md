@@ -1,6 +1,6 @@
 # VocaDive App Foundation
 
-Version: **39.62.0**
+Version: **39.63.0**
 
 This document describes the foundation for turning the existing VocaDive web/PWA codebase into a native Android/iOS app without rewriting the application from scratch.
 
@@ -132,10 +132,24 @@ An actual iOS build requires macOS/Xcode and Apple signing.
 5. Never place store secrets or verification credentials in the web bundle.
 6. Existing free features should not silently become paid during foundation work.
 
+## Android Shell 0.1 status
+
+v39.63.0 adds the first native lifecycle layer:
+
+- Android hardware Back is mapped to VocaDive route history.
+- A full player collapses to the mini player before page navigation.
+- Back at the home root minimizes the Android app instead of destroying playback state.
+- App pause/background saves the current player id, queue, index, volume, play state and route.
+- Resume repairs the player surface after WebView lifecycle transitions.
+- Cold process restart can restore the last player as a **paused mini player** for up to 12 hours. It intentionally does not autoplay after process death.
+- Native safe-area adjustments are applied to the top bar, player modal and mini player.
+
+The embedded NicoNico player is still a WebView/iframe playback surface. Android may suspend or reclaim the WebView while backgrounded, so continuous audio while the process is suspended is not guaranteed by this shell. The lifecycle layer preserves and repairs state; a truly independent native audio service would be a separate later decision and must respect the media provider's terms.
+
 ## Next implementation milestones
 
-1. Native Android shell smoke test.
-2. Back-button / lifecycle / mini-player behavior in a real WebView.
+1. Verify the generated Android debug APK on a physical device.
+2. Fix any WebView-only navigation/player issues found in device testing.
 3. Account provider selection and `/app/bootstrap` implementation.
 4. Cloud sync migration for library/history/settings.
 5. Store billing adapter with server verification.
