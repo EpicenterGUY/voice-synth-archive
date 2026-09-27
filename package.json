@@ -1,6 +1,6 @@
 {
   "name": "vocadive",
-  "version": "39.65.0",
+  "version": "39.66.0",
   "private": true,
   "description": "VocaDive native app foundation for Android/iOS packaging.",
   "scripts": {
@@ -11,7 +11,8 @@
     "cap:add:ios": "npm run build:app && npx cap add ios",
     "cap:open:ios": "npx cap open ios",
     "assets:android": "npx capacitor-assets generate --android --iconBackgroundColor '#041115' --iconBackgroundColorDark '#041115' --splashBackgroundColor '#041115' --splashBackgroundColorDark '#041115'",
-    "android:debug": "npm run build:app && npx cap sync android && cd android && ./gradlew assembleDebug bundleDebug"
+    "android:debug": "npm run build:app && npx cap sync android && npm run android:patch && cd android && ./gradlew assembleDebug bundleDebug",
+    "android:patch": "node scripts/patch-android-updater.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.0",
@@ -21,7 +22,8 @@
     "@capacitor/haptics": "^7.0.0",
     "@capacitor/ios": "^7.4.0",
     "@capacitor/preferences": "^7.0.0",
-    "@capacitor/splash-screen": "^7.0.0"
+    "@capacitor/splash-screen": "^7.0.0",
+    "@capacitor/network": "^7.0.0"
   },
   "devDependencies": {
     "@capacitor/cli": "^7.4.0",
