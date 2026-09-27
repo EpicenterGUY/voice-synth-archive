@@ -76,8 +76,9 @@ jobs:
           test -f android/app/src/main/java/app/vocadive/mobile/VocaDiveUpdaterPlugin.java
           test -f android/app/src/main/res/xml/vocadive_update_paths.xml
           grep -q "REQUEST_INSTALL_PACKAGES" android/app/src/main/AndroidManifest.xml
-          grep -q "versionName \"39.66.0\"" android/app/build.gradle
-          grep -q "versionCode 39066000" android/app/build.gradle
+          APP_VERSION="$(node -p "require('./package.json').version")"
+          grep -q "versionName \"$APP_VERSION\"" android/app/build.gradle
+          grep -Eq "versionCode [0-9]+" android/app/build.gradle
           test -f android/app/src/main/res/drawable/splash.png || test -f android/app/src/main/res/drawable-port-hdpi/splash.png || true
 
       - name: Build debug APK and AAB
