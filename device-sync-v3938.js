@@ -1,8 +1,8 @@
-/* VocaDive Device Transfer v39.74.1 */
+/* VocaDive Device Transfer v39.75.0 */
 (function(){
 "use strict";
 
-var VERSION="39.74.1";
+var VERSION="39.75.0";
 var ORG="vsa.organizer.v22",SMART="vsa.smart.v23",PLAYLISTS="vsa.playlists.v24";
 var SIMPLE_KEYS=[
   "vsa.v33.followedProducers","vsa.v33.filters","vsa.v33.producerMode",
