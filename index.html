@@ -11542,7 +11542,7 @@ window.addEventListener("popstate",function(){setTimeout(function(){ensure48();v
 
 <style id="v3949OceanCurrentStyle">
 /* v39.49 · one layer at a time */
-#universePanel.v3949-current #v39UniverseJourney{display:none!important}
+#universePanel.v3949-current #v39UniverseJourney,#universePanel.v3949-current #sea48Modebar{display:none!important}
 #universePanel.v3949-current .v394-universe-controls{display:none!important}
 #universePanel.v3949-current .v394-universe-quick{display:none!important}
 #universePanel.v3949-current .universe-layout{grid-template-columns:minmax(0,1fr) 300px!important;gap:11px!important;align-items:start!important}
@@ -11658,9 +11658,8 @@ function rank49(d,center){
  var ci=layerIndex49(center),all=(d.nodes||[]).slice(1).filter(function(n){return n&&n.contentId});
  var same=all.filter(function(n){return layerIndex49(n)===ci}).sort(function(a,b){return (+b.similarity||0)-(+a.similarity||0)||v49(b)-v49(a)});
  var allSim=all.slice().sort(function(a,b){return (+b.similarity||0)-(+a.similarity||0)||v49(b)-v49(a)});
- if(same.length<6)allSim.forEach(function(n){if(same.length<6&&!same.some(function(x){return x.contentId===n.contentId}))same.push(n)});
- var up=all.filter(function(n){return layerIndex49(n)<ci}).sort(function(a,b){return (+b.similarity||0)-(+a.similarity||0)}); 
- var down=all.filter(function(n){return layerIndex49(n)>ci}).sort(function(a,b){return (+b.similarity||0)-(+a.similarity||0)});
+ var up=all.filter(function(n){return layerIndex49(n)<ci}).sort(function(a,b){var da=ci-layerIndex49(a),db=ci-layerIndex49(b);return da-db||(+b.similarity||0)-(+a.similarity||0)}); 
+ var down=all.filter(function(n){return layerIndex49(n)>ci}).sort(function(a,b){var da=layerIndex49(a)-ci,db=layerIndex49(b)-ci;return da-db||(+b.similarity||0)-(+a.similarity||0)});
  var used=new Set(same.slice(0,6).map(function(n){return n.contentId}));
  var side=all.filter(function(n){var sim=+n.similarity||0;return !used.has(n.contentId)&&sim>=.18&&sim<=.68}).sort(function(a,b){return Math.abs((+a.similarity||0)-.42)-Math.abs((+b.similarity||0)-.42)});
  return {same:same.slice(0,6),similar:allSim.slice(0,8),up:up,down:down,side:side}
@@ -11677,7 +11676,7 @@ function scene49(d){
  var c=d.center,li=layer49(c),r=rank49(d,c),nodes=(ocMode49==="similar"?r.similar:r.same).slice(0,6);
  var ci=layerIndex49(c),up=r.up[0],down=r.down[0],side=r.side[0];
  var title=ocMode49==="similar"?"유사곡 소나":"같은 수층 해류";
- var desc=ocMode49==="similar"?"현재 수층 배경을 유지한 채 유사도 순으로 주변 곡을 탐지합니다.":li.desc;
+ var desc=ocMode49==="similar"?"배경과 현재 수심은 그대로 유지하고, 전체 후보를 유사도 순으로 소나 탐지합니다.":li.desc+(r.same.length?"":" · 현재 수층에서 바로 이어지는 후보가 적어 위·아래 해류 이동을 권장합니다.");
  return '<div class="oc49-scene '+(ocMode49==="similar"?"sonar":"")+'" data-layer="'+li.key+'"><div class="oc49-bg"></div><div class="oc49-caustic"></div><div class="oc49-specks"></div><div class="oc49-bubbles">'+bubble49()+'</div><div class="oc49-vignette"></div><div class="oc49-sonar-wave"></div><div class="oc49-content"><div class="oc49-layer-head"><div><small>'+li.label+' · '+li.meter+'</small><h3>'+title+' · '+li.ko+'</h3><p>'+desc+'</p></div><div class="oc49-layer-badge"><b>'+li.depth+'</b><span>현재 탐색 수심</span></div></div><div class="oc49-map"><div class="oc49-current-line"></div>'+nodes.map(function(n,i){return node49(n,c,i)}).join("")+center49(c,d,li)+'</div><div><div class="oc49-depth-nav"><button type="button" data-oc49-go="'+(up?e49(up.contentId):"")+'" data-oc49-dir="up" '+(up?"":"disabled")+'>↑ '+(ci>0?L49[ci-1].ko:"더 얕은 층 없음")+'</button><span>곡이 속한 층은 조회수·인지도 기준의 탐색 지표</span><button type="button" data-oc49-go="'+(down?e49(down.contentId):"")+'" data-oc49-dir="down" '+(down?"":"disabled")+'>↓ '+(ci<4?L49[ci+1].ko:"더 깊은 층 없음")+'</button></div><div class="oc49-side-current"><button type="button" data-oc49-go="'+(side?e49(side.contentId):"")+'" data-oc49-dir="side" '+(side?"":"disabled")+'>↝ 샛길 해류'+(side?" · "+Math.round((+side.similarity||0)*100)+"%":" 없음")+'</button></div></div></div><div class="oc49-transition"><b>해류를 따라 이동 중…</b></div></div>'
 }
 function side49(n,d){
@@ -11696,10 +11695,10 @@ function render49(d){
 function go49(id,dir){
  if(ocBusy49||!id)return;var d=data49(),song=find49(id,d);if(!song)return;
  ocBusy49=true;var sc=q49(".oc49-scene");if(sc)sc.classList.add("go-"+dir);
- setTimeout(function(){var p;
+ setTimeout(function(){var p;ocEnter49=dir;
    try{p=typeof buildUniverse==="function"?buildUniverse(song,false):(window.centerUniverseOnId39?window.centerUniverseOnId39(id):null)}
-   catch(e){ocBusy49=false;return}
-   Promise.resolve(p).catch(function(){}).finally(function(){ocEnter49=dir;ocBusy49=false})
+   catch(e){ocEnter49="";ocBusy49=false;return}
+   Promise.resolve(p).catch(function(){ocEnter49=""}).finally(function(){ocBusy49=false})
  },470)
 }
 function random49(){
