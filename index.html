@@ -12802,10 +12802,22 @@ function depthNav58(d){
   '<div class="mr72-depth-track">'+DEPTH58.map(function(x,i){return '<button type="button" class="'+(i===cur?"active":"")+'" data-mr58-depth-target="'+i+'" '+(i===cur?"disabled":"")+'><span>'+e58(x.short)+'</span><small>'+(i===cur?"현재":(counts[i]?counts[i]+"곡":"찾기"))+'</small></button>'}).join("")+'</div>'+
   '<div class="mr72-depth-status" aria-live="polite"></div></section>'
 }
+function seaLayers58(depth){
+ return '<div class="mr74-seascape" aria-hidden="true">'+
+  '<div class="mr74-light"></div><div class="mr74-caustic"></div>'+
+  '<div class="mr74-current c1"></div><div class="mr74-current c2"></div><div class="mr74-current c3"></div>'+
+  '<div class="mr74-particles"></div><div class="mr74-biolume"></div><div class="mr74-shadow"></div>'+
+  '<div class="mr74-bubbles">'+
+   '<i style="--x:8%;--s:3px;--d:11s;--delay:-5s"></i><i style="--x:18%;--s:6px;--d:16s;--delay:-8s"></i>'+
+   '<i style="--x:31%;--s:4px;--d:13s;--delay:-2s"></i><i style="--x:47%;--s:7px;--d:18s;--delay:-11s"></i>'+
+   '<i style="--x:61%;--s:3px;--d:12s;--delay:-7s"></i><i style="--x:72%;--s:5px;--d:15s;--delay:-4s"></i>'+
+   '<i style="--x:84%;--s:4px;--d:17s;--delay:-13s"></i><i style="--x:94%;--s:6px;--d:14s;--delay:-6s"></i>'+
+  '</div></div>'
+}
 function scene58(d){
- var rows=relationRows58(d),c=d.center;
- return '<div class="mr58-shell"><div class="mr58-content">'+
-  '<div class="mr58-head"><div><small>VOCADIVE · DIVE ROUTE 1.0</small><h3>다음 곡 선택</h3><p>수층을 먼저 고르고, 후보 카드의 <b>이동</b> 버튼으로 바로 다음 곡으로 넘어갑니다. 연결 조건은 필요할 때만 펼쳐보세요.</p></div>'+summary58(rows)+'</div>'+
+ var rows=relationRows58(d),c=d.center,dep=depth58(c);
+ return '<div class="mr58-shell mr74-depth-'+dep+'" data-mr74-depth="'+dep+'">'+seaLayers58(dep)+'<div class="mr58-content">'+
+  '<div class="mr58-head"><div><small>VOCADIVE · OCEAN DIVE 1.0</small><h3>다음 곡 선택</h3><p>수층을 고르고 <b>이동</b>을 누르면 실제 잠수하듯 다음 곡으로 넘어갑니다. 깊어질수록 빛과 해류 분위기도 달라집니다.</p></div>'+summary58(rows)+'</div>'+
   depthNav58(d)+'<details class="mr72-advanced"><summary>연결 조건 <span>유사곡 · 장르 · P · 보컬 · 시대</span></summary>'+filters58(d)+'</details>'+
   '<div class="mr58-map">'+rows.map(function(x,i){return node58(x,i,c)}).join("")+center58(c,d)+(rows.length?"":'<div class="mr58-empty">현재 조건에 맞는 후보가 없습니다.<br>연결 조건을 줄이거나 다른 수층을 선택하세요.</div>')+'</div></div></div>'
 }
@@ -12889,12 +12901,37 @@ function status58(msg,bad){
  if(x){x.textContent=String(msg||"");x.classList.toggle("bad",!!bad)}
  if(msg&&typeof toast==="function")try{toast(String(msg))}catch(_){}
 }
+function transitionOverlay58(){
+ var o=document.getElementById("mr74DiveTransition");
+ if(o)return o;
+ o=document.createElement("div");o.id="mr74DiveTransition";o.className="mr74-transition";o.setAttribute("aria-hidden","true");
+ o.innerHTML='<div class="mr74-trans-water"><div class="mr74-trans-stream s1"></div><div class="mr74-trans-stream s2"></div><div class="mr74-trans-stream s3"></div><div class="mr74-trans-bubbles"></div></div><div class="mr74-trans-copy"><small>VOCADIVE</small><b></b><span></span></div>';
+ document.body.appendChild(o);return o
+}
+function transitionName58(dir){return dir==="down"?"심층으로 하강 중":dir==="up"?"수면 방향으로 상승 중":"해류를 따라 이동 중"}
+function playTransition58(fromDepth,toDepth,title){
+ var o=transitionOverlay58(),dir=toDepth>fromDepth?"down":toDepth<fromDepth?"up":"side";
+ o.className="mr74-transition mr74-"+dir+" mr74-to-"+toDepth;
+ var b=o.querySelector("b"),s=o.querySelector("span");
+ if(b)b.textContent=transitionName58(dir);
+ if(s)s.textContent=(DEPTH58[toDepth]&&DEPTH58[toDepth].name?DEPTH58[toDepth].name:"다음 수층")+" · "+String(title||"다음 곡");
+ document.body.classList.add("mr74-transitioning");
+ requestAnimationFrame(function(){o.classList.add("show")});
+ return new Promise(function(resolve){setTimeout(resolve,dir==="side"?360:560)})
+}
+function endTransition58(){
+ var o=document.getElementById("mr74DiveTransition");
+ if(o)o.classList.remove("show");
+ document.body.classList.remove("mr74-transitioning");
+ setTimeout(function(){if(o&&!o.classList.contains("show"))o.className="mr74-transition"},260)
+}
 function go58(id){
  var d=typeof state!=="undefined"?state.universeData:null,n=find58(id,d);if(!n){status58("이동할 곡을 찾지 못했습니다.",true);return Promise.resolve(false)}
- status58("다음 곡을 불러오는 중…");
- try{
-  return Promise.resolve(buildUniverse(n,false)).then(function(){status58("");return true}).catch(function(e){status58("다이브 이동 실패 · "+String(e&&e.message||e),true);return false})
- }catch(e){status58("다이브 이동 실패 · "+String(e&&e.message||e),true);return Promise.resolve(false)}
+ var fromDepth=d&&d.center?depth58(d.center):depth58(n),toDepth=depth58(n);
+ status58(toDepth>fromDepth?"잠수 준비 중…":toDepth<fromDepth?"상승 준비 중…":"다음 곡으로 이동 중…");
+ return Promise.resolve(playTransition58(fromDepth,toDepth,n.title||n.contentId)).then(function(){
+  try{return Promise.resolve(buildUniverse(n,false))}catch(e){return Promise.reject(e)}
+ }).then(function(){endTransition58();status58("");return true}).catch(function(e){endTransition58();status58("다이브 이동 실패 · "+String(e&&e.message||e),true);return false})
 }
 function depthRange58(target){
  return target===0?{gte:1000000}:target===1?{gte:250000,lte:999999}:target===2?{gte:50000,lte:249999}:target===3?{gte:5000,lte:49999}:{gte:0,lte:4999}
@@ -13538,6 +13575,134 @@ window.VSADataBridge73={check:check73,status:function(){return Object.assign({co
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(sync73,120)});else setTimeout(sync73,120);
 })();
 </script>
+
+<style id="v3974OceanMotion">
+/* Ocean Dive · animated depth atmosphere */
+#universePanel.v3958-rel .mr58-shell{
+  position:relative!important;isolation:isolate!important;overflow:hidden!important;
+  transition:background .55s ease,box-shadow .55s ease,border-color .55s ease!important
+}
+#universePanel.v3958-rel .mr58-content{position:relative!important;z-index:3!important}
+#universePanel.v3958-rel .mr74-seascape{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+#universePanel.v3958-rel .mr74-seascape:after{
+  content:"";position:absolute;inset:0;z-index:9;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 42%,transparent 40%,rgba(0,5,13,.22) 100%)
+}
+#universePanel.v3958-rel .mr74-depth-0{background:linear-gradient(180deg,#30bfd1 0%,#147fa5 28%,#0b4b73 62%,#082f52 100%)!important}
+#universePanel.v3958-rel .mr74-depth-1{background:linear-gradient(180deg,#1689a8 0%,#0c587b 34%,#083d62 65%,#062944 100%)!important}
+#universePanel.v3958-rel .mr74-depth-2{background:linear-gradient(180deg,#0b587b 0%,#073d61 32%,#052944 66%,#031a31 100%)!important}
+#universePanel.v3958-rel .mr74-depth-3{background:linear-gradient(180deg,#073451 0%,#04243c 34%,#03172a 68%,#020d1d 100%)!important;border-color:rgba(91,157,184,.18)!important}
+#universePanel.v3958-rel .mr74-depth-4{
+  background:
+   radial-gradient(circle at 72% 68%,rgba(53,124,150,.08),transparent 16%),
+   radial-gradient(circle at 24% 76%,rgba(39,101,128,.08),transparent 13%),
+   linear-gradient(180deg,#041d31 0%,#021523 30%,#010b16 68%,#01060d 100%)!important;
+  border-color:rgba(62,116,141,.2)!important;box-shadow:inset 0 0 90px rgba(0,0,0,.38)!important
+}
+.mr74-light{position:absolute;left:-12%;right:-12%;top:-8%;height:52%;opacity:.72;transform-origin:50% 0;
+ background:
+  linear-gradient(103deg,transparent 30%,rgba(226,255,250,.16) 38%,transparent 47%),
+  linear-gradient(78deg,transparent 45%,rgba(209,255,251,.12) 53%,transparent 62%);
+ filter:blur(1px);animation:mr74RayDrift 8s ease-in-out infinite alternate
+}
+.mr74-caustic{position:absolute;inset:-12% -8% 35%;opacity:.18;
+ background:
+  repeating-radial-gradient(ellipse at 50% 0%,transparent 0 15px,rgba(209,255,249,.12) 17px 19px,transparent 22px 38px);
+ transform:perspective(500px) rotateX(68deg) scale(1.3);filter:blur(.4px);
+ animation:mr74Caustic 9s linear infinite
+}
+.mr74-current{position:absolute;width:78%;height:90px;border-radius:50%;opacity:.16;filter:blur(14px);
+ background:linear-gradient(90deg,transparent,rgba(118,226,218,.34),rgba(124,171,219,.2),transparent);
+ animation:mr74Current 13s ease-in-out infinite
+}
+.mr74-current.c1{left:-32%;top:28%;transform:rotate(-7deg);animation-delay:-2s}
+.mr74-current.c2{right:-36%;top:57%;transform:rotate(6deg);animation-delay:-7s;animation-duration:17s}
+.mr74-current.c3{left:-24%;top:78%;transform:rotate(-3deg);animation-delay:-10s;animation-duration:21s}
+.mr74-particles{position:absolute;inset:-20%;opacity:.36;
+ background-image:
+  radial-gradient(circle,rgba(225,255,252,.48) 0 1px,transparent 1.4px),
+  radial-gradient(circle,rgba(113,211,222,.38) 0 1px,transparent 1.5px),
+  radial-gradient(circle,rgba(134,177,215,.28) 0 1px,transparent 1.3px);
+ background-size:83px 91px,137px 129px,191px 173px;
+ animation:mr74Particles 24s linear infinite
+}
+.mr74-bubbles{position:absolute;inset:0;opacity:.46}
+.mr74-bubbles i{position:absolute;left:var(--x);bottom:-28px;width:var(--s);height:var(--s);border:1px solid rgba(225,255,252,.42);border-radius:50%;
+ box-shadow:inset 1px 1px 2px rgba(255,255,255,.16);animation:mr74Bubble var(--d) linear infinite;animation-delay:var(--delay)
+}
+.mr74-biolume{position:absolute;inset:28% 0 0;opacity:0;
+ background:
+  radial-gradient(circle at 17% 66%,rgba(75,226,216,.42) 0 1px,transparent 3px),
+  radial-gradient(circle at 79% 52%,rgba(99,159,255,.42) 0 1px,transparent 3px),
+  radial-gradient(circle at 57% 82%,rgba(66,219,193,.35) 0 1px,transparent 3px);
+ background-size:130px 150px,190px 170px,230px 210px;filter:blur(.2px);
+ animation:mr74Bio 6s ease-in-out infinite alternate
+}
+.mr74-shadow{position:absolute;width:280px;height:74px;right:-240px;top:70%;border-radius:50%;opacity:0;
+ background:radial-gradient(ellipse,rgba(0,5,12,.42),rgba(0,5,12,0) 68%);filter:blur(9px);
+ animation:mr74Shadow 24s linear infinite
+}
+.mr74-depth-0 .mr74-bubbles{opacity:.8}.mr74-depth-0 .mr74-light{opacity:.95}.mr74-depth-0 .mr74-caustic{opacity:.38}
+.mr74-depth-1 .mr74-bubbles{opacity:.62}.mr74-depth-1 .mr74-light{opacity:.65}.mr74-depth-1 .mr74-caustic{opacity:.25}
+.mr74-depth-2 .mr74-bubbles{opacity:.44}.mr74-depth-2 .mr74-light{opacity:.35}.mr74-depth-2 .mr74-caustic{opacity:.12}
+.mr74-depth-3 .mr74-bubbles{opacity:.22}.mr74-depth-3 .mr74-light{opacity:.13}.mr74-depth-3 .mr74-caustic{opacity:.04}.mr74-depth-3 .mr74-biolume{opacity:.38}
+.mr74-depth-4 .mr74-bubbles{opacity:.10}.mr74-depth-4 .mr74-light{opacity:.04}.mr74-depth-4 .mr74-caustic{opacity:0}.mr74-depth-4 .mr74-biolume{opacity:.68}.mr74-depth-4 .mr74-shadow{opacity:.55}.mr74-depth-4 .mr74-particles{opacity:.24}
+#universePanel.v3958-rel .mr58-center,
+#universePanel.v3958-rel .mr58-node,
+#universePanel.v3958-rel .mr72-depth,
+#universePanel.v3958-rel .mr72-advanced{
+  background:linear-gradient(145deg,rgba(7,31,40,.78),rgba(4,22,31,.66))!important;
+  border-color:rgba(141,221,217,.16)!important;
+  backdrop-filter:blur(14px)!important;-webkit-backdrop-filter:blur(14px)!important;
+  box-shadow:inset 0 1px 0 rgba(225,255,251,.025),0 14px 35px rgba(0,7,16,.12)!important
+}
+#universePanel.v3958-rel .mr58-node{transition:transform .22s ease,border-color .22s ease,background .22s ease!important}
+#universePanel.v3958-rel .mr58-node:active{transform:scale(.985)!important}
+#universePanel.v3958-rel .mr58-node-go{position:relative;overflow:hidden}
+#universePanel.v3958-rel .mr58-node-go:after{content:"";position:absolute;inset:0;transform:translateX(-120%);background:linear-gradient(100deg,transparent,rgba(219,255,250,.14),transparent);animation:mr74ButtonSheen 4s ease-in-out infinite}
+.mr74-transition{position:fixed;inset:0;z-index:10050;display:grid;place-items:center;pointer-events:none;opacity:0;visibility:hidden;
+ background:#031421;transition:opacity .18s ease,visibility .18s ease;overflow:hidden}
+.mr74-transition.show{opacity:1;visibility:visible}
+.mr74-transition.mr74-down{background:linear-gradient(180deg,#0b5271,#062c49 38%,#031628 72%,#010a14)}
+.mr74-transition.mr74-up{background:linear-gradient(180deg,#06182a,#073b60 52%,#1685a6 100%)}
+.mr74-transition.mr74-side{background:linear-gradient(120deg,#05293a,#073f53,#05293a)}
+.mr74-trans-water{position:absolute;inset:-12%;overflow:hidden}
+.mr74-trans-water:before,.mr74-trans-water:after{content:"";position:absolute;inset:-20%;
+ background-image:radial-gradient(circle,rgba(220,255,252,.55) 0 1px,transparent 1.5px);background-size:72px 83px;opacity:.4}
+.mr74-down.show .mr74-trans-water:before{animation:mr74DiveSweep .7s ease-out both}
+.mr74-up.show .mr74-trans-water:before{animation:mr74RiseSweep .7s ease-out both}
+.mr74-side.show .mr74-trans-water:before{animation:mr74SideSweep .5s ease-out both}
+.mr74-trans-stream{position:absolute;left:-20%;width:140%;height:110px;border-radius:50%;filter:blur(18px);
+ background:linear-gradient(90deg,transparent,rgba(122,222,220,.22),rgba(109,160,212,.18),transparent)}
+.mr74-trans-stream.s1{top:18%;transform:rotate(-8deg)}.mr74-trans-stream.s2{top:48%;transform:rotate(5deg)}.mr74-trans-stream.s3{top:76%;transform:rotate(-3deg)}
+.mr74-down.show .mr74-trans-stream{animation:mr74StreamsDown .72s ease-in both}.mr74-up.show .mr74-trans-stream{animation:mr74StreamsUp .72s ease-in both}.mr74-side.show .mr74-trans-stream{animation:mr74StreamsSide .55s ease-in both}
+.mr74-trans-copy{position:relative;z-index:4;display:grid;gap:5px;text-align:center;transform:translateY(8px);opacity:0;transition:.2s ease}
+.mr74-transition.show .mr74-trans-copy{transform:none;opacity:1}
+.mr74-trans-copy small{color:#75dcd2;font-size:8px;font-weight:950;letter-spacing:.18em}.mr74-trans-copy b{color:#f0fffd;font-size:24px;letter-spacing:-.04em}.mr74-trans-copy span{max-width:72vw;color:#8fb7b3;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body.mr74-transitioning{overflow:hidden!important}
+@keyframes mr74RayDrift{from{transform:skewX(-2deg) translateX(-2%)}to{transform:skewX(3deg) translateX(3%)}}
+@keyframes mr74Caustic{from{background-position:0 0}to{background-position:110px 58px}}
+@keyframes mr74Current{0%,100%{translate:-5% 0;opacity:.08}50%{translate:18% 8px;opacity:.22}}
+@keyframes mr74Particles{from{transform:translate3d(0,0,0)}to{transform:translate3d(-90px,-120px,0)}}
+@keyframes mr74Bubble{0%{transform:translate3d(0,0,0) scale(.7);opacity:0}12%{opacity:.7}70%{opacity:.42}100%{transform:translate3d(18px,-760px,0) scale(1.25);opacity:0}}
+@keyframes mr74Bio{from{filter:brightness(.7);transform:translateY(0)}to{filter:brightness(1.35);transform:translateY(-8px)}}
+@keyframes mr74Shadow{0%{transform:translateX(0) scale(.8);opacity:0}20%{opacity:.18}55%{opacity:.45}100%{transform:translateX(-150vw) scale(1.1);opacity:0}}
+@keyframes mr74ButtonSheen{0%,70%{transform:translateX(-130%)}86%,100%{transform:translateX(130%)}}
+@keyframes mr74DiveSweep{from{transform:translateY(-28%) scale(1)}to{transform:translateY(42%) scale(1.25)}}
+@keyframes mr74RiseSweep{from{transform:translateY(30%) scale(1.2)}to{transform:translateY(-32%) scale(1)}}
+@keyframes mr74SideSweep{from{transform:translateX(28%)}to{transform:translateX(-30%)}}
+@keyframes mr74StreamsDown{from{transform:translateY(-32vh) rotate(-4deg)}to{transform:translateY(48vh) rotate(4deg)}}
+@keyframes mr74StreamsUp{from{transform:translateY(42vh) rotate(4deg)}to{transform:translateY(-42vh) rotate(-4deg)}}
+@keyframes mr74StreamsSide{from{transform:translateX(35vw)}to{transform:translateX(-35vw)}}
+@media(max-width:699px){
+ .mr74-trans-copy b{font-size:21px}.mr74-trans-copy span{font-size:8px}
+ #universePanel.v3958-rel .mr74-current{height:70px;filter:blur(12px)}
+}
+@media(prefers-reduced-motion:reduce){
+ .mr74-light,.mr74-caustic,.mr74-current,.mr74-particles,.mr74-bubbles i,.mr74-biolume,.mr74-shadow,.mr58-node-go:after{animation:none!important}
+ .mr74-transition.show .mr74-trans-water:before,.mr74-transition.show .mr74-trans-stream{animation:none!important}
+}
+</style>
 
 </body>
 </html>
