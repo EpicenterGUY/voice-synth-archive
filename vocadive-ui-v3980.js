@@ -1,10 +1,10 @@
-/* VocaDive Unified UI v39.97.0
+/* VocaDive Unified UI v39.98.0
  * YouTube-style app shell, cards, player continuity and route recovery.
  */
 (function(){
 "use strict";
 
-var VERSION="39.97.0";
+var VERSION="39.98.0";
 var raf=0,observer=null,lastRoute="home",navSeq3985=0,workerCheckTimer3986=0;
 var workerState3986={ok:null,reason:"",endpoint:"",at:0};
 
@@ -989,7 +989,7 @@ body[data-vsa-theme="light"] #v3980MenuBtn{background:#edf1f0!important;color:#1
 
 
 
-/* Theme contrast contract · v39.97
+/* Theme contrast contract · v39.98
    Light pages use darker secondary text; Dive remains intentionally dark in both themes. */
 body[data-vsa-theme="light"] #v3980Dock button{color:#536b68!important}
 body[data-vsa-theme="light"] #v3982Menu button small,
@@ -1130,7 +1130,7 @@ body[data-vsa-theme="light"] .topbar{color:#17302e!important}
 
 
 
-/* Light discovery + high-definition thumbnail contract · v39.97
+/* Light discovery + high-definition thumbnail contract · v39.98
    Legacy discovery/taste cards had dark-theme !important rules that survived light mode.
    Keep Dive dark, but make normal discovery surfaces genuinely light and readable. */
 body.v37-ready[data-vsa-theme="light"] :is(.discovery-card,.gem-card){
@@ -1172,6 +1172,15 @@ body.v37-ready[data-vsa-theme="light"] :is(.discovery-card img,.gem-card img,.v3
  background:#e8efed!important;image-rendering:auto!important
 }
 
+
+
+/* Internal discovery playback · v39.98 */
+.discovery-title.v3998-play-title,.gem-title.v3998-play-title{
+ display:block;width:100%;padding:0;border:0;background:transparent;text-align:left;
+ color:inherit;font:inherit;font-weight:inherit;line-height:inherit;cursor:pointer
+}
+.discovery-title.v3998-play-title:hover,.gem-title.v3998-play-title:hover{text-decoration:underline}
+
 @media(prefers-reduced-motion:reduce){
  *{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
@@ -1180,6 +1189,7 @@ body.v37-ready[data-vsa-theme="light"] :is(.discovery-card img,.gem-card img,.v3
 }
 
 
+/* HQ thumbnail recovery · v39.98 */
 var thumbObserver3997=null;
 function highResThumbnailUrl3997(raw){
   var src=String(raw||"").trim();if(!src)return src;
@@ -1215,6 +1225,12 @@ function upgradeThumbnail3997(img){
     var fallback=img.dataset.v3997OriginalSrc||src;
     img.dataset.v3997HqFailed=fallback;
     img.removeAttribute("srcset");
+    img.addEventListener("load",function(){
+      if(String(img.getAttribute("src")||"")===fallback){
+        img.style.visibility="";
+        img.style.opacity=""
+      }
+    },{once:true});
     if(String(img.getAttribute("src")||"")!==fallback)img.setAttribute("src",fallback)
   },{once:true});
   img.setAttribute("src",hq)
