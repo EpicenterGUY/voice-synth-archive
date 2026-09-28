@@ -1,7 +1,7 @@
-/* VocaDive in-app Nico player v39.84 · Native Lifecycle Playback 2.8 */
+/* VocaDive in-app Nico player v39.102 · Native Lifecycle Playback 3.0 */
 (function(){
 "use strict";
-var modal=null,mini=null,frame=null,fullStage=null,miniStage=null,inlineHost=null,currentId="",currentTitle="",pushed=false,queue=[],queueIndex=-1,autoNext=true,pipWindow=null,pipClosing=false,lastPlayerStatus=0,maxVolume=true,volumeAppliedFor="",playerVolume=100,volumePopover=null,surfaceRepairTimer=0;
+var modal=null,mini=null,frame=null,fullStage=null,miniStage=null,inlineHost=null,currentId="",currentTitle="",pushed=false,queue=[],queueIndex=-1,autoNext=true,pipWindow=null,pipClosing=false,lastPlayerStatus=0,maxVolume=true,volumeAppliedFor="",playerVolume=100,volumePopover=null,surfaceRepairTimer=0,routeObserver32=null,routeObserverRetry32=0;
 var PLAYER_ID="vsaPlayer",NICO_ORIGIN="https://embed.nicovideo.jp",MAX_VOLUME_KEY="vsa.player.maxVolume",VOLUME_KEY="vsa.player.volume",AUTO_NEXT_KEY="vsa.player.autoNext";
 try{
   autoNext=localStorage.getItem(AUTO_NEXT_KEY)!=="0";
@@ -155,6 +155,47 @@ function scheduleSurfaceRepair(reason){
   clearTimeout(surfaceRepairTimer);
   surfaceRepairTimer=setTimeout(function(){repairPlayerSurface(reason||"route")},35)
 }
+function enforceRouteSurface32(route){
+  if(!currentId||!frame)return false;
+  route=String(route||"");
+  if(route==="songDetail39")return repairPlayerSurface("watch-route");
+  var watch=document.querySelector('[data-tool-view="songDetail39"]');
+  var frameInWatch=!!(watch&&watch.contains(frame));
+  // Watch 안에 붙어 있던 재생 iframe은 메뉴 전환 순간 바로 미니로 옮긴다.
+  // 화면이 완전히 hidden 되기 전에도 실행해야 비동기 라우트에서 소리만 남지 않는다.
+  if(inlineHost||frameInWatch)return detachToMini();
+  return repairPlayerSurface("route:"+route)
+}
+function scheduleRouteSurface32(route){
+  [0,90,240].forEach(function(delay){
+    setTimeout(function(){enforceRouteSurface32(route)},delay)
+  })
+}
+function installRouteObserver32(){
+  if(routeObserver32)return true;
+  var routeRoot=document.getElementById("toolsModal");
+  if(!routeRoot){
+    if(routeObserverRetry32<12){
+      routeObserverRetry32++;
+      setTimeout(installRouteObserver32,120)
+    }
+    return false
+  }
+  routeObserver32=new MutationObserver(function(muts){
+    var relevant=muts.some(function(m){
+      var t=m.target;
+      if(t===routeRoot)return true;
+      if(!t||t.nodeType!==1)return false;
+      return t.classList&&t.classList.contains("tool-view")&&(m.attributeName==="hidden"||m.attributeName==="class"||m.attributeName==="style")
+    });
+    if(relevant){
+      var route=String(window.__VSA37_CURRENT_ROUTE||routeRoot.dataset.currentView||"");
+      scheduleRouteSurface32(route)
+    }
+  });
+  routeObserver32.observe(routeRoot,{attributes:true,subtree:true,attributeFilter:["hidden","class","style","data-current-view"]});
+  return true
+}
 function syncMediaSession(){
   if(!("mediaSession" in navigator)||!currentId)return;
   try{
@@ -260,7 +301,7 @@ function build(){
   if(!modal.hidden){detachToMini();pushed=false;return}
   if(!mini.hidden){pushed=false;scheduleSurfaceRepair("popstate-mini");return}
   scheduleSurfaceRepair("popstate-hidden")
-});window.addEventListener("message",handleNicoMessage);window.addEventListener("vsa:route-change",function(){scheduleSurfaceRepair("route")});window.addEventListener("focus",function(){scheduleSurfaceRepair("focus")});window.addEventListener("pageshow",function(){scheduleSurfaceRepair("pageshow")});document.addEventListener("visibilitychange",function(){if(!document.hidden)scheduleSurfaceRepair("visible")});var routeRoot=document.getElementById("toolsModal");if(routeRoot)new MutationObserver(function(muts){var relevant=muts.some(function(m){var t=m.target;if(t===routeRoot)return true;if(!t||t.nodeType!==1)return false;return t.classList&&t.classList.contains("tool-view")&&(m.attributeName==="hidden"||m.attributeName==="class"||m.attributeName==="style")});if(relevant)scheduleSurfaceRepair("mutation")}).observe(routeRoot,{attributes:true,subtree:true,attributeFilter:["hidden","class","style","data-current-view"]});initMediaSession();syncPipButtons();updateVolumeUi();updateAutoNextUi();updatePlaybackUi();
+});window.addEventListener("message",handleNicoMessage);window.addEventListener("vsa:route-change",function(e){var route=String(e&&e.detail&&e.detail.route||window.__VSA37_CURRENT_ROUTE||"");scheduleRouteSurface32(route)});window.addEventListener("focus",function(){scheduleSurfaceRepair("focus")});window.addEventListener("pageshow",function(){scheduleSurfaceRepair("pageshow");installRouteObserver32()});document.addEventListener("visibilitychange",function(){if(!document.hidden){scheduleSurfaceRepair("visible");installRouteObserver32()}});installRouteObserver32();initMediaSession();syncPipButtons();updateVolumeUi();updateAutoNextUi();updatePlaybackUi();
 }
 function normalizeQueue(items){
   var seen=new Set(),out=[];
