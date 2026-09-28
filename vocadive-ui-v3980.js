@@ -1,10 +1,10 @@
-/* VocaDive Unified UI v39.94.0
+/* VocaDive Unified UI v39.95.0
  * YouTube-style app shell, cards, player continuity and route recovery.
  */
 (function(){
 "use strict";
 
-var VERSION="39.94.0";
+var VERSION="39.95.0";
 var raf=0,observer=null,lastRoute="home",navSeq3985=0,workerCheckTimer3986=0;
 var workerState3986={ok:null,reason:"",endpoint:"",at:0};
 
@@ -987,6 +987,53 @@ body[data-vsa-theme="light"] #v3980SearchBtn,
 body[data-vsa-theme="light"] #v3980MenuBtn{background:#edf1f0!important;color:#17302e!important}
 
 
+
+/* Dive inline detail + compact Explore · v39.95 */
+#universePanel.v3958-rel .mr95-node-peek{display:none}
+@media(max-width:699px){
+ /* Candidate details stay with the tapped card instead of forcing a jump to the old side panel. */
+ #universePanel.v3958-rel.mr77-candidate-selected .universe-side{display:none!important}
+ #universePanel.v3958-rel .mr58-node.selected{
+   border-color:rgba(99,216,207,.42)!important;
+   background:linear-gradient(110deg,rgba(10,48,55,.98),rgba(8,34,43,.98))!important
+ }
+ #universePanel.v3958-rel .mr58-node.selected .mr95-node-peek{
+   display:grid;grid-column:1/-1;gap:7px;margin-top:2px;padding-top:7px;
+   border-top:1px solid rgba(151,214,207,.12)
+ }
+ #universePanel.v3958-rel .mr95-node-peek-reasons{display:grid;gap:4px}
+ #universePanel.v3958-rel .mr95-node-peek-reasons>div{
+   display:grid;grid-template-columns:72px minmax(0,1fr);gap:7px;align-items:start;
+   padding:6px 7px;border-radius:9px;background:rgba(5,28,35,.72)
+ }
+ #universePanel.v3958-rel .mr95-node-peek-reasons b{color:#83d6ce;font-size:6.5px}
+ #universePanel.v3958-rel .mr95-node-peek-reasons span{color:#a8c4c0;font-size:7px;line-height:1.4}
+ #universePanel.v3958-rel .mr95-node-peek-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+ #universePanel.v3958-rel .mr95-node-peek-actions button{
+   min-height:36px;border:1px solid rgba(139,211,204,.15);border-radius:9px;
+   background:#102f36;color:#c6dfdc;font-size:7.5px;font-weight:900;touch-action:manipulation
+ }
+ #universePanel.v3958-rel .mr58-node.selected .mr58-node-main{align-self:start}
+}
+
+/* Explore is an entry map, so compact phones keep two readable columns instead of a long one-card list. */
+@media(min-width:380px) and (max-width:699px){
+ .v3990-zone-grid,.v3990-zone-grid.wide{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important}
+ .v3990-zone .v3919-intent,.v3990-zone .v37-hub-card{
+   min-height:72px!important;padding:8px!important;border-radius:12px!important
+ }
+ .v3990-zone .v37-hub-icon,.v3990-zone .v3919-intent>i{width:32px!important;height:32px!important;min-width:32px!important}
+ .v3990-zone .v37-hub-copy b,.v3990-zone .v3919-intent b{font-size:9.5px!important}
+ .v3990-zone .v37-hub-copy small,.v3990-zone .v3919-intent small{
+   font-size:6.7px!important;line-height:1.32!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden
+ }
+}
+@media(max-width:379px){
+ .v3990-zone-grid,.v3990-zone-grid.wide{grid-template-columns:1fr!important}
+}
+
+/* Make busy controls visibly non-interactive instead of looking broken. */
+body.v37-ready button[aria-busy="true"]{cursor:wait!important;pointer-events:none!important;opacity:.68!important}
 /* Dive interaction polish · v39.94 */
 @media(max-width:699px){
  #universePanel.v3958-rel .mr58-map>.mr58-node{

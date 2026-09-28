@@ -3355,7 +3355,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.94.0 · Ocean HUD 2.0 · Dive Performance 1.0 · Direct APK Update 1.0 · Search Fix · Rank Turbo 1.0 · Native Brand 0.2 · Android Shell 0.1 · App Foundation 1.0 · Cross-Genre Bridge 1.0 · Relation Trust 3.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.95.0 · Ocean HUD 2.0 · Dive Performance 1.0 · Direct APK Update 1.0 · Search Fix · Rank Turbo 1.0 · Native Brand 0.2 · Android Shell 0.1 · App Foundation 1.0 · Cross-Genre Bridge 1.0 · Relation Trust 3.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -7843,7 +7843,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:(window.VocaDiveUpdater&&window.VocaDiveUpdater.version)||document.documentElement.dataset.vocaUi||"39.94.0",
+    version:(window.VocaDiveUpdater&&window.VocaDiveUpdater.version)||document.documentElement.dataset.vocaUi||"39.95.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -9618,7 +9618,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.94.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
+var VER="39.95.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -11011,7 +11011,7 @@ function ensureHub37(){
   if(v){refreshHub37();return v}
   v=document.createElement("section");v.className="tool-view v37-native-hub v393-native-explore v3990-entry-map";v.dataset.toolView="hub37";
   v.innerHTML=
-    '<div class="v3990-map-hero"><div><small>VOCADIVE · ENTRY MAP 3.0</small><h2>어디서 잠수할까요?</h2><p>찾고 싶은 방식에 따라 입수 지점을 고르세요. 어느 길로 들어가도 곡을 발견하면 바로 다이브로 이어집니다.</p></div><div class="v3990-map-hero-actions"><button type="button" class="primary" data-v37-feature-id="universe">◉ 다이브 시작</button><button type="button" data-v37-feature-id="settings">⚙ 설정</button></div></div>'+
+    '<div class="v3990-map-hero"><div><small>VOCADIVE · ENTRY MAP 3.1</small><h2>어디서 잠수할까요?</h2><p>찾고 싶은 방식에 따라 입수 지점을 고르세요. 어느 길로 들어가도 곡을 발견하면 바로 다이브로 이어집니다.</p></div><div class="v3990-map-hero-actions"><button type="button" class="primary" data-v37-feature-id="universe">◉ 다이브 시작</button><button type="button" data-v37-feature-id="settings">⚙ 설정</button></div></div>'+
     '<div class="v3990-entry-zones">'+
       '<section class="v3990-zone primary"><div class="v3990-zone-head"><span>01</span><div><small>START</small><b>한 곡에서 시작</b><em>알고 있는 곡이나 단서가 있을 때</em></div></div><div class="v3990-zone-grid">'+
         intentButton3919("search","곡명·P명 검색","정확히 아는 곡에서 입수")+
@@ -11045,10 +11045,14 @@ function openProducer37(){
     if(done)return;
     if(st)st.textContent="고급 모듈 로딩이 지연되고 있습니다. 다른 탐색 기능은 정상 사용 가능합니다."
   },4500);
-  VSAEnsureFeatures("v33").then(function(){
+  Promise.resolve(VSAEnsureFeatures("v33")).then(function(){
     done=true;clearTimeout(timer);
     if(window.VSAV33&&VSAV33.openView)VSAV33.openView("explore33");
     else if(st)st.textContent="프로듀서 허브를 불러오지 못했습니다. 잠시 후 다시 시도해주세요."
+  }).catch(function(e){
+    done=true;clearTimeout(timer);
+    if(st)st.textContent="프로듀서 허브 로딩 실패 · 다른 탐색 기능은 계속 사용할 수 있습니다.";
+    try{recordRuntimeError37("producer-hub-load",String(e&&e.message||e),{})}catch(_){}
   })
 }
 function setDock(v){document.querySelectorAll(".v37-dock button").forEach(function(b){b.classList.toggle("active",b.dataset.v37===v)})}
@@ -11378,17 +11382,17 @@ function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
   var base;
-  if(name==="detective")base=seq(["./detective-v11.js?v=39.94.0","./detective-v12.js?v=39.94.0","./detective-v13.js?v=39.94.0","./detective-v14.js?v=39.94.0","./detective-v16.js?v=39.94.0"]);
-  else if(name==="personal")base=seq(["./organizer-v22.js?v=39.94.0","./smart-v23.js?v=39.94.0","./playlist-v24.js?v=39.94.0"]);
-  else if(name==="discovery")base=load("./discovery-v20.js?v=39.94.0");
-  else if(name==="homeData")base=load("./vocalo-home-v28.js?v=39.94.0");
-  else if(name==="universe")base=load("./universe-search-v28.js?v=39.94.0");
-  else if(name==="player")base=load("./nico-player-v32.js?v=39.94.0");
-  else if(name==="deviceSync")base=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.94.0");
-  else if(name==="pwa")base=load("./pwa-v21.js?v=39.94.0");
+  if(name==="detective")base=seq(["./detective-v11.js?v=39.95.0","./detective-v12.js?v=39.95.0","./detective-v13.js?v=39.95.0","./detective-v14.js?v=39.95.0","./detective-v16.js?v=39.95.0"]);
+  else if(name==="personal")base=seq(["./organizer-v22.js?v=39.95.0","./smart-v23.js?v=39.95.0","./playlist-v24.js?v=39.95.0"]);
+  else if(name==="discovery")base=load("./discovery-v20.js?v=39.95.0");
+  else if(name==="homeData")base=load("./vocalo-home-v28.js?v=39.95.0");
+  else if(name==="universe")base=load("./universe-search-v28.js?v=39.95.0");
+  else if(name==="player")base=load("./nico-player-v32.js?v=39.95.0");
+  else if(name==="deviceSync")base=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.95.0");
+  else if(name==="pwa")base=load("./pwa-v21.js?v=39.95.0");
   else if(name==="v33")base=Promise.all([ensure("personal"),ensure("discovery")]).then(function(rows){
     if(rows.some(function(x){return x===false}))return false;
-    return seq(["./voca-app-v33.js?v=39.94.0","./voca-app-v33-1.js?v=39.94.0","./voca-app-v33-2.js?v=39.94.0","./voca-app-v33-3.js?v=39.94.0"]);
+    return seq(["./voca-app-v33.js?v=39.95.0","./voca-app-v33-1.js?v=39.95.0","./voca-app-v33-2.js?v=39.95.0","./voca-app-v33-3.js?v=39.95.0"]);
   });
   else base=Promise.resolve(false);
   var job=Promise.resolve(base).then(function(v){
@@ -11436,13 +11440,13 @@ if("requestIdleCallback" in window)requestIdleCallback(function(){ensure("pwa")}
 else setTimeout(function(){ensure("pwa")},12000);
 })();
 </script>
-<script src="./device-sync-v3938.js?v=39.94.0"></script>
-<script src="./app-platform-v3962.js?v=39.94.0"></script>
-<script src="./entitlements-v3962.js?v=39.94.0"></script>
-<script src="./account-v3962.js?v=39.94.0"></script>
-<script src="./native-shell-v3963.js?v=39.94.0"></script>
-<script src="./app-update-v3966.js?v=39.94.0"></script>
-<script src="./i18n-v3918.js?v=39.94.0"></script>\n<script src="./search-live-v3969.js?v=39.94.0"></script>
+<script src="./device-sync-v3938.js?v=39.95.0"></script>
+<script src="./app-platform-v3962.js?v=39.95.0"></script>
+<script src="./entitlements-v3962.js?v=39.95.0"></script>
+<script src="./account-v3962.js?v=39.95.0"></script>
+<script src="./native-shell-v3963.js?v=39.95.0"></script>
+<script src="./app-update-v3966.js?v=39.95.0"></script>
+<script src="./i18n-v3918.js?v=39.95.0"></script>\n<script src="./search-live-v3969.js?v=39.95.0"></script>
 
 <style id="v3946DivePathStyle">
 /* v39.46 · Dive Path 1.0 — graph-free guided discovery */
@@ -13013,13 +13017,15 @@ function primaryReason58(r){
 }
 function node58(x,i,c){
  var n=x.song,r=x.rel,p=pos58(i,r),dm=depthMeta58(n),delta=depth58(n)-depth58(c),dir=delta>0?"deeper":delta<0?"shallower":"same",match=Math.round(r.score*100);
- var dirLabel=delta>0?"DEEPER":delta<0?"UPPER":"CURRENT",reason=primaryReason58(r);
+ var dirLabel=delta>0?"DEEPER":delta<0?"UPPER":"CURRENT",reason=primaryReason58(r),reasonRows=relationReasonRows58(c,n,r).slice(0,2);
+ var peek='<div class="mr95-node-peek"><div class="mr95-node-peek-reasons">'+reasonRowsHtml58(reasonRows)+'</div><div class="mr95-node-peek-actions">'+
+  '<button type="button" data-mr58-play="'+e58(n.contentId)+'">▶ 듣기</button><button type="button" data-mr58-detail="'+e58(n.contentId)+'">상세</button><button type="button" data-mr58-pin="'+e58(n.contentId)+'">'+((typeof isUniversePinned39==="function"&&isUniversePinned39(n.contentId))?"핀 해제":"핀 고정")+'</button></div></div>';
  return '<article class="mr58-node mr75-'+dir+'" style="left:'+p[0]+'%;top:'+p[1]+'%;transform:translate(-50%,-50%);--mr75-order:'+i+';--mr75-enter-delay:'+(i*55)+'ms;--mr75-float-delay:-'+(i*310)+'ms;--mr76-match:'+match+'%" data-mr58-node-id="'+e58(n.contentId)+'" data-mr75-dir="'+dir+'">'+
-  '<button type="button" class="mr58-node-main" data-mr58-select="'+e58(n.contentId)+'">'+
+  '<button type="button" class="mr58-node-main" data-mr58-select="'+e58(n.contentId)+'" aria-expanded="false">'+
    (n.thumbnailUrl?'<img src="'+e58(n.thumbnailUrl)+'" loading="lazy" alt="">':'<span class="noimg">♪</span>')+
    '<span class="mr58-node-copy"><span class="mr76-node-kicker"><i>'+dirLabel+' · '+e58(dm.name)+'</i><em>'+match+'%</em></span><b>'+e58(n.title||n.contentId)+'</b><small>'+(year58(n)||"연도 미상")+' · '+fmt58(views58(n))+'회</small><em class="mr90-node-reason">'+e58(reason)+'</em><span class="mr76-node-meter"><i></i></span></span>'+
   '</button><button type="button" class="mr58-node-go" data-mr58-go="'+e58(n.contentId)+'">'+(delta>0?"잠수 ↓":delta<0?"상승 ↑":"이동 →")+'</button>'+
-  '<span class="mr58-badges">'+badges58(r,3)+'</span></article>'
+  '<span class="mr58-badges">'+badges58(r,3)+'</span>'+peek+'</article>'
 }
 function filters58(d){
  var c=d.center,all=(d.nodes||[]).slice(1).map(function(n){return rel58(c,n)}),counts={};
@@ -13111,6 +13117,10 @@ function relationReasonRows58(c,n,r){
 function reasonRowsHtml58(rows){
  return (rows||[]).map(function(x){return '<div><b>'+e58(x.k)+'</b><span>'+e58(x.v)+'</span></div>'}).join("")
 }
+function moveActionLabel58(c,n){
+ var delta=depth58(n)-depth58(c);
+ return delta>0?"↓ 이 곡으로 잠수":delta<0?"↑ 이 곡으로 상승":"→ 이 곡으로 이동"
+}
 function side58(n,d){
  var c=d.center,r=n.contentId===c.contentId?null:rel58(c,n),gs=genreProfile58(n);
  var reasons=r?relationReasonRows58(c,n,r):[],mainReasons=reasons.slice(0,3),moreReasons=reasons.slice(3);
@@ -13126,7 +13136,7 @@ function side58(n,d){
  }else{
    reasonBlock='<div class="mr58-badges"><span class="mr58-badge similar">현재 다이브 기준곡</span></div>'
  }
- var actions=(r?'<button type="button" class="primary" data-mr58-go="'+e58(n.contentId)+'">↓ 이 곡으로 다이브</button>':'')+
+ var actions=(r?'<button type="button" class="primary" data-mr58-go="'+e58(n.contentId)+'">'+e58(moveActionLabel58(c,n))+'</button>':'')+
   '<button type="button" data-mr58-play="'+e58(n.contentId)+'">▶ 듣기</button>'+
   '<button type="button" data-mr58-detail="'+e58(n.contentId)+'">상세</button>'+
   '<button type="button" data-mr58-pin="'+e58(n.contentId)+'">'+((typeof isUniversePinned39==="function"&&isUniversePinned39(n.contentId))?"핀 해제":"핀 고정")+'</button>';
@@ -13413,11 +13423,27 @@ function bind58(){
    }
    var ds=ev.target.closest("[data-mr58-depth-step]");if(ds){ev.preventDefault();ev.stopImmediatePropagation();if(!ds.disabled)stepDepth58(Number(ds.dataset.mr58DepthStep)||0);return}
    var dt=ev.target.closest("[data-mr58-depth-target]");if(dt){ev.preventDefault();ev.stopImmediatePropagation();if(!dt.disabled&&state.universeData&&depth58(state.universeData.center)!==Number(dt.dataset.mr58DepthTarget))moveDepth58(Number(dt.dataset.mr58DepthTarget));return}
-   var closeSide=ev.target.closest("[data-mr58-close-side]");if(closeSide){ev.preventDefault();ev.stopImmediatePropagation();selected58=null;p.classList.remove("mr77-candidate-selected");qa58(".mr58-node",p).forEach(function(x){x.classList.remove("selected")});var d0=state.universeData;if(d0&&d0.center){var info0=q58("#universeInfo",p);if(info0)info0.innerHTML=side58(d0.center,d0)}return}
+   var closeSide=ev.target.closest("[data-mr58-close-side]");if(closeSide){ev.preventDefault();ev.stopImmediatePropagation();selected58=null;p.classList.remove("mr77-candidate-selected");qa58(".mr58-node",p).forEach(function(x){x.classList.remove("selected");var b=x.querySelector("[data-mr58-select]");if(b)b.setAttribute("aria-expanded","false")});var d0=state.universeData;if(d0&&d0.center){var info0=q58("#universeInfo",p);if(info0)info0.innerHTML=side58(d0.center,d0)}return}
    var g=ev.target.closest("[data-mr58-go]");if(g){ev.preventDefault();ev.stopImmediatePropagation();go58(g.dataset.mr58Go);return}
-   var s=ev.target.closest("[data-mr58-select]");if(s){ev.preventDefault();ev.stopImmediatePropagation();var d=state.universeData,n=find58(s.dataset.mr58Select,d);if(n){selected58=n.contentId;p.classList.add("mr77-candidate-selected");qa58(".mr58-node",p).forEach(function(x){x.classList.toggle("selected",x.dataset.mr58NodeId===selected58)});var info=q58("#universeInfo",p);if(info){info.innerHTML=side58(n,d);if(window.innerWidth<=699)setTimeout(function(){try{var r=info.getBoundingClientRect();if(r.top<64||r.bottom>window.innerHeight-88)info.scrollIntoView({behavior:"smooth",block:"nearest"})}catch(_){}},50)}}return}
+   var s=ev.target.closest("[data-mr58-select]");if(s){
+     ev.preventDefault();ev.stopImmediatePropagation();
+     var d=state.universeData,n=find58(s.dataset.mr58Select,d),mobile=(window.innerWidth||999)<=699;
+     if(n){
+       if(mobile&&selected58===n.contentId){
+         selected58=null;p.classList.remove("mr77-candidate-selected");
+         qa58(".mr58-node",p).forEach(function(x){x.classList.remove("selected");var b=x.querySelector("[data-mr58-select]");if(b)b.setAttribute("aria-expanded","false")});
+         var centerInfo=q58("#universeInfo",p);if(centerInfo&&d&&d.center)centerInfo.innerHTML=side58(d.center,d);
+         return
+       }
+       selected58=n.contentId;p.classList.add("mr77-candidate-selected");
+       qa58(".mr58-node",p).forEach(function(x){var on=x.dataset.mr58NodeId===selected58;x.classList.toggle("selected",on);var b=x.querySelector("[data-mr58-select]");if(b)b.setAttribute("aria-expanded",on?"true":"false")});
+       var info=q58("#universeInfo",p);if(info)info.innerHTML=side58(n,d);
+       if(mobile)setTimeout(function(){try{var card=q58('.mr58-node[data-mr58-node-id="'+CSS.escape(String(selected58))+'"]',p);if(card){var r=card.getBoundingClientRect();if(r.top<68||r.bottom>window.innerHeight-86)card.scrollIntoView({behavior:"smooth",block:"nearest"})}}catch(_){}},30)
+     }
+     return
+   }
    var play=ev.target.closest("[data-mr58-play]");if(play){ev.preventDefault();ev.stopImmediatePropagation();if(window.VSAOpenSong39)window.VSAOpenSong39(play.dataset.mr58Play,true);else if(window.VSAOpenSongDetail39)window.VSAOpenSongDetail39(play.dataset.mr58Play,true);return}
-   var det=ev.target.closest("[data-mr58-detail]");if(det){ev.preventDefault();ev.stopImmediatePropagation();if(window.VSAOpenSong39)window.VSAOpenSong39(det.dataset.mr58Detail,true);else if(window.VSAOpenSongDetail39)window.VSAOpenSongDetail39(det.dataset.mr58Detail,true);return}
+   var det=ev.target.closest("[data-mr58-detail]");if(det){ev.preventDefault();ev.stopImmediatePropagation();if(window.VSAOpenSong39)window.VSAOpenSong39(det.dataset.mr58Detail,false);else if(window.VSAOpenSongDetail39)window.VSAOpenSongDetail39(det.dataset.mr58Detail,false);return}
    var pin=ev.target.closest("[data-mr58-pin]");if(pin){ev.preventDefault();ev.stopImmediatePropagation();if(window.toggleUniversePin39)window.toggleUniversePin39(pin.dataset.mr58Pin);var d=state.universeData,n=find58(pin.dataset.mr58Pin,d);if(n){var info=q58("#universeInfo",p);if(info)info.innerHTML=side58(n,d)}return}
    if(ev.target.closest("[data-mr58-random]")){ev.preventDefault();ev.stopImmediatePropagation();random58();return}
  },true)
@@ -14425,5 +14451,5 @@ body.mr74-transitioning{overflow:hidden!important}
 }
 </style>
 
-<script src="./vocadive-ui-v3980.js?v=39.94.0"></script>\n</body>
+<script src="./vocadive-ui-v3980.js?v=39.95.0"></script>\n</body>
 </html>
