@@ -735,11 +735,12 @@ function openSettingsDetails3983(){
   }catch(_){}
   var autoNext=true;try{autoNext=localStorage.getItem("vsa.player.autoNext")!=="0"}catch(_){}
   try{if(window.VSANicoPlayer&&VSANicoPlayer.getAutoNext)autoNext=!!VSANicoPlayer.getAutoNext()}catch(_){}
-  summary.innerHTML=
+  var summaryHtml=
    '<button type="button" data-v3983-setting="worker"><small>WORKER</small><b>'+esc(workerState)+'</b><span>'+esc(worker)+'</span></button>'+
    '<button type="button" data-v3983-setting="autonext" aria-pressed="'+(autoNext?"true":"false")+'"><small>PLAYER</small><b>다음 곡 자동재생 '+(autoNext?"켬":"끔")+'</b><span>곡이 끝나면 재생 큐의 다음 곡으로 자동 이동</span></button>'+
    '<button type="button" data-v3983-setting="web"><small>WEB UI</small><b>v'+esc(web)+'</b><span>Live Shell 최신 UI</span></button>'+
    '<button type="button" data-v3983-setting="app"><small>APP SHELL</small><b>'+(shell?"v"+esc(shell):"확인 중")+'</b><span>Android 네이티브 셸</span></button>';
+  if(summary.innerHTML!==summaryHtml)summary.innerHTML=summaryHtml;
   if(!summary.dataset.bound){
     summary.dataset.bound="1";
     summary.addEventListener("click",function(e){
@@ -769,7 +770,7 @@ function openSettingsDetails3983(){
   try{
     if(window.VocaDiveUpdater&&typeof window.VocaDiveUpdater.state==="function"){
       var card=document.getElementById("v3966UpdateCard");
-      if(card&&card.parentElement)card.parentElement.appendChild(card)
+      if(card&&card.parentElement&&card!==card.parentElement.lastElementChild)card.parentElement.appendChild(card)
     }
   }catch(_){}
 }
@@ -806,8 +807,9 @@ function watchLegacyNav3983(){
       for(var j=0;j<added.length;j++){
         var n=added[j];
         if(n&&n.nodeType===1){
+          if(n.namespaceURI&&n.namespaceURI!=="http://www.w3.org/1999/xhtml")continue;
           if(n.matches&&n.matches(".v37-dock,.v36-dock,.v34-dock,.v33-dock,#v30BottomDock,.mobile-bottom-nav,.bottom-nav,.app-bottom-nav,.mobile-section-nav"))needs=true;
-          else if(n.querySelector&&n.querySelector(".v37-dock,.v36-dock,.v34-dock,.v33-dock,#v30BottomDock,.mobile-bottom-nav,.bottom-nav,.app-bottom-nav,.mobile-section-nav"))needs=true
+          else if(n.querySelector&&n.children&&n.children.length&&n.querySelector(".v37-dock,.v36-dock,.v34-dock,.v33-dock,#v30BottomDock,.mobile-bottom-nav,.bottom-nav,.app-bottom-nav,.mobile-section-nav"))needs=true
         }
       }
     }
@@ -1178,7 +1180,18 @@ function bind(){
   },true);
   var modal=document.getElementById("toolsModal");
   if(modal&&window.MutationObserver){
-    observer=new MutationObserver(scheduleRepair);
+    observer=new MutationObserver(function(muts){
+      var relevant=false;
+      for(var i=0;i<muts.length&&!relevant;i++){
+        var m=muts[i],t=m.target;
+        if(m.type==="attributes"){
+          relevant=!!(t===modal||(t&&t.classList&&(t.classList.contains("tool-view")||t.classList.contains("tools-body"))))
+        }else if(m.type==="childList"){
+          relevant=!!(t===modal||(t&&t.classList&&t.classList.contains("tools-body")))
+        }
+      }
+      if(relevant)scheduleRepair()
+    });
     observer.observe(modal,{attributes:true,attributeFilter:["hidden","class","data-current-view"],childList:true,subtree:true})
   }
 }
