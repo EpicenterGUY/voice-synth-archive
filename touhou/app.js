@@ -118,37 +118,127 @@ function remoteSort(){
   return"RatingScore";
 }
 async function loadRemote(reset=false,force=false){
-  if(!state.remote.available||state.remote.loading)return;
+  if(!state.remote.available)return;
+  if(!reset&&state.remote.loading)return;
   const key=remoteKey();
-  if(reset||key!==state.remote.key){
-    state.remote.start=0;state.remoteItems=[];state.remote.key=key;
-  }
-  state.remote.loading=true;syncCatalogFooter();
+  if(reset||key!==state.remote.key){state.remote.start=0;state.remoteItems=[];state.remote.key=key}
+  const seq=++state.remote.seq;
+  const start=state.remote.start;
+  state.remote.loading=true;
+  setDataHealth("loading","TouhouDB 불러오는 중");
+  syncCatalogFooter();
+  if(force&&catalog?.clearCache)catalog.clearCache();
   try{
-    const q=$("#searchInput").value.trim();
     const res=await catalog.search({
-      query:q,mode:state.mode,start:state.remote.start,maxResults:50,
-      sort:remoteSort(),onlyWithPvs:state.filter==="영상 있음"
+      query:$("#searchInput").value.trim(),mode:state.mode,start,maxResults:50,
+      sort:remoteSort(),onlyWithPvs:state.filter==="영상 있음",force
     });
-    let incoming=res.items||[];
+    if(seq!==state.remote.seq||key!==remoteKey())return;
+    let incoming=(res.items||[]).map(remember);
     if(state.mode==="original")incoming=incoming.filter(t=>t.type==="original");
     if(state.mode==="arrangement")incoming=incoming.filter(t=>t.type==="arrangement");
-    incoming.forEach(remember);
-    const merged=dedupe([...state.remoteItems,...incoming]);
-    state.remoteItems=merged;
-    state.remote.start=(res.start||0)+(res.items||[]).length;
+    state.remoteItems=dedupe([...state.remoteItems,...incoming]);
+    state.remote.start=start+(Number(res.consumed)||Number(res.raw?.items?.length)||res.items?.length||0);
     state.remote.total=Number(res.total)||state.remote.total;
     state.remote.error="";
     renderCatalog(force?"새 추천":undefined);
-    $("#datasetStatus").textContent=`TouhouDB LIVE · 현재 ${fmt(state.remoteItems.length)}곡 로드 · 전체 ${fmt(state.remote.total)}곡`;
-    $("#statLinks").textContent=fmt(state.remote.catalogTotal||state.remote.total);
-    $("#statLinksMeta").textContent="TouhouDB 전체 등록곡";
+    setDataHealth("ok","TouhouDB LIVE · "+fmt(state.remoteItems.length)+"곡 로드");
+    updateCatalogTotal();
   }catch(e){
+    if(seq!==state.remote.seq)return;
     state.remote.error=String(e?.message||e);
-    $("#datasetStatus").textContent="TouhouDB 요청 실패 · 로컬+캐시 유지";
+    setDataHealth("error","TouhouDB 요청 실패 · 캐시 유지");
   }finally{
-    state.remote.loading=false;syncCatalogFooter();
+    if(seq===state.remote.seq){state.remote.loading=false;syncCatalogFooter()}
   }
+}
+function identityKey(t){
+  if(!t)return"";
+  const title=normKey(t.title);
+  if(!title)return"";
+  if(t.type==="original")return"original|"+title;
+  return"arrangement|"+title+"|"+normKey(t.circle||t.artistString||"");
+}
+function mergeArtists(a={},b={}){
+  const keys=new Set([...Object.keys(a||{}),...Object.keys(b||{})]),out={};
+  keys.forEach(k=>out[k]=uniq([...(a?.[k]||[]),...(b?.[k]||[])]));
+  return out;
+}
+function mergeTrack(base,incoming){
+  const localBase=base.remote===false;
+  const out={...base,...incoming,id:base.id};
+  out.remote=localBase?false:(base.remote||incoming.remote||false);
+  out.title=base.title||incoming.title;
+  out.type=base.type||incoming.type;
+  out.work=base.work||incoming.work||"";
+  out.role=base.role||incoming.role||"";
+  out.character=base.character||incoming.character||"";
+  out.circle=base.circle||incoming.circle||"";
+  out.album=(base.album&&!/^東方.+$/.test(base.album))?base.album:(incoming.album||base.album||"");
+  out.media=base.media||incoming.media||null;
+  out.thumb=base.thumb||incoming.thumb||"";
+  out.source=base.source||incoming.source||null;
+  out.touhoudbId=incoming.touhoudbId||base.touhoudbId;
+  out.aliases=uniq([...(base.aliases||[]),...(incoming.aliases||[])]);
+  out.moods=uniq([...(base.moods||[]),...(incoming.moods||[])]);
+  out.originalIds=uniq([...(base.originalIds||[]),...(incoming.originalIds||[])]);
+  out.artists=mergeArtists(base.artists,incoming.artists);
+  out.artistString=base.artistString||incoming.artistString||"";
+  out.ratingScore=Math.max(Number(base.ratingScore)||0,Number(incoming.ratingScore)||0);
+  out.favoritedTimes=Math.max(Number(base.favoritedTimes)||0,Number(incoming.favoritedTimes)||0);
+  out.year=base.year||incoming.year||null;
+  return out;
+}
+function remember(t){
+  if(!t?.id)return t;
+  const direct=state.known.get(t.id);
+  if(direct){
+    const merged=mergeTrack(direct,t);
+    state.known.set(direct.id,merged);
+    return merged;
+  }
+  const key=identityKey(t),canonicalId=key&&state.identities.get(key);
+  if(canonicalId&&state.known.has(canonicalId)){
+    const base=state.known.get(canonicalId),merged=mergeTrack(base,t);
+    state.known.set(canonicalId,merged);
+    state.aliases.set(t.id,canonicalId);
+    return merged;
+  }
+  state.known.set(t.id,t);
+  state.aliases.set(t.id,t.id);
+  if(key)state.identities.set(key,t.id);
+  return t;
+}
+function resolveId(id){
+  let cur=String(id||"");
+  for(let i=0;i<8;i++){
+    const next=state.aliases.get(cur);
+    if(!next||next===cur)break;
+    cur=next;
+  }
+  return cur;
+}
+function byId(id){return state.known.get(resolveId(id))||null}
+function originalIds(t){return uniq((t?.originalIds||[]).map(resolveId))}
+function originalTracks(t){return originalIds(t).map(byId).filter(Boolean)}
+function originalNames(t){return originalTracks(t).map(x=>x.title)}
+function dedupe(list){
+  const seen=new Set(),out=[];
+  for(const raw of list){
+    const t=byId(raw?.id)||remember(raw);
+    if(!t)continue;
+    const id=resolveId(t.id);
+    if(seen.has(id))continue;
+    seen.add(id);out.push(t);
+  }
+  return out;
+}
+function currentPool(){
+  const local=[...state.localOriginals,...state.localArrangements].map(x=>byId(x.id)||x);
+  let pool=dedupe([...local,...state.remoteItems]);
+  if(state.mode==="original")pool=pool.filter(t=>t.type==="original");
+  if(state.mode==="arrangement")pool=pool.filter(t=>t.type==="arrangement");
+  return pool;
 }
 function remember(t){
   if(!t?.id)return t;
