@@ -1179,6 +1179,28 @@ function bind(){
     if(e.target&&e.target.closest&&e.target.closest("#v3980Dock"))document.body.classList.remove("v3986-keyboard")
   },true);
   document.addEventListener("click",function(e){
+    var dive=e.target&&e.target.closest?e.target.closest('#v3980Dock button[data-v3980="dive"]'):null;
+    if(!dive)return;
+    if(e.__v3986DiveSafetyHandled)return;
+    e.__v3986DiveSafetyHandled=true;
+    e.preventDefault();e.stopImmediatePropagation();
+    if(dive.classList.contains("loading"))return;
+    dive.classList.add("loading");dive.setAttribute("aria-busy","true");
+    Promise.resolve(openDive3985()).then(function(ok){
+      if(ok===false){
+        try{
+          if(typeof window.openUniverseHub3931==="function")window.openUniverseHub3931();
+          else forceRoute3985("universe29")
+        }catch(_){}
+      }
+    }).catch(function(){
+      try{
+        if(typeof window.openUniverseHub3931==="function")window.openUniverseHub3931();
+        else forceRoute3985("universe29")
+      }catch(_){}
+    }).finally(function(){dive.classList.remove("loading");dive.removeAttribute("aria-busy")})
+  },true);
+  document.addEventListener("click",function(e){
     var m=document.getElementById("v3982Menu"),b=document.getElementById("v3980MenuBtn");
     if(m&&!m.hidden&&!m.contains(e.target)&&e.target!==b)closeMenu3982()
   },true);
