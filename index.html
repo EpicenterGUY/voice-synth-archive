@@ -10835,17 +10835,39 @@ function featureButton37(id){
   const adv=id==="producer"?' data-v37-advanced="producer"':' data-v37-open="'+f.route+'"';
   return '<button class="v37-hub-card" type="button" data-feature-id="'+id+'"'+adv+'><span class="v37-hub-icon">'+featureIcon37(id)+'</span><span class="v37-hub-copy"><b>'+f.label+'<span class="v37-use-badge">자주 사용</span></b><small>'+featureDesc37(id)+'</small></span><span class="v37-hub-arrow">›</span></button>'
 }
+function featureRouteActive3990(route){
+  var m=document.getElementById("toolsModal"),t=m&&m.querySelector('.tool-view[data-tool-view="'+String(route||"")+'"]');
+  return !!(m&&!m.hidden&&m.dataset.currentView===route&&t&&t.classList.contains("active")&&!t.hidden)
+}
+function verifyFeatureRoute3990(id,route){
+  if(!route||featureRouteActive3990(route))return true;
+  try{ensureCorePages37()}catch(_){}
+  if(routeExists37(route)){try{openToolsModal(route)}catch(_){}}
+  if(featureRouteActive3990(route))return true;
+  try{recordRuntimeError37("feature-route-repair","기능 화면 전환 복구",{id:id,route:route})}catch(_){}
+  return false
+}
 function openFeatureById37(id){
-  const f=VSA37_FEATURES[id];if(!f)return;
+  const f=VSA37_FEATURES[id];if(!f)return false;
   ensureCorePages37();
-  if(id==="detective"){openDetective37();return}
-  if(id==="producer"){openProducer37();return}
-  if(id==="universe"){
-    openUniverseHub3931();
-    return
+  if(id==="detective"){
+    openDetective37();
+    setTimeout(function(){verifyFeatureRoute3990(id,"detective")},180);
+    return true
   }
-  if(id==="library"){openPersonalRoute395("library");return}
-  openToolsModal(f.route)
+  if(id==="producer"){
+    openProducer37();
+    setTimeout(function(){if(!featureRouteActive3990("explore33")&&window.VSAV33&&VSAV33.openView)try{VSAV33.openView("explore33")}catch(_){}},420);
+    return true
+  }
+  if(id==="universe"){
+    Promise.resolve(openUniverseHub3931()).then(function(){verifyFeatureRoute3990(id,"universe29")}).catch(function(){verifyFeatureRoute3990(id,"universe29")});
+    return true
+  }
+  if(id==="library"){openPersonalRoute395("library");return true}
+  openToolsModal(f.route);
+  setTimeout(function(){verifyFeatureRoute3990(id,f.route)},160);
+  return true
 }
 function quickChip37(id,label,meta){
   const f=VSA37_FEATURES[id];if(!f)return"";
@@ -10873,22 +10895,25 @@ function refreshHub37(){
 function ensureHub37(){
   var body=document.querySelector("#toolsModal .tools-body");if(!body)return null;
   var v=body.querySelector('[data-tool-view="hub37"]');if(v){refreshHub37();return v}
-  v=document.createElement("section");v.className="tool-view v37-native-hub v393-native-explore";v.dataset.toolView="hub37";
+  v=document.createElement("section");v.className="tool-view v37-native-hub v393-native-explore v3990-entry-map";v.dataset.toolView="hub37";
   v.innerHTML=
-    '<div class="v393-explore-hero v3919-explore-hero"><div class="v3940-explore-top"><div><small>VOCADIVE · EXPLORE 2.0</small><h2>뭘 찾고 싶나요?</h2><p>곡 이름을 아는지, 기억이 흐릿한지, 그냥 새로운 곡이 듣고 싶은지부터 골라보세요.</p></div><button type="button" class="v3940-settings-shortcut" data-v37-feature-id="settings" aria-label="설정 열기">⚙ <span>설정</span></button></div>'+
-      '<div class="v3919-intent-grid">'+
-        intentButton3919("search","곡명·P명으로 찾기","검색어가 있다면 여기서 바로")+
-        intentButton3919("detective","기억나는 단서로 찾기","가사·PV·시기만 기억나도 괜찮아요")+
-        intentButton3919("universe","비슷한 곡 이어 듣기","좋아하는 한 곡에서 시작")+
-        intentButton3919("gems","처음 보는 곡 찾기","덜 알려진 곡을 넓게 발굴")+
-      '</div></div>'+
-    '<section class="v37-hub-section v3919-deeper v3922-deeper"><div class="v37-hub-section-head"><b>조금 더 파고들기</b><small>필요한 쪽만 골라보세요</small></div><div class="v3922-explore-groups">'+
-      '<section class="v3922-explore-group"><div class="v3922-group-head"><div><b>추천</b><small>취향이나 코스로 곡 찾기</small></div></div><div class="v3922-compact-grid">'+["guide","taste"].map(featureButton37).join("")+'</div></section>'+
-      '<section class="v3922-explore-group"><div class="v3922-group-head"><div><b>P · 데이터</b><small>프로듀서, 순위, 빙산으로 보기</small></div></div><div class="v3922-compact-grid">'+["producer","producerDiscovery","vocalRank","archive"].map(featureButton37).join("")+'</div></section>'+
-    '</div></section>'+
-    '<div class="v393-explore-recent"><section class="v37-hub-section"><div class="v37-hub-section-head"><b>최근 사용</b><small>아까 보던 기능으로 돌아가기</small></div><div class="v37-quick-row" id="v37RecentFeatures"></div></section><section class="v37-hub-section"><div class="v37-hub-section-head"><b>자주 쓰는 기능</b><small>자주 연 기능을 자동으로 모아요</small></div><div class="v37-quick-row" id="v37FrequentFeatures"></div></section></div>'+
+    '<div class="v3990-map-hero"><div><small>VOCADIVE · ENTRY MAP 3.0</small><h2>어디서 잠수할까요?</h2><p>찾고 싶은 방식에 따라 입수 지점을 고르세요. 어느 길로 들어가도 곡을 발견하면 바로 다이브로 이어집니다.</p></div><div class="v3990-map-hero-actions"><button type="button" class="primary" data-v37-feature-id="universe">◉ 다이브 시작</button><button type="button" data-v37-feature-id="settings">⚙ 설정</button></div></div>'+
+    '<div class="v3990-entry-zones">'+
+      '<section class="v3990-zone primary"><div class="v3990-zone-head"><span>01</span><div><small>START</small><b>한 곡에서 시작</b><em>알고 있는 곡이나 단서가 있을 때</em></div></div><div class="v3990-zone-grid">'+
+        intentButton3919("search","곡명·P명 검색","정확히 아는 곡에서 입수")+
+        intentButton3919("universe","다이브","현재 곡에서 다음 경로로")+
+        intentButton3919("detective","곡 탐정","가사·PV·시기 단서로 복원")+
+      '</div></section>'+
+      '<section class="v3990-zone discovery"><div class="v3990-zone-head"><span>02</span><div><small>DISCOVER</small><b>모르는 곡 발견</b><em>추천과 발굴로 새로운 시작점 찾기</em></div></div><div class="v3990-zone-grid">'+
+        featureButton37("gems")+featureButton37("guide")+featureButton37("taste")+
+      '</div></section>'+
+      '<section class="v3990-zone archive"><div class="v3990-zone-head"><span>03</span><div><small>ARCHIVE</small><b>데이터에서 파고들기</b><em>P·보컬·시대·인지도 층에서 경로 찾기</em></div></div><div class="v3990-zone-grid wide">'+
+        featureButton37("producer")+featureButton37("producerDiscovery")+featureButton37("vocalRank")+featureButton37("archive")+
+      '</div></section>'+
+    '</div>'+
+    '<div class="v393-explore-recent v3990-map-history"><section class="v37-hub-section"><div class="v37-hub-section-head"><b>최근 입수 도구</b><small>아까 사용한 탐색으로 돌아가기</small></div><div class="v37-quick-row" id="v37RecentFeatures"></div></section><section class="v37-hub-section"><div class="v37-hub-section-head"><b>자주 쓰는 입구</b><small>사용 빈도에 따라 자동 정리</small></div><div class="v37-quick-row" id="v37FrequentFeatures"></div></section></div>'+
     '<details class="v3919-manage"><summary>연결 · 문제 해결</summary><div class="v393-manage-grid">'+["settings","diagnostics"].map(featureButton37).join("")+'</div></details>'+
-    '<div class="v37-hub-status" id="v37HubStatus">여기서 연 기능은 최근 사용에 남아요.</div>';
+    '<div class="v37-hub-status" id="v37HubStatus">입수 지점을 고르면 해당 탐색 화면으로 이동합니다.</div>';
   body.prepend(v);refreshHub37();return v
 }
 function openHub37(){
