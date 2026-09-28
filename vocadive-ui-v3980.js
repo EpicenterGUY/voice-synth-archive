@@ -1,10 +1,10 @@
-/* VocaDive Unified UI v39.82.0
+/* VocaDive Unified UI v39.83.0
  * YouTube-style app shell, cards, player continuity and route recovery.
  */
 (function(){
 "use strict";
 
-var VERSION="39.82.0";
+var VERSION="39.83.0";
 var raf=0,observer=null,lastRoute="home",navSeq3985=0,workerCheckTimer3986=0;
 
 function q(sel,root){return (root||document).querySelector(sel)}
@@ -91,7 +91,7 @@ body.v37-ready .topbar .status>.pill:first-child{
 /* One authoritative navigation surface. */
 .v37-dock,.v36-dock,.v34-dock,.v33-dock,#v30BottomDock,#mobileSectionNav,.mobile-section-nav,.mobile-bottom-nav,.bottom-nav,.app-bottom-nav{display:none!important}
 #v3980Dock{
- position:fixed;z-index:23500;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+ position:fixed;z-index:23500;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));pointer-events:auto;
  left:12px;right:12px;bottom:max(8px,env(safe-area-inset-bottom));
  min-height:var(--vd-dock-h);padding:5px;gap:3px;
  border:1px solid rgba(176,224,219,.16);border-radius:20px;
@@ -659,7 +659,8 @@ function checkWorker3986(delay){
 function syncViewport3986(){
   if(!window.visualViewport){document.body.classList.remove("v3986-keyboard");return}
   var vv=window.visualViewport,base=Math.max(document.documentElement.clientHeight||0,window.innerHeight||0);
-  var keyboard=window.innerWidth<900&&base-vv.height>180;
+  var ae=document.activeElement,typing=!!(ae&&/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName));
+  var diff=Math.max(0,base-vv.height),keyboard=window.innerWidth<900&&typing&&diff>180&&vv.height<base*.78;
   document.body.classList.toggle("v3986-keyboard",keyboard)
 }
 function cleanupLegacyNav(){
@@ -861,25 +862,34 @@ function ensureTopbar(){
   }
 }
 
+function handleDockClick3988(e){
+  var b=e.target&&e.target.closest?e.target.closest("button[data-v3980]"):null;if(!b)return;
+  e.preventDefault();e.stopPropagation();
+  var v=b.dataset.v3980;
+  document.body.classList.remove("v3986-keyboard");
+  if(v==="home")goHome();
+  else if(v==="explore")openRoute("hub37");
+  else if(v==="dive")openDive3985();
+  else if(v==="library")openLibrary()
+}
 function ensureDock(){
-  if(document.getElementById("v3980Dock"))return;
-  var d=document.createElement("nav");d.id="v3980Dock";d.setAttribute("aria-label","VocaDive 주요 메뉴");
-  d.innerHTML=[
-    ["home","⌂","홈"],
-    ["explore","✦","탐색"],
-    ["dive","◉","다이브"],
-    ["library","♡","보관함"]
-  ].map(function(x){return'<button type="button" data-v3980="'+x[0]+'" aria-label="'+x[2]+'"><i>'+x[1]+'</i><span>'+x[2]+'</span></button>'}).join("");
-  document.body.appendChild(d);
-  d.addEventListener("click",function(e){
-    var b=e.target.closest("button[data-v3980]");if(!b)return;
-    var v=b.dataset.v3980;
-    if(v==="home")goHome();
-    else if(v==="explore")openRoute("hub37");
-    else if(v==="dive")openDive3985();
-    else if(v==="library")openLibrary()
-  });
-  setDock("home")
+  var d=document.getElementById("v3980Dock");
+  if(!d){
+    d=document.createElement("nav");d.id="v3980Dock";d.setAttribute("aria-label","VocaDive 주요 메뉴");
+    d.innerHTML=[
+      ["home","⌂","홈"],
+      ["explore","✦","탐색"],
+      ["dive","◉","다이브"],
+      ["library","♡","보관함"]
+    ].map(function(x){return'<button type="button" data-v3980="'+x[0]+'" aria-label="'+x[2]+'"><i>'+x[1]+'</i><span>'+x[2]+'</span></button>'}).join("");
+    document.body.appendChild(d)
+  }
+  if(d.dataset.v3988Bound!=="1"){
+    d.dataset.v3988Bound="1";
+    d.addEventListener("click",handleDockClick3988,true)
+  }
+  d.style.pointerEvents="auto";
+  if(!q("#v3980Dock button.active"))setDock(dockForRoute(window.__VSA37_CURRENT_ROUTE||"home"))
 }
 function setDock(v){
   qa("#v3980Dock button").forEach(function(b){
@@ -915,7 +925,10 @@ function forceRoute3985(name){
   name=String(name||"");
   try{if(typeof window.ensureCorePages37==="function")window.ensureCorePages37()}catch(_){}
   try{
-    if(typeof window.setToolView==="function"&&window.setToolView(name)!==false)return routeIsActive3985(name)
+    if(typeof window.setToolView==="function"){
+      window.setToolView(name);
+      if(routeIsActive3985(name))return true
+    }
   }catch(_){}
   var modal=document.getElementById("toolsModal"),target=modal&&q('.tools-body>[data-tool-view="'+CSS.escape(name)+'"]',modal);
   if(!modal||!target)return false;
@@ -935,17 +948,27 @@ function verifyRoute3985(name,ticket){
 }
 function openDive3985(){
   var ticket=++navSeq3985;
+  document.body.classList.remove("v3986-keyboard");
   setDock("dive");
+  function lockDive(){
+    if(ticket!==navSeq3985)return false;
+    var ok=verifyRoute3985("universe29",ticket);
+    if(ok){lastRoute="dive";setDock("dive");scheduleRepair()}
+    return ok
+  }
   try{
     if(typeof window.openUniverseHub3931==="function"){
-      return Promise.resolve(window.openUniverseHub3931()).then(function(){
+      var launched=window.openUniverseHub3931();
+      return Promise.resolve(launched).then(function(){
         if(ticket!==navSeq3985)return false;
-        [0,80,240].forEach(function(ms){setTimeout(function(){verifyRoute3985("universe29",ticket);if(ticket===navSeq3985)setDock("dive")},ms)});
-        return true
-      }).catch(function(){return openRoute("universe29",ticket)})
+        if(lockDive())return true;
+        return openRoute("universe29",ticket).then(function(){lockDive();return routeIsActive3985("universe29")})
+      }).catch(function(){
+        return openRoute("universe29",ticket).then(function(){lockDive();return routeIsActive3985("universe29")})
+      })
     }
   }catch(_){}
-  return openRoute("universe29",ticket)
+  return openRoute("universe29",ticket).then(function(){lockDive();return routeIsActive3985("universe29")})
 }
 
 function ensureV33(){
@@ -1120,6 +1143,10 @@ function bind(){
     window.visualViewport.addEventListener("scroll",syncViewport3986)
   }
   window.addEventListener("resize",syncViewport3986);
+  document.addEventListener("focusout",function(){setTimeout(syncViewport3986,80)},true);
+  document.addEventListener("pointerdown",function(e){
+    if(e.target&&e.target.closest&&e.target.closest("#v3980Dock"))document.body.classList.remove("v3986-keyboard")
+  },true);
   document.addEventListener("click",function(e){
     var m=document.getElementById("v3982Menu"),b=document.getElementById("v3980MenuBtn");
     if(m&&!m.hidden&&!m.contains(e.target)&&e.target!==b)closeMenu3982()
