@@ -31,7 +31,7 @@
       </nav>
 
       <div class="sidebar-footer">
-        <div class="build-chip"><span></span>TouhouDive v0.2 Alpha</div>
+        <div class="build-chip"><span></span>TouhouDive v0.3 Alpha</div>
         <button class="ghost-btn" id="themeBtn">◐ 테마 전환</button>
       </div>
     </aside>
@@ -82,10 +82,10 @@
       </section>
 
       <section class="stats-row">
-        <article><span>원곡</span><strong id="statOriginal">0</strong><small>공식 게임 seed</small></article>
-        <article><span>2차창작</span><strong id="statArrangement">0</strong><small>수집 파이프라인 seed</small></article>
-        <article><span>영상</span><strong id="statMedia">0</strong><small>인앱 재생 가능</small></article>
-        <article><span>관계</span><strong id="statLinks">0</strong><small>원곡 연결</small></article>
+        <article><span>원곡</span><strong id="statOriginal">0</strong><small id="statOriginalMeta">로컬 + 라이브</small></article>
+        <article><span>2차창작</span><strong id="statArrangement">0</strong><small id="statArrangementMeta">TouhouDB 라이브</small></article>
+        <article><span>영상</span><strong id="statMedia">0</strong><small id="statMediaMeta">현재 로드된 재생 가능 곡</small></article>
+        <article><span>전체 카탈로그</span><strong id="statLinks">0</strong><small id="statLinksMeta">TouhouDB 연결 확인 중</small></article>
       </section>
 
       <section class="toolbar-row">
@@ -107,6 +107,10 @@
           <button class="text-btn" id="refreshBtn">새로고침 ↻</button>
         </div>
         <div class="track-grid" id="trackGrid"></div>
+        <div class="catalog-footer" id="catalogFooter">
+          <span id="catalogMeta">로컬 곡부터 표시 중</span>
+          <button id="loadMoreBtn" class="secondary-btn">전체 카탈로그 더 불러오기</button>
+        </div>
       </section>
 
       <section class="content-section" id="diveSection">
@@ -142,13 +146,17 @@
     </div>
     <div class="player-controls">
       <button id="playerPrev" title="이전 곡">‹</button>
+      <button id="playerPlay" title="재생/일시정지">❚❚</button>
       <button id="playerNext" title="다음 곡">›</button>
+      <button id="playerAuto" title="자동 다음곡">A</button>
+      <a id="playerSource" class="player-source" href="#" target="_blank" rel="noopener" title="원본 영상 열기">↗</a>
       <button id="playerMini" title="미니 플레이어">▱</button>
       <button id="playerExpand" title="크게 보기" hidden>□</button>
       <button id="playerClose" title="닫기">×</button>
     </div>
   </section>
 
+  <script src="./catalog.js"></script>
   <script src="./media.js"></script>
   <script src="./app.js" type="module"></script>
 </body>

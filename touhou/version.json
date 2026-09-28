@@ -1,13 +1,18 @@
 {
-  "version": "0.2.0",
+  "version": "0.3.0",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-09-28",
-  "dataset": "original+arrangement-v2",
+  "dataset": "TouhouDB-live+local-v3",
   "features": [
-    "unified-catalog",
-    "lineage",
-    "in-app-video",
-    "mini-player"
+    "full-live-catalog",
+    "remote-search",
+    "catalog-pagination",
+    "lineage-hydration",
+    "youtube-iframe-api",
+    "niconico-jsapi",
+    "persistent-mini-player",
+    "auto-next",
+    "media-session"
   ]
 }
