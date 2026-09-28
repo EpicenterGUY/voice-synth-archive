@@ -209,6 +209,35 @@ if(!unifiedUi.includes(".mr58-node.selected .mr95-node-peek"))fail("selected Div
 if(!unifiedUi.includes("@media(min-width:380px) and (max-width:699px)"))fail("compact Explore two-column breakpoint missing");
 if(!unifiedUi.includes('button[aria-busy="true"]'))fail("busy control interaction guard missing");
 
+// 18. Theme contrast integrity / runtime audit.
+if(!unifiedUi.includes("Theme contrast contract · v39.96"))fail("v39.96 theme contrast contract missing");
+if(!unifiedUi.includes("--vd-soft:#819491"))fail("dark soft-text contrast token missing");
+if(!unifiedUi.includes("--vd-text:#17302e;--vd-muted:#536b68;--vd-soft:#5c716e"))fail("light readable text tokens missing");
+if(!unifiedUi.includes('body[data-vsa-theme="light"] #universePanel.v3958-rel'))fail("light-mode Dive dark-ocean restore missing");
+if(!unifiedUi.includes('body[data-vsa-theme="light"] .mr74-transition :is(small,b,span)'))fail("light-mode Dive transition text restore missing");
+if(!index.includes("function themeContrastAudit37()"))fail("runtime theme contrast audit missing");
+if(!index.includes("window.VSAThemeContrastAudit37=themeContrastAudit37"))fail("theme contrast audit export missing");
+if(!index.includes("contrast:themeContrastAudit37()"))fail("diagnostics contrast collection missing");
+if(!index.includes("THEME CONTRAST"))fail("diagnostics theme contrast card missing");
+if(!index.includes('new CustomEvent("vsa:theme-change"'))fail("theme-change event missing");
+if(!index.includes('bcs.backgroundImage&&bcs.backgroundImage!=="none"'))fail("contrast gradient false-positive guard missing");
+function hexLum3996(hex){
+  hex=String(hex).replace("#","");
+  if(hex.length===3)hex=hex.split("").map(x=>x+x).join("");
+  const v=[0,2,4].map(i=>parseInt(hex.slice(i,i+2),16)/255).map(x=>x<=.03928?x/12.92:Math.pow((x+.055)/1.055,2.4));
+  return v[0]*.2126+v[1]*.7152+v[2]*.0722
+}
+function hexContrast3996(a,b){
+  let A=hexLum3996(a),B=hexLum3996(b);if(A<B)[A,B]=[B,A];return(A+.05)/(B+.05)
+}
+for(const src of [index,unifiedUi]){
+  for(const m of src.matchAll(/(body\[data-vsa-theme="light"\][^{]*)\{([^{}]+)\}/g)){
+    const color=m[2].match(/(?:^|;)\s*color\s*:\s*(#[0-9a-f]{3,6})/i);
+    const bg=m[2].match(/(?:^|;)\s*background(?:-color)?\s*:\s*(#[0-9a-f]{3,6})/i);
+    if(color&&bg&&hexContrast3996(color[1],bg[1])<4.5)fail("low light-mode static contrast: "+m[1].trim()+" "+color[1]+" on "+bg[1])
+  }
+}
+
 note("classic JS syntax checked");
 note("inline scripts checked: "+inline);
 note("local references checked: "+refs.size);

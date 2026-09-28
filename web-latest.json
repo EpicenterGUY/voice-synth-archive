@@ -1,6 +1,6 @@
 {
-  "version": "39.95.0",
+  "version": "39.96.0",
   "channel": "web",
   "publishedAt": "2026-09-28T17:35:00+09:00",
-  "notes": "Keeps mobile Dive candidate details inline, fixes detail autoplay and Producer hub load recovery, and compacts Explore into a clearer two-column entry map on normal phone widths."
+  "notes": "Audits and repairs light/dark text contrast, restores readable dark-ocean text inside Dive while light mode is active, and adds runtime theme contrast diagnostics."
 }
