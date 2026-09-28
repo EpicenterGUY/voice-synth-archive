@@ -1,8 +1,8 @@
-/* VocaDive Search 5.0 · One Search + Live Results · v39.94.0 */
+/* VocaDive Search 5.0 · One Search + Live Results · v39.95.0 */
 (function(){
 "use strict";
 
-var VERSION="39.94.0";
+var VERSION="39.95.0";
 var QUICK_DELAY=320;
 var FULL_DELAY=720;
 var QUICK_TTL=5*60*1000;
