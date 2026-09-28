@@ -1,6 +1,6 @@
 {
-  "version": "39.92.0",
+  "version": "39.93.0",
   "channel": "web",
-  "publishedAt": "2026-09-28T17:05:00+09:00",
-  "notes": "Introduces a neutral natural palette, semantic status colors, evidence-first Producer discovery cards, and a staged faster Producer discovery pipeline."
+  "publishedAt": "2026-09-28T17:28:00+09:00",
+  "notes": "Repairs light-mode text contrast across Home, tools, Worker/menu surfaces and connects Producer discovery representative songs directly to Watch and Dive."
 }
