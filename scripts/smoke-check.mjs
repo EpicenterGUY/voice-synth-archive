@@ -178,6 +178,16 @@ if(!index.includes("producerEvidence37(x)"))fail("producer evidence model missin
 if(!index.includes("v37-producer-reason"))fail("producer discovery reason card missing");
 if(!index.includes("4500"))fail("VocaDB timeout guard missing");
 
+// 15. Producer action flow / light-mode contrast.
+if(!index.includes("__VSA37_PRODUCER_SONG_MAP"))fail("producer song map missing");
+if(!index.includes("data-v37-producer-song"))fail("producer result detail action missing");
+if(!index.includes("data-v37-producer-dive"))fail("producer result Dive action missing");
+if(!index.includes("Promise.resolve(VSAEnsureFeatures(\"v33\")).then"))fail("producer detail fallback chain missing");
+if(!unifiedUi.includes("Light mode contrast repair · v39.93"))fail("light-mode contrast repair missing");
+if(!unifiedUi.includes('body[data-vsa-theme="light"] .v3989-dive-entry-copy h1'))fail("light Home Dive title contrast guard missing");
+if(!unifiedUi.includes('body[data-vsa-theme="light"] #v3982WorkerPill[data-state="err"]'))fail("light Worker pill contrast guard missing");
+if(!unifiedUi.includes(".v37-producer-song-actions"))fail("producer song action styles missing");
+
 note("classic JS syntax checked");
 note("inline scripts checked: "+inline);
 note("local references checked: "+refs.size);
