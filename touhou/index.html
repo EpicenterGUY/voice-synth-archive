@@ -4,13 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0a0d17">
-  <title>TouhouDive — Original & Arrangement Explorer</title>
+  <title>TouhouDive — 東方音楽探索</title>
   <meta name="description" content="동방 Project 원곡과 2차창작 어레인지를 계보로 연결해 탐색하고 앱 안에서 영상을 재생하는 음악 탐색 앱.">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icon.svg">
   <link rel="stylesheet" href="./styles.css">
 </head>
-<body>
+<body data-view="home">
   <div class="app-shell">
     <aside class="sidebar" id="sidebar">
       <div class="brand">
@@ -21,7 +21,7 @@
         </div>
       </div>
 
-      <nav class="nav">
+      <nav class="nav" aria-label="주 메뉴">
         <button class="nav-item is-active" data-view="home"><b>⌂</b><span>홈</span></button>
         <button class="nav-item" data-view="discover"><b>✦</b><span>탐색</span></button>
         <button class="nav-item" data-view="dive"><b>⌁</b><span>다이브</span></button>
@@ -31,7 +31,7 @@
       </nav>
 
       <div class="sidebar-footer">
-        <div class="build-chip"><span></span>TouhouDive v0.3 Alpha</div>
+        <div class="build-chip"><span></span>TouhouDive v0.4 Alpha</div>
         <button class="ghost-btn" id="themeBtn">◐ 테마 전환</button>
       </div>
     </aside>
@@ -39,100 +39,112 @@
     <main class="main">
       <header class="topbar">
         <button class="menu-btn" id="menuBtn" aria-label="메뉴">☰</button>
+        <div class="mobile-brand" aria-hidden="true"><span>東</span></div>
         <div class="searchbox">
           <span class="search-icon">⌕</span>
-          <input id="searchInput" placeholder="곡명 · 서클 · 앨범 · 원곡 · 캐릭터 검색" autocomplete="off">
+          <input id="searchInput" placeholder="곡명 · 서클 · 앨범 · 원곡 검색" autocomplete="off">
+          <button class="search-clear" id="searchClear" aria-label="검색어 지우기" hidden>×</button>
           <kbd>/</kbd>
         </div>
-        <button class="random-btn" id="randomBtn">랜덤 다이브</button>
+        <button class="random-btn" id="randomBtn"><span>✦</span><b>랜덤 다이브</b></button>
       </header>
 
-      <section class="mode-strip">
-        <div class="mode-tabs" id="modeTabs">
+      <section class="commandbar">
+        <div class="mode-tabs" id="modeTabs" aria-label="곡 분류">
           <button class="mode-tab is-active" data-mode="all">전체</button>
           <button class="mode-tab" data-mode="original">원곡</button>
           <button class="mode-tab" data-mode="arrangement">2차창작</button>
         </div>
-        <div class="data-health">
+        <div class="data-health" id="dataHealth">
           <span class="health-dot"></span>
           <span id="datasetStatus">데이터 로드 중</span>
         </div>
       </section>
 
-      <section class="hero" id="hero">
+      <section class="hero home-only" id="hero">
         <div class="hero-copy">
           <div class="eyebrow">TOUHOU MUSIC GRAPH</div>
-          <h1>원곡에서 어레인지까지,<br><em>한 계보로 다이브.</em></h1>
-          <p>동방 Project 공식 원곡과 수많은 2차창작 음악을 분리해서 보되, 원곡 관계로 다시 연결합니다. 영상이 확인된 곡은 앱 안에서 바로 재생합니다.</p>
+          <h1>환상향의 음악을<br><em>이어 듣고, 깊게 파고들기.</em></h1>
+          <p>원곡과 2차창작을 따로 정리하고, 원곡 계보·서클·보컬·태그로 다시 연결합니다.</p>
           <div class="hero-actions">
-            <button class="primary-btn" id="heroDiveBtn">지금 다이브</button>
-            <button class="secondary-btn" id="playableBtn">영상 있는 곡</button>
+            <button class="primary-btn" id="heroDiveBtn">✦ 랜덤 다이브</button>
+            <button class="secondary-btn" id="playableBtn">▶ 영상 있는 곡</button>
           </div>
         </div>
-        <div class="hero-panel">
-          <div class="hero-disc">
-            <div class="disc-label">TH</div>
-          </div>
-          <div class="hero-now">
-            <span>EXPLORE BY</span>
-            <strong>Original → Arrangement</strong>
-            <small>Circle · Vocal · Album · Mood · Era</small>
+        <div class="hero-visual" aria-hidden="true">
+          <div class="hero-disc"><div class="disc-label">東</div></div>
+          <div class="hero-signal">
+            <span>LIVE CATALOG</span>
+            <strong id="heroCatalogCount">연결 중</strong>
+            <small>Original ↔ Arrangement</small>
           </div>
         </div>
       </section>
 
-      <section class="stats-row">
+      <section class="stats-row home-only" aria-label="카탈로그 상태">
         <article><span>원곡</span><strong id="statOriginal">0</strong><small id="statOriginalMeta">로컬 + 라이브</small></article>
         <article><span>2차창작</span><strong id="statArrangement">0</strong><small id="statArrangementMeta">TouhouDB 라이브</small></article>
-        <article><span>영상</span><strong id="statMedia">0</strong><small id="statMediaMeta">현재 로드된 재생 가능 곡</small></article>
-        <article><span>전체 카탈로그</span><strong id="statLinks">0</strong><small id="statLinksMeta">TouhouDB 연결 확인 중</small></article>
+        <article><span>재생 가능</span><strong id="statMedia">0</strong><small id="statMediaMeta">현재 확인된 영상</small></article>
+        <article><span>전체 카탈로그</span><strong id="statLinks">0</strong><small id="statLinksMeta">연결 확인 중</small></article>
       </section>
 
-      <section class="toolbar-row">
+      <section class="toolbar-row catalog-ui" id="catalogTools">
         <div class="filter-scroller" id="quickFilters"></div>
         <select id="sortSelect" class="sort-select" aria-label="정렬">
           <option value="recommend">추천순</option>
           <option value="year-desc">최신순</option>
           <option value="year-asc">오래된순</option>
-          <option value="title">가나다/문자순</option>
+          <option value="title">제목순</option>
         </select>
       </section>
 
-      <section class="content-section" id="catalogSection">
+      <section class="content-section catalog-ui" id="catalogSection">
         <div class="section-head">
           <div>
-            <span class="eyebrow">DISCOVER</span>
+            <span class="eyebrow" id="sectionEyebrow">DISCOVER</span>
             <h2 id="sectionTitle">오늘의 다이브 입구</h2>
           </div>
-          <button class="text-btn" id="refreshBtn">새로고침 ↻</button>
+          <button class="text-btn" id="refreshBtn">↻ 새로고침</button>
         </div>
         <div class="track-grid" id="trackGrid"></div>
         <div class="catalog-footer" id="catalogFooter">
           <span id="catalogMeta">로컬 곡부터 표시 중</span>
-          <button id="loadMoreBtn" class="secondary-btn">전체 카탈로그 더 불러오기</button>
+          <button id="loadMoreBtn" class="secondary-btn">더 불러오기</button>
         </div>
       </section>
 
-      <section class="content-section" id="diveSection">
+      <section class="content-section dive-ui" id="diveSection">
         <div class="section-head">
           <div>
-            <span class="eyebrow">RELATION ENGINE</span>
+            <span class="eyebrow">DIVE PATH</span>
             <h2>다이브 흐름</h2>
           </div>
-          <span class="hint">원곡 공유 · 서클 · 보컬 · 분위기 · 시대를 조합</span>
+          <span class="hint">원곡 · 서클 · 보컬 · 태그 · 시대를 조합</span>
         </div>
         <div class="dive-map empty-state" id="diveMap">
+          <div class="empty-icon">⌁</div>
           <strong>아직 시작곡이 없습니다.</strong>
-          <span>아무 곡이나 골라 ‘다이브’를 눌러보세요.</span>
+          <span>곡 카드에서 ‘다이브’를 누르면 연결 경로가 여기에 열립니다.</span>
         </div>
       </section>
     </main>
 
     <aside class="detail-panel" id="detailPanel" aria-hidden="true">
-      <button class="panel-close" id="panelClose" aria-label="닫기">×</button>
+      <div class="detail-head">
+        <strong>곡 정보</strong>
+        <button class="panel-close" id="panelClose" aria-label="닫기">×</button>
+      </div>
       <div id="detailContent"></div>
     </aside>
   </div>
+
+  <nav class="bottom-nav" aria-label="모바일 메뉴">
+    <button class="nav-item is-active" data-view="home"><b>⌂</b><span>홈</span></button>
+    <button class="nav-item" data-view="discover"><b>✦</b><span>탐색</span></button>
+    <button class="nav-item" data-view="dive"><b>⌁</b><span>다이브</span></button>
+    <button class="nav-item" data-view="library"><b>♡</b><span>보관함</span></button>
+    <button class="nav-item" data-view="history"><b>◷</b><span>기록</span></button>
+  </nav>
 
   <div class="scrim" id="scrim"></div>
   <div class="toast" id="toast"></div>
