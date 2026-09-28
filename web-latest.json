@@ -1,6 +1,6 @@
 {
-  "version": "39.100.0",
+  "version": "39.101.0",
   "channel": "web",
-  "publishedAt": "2026-09-28T22:35:00+09:00",
-  "notes": "Adds a route visibility watchdog that repairs hidden tool views/black screens after async navigation races and normalizes playback title hooks."
+  "publishedAt": "2026-09-28T23:05:00+09:00",
+  "notes": "Batches viewport and thumbnail mutation work per frame, defers the initial thumbnail scan, and skips off-screen rendering for long discovery/ranking lists."
 }
