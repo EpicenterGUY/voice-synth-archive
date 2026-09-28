@@ -149,6 +149,10 @@ if(!index.includes("mainReasons=reasons.slice(0,3)"))fail("Dive detail reason ca
 if(!index.includes("mr90-more-reasons"))fail("Dive extra reasons disclosure missing");
 if(!unifiedUi.includes(".v3990-map-hero"))fail("Explore entry-map responsive style missing");
 if(!unifiedUi.includes(".mr90-side-close"))fail("Dive compact detail style missing");
+if(!index.includes("window.VSAOpenFeature37=openFeatureById37"))fail("feature opener export missing");
+if(!unifiedUi.includes("window.VSAOpenFeature37"))fail("feature-card route recovery caller missing");
+if(!unifiedUi.includes("[data-v37-feature-id]"))fail("feature-card recovery listener missing");
+if(!index.includes("r.bottom>window.innerHeight-88"))fail("mobile Dive detail scroll guard missing");
 
 note("classic JS syntax checked");
 note("inline scripts checked: "+inline);
