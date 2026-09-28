@@ -1,11 +1,30 @@
 {
   "current": {
-    "version": "39.101.0",
+    "version": "39.102.0",
     "releasedAt": "2026-09-28",
-    "title": "Frame Budget · Mobile Performance",
-    "summary": "모바일 메뉴·스크롤·다이브에서 같은 프레임에 반복되던 viewport 계산과 썸네일 DOM 스캔을 배치하고, 긴 카드 목록의 화면 밖 렌더링 비용을 줄이는 1차 성능 최적화를 적용했습니다."
+    "title": "Metadata Repair · Piapro Lyrics · Player Handoff",
+    "summary": "곡 설명의 HTML/잘못된 메타데이터 노출을 정리하고 P명 보강, Piapro 연결 가사, 메뉴 이동 시 미니플레이어 강제 인계, 보관함 영상 상세 이동을 함께 개선했습니다."
   },
   "entries": [
+    {
+      "version": "39.102.0",
+      "date": "2026-09-28",
+      "title": "Metadata Repair · Piapro Lyrics · Player Handoff",
+      "changes": [
+        "곡 설명의 HTML 태그·엔티티·제로폭 문자·비정상 JSON형 텍스트를 정리하고 실제 니코니코 투고문을 VocaDB 설명보다 우선 표시",
+        "곡 설명 아래에 현재 사용한 출처를 표시해 니코동 투고문과 VocaDB 설명을 구분",
+        "P명 캐시를 v4로 갱신해 과거 빈 결과 캐시를 즉시 무효화하고 빈 결과 유지 시간을 3시간에서 30분으로 단축",
+        "VocaDB Artist role이 비어 있어도 알려진 P명/P 접미사와 artistType을 함께 판정하고 보컬 역할은 P명 오인에서 제외",
+        "Nico PV byPv 조회에서 P명이 비면 VocaDB 제목 검색 + 원본 Nico PV 일치도 보강을 한 번 더 수행",
+        "VocaDB Watch 메타데이터에 WebLinks/Names를 포함하고 Piapro 텍스트 링크가 있으면 Worker를 통해 공개 가사 페이지를 추가 조회",
+        "VocaDB 가사와 Piapro 가사를 중복 제거해 같은 가사 탭에서 출처별로 선택 가능하게 변경",
+        "Piapro 가사 Worker는 piapro.jp/t/* 공개 텍스트 페이지만 허용하고 가사 카테고리 페이지의 본문만 추출",
+        "곡 상세에서 다른 메뉴로 이동할 때 Watch iframe이 아직 화면상 visible이어도 즉시 미니플레이어로 인계하도록 route-change 강제 처리",
+        "플레이어 자체에서도 0ms/90ms/240ms 재검사와 늦게 생성된 toolsModal observer를 추가해 소리만 남는 상태 방지",
+        "보관함 썸네일·곡 제목을 누르면 해당 곡 Watch 상세로 이동하고 기존 ▶ 버튼은 즉시 재생 기능으로 유지",
+        "웹/PWA/서비스워커/네이티브 셸/검색/기기동기화/UI 버전과 캐시 키를 v39.102.0으로 동기화"
+      ]
+    },
     {
       "version": "39.101.0",
       "date": "2026-09-28",
