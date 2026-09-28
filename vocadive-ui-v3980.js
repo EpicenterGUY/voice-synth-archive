@@ -1,10 +1,10 @@
-/* VocaDive Unified UI v39.100.0
+/* VocaDive Unified UI v39.101.0
  * YouTube-style app shell, cards, player continuity and route recovery.
  */
 (function(){
 "use strict";
 
-var VERSION="39.100.0";
+var VERSION="39.101.0";
 var raf=0,observer=null,lastRoute="home",navSeq3985=0,workerCheckTimer3986=0;
 var workerState3986={ok:null,reason:"",endpoint:"",at:0};
 
@@ -989,7 +989,7 @@ body[data-vsa-theme="light"] #v3980MenuBtn{background:#edf1f0!important;color:#1
 
 
 
-/* Theme contrast contract · v39.100
+/* Theme contrast contract · v39.101
    Light pages use darker secondary text; Dive remains intentionally dark in both themes. */
 body[data-vsa-theme="light"] #v3980Dock button{color:#536b68!important}
 body[data-vsa-theme="light"] #v3982Menu button small,
@@ -1130,7 +1130,7 @@ body[data-vsa-theme="light"] .topbar{color:#17302e!important}
 
 
 
-/* Light discovery + high-definition thumbnail contract · v39.100
+/* Light discovery + high-definition thumbnail contract · v39.101
    Legacy discovery/taste cards had dark-theme !important rules that survived light mode.
    Keep Dive dark, but make normal discovery surfaces genuinely light and readable. */
 body.v37-ready[data-vsa-theme="light"] :is(.discovery-card,.gem-card){
@@ -1174,7 +1174,7 @@ body.v37-ready[data-vsa-theme="light"] :is(.discovery-card img,.gem-card img,.v3
 
 
 
-/* Internal discovery playback · v39.100 */
+/* Internal discovery playback · v39.101 */
 .discovery-title.vsa-play-title,.gem-title.vsa-play-title{
  display:block;width:100%;padding:0;border:0;background:transparent;text-align:left;
  color:inherit;font:inherit;font-weight:inherit;line-height:inherit;cursor:pointer
@@ -1183,7 +1183,7 @@ body.v37-ready[data-vsa-theme="light"] :is(.discovery-card img,.gem-card img,.v3
 
 
 
-/* Broken thumbnail placeholder · v39.100 */
+/* Broken thumbnail placeholder · v39.101 */
 .vsa-play-title{
  display:block;width:100%;padding:0;border:0;background:transparent!important;
  color:inherit!important;font:inherit;font-weight:inherit;line-height:inherit;text-align:left;cursor:pointer
@@ -1202,6 +1202,27 @@ body[data-vsa-theme="light"] .v3999-thumb-fallback{
  background:linear-gradient(145deg,#e8f1ef,#dce9e6)!important;color:#4d7771!important
 }
 
+
+
+/* Performance frame budget · v39.101
+   Long recommendation/ranking lists skip off-screen paint work; Dive movement
+   stays on compositor-friendly layers without permanently pinning GPU memory. */
+@supports(content-visibility:auto){
+  :is(.song,.discovery-card,.gem-card,.detective-card,.v37-producer-song,.v399-related-row){
+    content-visibility:auto;
+    contain-intrinsic-size:auto 170px
+  }
+}
+:is(.song,.discovery-card,.gem-card,.detective-card,.v37-producer-song,.v399-related-row){
+  contain:layout paint style
+}
+#universePanel.v3958-rel .mr58-node{contain:layout paint style}
+#universePanel.v3958-rel.mr75-moving .mr58-map,
+#universePanel.v3958-rel .mr58-shell.mr75-moving .mr58-map,
+#mr74DiveTransition.active{will-change:transform,opacity}
+#universePanel.v3958-rel:not(.mr75-moving) .mr58-map,
+#universePanel.v3958-rel .mr58-shell:not(.mr75-moving) .mr58-map{will-change:auto}
+
 @media(prefers-reduced-motion:reduce){
  *{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
@@ -1210,7 +1231,7 @@ body[data-vsa-theme="light"] .v3999-thumb-fallback{
 }
 
 
-/* HQ thumbnail recovery · v39.100 */
+/* HQ thumbnail recovery · v39.101 */
 var thumbObserver3997=null;
 function highResThumbnailUrl3997(raw){
   var src=String(raw||"").trim();if(!src)return src;
@@ -1256,19 +1277,32 @@ function upgradeThumbnail3997(img){
   },{once:true});
   img.setAttribute("src",hq)
 }
+var thumbScanRaf39101=0,thumbScanRoots39101=new Set();
 function scanThumbnails3997(root){
   if(!root)return;
   if(root.nodeType===1&&String(root.tagName).toUpperCase()==="IMG")upgradeThumbnail3997(root);
   if(root.querySelectorAll)Array.prototype.forEach.call(root.querySelectorAll("img"),upgradeThumbnail3997)
 }
+function flushThumbnailScans39101(){
+  thumbScanRaf39101=0;
+  var roots=Array.from(thumbScanRoots39101);thumbScanRoots39101.clear();
+  roots.forEach(scanThumbnails3997)
+}
+function queueThumbnailScan39101(root){
+  if(!root)return;
+  thumbScanRoots39101.add(root);
+  if(thumbScanRaf39101)return;
+  thumbScanRaf39101=requestAnimationFrame(flushThumbnailScans39101)
+}
 function installHiResThumb3997(){
   window.VSAHighResThumbnail3997=highResThumbnailUrl3997;
-  scanThumbnails3997(document.documentElement);
+  var initial=function(){queueThumbnailScan39101(document.documentElement)};
+  if("requestIdleCallback" in window)requestIdleCallback(initial,{timeout:500});else setTimeout(initial,80);
   if(thumbObserver3997||!window.MutationObserver)return;
   thumbObserver3997=new MutationObserver(function(muts){
     muts.forEach(function(m){
-      if(m.type==="attributes"){upgradeThumbnail3997(m.target);return}
-      Array.prototype.forEach.call(m.addedNodes||[],scanThumbnails3997)
+      if(m.type==="attributes"){queueThumbnailScan39101(m.target);return}
+      Array.prototype.forEach.call(m.addedNodes||[],queueThumbnailScan39101)
     })
   });
   thumbObserver3997.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:["src"]})
@@ -1298,7 +1332,7 @@ function installBrokenThumbFallback3999(){
 }
 
 
-/* Route visibility watchdog · v39.100
+/* Route visibility watchdog · v39.101
    Repairs the recurring "black tools screen" state where the modal/backdrop
    is visible but the requested tool-view was left hidden by a late async route. */
 var routeRepairTimers39100=[];
@@ -1452,12 +1486,17 @@ function checkWorker3986(delay){
     }catch(_){}
   },Math.max(0,Number(delay)||0))
 }
+var viewportRaf39101=0;
 function syncViewport3986(){
   if(!window.visualViewport){document.body.classList.remove("v3986-keyboard");return}
   var vv=window.visualViewport,base=Math.max(document.documentElement.clientHeight||0,window.innerHeight||0);
   var ae=document.activeElement,typing=!!(ae&&/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName));
   var diff=Math.max(0,base-vv.height),keyboard=window.innerWidth<900&&typing&&diff>180&&vv.height<base*.78;
   document.body.classList.toggle("v3986-keyboard",keyboard)
+}
+function scheduleViewport39101(){
+  if(viewportRaf39101)return;
+  viewportRaf39101=requestAnimationFrame(function(){viewportRaf39101=0;syncViewport3986()})
 }
 function cleanupLegacyNav(){
   qa(".v37-dock,.v36-dock,.v34-dock,.v33-dock,#v30BottomDock,.mobile-bottom-nav,.bottom-nav,.app-bottom-nav,.mobile-section-nav").forEach(function(el){
@@ -1961,11 +2000,11 @@ function bind(){
   window.addEventListener("vsa:worker-config-changed",function(){syncWorkerPill();checkWorker3986(180)});
   document.addEventListener("visibilitychange",function(){if(!document.hidden){scheduleRepair();checkWorker3986(250)}});
   if(window.visualViewport){
-    window.visualViewport.addEventListener("resize",syncViewport3986);
-    window.visualViewport.addEventListener("scroll",syncViewport3986)
+    window.visualViewport.addEventListener("resize",scheduleViewport39101,{passive:true});
+    window.visualViewport.addEventListener("scroll",scheduleViewport39101,{passive:true})
   }
-  window.addEventListener("resize",syncViewport3986);
-  document.addEventListener("focusout",function(){setTimeout(syncViewport3986,80)},true);
+  window.addEventListener("resize",scheduleViewport39101,{passive:true});
+  document.addEventListener("focusout",function(){setTimeout(scheduleViewport39101,80)},true);
   document.addEventListener("pointerdown",function(e){
     if(e.target&&e.target.closest&&e.target.closest("#v3980Dock"))document.body.classList.remove("v3986-keyboard")
   },true);
