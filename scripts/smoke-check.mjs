@@ -259,8 +259,8 @@ if(!index.includes('class="gem-title v3998-play-title" data-v399-play="${esc(s.c
 if(!index.includes(">▶ 앱에서 듣기</button>"))fail("recommendation in-app listen action missing");
 if(!unifiedUi.includes('img.addEventListener("load",function(){'))fail("HQ thumbnail fallback load recovery missing");
 if(!unifiedUi.includes('img.style.visibility=""'))fail("HQ fallback does not restore hidden thumbnails");
-if(/push:\\s*[\\s\\S]{0,180}branches:\\s*[\\s\\S]{0,80}-\\s*main/.test(androidRelease))fail("signed release still auto-runs on ordinary main pushes without signing secrets");
-if(!androidRelease.includes('tags:\\n      - "app-v*"'))fail("signed release tag trigger missing");
+if(androidRelease.includes("branches:\n      - main"))fail("signed release still auto-runs on ordinary main pushes without signing secrets");
+if(!androidRelease.includes('tags:\n      - "app-v*"'))fail("signed release tag trigger missing");
 if(!androidRelease.includes("actions/setup-java@v5"))fail("signed release still uses deprecated setup-java v4");
 if(!androidDebug.includes("actions/setup-java@v5"))fail("debug build still uses deprecated setup-java v4");
 if(!androidRelease.includes("missing=()"))fail("signed release does not collect all missing signing secrets");
