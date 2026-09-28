@@ -1,6 +1,6 @@
 {
-  "version": "39.87.0",
+  "version": "39.88.0",
   "channel": "web",
-  "publishedAt": "2026-09-28T15:40:00+09:00",
-  "notes": "Reduces mobile Dive candidate workload, scopes player route observation, tightens folded mini-player density, and adds route fallback checks."
+  "publishedAt": "2026-09-28T16:00:00+09:00",
+  "notes": "Overlaps Dive transition animation with the next relation build, stages mobile relation searches, caps slow metadata prep, and adds lightweight move feedback."
 }
