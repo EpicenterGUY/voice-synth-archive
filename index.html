@@ -13345,18 +13345,36 @@ async function fetchTask59(t){
  }catch(_){return[]}
 }
 window.VSA59CollectRelationCandidates=async function(center,tags,queryTags){
- var tasks=tasks59(center,tags,queryTags),batches=await mapLimit(tasks,tasks.length<=10?3:4,fetchTask59),map=new Map(),laneStats={};
- tasks.forEach(function(t,i){
-   var rows=batches[i]||[];laneStats[t.lane]=(laneStats[t.lane]||0)+rows.length;
-   rows.forEach(function(s){
-     if(!s||!s.contentId)return;
-     var prev=map.get(s.contentId);
-     if(prev){
-       prev.__relSources59=[...new Set((prev.__relSources59||[]).concat(s.__relSources59||[]))]
-     }else map.set(s.contentId,s)
+ var tasks=tasks59(center,tags,queryTags),map=new Map(),laneStats={},usedTasks=[];
+ var lite=false;try{lite=window.matchMedia&&window.matchMedia("(pointer:coarse)").matches}catch(_){}
+ function mergeTaskRows(batchTasks,batches){
+   batchTasks.forEach(function(t,i){
+     usedTasks.push(t);
+     var rows=batches[i]||[];laneStats[t.lane]=(laneStats[t.lane]||0)+rows.length;
+     rows.forEach(function(s){
+       if(!s||!s.contentId)return;
+       var prev=map.get(s.contentId);
+       if(prev)prev.__relSources59=[...new Set((prev.__relSources59||[]).concat(s.__relSources59||[]))];
+       else map.set(s.contentId,s)
+     })
    })
- });
- return {rows:[...map.values()],queryTags:[...new Set(tasks.map(function(t){return t.tag}))].slice(0,12),laneStats:laneStats,tasks:tasks.map(function(t){return{lane:t.lane,tag:t.tag}})}
+ }
+ async function runBatch(batchTasks){
+   if(!batchTasks.length)return;
+   var batches=await mapLimit(batchTasks,batchTasks.length<=10?3:4,fetchTask59);
+   mergeTaskRows(batchTasks,batches)
+ }
+ if(lite&&tasks.length>7){
+   var first=[],seen=new Set();
+   ["producer","vocal","genre","bridge","similar","style","mood"].forEach(function(lane){
+     var hit=tasks.find(function(t){return t.lane===lane&&!seen.has(t)});
+     if(hit){seen.add(hit);first.push(hit)}
+   });
+   tasks.forEach(function(t){if(first.length<8&&!seen.has(t)){seen.add(t);first.push(t)}});
+   await runBatch(first);
+   if(map.size<44)await runBatch(tasks.filter(function(t){return!seen.has(t)}))
+ }else await runBatch(tasks);
+ return {rows:[...map.values()],queryTags:[...new Set(usedTasks.map(function(t){return t.tag}))].slice(0,12),laneStats:laneStats,tasks:usedTasks.map(function(t){return{lane:t.lane,tag:t.tag}})}
 };
 window.VSA59SelectRelationCandidates=function(center,candidates,count,meta){
  candidates=(candidates||[]).filter(Boolean);count=Math.max(8,Number(count)||20);
