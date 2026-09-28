@@ -8263,8 +8263,9 @@ async function runProducerDiscovery37(){
       if(status&&(processed%12===0||processed===rows.length))status.textContent="1차 P명 판정 중… "+processed+"/"+rows.length+"곡 · 확인 "+resolvedSongs+"곡";
     });
 
-    // 결과가 부족할 때만 형제곡까지 보는 느린 보강을 제한적으로 실행한다.
-    if(map.size<Math.max(count*2,18)&&unresolved.length){
+    // 최소 확인 곡 수를 실제로 만족하는 P가 부족할 때만 형제곡까지 보는 느린 보강을 제한적으로 실행한다.
+    const viableBefore=[...map.values()].filter(function(x){return x.count>=minSongs}).length;
+    if(viableBefore<Math.max(count,8)&&unresolved.length){
       const rescue=unresolved.slice(0,Math.min(36,count*3));
       let rescued=0;
       if(status)status.textContent="누락 P 보강 중… "+rescue.length+"곡만 정밀 확인";
