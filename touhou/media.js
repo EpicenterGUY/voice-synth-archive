@@ -12,6 +12,11 @@ function srcFor(media){
   if(media.provider==="touhoudb"&&media.songId)return "https://touhoudb.com/Ext/EmbedSong?songId="+encodeURIComponent(media.songId)+"&lang=Default";
   return clean(media.embed);
 }
+function embedSrc(media){
+  if(!media)return"";
+  if(media.provider==="youtube"&&media.id)return "https://www.youtube-nocookie.com/embed/"+encodeURIComponent(media.id)+"?autoplay=1&playsinline=1&rel=0";
+  return srcFor(media);
+}
 let ytPromise=null;
 function ensureYoutubeApi(){
   if(window.YT&&window.YT.Player)return Promise.resolve(window.YT);
@@ -72,9 +77,10 @@ class TouhouMediaPlayer{
     this.shell.hidden=false;
     this.syncMeta();this.syncControls();this.syncMediaSession();
     if(provider==="youtube"){
+      const expectedTrack=this.current.id,expectedVideo=this.current.media.id;
       const mount=document.createElement("div");mount.id="tdYoutubeMount-"+Date.now();this.video.appendChild(mount);
       ensureYoutubeApi().then(YT=>{
-        if(!this.current||this.current.media?.provider!=="youtube")return;
+        if(!this.current||this.current.id!==expectedTrack||this.current.media?.id!==expectedVideo||!mount.isConnected)return;
         this.yt=new YT.Player(mount,{
           videoId:this.current.media.id,
           playerVars:{autoplay:autoplay?1:0,playsinline:1,rel:0,modestbranding:1},
@@ -96,7 +102,7 @@ class TouhouMediaPlayer{
   }
   renderIframeFallback(){
     if(!this.current)return;
-    const src=srcFor(this.current.media);if(!src)return;
+    const src=embedSrc(this.current.media);if(!src)return;
     this.video.innerHTML="";
     const f=document.createElement("iframe");this.frame=f;
     f.src=src;f.title=this.current.title;
