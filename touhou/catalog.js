@@ -133,13 +133,14 @@ async function search(opts={}){
   p.set("lang","Japanese");
   p.set("sort",opts.sort||"RatingScore");
   if(opts.onlyWithPvs)p.set("onlyWithPvs","true");
-  let url=API+"/songs?"+p.toString(),d;
+  let url=API+"/songs?"+p.toString(),d,typedOk=true;
   try{
     d=await fetchJson(url);
   }catch(e){
     // Some TouhouDB deployments are stricter about multi-value SongType flags.
     // Fall back to an untyped page and classify it client-side instead of losing the whole catalog.
     if(!st)throw e;
+    typedOk=false;
     p.delete("songTypes");
     url=API+"/songs?"+p.toString();
     d=await fetchJson(url);
@@ -151,7 +152,8 @@ async function search(opts={}){
     items,
     total:Number(d?.totalCount)||items.length,
     start:Number(opts.start)||0,
-    raw:d
+    raw:d,
+    typed:!st||typedOk
   };
 }
 async function hydrate(id){
