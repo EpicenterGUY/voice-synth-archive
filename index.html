@@ -8995,23 +8995,43 @@ function openUniverseHub3931(){
   ensureCorePages37();
   var show=function(){
     try{ensureUniverseToolbar39()}catch(_){}
-    openToolsModal("universe29");
-    if(typeof setDock==="function")setDock("universe");
-    return true
+    var modal=document.getElementById("toolsModal"),target=document.querySelector('#toolsModal .tool-view[data-tool-view="universe29"]'),ok=false;
+    try{if(typeof mountToolsPage37==="function")mountToolsPage37()}catch(_){}
+    if(modal){
+      modal.hidden=false;
+      modal.dataset.currentView="universe29";
+      document.body.classList.add("tools-open")
+    }
+    try{if(typeof setToolView==="function")ok=setToolView("universe29")!==false}catch(_){}
+    if(!ok&&target){
+      document.querySelectorAll("#toolsModal .tool-view").forEach(function(v){
+        var on=v===target;v.classList.toggle("active",on);v.hidden=!on;
+        if(on)v.style.removeProperty("display");else v.style.setProperty("display","none","important")
+      });
+      target.hidden=false;target.classList.add("active");ok=true
+    }
+    window.__VSA37_CURRENT_ROUTE="universe29";
+    try{window.dispatchEvent(new CustomEvent("vsa:route-change",{detail:{route:"universe29",source:"core-dive"}}))}catch(_){}
+    if(typeof setDock==="function"){try{setDock("universe")}catch(_){}}
+    return !!(ok&&target)
   };
-  // 라우트는 먼저 열어 탭이 먹지 않은 것처럼 보이는 지연을 없애고,
-  // 검색 모듈은 뒤에서 준비한다. openToolsModal도 같은 로더를 재사용한다.
-  show();
+  var shown=show();
+  if(!shown){
+    try{recordRuntimeError37("dive-route-open","universe29 route activation failed",{})}catch(_){}
+  }
+  // 화면은 먼저 강제 활성화하고 검색/다이브 데이터 모듈은 뒤에서 준비한다.
   if(window.VSAEnsureFeatures){
     return Promise.resolve(VSAEnsureFeatures("universe")).then(function(){
       try{ensureUniverseToolbar39()}catch(_){}
+      show();
       return true
     }).catch(function(e){
       try{recordRuntimeError37("dive-feature-load",String(e&&e.message||e),{})}catch(_){}
+      show();
       return true
     })
   }
-  return Promise.resolve(true)
+  return Promise.resolve(shown)
 }
 function openUniversePage37(song,force){
   if(!song)return Promise.resolve(false);
