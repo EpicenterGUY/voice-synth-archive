@@ -1,10 +1,10 @@
-/* VocaDive Unified UI v39.93.0
+/* VocaDive Unified UI v39.94.0
  * YouTube-style app shell, cards, player continuity and route recovery.
  */
 (function(){
 "use strict";
 
-var VERSION="39.93.0";
+var VERSION="39.94.0";
 var raf=0,observer=null,lastRoute="home",navSeq3985=0,workerCheckTimer3986=0;
 var workerState3986={ok:null,reason:"",endpoint:"",at:0};
 
@@ -986,6 +986,27 @@ body[data-vsa-theme="light"] #v3982WorkerPill[data-state="err"]{color:#994b55!im
 body[data-vsa-theme="light"] #v3980SearchBtn,
 body[data-vsa-theme="light"] #v3980MenuBtn{background:#edf1f0!important;color:#17302e!important}
 
+
+/* Dive interaction polish · v39.94 */
+@media(max-width:699px){
+ #universePanel.v3958-rel .mr58-map>.mr58-node{
+   content-visibility:auto!important;contain-intrinsic-size:88px!important;
+   scroll-margin-top:82px!important
+ }
+ #universePanel.v3958-rel .mr58-node-go{
+   touch-action:manipulation!important;-webkit-tap-highlight-color:transparent!important
+ }
+ #universePanel.v3958-rel .mr58-node-main{
+   touch-action:manipulation!important;-webkit-tap-highlight-color:transparent!important
+ }
+ #universePanel.v3958-rel .mr90-node-reason{
+   color:#8fb9b5!important;font-weight:800!important
+ }
+}
+body[data-vsa-theme="light"] #v3982Menu,
+body[data-vsa-theme="light"] #v3980Dock,
+body[data-vsa-theme="light"] .topbar{color:#17302e!important}
+
 @media(prefers-reduced-motion:reduce){
  *{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
@@ -1050,12 +1071,12 @@ function checkWorker3986(delay){
         return r.json().catch(function(){return{}}).then(function(data){
           clearTimeout(timer);
           var ok=!!(r.ok&&data&&data.ok===true);
-          var d={ok:ok,reason:ok?"":"network",endpoint:base,message:ok?"":"Worker /health 응답 이상"};
+          var d={ok:ok,reason:ok?"":"network",endpoint:base,message:ok?"":"Worker /health 응답 이상",source:"health"};
           try{window.dispatchEvent(new CustomEvent("vsa:worker-status",{detail:d}))}catch(_){applyWorkerEvent3986(d)}
         })
       }).catch(function(e){
         clearTimeout(timer);
-        var d={ok:false,reason:"network",endpoint:base,message:String(e&&e.message||e)};
+        var d={ok:false,reason:"network",endpoint:base,message:String(e&&e.message||e),source:"health"};
         try{window.dispatchEvent(new CustomEvent("vsa:worker-status",{detail:d}))}catch(_){applyWorkerEvent3986(d)}
       })
     }catch(_){}
@@ -1069,7 +1090,7 @@ function syncViewport3986(){
   document.body.classList.toggle("v3986-keyboard",keyboard)
 }
 function cleanupLegacyNav(){
-  qa(".v37-dock,.v36-dock,.v34-dock,.v33-dock,#v30BottomDock,.mobile-bottom-nav,.bottom-nav,.app-bottom-nav").forEach(function(el){
+  qa(".v37-dock,.v36-dock,.v34-dock,.v33-dock,#v30BottomDock,.mobile-bottom-nav,.bottom-nav,.app-bottom-nav,.mobile-section-nav").forEach(function(el){
     if(el&&el.id!=="v3980Dock")try{el.remove()}catch(_){el.style.display="none"}
   });
   var top=q(".app>.topbar");

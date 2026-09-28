@@ -109,7 +109,7 @@ if(!unifiedUi.includes("__v3986DiveSafetyHandled"))fail("Dive dock duplicate-tap
 if(!index.includes("taskLimit=lite?10:23"))fail("mobile Dive candidate task cap regressed");
 if(!index.includes("mapLimit(batchTasks,batchTasks.length<=10?3:4,fetchTask59)"))fail("mobile Dive candidate concurrency guard missing");
 if(!index.includes('window.matchMedia("(pointer:coarse)").matches)?28:36'))fail("mobile Dive fetch-size guard missing");
-if(!index.includes(".mr58-map>.mr58-node:nth-of-type(n+5){display:none!important}"))fail("compact Dive card cap missing");
+if(!index.includes(".mr58-map>.mr58-node:nth-of-type(n+7){display:none!important}"))fail("compact Dive six-card cap missing");
 const player=await text("nico-player-v32.js");
 if(!player.includes('t.classList&&t.classList.contains("tool-view")'))fail("player route observer is not scoped to tool views");
 if(player.includes('new MutationObserver(function(){scheduleSurfaceRepair("mutation")})'))fail("player observer still reacts to every toolsModal mutation");
@@ -187,6 +187,16 @@ if(!unifiedUi.includes("Light mode contrast repair · v39.93"))fail("light-mode 
 if(!unifiedUi.includes('body[data-vsa-theme="light"] .v3989-dive-entry-copy h1'))fail("light Home Dive title contrast guard missing");
 if(!unifiedUi.includes('body[data-vsa-theme="light"] #v3982WorkerPill[data-state="err"]'))fail("light Worker pill contrast guard missing");
 if(!unifiedUi.includes(".v37-producer-song-actions"))fail("producer song action styles missing");
+
+// 16. Dive deck / Worker fallback / stale mobile nav regressions.
+if(index.includes(".mr58-node:nth-of-type(n+5){display:none}"))fail("legacy mobile Dive four-card cap returned");
+if(index.includes(".mr58-map>.mr58-node:nth-of-type(n+5){display:none!important}"))fail("compact phone Dive four-card cap returned");
+if(!index.includes("function transitionColor58(depth)"))fail("depth-aware Dive transition palette missing");
+if(!index.includes('dir==="side"?180:300'))fail("mobile Dive transition latency guard missing");
+if(!unifiedUi.includes('message:ok?"":"Worker /health 응답 이상",source:"health"'))fail("fallback Worker health source missing");
+if(!unifiedUi.includes('message:String(e&&e.message||e),source:"health"'))fail("fallback Worker network failure is not authoritative");
+if(!unifiedUi.includes(".app-bottom-nav,.mobile-section-nav"))fail("stale mobile section nav cleanup missing");
+if(!unifiedUi.includes("Dive interaction polish · v39.94"))fail("Dive interaction polish missing");
 
 note("classic JS syntax checked");
 note("inline scripts checked: "+inline);

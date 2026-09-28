@@ -3355,7 +3355,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.93.0 · Ocean HUD 2.0 · Dive Performance 1.0 · Direct APK Update 1.0 · Search Fix · Rank Turbo 1.0 · Native Brand 0.2 · Android Shell 0.1 · App Foundation 1.0 · Cross-Genre Bridge 1.0 · Relation Trust 3.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.94.0 · Ocean HUD 2.0 · Dive Performance 1.0 · Direct APK Update 1.0 · Search Fix · Rank Turbo 1.0 · Native Brand 0.2 · Android Shell 0.1 · App Foundation 1.0 · Cross-Genre Bridge 1.0 · Relation Trust 3.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -7843,7 +7843,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:(window.VocaDiveUpdater&&window.VocaDiveUpdater.version)||document.documentElement.dataset.vocaUi||"39.93.0",
+    version:(window.VocaDiveUpdater&&window.VocaDiveUpdater.version)||document.documentElement.dataset.vocaUi||"39.94.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -9618,7 +9618,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.93.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
+var VER="39.94.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -11378,17 +11378,17 @@ function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
   var base;
-  if(name==="detective")base=seq(["./detective-v11.js?v=39.93.0","./detective-v12.js?v=39.93.0","./detective-v13.js?v=39.93.0","./detective-v14.js?v=39.93.0","./detective-v16.js?v=39.93.0"]);
-  else if(name==="personal")base=seq(["./organizer-v22.js?v=39.93.0","./smart-v23.js?v=39.93.0","./playlist-v24.js?v=39.93.0"]);
-  else if(name==="discovery")base=load("./discovery-v20.js?v=39.93.0");
-  else if(name==="homeData")base=load("./vocalo-home-v28.js?v=39.93.0");
-  else if(name==="universe")base=load("./universe-search-v28.js?v=39.93.0");
-  else if(name==="player")base=load("./nico-player-v32.js?v=39.93.0");
-  else if(name==="deviceSync")base=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.93.0");
-  else if(name==="pwa")base=load("./pwa-v21.js?v=39.93.0");
+  if(name==="detective")base=seq(["./detective-v11.js?v=39.94.0","./detective-v12.js?v=39.94.0","./detective-v13.js?v=39.94.0","./detective-v14.js?v=39.94.0","./detective-v16.js?v=39.94.0"]);
+  else if(name==="personal")base=seq(["./organizer-v22.js?v=39.94.0","./smart-v23.js?v=39.94.0","./playlist-v24.js?v=39.94.0"]);
+  else if(name==="discovery")base=load("./discovery-v20.js?v=39.94.0");
+  else if(name==="homeData")base=load("./vocalo-home-v28.js?v=39.94.0");
+  else if(name==="universe")base=load("./universe-search-v28.js?v=39.94.0");
+  else if(name==="player")base=load("./nico-player-v32.js?v=39.94.0");
+  else if(name==="deviceSync")base=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.94.0");
+  else if(name==="pwa")base=load("./pwa-v21.js?v=39.94.0");
   else if(name==="v33")base=Promise.all([ensure("personal"),ensure("discovery")]).then(function(rows){
     if(rows.some(function(x){return x===false}))return false;
-    return seq(["./voca-app-v33.js?v=39.93.0","./voca-app-v33-1.js?v=39.93.0","./voca-app-v33-2.js?v=39.93.0","./voca-app-v33-3.js?v=39.93.0"]);
+    return seq(["./voca-app-v33.js?v=39.94.0","./voca-app-v33-1.js?v=39.94.0","./voca-app-v33-2.js?v=39.94.0","./voca-app-v33-3.js?v=39.94.0"]);
   });
   else base=Promise.resolve(false);
   var job=Promise.resolve(base).then(function(v){
@@ -11436,13 +11436,13 @@ if("requestIdleCallback" in window)requestIdleCallback(function(){ensure("pwa")}
 else setTimeout(function(){ensure("pwa")},12000);
 })();
 </script>
-<script src="./device-sync-v3938.js?v=39.93.0"></script>
-<script src="./app-platform-v3962.js?v=39.93.0"></script>
-<script src="./entitlements-v3962.js?v=39.93.0"></script>
-<script src="./account-v3962.js?v=39.93.0"></script>
-<script src="./native-shell-v3963.js?v=39.93.0"></script>
-<script src="./app-update-v3966.js?v=39.93.0"></script>
-<script src="./i18n-v3918.js?v=39.93.0"></script>\n<script src="./search-live-v3969.js?v=39.93.0"></script>
+<script src="./device-sync-v3938.js?v=39.94.0"></script>
+<script src="./app-platform-v3962.js?v=39.94.0"></script>
+<script src="./entitlements-v3962.js?v=39.94.0"></script>
+<script src="./account-v3962.js?v=39.94.0"></script>
+<script src="./native-shell-v3963.js?v=39.94.0"></script>
+<script src="./app-update-v3966.js?v=39.94.0"></script>
+<script src="./i18n-v3918.js?v=39.94.0"></script>\n<script src="./search-live-v3969.js?v=39.94.0"></script>
 
 <style id="v3946DivePathStyle">
 /* v39.46 · Dive Path 1.0 — graph-free guided discovery */
@@ -12751,7 +12751,7 @@ window.addEventListener("popstate",function(){setTimeout(function(){if(window.__
  .mr58-filters{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding:6px;margin:7px 0}.mr58-filters::-webkit-scrollbar{display:none}.mr58-filters>small,.mr58-filter,.mr61-match{flex:0 0 auto}.mr58-all{margin-left:0}
  .mr58-map{min-height:650px}.mr58-center{top:51%;width:calc(100% - 18px);max-width:390px}.mr58-center-main{grid-template-columns:88px minmax(0,1fr)}.mr58-center img,.mr58-center .noimg{width:88px}.mr58-center h2{font-size:13px}
  .mr58-node{width:44%;max-width:180px;grid-template-columns:50px minmax(0,1fr);padding:6px}.mr58-node img,.mr58-node .noimg{width:50px}.mr58-node .mr58-badges{display:none}
- .mr58-node:nth-of-type(n+5){display:none}
+ .mr58-node:nth-of-type(n+7){display:none}
  .mr58-links{display:none}
  .mr58-center-actions button{min-height:40px}
 }
@@ -13075,7 +13075,7 @@ function seaLayers58(depth){
 function scene58(d){
  var rows=relationRows58(d),c=d.center,dep=depth58(c);
  return '<div class="mr58-shell mr74-depth-'+dep+(liteOcean58()?' mr76-lite':'')+'" data-mr74-depth="'+dep+'">'+seaLayers58(dep)+'<div class="mr58-content">'+
-  '<div class="mr58-head"><div><small>VOCADIVE · OCEAN DIVE 1.3</small><h3>다음 곡 선택</h3><p>수층을 고르고 <b>이동</b>을 누르면 실제 잠수하듯 다음 곡으로 넘어갑니다. 깊어질수록 빛과 해류 분위기도 달라집니다.</p></div>'+summary58(rows)+'</div>'+
+  '<div class="mr58-head"><div><small>VOCADIVE · OCEAN DIVE 1.4</small><h3>다음 곡 선택</h3><p>수층을 고르고 <b>이동</b>을 누르면 실제 잠수하듯 다음 곡으로 넘어갑니다. 깊어질수록 빛과 해류 분위기도 달라집니다.</p></div>'+summary58(rows)+'</div>'+
   depthNav58(d)+'<details class="mr72-advanced"><summary>연결 조건 <span>유사곡 · 장르 · P · 보컬 · 시대</span></summary>'+filters58(d)+'</details>'+
   '<div class="mr77-route-head"><span><small>NEXT CURRENT · '+e58(DEPTH58[dep].short)+'</small><b>다음 이동 후보</b><i>카드를 누르면 연결 이유 · 이동 버튼은 즉시 다이브</i></span><em>'+rows.length+' ROUTES · '+fmt58(views58(c))+'회</em></div>'+
   '<div class="mr58-map">'+rows.map(function(x,i){return node58(x,i,c)}).join("")+center58(c,d)+(rows.length?"":'<div class="mr58-empty">현재 조건에 맞는 후보가 없습니다.<br>연결 조건을 줄이거나 다른 수층을 선택하세요.</div>')+'</div></div></div>'
@@ -13152,7 +13152,7 @@ function startScreen58(p){
  if(!p)return;
  try{if(typeof ensureUniverseToolbar39==="function")ensureUniverseToolbar39()}catch(_){}
  var h=q58("#v394UniverseHeader",p),t=h&&h.querySelector(".v394-universe-title");
- if(t)t.innerHTML='<small>VOCADIVE · OCEAN DIVE 1.3</small><h2>다이브</h2><p>곡 하나를 고르면 장르·스타일·P·보컬·시대·수층을 묶어 다음 곡으로 이어집니다.</p>';
+ if(t)t.innerHTML='<small>VOCADIVE · OCEAN DIVE 1.4</small><h2>다이브</h2><p>곡 하나를 고르면 장르·스타일·P·보컬·시대·수층을 묶어 다음 곡으로 이어집니다.</p>';
  var d=typeof state!=="undefined"?state.universeData:null;
  if(d&&d.center)return;
  var historyRows=(typeof state!=="undefined"&&Array.isArray(state.universeHistory))?state.universeHistory:[],lastDive=historyRows.length?historyRows[Math.max(0,Math.min(historyRows.length-1,Number(state.universeHistoryIndex)>=0?Number(state.universeHistoryIndex):historyRows.length-1))]:null;
@@ -13177,7 +13177,7 @@ function render58(d){
  var p=normalizePanel58();if(!p)return;
  var layout=q58(".universe-layout",p),ld=ensureRelationLoader58(p);
  if(ld){ld.className="mr58-loader";ld.style.display="none"}
- try{var h=q58("#v394UniverseHeader",p),t=h&&h.querySelector(".v394-universe-title");if(t)t.innerHTML='<small>VOCADIVE · OCEAN DIVE 1.3</small><h2>다이브</h2><p>같은 장르와 인접 장르 브리지를 함께 탐색하고, 장르·스타일·분위기·P·보컬·시대·수층을 교차해서 좁힙니다.</p>'}catch(_){}
+ try{var h=q58("#v394UniverseHeader",p),t=h&&h.querySelector(".v394-universe-title");if(t)t.innerHTML='<small>VOCADIVE · OCEAN DIVE 1.4</small><h2>다이브</h2><p>같은 장르와 인접 장르 브리지를 함께 탐색하고, 장르·스타일·분위기·P·보컬·시대·수층을 교차해서 좁힙니다.</p>'}catch(_){}
  var stage=q58(".universe-stage",p);if(stage)stage.innerHTML=scene58(d);
  bindOceanVisibility58();
  var info=q58("#universeInfo",p);if(info)info.innerHTML=side58(d.center,d);
@@ -13197,6 +13197,9 @@ function transitionOverlay58(){
  document.body.appendChild(o);return o
 }
 function transitionName58(dir){return dir==="down"?"심층으로 하강 중":dir==="up"?"수면 방향으로 상승 중":"해류를 따라 이동 중"}
+function transitionColor58(depth){
+ return ["#173a43","#122f39","#0e2832","#0b202a","#091820"][Math.max(0,Math.min(4,Number(depth)||0))]||"#0e2832"
+}
 function setMoving58(on){
  moving58=!!on;
  var p=q58("#universePanel");
@@ -13210,13 +13213,15 @@ function playTransition58(fromDepth,toDepth,title){
  var o=transitionOverlay58(),dir=toDepth>fromDepth?"down":toDepth<fromDepth?"up":"side";
  o.className="mr74-transition mr74-"+dir+" mr74-to-"+toDepth;
  o.dataset.fromDepth=String(fromDepth);o.dataset.toDepth=String(toDepth);
+ o.style.setProperty("--mr94-from",transitionColor58(fromDepth));
+ o.style.setProperty("--mr94-to",transitionColor58(toDepth));
  var b=o.querySelector("b"),s=o.querySelector("span"),ticks=o.querySelectorAll(".mr75-trans-depth i");
  if(b)b.textContent=transitionName58(dir);
  if(s)s.textContent=(DEPTH58[toDepth]&&DEPTH58[toDepth].name?DEPTH58[toDepth].name:"다음 수층")+" · "+String(title||"다음 곡");
  ticks.forEach(function(x,i){x.classList.toggle("from",i===fromDepth);x.classList.toggle("to",i===toDepth);x.classList.toggle("passed",dir==="down"?i>=fromDepth&&i<=toDepth:dir==="up"?i<=fromDepth&&i>=toDepth:i===toDepth)});
  document.body.classList.add("mr74-transitioning");
  requestAnimationFrame(function(){o.classList.add("show")});
- var ms=liteOcean58()?(dir==="side"?220:360):(dir==="side"?360:560);
+ var ms=liteOcean58()?(dir==="side"?180:300):(dir==="side"?260:430);
  return new Promise(function(resolve){setTimeout(resolve,ms)})
 }
 function endTransition58(){
@@ -14058,19 +14063,20 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
 #universePanel.v3958-rel .mr58-node-go{position:relative;overflow:hidden}
 #universePanel.v3958-rel .mr58-node-go:after{content:"";position:absolute;inset:0;transform:translateX(-120%);background:linear-gradient(100deg,transparent,rgba(219,255,250,.14),transparent);animation:mr74ButtonSheen 4s ease-in-out infinite}
 .mr74-transition{position:fixed;inset:0;z-index:10050;display:grid;place-items:center;pointer-events:none;opacity:0;visibility:hidden;
- background:#031421;transition:opacity .18s ease,visibility .18s ease;overflow:hidden}
+ --mr94-from:#0e2832;--mr94-to:#0b202a;background:linear-gradient(180deg,var(--mr94-from),var(--mr94-to));
+ transition:opacity .14s ease,visibility .14s ease;overflow:hidden}
 .mr74-transition.show{opacity:1;visibility:visible}
-.mr74-transition.mr74-down{background:linear-gradient(180deg,#0b5271,#062c49 38%,#031628 72%,#010a14)}
-.mr74-transition.mr74-up{background:linear-gradient(180deg,#06182a,#073b60 52%,#1685a6 100%)}
-.mr74-transition.mr74-side{background:linear-gradient(120deg,#05293a,#073f53,#05293a)}
+.mr74-transition.mr74-down{background:linear-gradient(180deg,var(--mr94-from),var(--mr94-to))}
+.mr74-transition.mr74-up{background:linear-gradient(0deg,var(--mr94-from),var(--mr94-to))}
+.mr74-transition.mr74-side{background:linear-gradient(120deg,var(--mr94-from),var(--mr94-to),var(--mr94-from))}
 .mr74-trans-water{position:absolute;inset:-12%;overflow:hidden}
 .mr74-trans-water:before,.mr74-trans-water:after{content:"";position:absolute;inset:-20%;
- background-image:radial-gradient(circle,rgba(220,255,252,.55) 0 1px,transparent 1.5px);background-size:72px 83px;opacity:.4}
+ background-image:radial-gradient(circle,rgba(220,255,252,.40) 0 1px,transparent 1.5px);background-size:72px 83px;opacity:.26}
 .mr74-down.show .mr74-trans-water:before{animation:mr74DiveSweep .7s ease-out both}
 .mr74-up.show .mr74-trans-water:before{animation:mr74RiseSweep .7s ease-out both}
 .mr74-side.show .mr74-trans-water:before{animation:mr74SideSweep .5s ease-out both}
-.mr74-trans-stream{position:absolute;left:-20%;width:140%;height:110px;border-radius:50%;filter:blur(18px);
- background:linear-gradient(90deg,transparent,rgba(122,222,220,.22),rgba(109,160,212,.18),transparent)}
+.mr74-trans-stream{position:absolute;left:-20%;width:140%;height:92px;border-radius:50%;filter:blur(16px);
+ background:linear-gradient(90deg,transparent,rgba(122,222,220,.12),rgba(109,160,212,.10),transparent)}
 .mr74-trans-stream.s1{top:18%;transform:rotate(-8deg)}.mr74-trans-stream.s2{top:48%;transform:rotate(5deg)}.mr74-trans-stream.s3{top:76%;transform:rotate(-3deg)}
 .mr74-down.show .mr74-trans-stream{animation:mr74StreamsDown .72s ease-in both}.mr74-up.show .mr74-trans-stream{animation:mr74StreamsUp .72s ease-in both}.mr74-side.show .mr74-trans-stream{animation:mr74StreamsSide .55s ease-in both}
 .mr74-trans-copy{position:relative;z-index:4;display:grid;gap:5px;text-align:center;transform:translateY(8px);opacity:0;transition:.2s ease}
@@ -14324,7 +14330,7 @@ body.mr74-transitioning{overflow:hidden!important}
  #universePanel.v3958-rel .mr58-node-main{grid-template-columns:76px minmax(0,1fr)!important}
  #universePanel.v3958-rel .mr58-node-main img,
  #universePanel.v3958-rel .mr58-node-main .noimg{width:76px!important;height:50px!important}
- #universePanel.v3958-rel .mr58-map>.mr58-node:nth-of-type(n+5){display:none!important}
+ #universePanel.v3958-rel .mr58-map>.mr58-node:nth-of-type(n+7){display:none!important}
 }
 </style>
 
@@ -14419,5 +14425,5 @@ body.mr74-transitioning{overflow:hidden!important}
 }
 </style>
 
-<script src="./vocadive-ui-v3980.js?v=39.93.0"></script>\n</body>
+<script src="./vocadive-ui-v3980.js?v=39.94.0"></script>\n</body>
 </html>
