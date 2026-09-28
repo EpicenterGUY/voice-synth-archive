@@ -169,6 +169,8 @@ if(!unifiedUi.includes("--vd-bg:#091113"))fail("neutral VocaDive background toke
 if(!unifiedUi.includes("--vd-danger-bg:#1b1517"))fail("semantic error surface token missing");
 if(!unifiedUi.includes("Natural palette · v39.92"))fail("natural palette override missing");
 if(!unifiedUi.includes('body[data-vsa-theme="light"]{'))fail("light palette token override missing");
+if(!unifiedUi.includes('body[data-vsa-theme="light"] #v3980Dock'))fail("light dock palette override missing");
+if(!unifiedUi.includes('body[data-vsa-theme="light"].v37-ready>.app>.topbar'))fail("light topbar palette override missing");
 if(!index.includes("sampleLimit=Math.min(220"))fail("producer discovery sample cap missing");
 if(!index.includes("resolveSongProducers37(song,{fast:true,allowSibling:false})"))fail("producer fast first pass missing");
 if(!index.includes("Math.min(36,count*3)"))fail("producer rescue cap missing");
