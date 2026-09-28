@@ -26,9 +26,9 @@ async function boot(){
     [...state.localOriginals,...state.localArrangements].forEach(remember);
     Object.values(state.snapshots||{}).forEach(x=>x&&remember({...x,snapshot:true}));
     normalizePersistentIds();
-    bind();
     setView("home");
     renderLocalFirst();
+    bind();
     if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
     await connectRemote();
   }catch(err){
