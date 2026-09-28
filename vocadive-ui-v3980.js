@@ -699,8 +699,9 @@ function openSettings3982(){
   openRoute("settings29").then(function(){setTimeout(openSettingsDetails3983,30)})
 }
 function focusWorkerInput3984(){
-  var page=document.querySelector('[data-tool-view="settings29"]'),panel=document.getElementById("settingsPanel");
-  if(page)qa("details",page).forEach(function(d){d.open=true});
+  var page=document.querySelector('[data-tool-view="settings29"].active'),panel=document.getElementById("settingsPanel");
+  if(!page||page.hidden)return false;
+  qa("details",page).forEach(function(d){d.open=true});
   if(panel){
     var d=panel.closest("details");if(d)d.open=true;
     panel.scrollIntoView({behavior:"smooth",block:"start"});
@@ -716,7 +717,14 @@ function focusWorkerInput3984(){
 }
 function openWorkerSettings3984(){
   openSettings3982();
-  [70,220,520].forEach(function(ms){setTimeout(function(){openSettingsDetails3983();focusWorkerInput3984()},ms)})
+  var tries=0;
+  function aim(){
+    openSettingsDetails3983();
+    if(focusWorkerInput3984())return;
+    tries++;
+    if(tries<4)setTimeout(aim,tries===1?120:220)
+  }
+  setTimeout(aim,70)
 }
 function openSettingsDetails3983(){
   var page=document.querySelector('[data-tool-view="settings29"]');
