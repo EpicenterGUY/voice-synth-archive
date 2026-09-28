@@ -1,6 +1,6 @@
 {
-  "version": "39.94.0",
+  "version": "39.95.0",
   "channel": "web",
-  "publishedAt": "2026-09-28T17:42:00+09:00",
-  "notes": "Shows all six compact Dive candidates on phones, softens depth-aware transitions, fixes fallback Worker health recursion, and removes stale legacy mobile nav overlays."
+  "publishedAt": "2026-09-28T17:35:00+09:00",
+  "notes": "Keeps mobile Dive candidate details inline, fixes detail autoplay and Producer hub load recovery, and compacts Explore into a clearer two-column entry map on normal phone widths."
 }
