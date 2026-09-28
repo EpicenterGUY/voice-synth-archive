@@ -1,6 +1,6 @@
 {
-  "version": "39.86.0",
+  "version": "39.87.0",
   "channel": "web",
-  "publishedAt": "2026-09-28T15:20:00+09:00",
-  "notes": "Hardens Dive entry with direct core route activation plus a dock tap safety fallback."
+  "publishedAt": "2026-09-28T15:40:00+09:00",
+  "notes": "Reduces mobile Dive candidate workload, scopes player route observation, tightens folded mini-player density, and adds route fallback checks."
 }
