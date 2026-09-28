@@ -1,35 +1,38 @@
 <!doctype html>
 <html lang="ko" data-theme="dark">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#0b1020" />
-  <title>TouhouDive — 동방 원곡 탐색</title>
-  <meta name="description" content="동방 프로젝트 공식 원곡을 작품·캐릭터·분위기·시대 흐름으로 깊게 탐색하는 VocaDive 계열 앱." />
-  <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="icon" href="./icon.svg" />
-  <link rel="stylesheet" href="./styles.css" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0a0d17">
+  <title>TouhouDive — Original & Arrangement Explorer</title>
+  <meta name="description" content="동방 Project 원곡과 2차창작 어레인지를 계보로 연결해 탐색하고 앱 안에서 영상을 재생하는 음악 탐색 앱.">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg">
+  <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
   <div class="app-shell">
     <aside class="sidebar" id="sidebar">
       <div class="brand">
         <div class="brand-mark">東</div>
-        <div>
+        <div class="brand-copy">
           <strong>TouhouDive</strong>
-          <span>Original Music Explorer</span>
+          <span>幻想音楽探索</span>
         </div>
       </div>
+
       <nav class="nav">
-        <button class="nav-item is-active" data-view="home">⌂ <span>홈</span></button>
-        <button class="nav-item" data-view="dive">⌁ <span>다이브</span></button>
-        <button class="nav-item" data-view="works">▦ <span>작품별</span></button>
-        <button class="nav-item" data-view="library">♡ <span>보관함</span></button>
-        <button class="nav-item" data-view="history">◷ <span>기록</span></button>
+        <button class="nav-item is-active" data-view="home"><b>⌂</b><span>홈</span></button>
+        <button class="nav-item" data-view="discover"><b>✦</b><span>탐색</span></button>
+        <button class="nav-item" data-view="dive"><b>⌁</b><span>다이브</span></button>
+        <button class="nav-item" data-view="lineage"><b>⤢</b><span>원곡 계보</span></button>
+        <button class="nav-item" data-view="library"><b>♡</b><span>보관함</span></button>
+        <button class="nav-item" data-view="history"><b>◷</b><span>기록</span></button>
       </nav>
+
       <div class="sidebar-footer">
-        <div class="origin-chip">ZUN 원곡 ONLY</div>
-        <button id="themeBtn" class="ghost-btn">☼ 테마 전환</button>
+        <div class="build-chip"><span></span>TouhouDive v0.2 Alpha</div>
+        <button class="ghost-btn" id="themeBtn">◐ 테마 전환</button>
       </div>
     </aside>
 
@@ -37,37 +40,71 @@
       <header class="topbar">
         <button class="menu-btn" id="menuBtn" aria-label="메뉴">☰</button>
         <div class="searchbox">
-          <span>⌕</span>
-          <input id="searchInput" placeholder="곡명 · 작품 · 캐릭터 검색" autocomplete="off" />
+          <span class="search-icon">⌕</span>
+          <input id="searchInput" placeholder="곡명 · 서클 · 앨범 · 원곡 · 캐릭터 검색" autocomplete="off">
           <kbd>/</kbd>
         </div>
         <button class="random-btn" id="randomBtn">랜덤 다이브</button>
       </header>
 
-      <section class="hero">
-        <div>
-          <div class="eyebrow">VocaDive shared DNA · Touhou original focus</div>
-          <h1>한 곡에서 시작해<br><em>환상향 깊숙이.</em></h1>
-          <p>공식 원곡을 중심으로 작품, 보스/스테이지, 시대, 분위기를 따라 이어서 탐색합니다. 어레인지는 별도 계층으로 분리할 예정입니다.</p>
-          <div class="hero-actions">
-            <button class="primary-btn" id="heroDiveBtn">원곡에서 다이브</button>
-            <button class="secondary-btn" id="surpriseBtn">숨은 원곡 추천</button>
-          </div>
+      <section class="mode-strip">
+        <div class="mode-tabs" id="modeTabs">
+          <button class="mode-tab is-active" data-mode="all">전체</button>
+          <button class="mode-tab" data-mode="original">원곡</button>
+          <button class="mode-tab" data-mode="arrangement">2차창작</button>
         </div>
-        <div class="hero-orb" aria-hidden="true">
-          <div class="orb-ring r1"></div><div class="orb-ring r2"></div><div class="orb-core">幻想</div>
+        <div class="data-health">
+          <span class="health-dot"></span>
+          <span id="datasetStatus">데이터 로드 중</span>
         </div>
       </section>
 
-      <section class="quick-filters" id="quickFilters"></section>
+      <section class="hero" id="hero">
+        <div class="hero-copy">
+          <div class="eyebrow">TOUHOU MUSIC GRAPH</div>
+          <h1>원곡에서 어레인지까지,<br><em>한 계보로 다이브.</em></h1>
+          <p>동방 Project 공식 원곡과 수많은 2차창작 음악을 분리해서 보되, 원곡 관계로 다시 연결합니다. 영상이 확인된 곡은 앱 안에서 바로 재생합니다.</p>
+          <div class="hero-actions">
+            <button class="primary-btn" id="heroDiveBtn">지금 다이브</button>
+            <button class="secondary-btn" id="playableBtn">영상 있는 곡</button>
+          </div>
+        </div>
+        <div class="hero-panel">
+          <div class="hero-disc">
+            <div class="disc-label">TH</div>
+          </div>
+          <div class="hero-now">
+            <span>EXPLORE BY</span>
+            <strong>Original → Arrangement</strong>
+            <small>Circle · Vocal · Album · Mood · Era</small>
+          </div>
+        </div>
+      </section>
 
-      <section class="content-section">
+      <section class="stats-row">
+        <article><span>원곡</span><strong id="statOriginal">0</strong><small>공식 게임 seed</small></article>
+        <article><span>2차창작</span><strong id="statArrangement">0</strong><small>수집 파이프라인 seed</small></article>
+        <article><span>영상</span><strong id="statMedia">0</strong><small>인앱 재생 가능</small></article>
+        <article><span>관계</span><strong id="statLinks">0</strong><small>원곡 연결</small></article>
+      </section>
+
+      <section class="toolbar-row">
+        <div class="filter-scroller" id="quickFilters"></div>
+        <select id="sortSelect" class="sort-select" aria-label="정렬">
+          <option value="recommend">추천순</option>
+          <option value="year-desc">최신순</option>
+          <option value="year-asc">오래된순</option>
+          <option value="title">가나다/문자순</option>
+        </select>
+      </section>
+
+      <section class="content-section" id="catalogSection">
         <div class="section-head">
           <div>
-            <span class="eyebrow">오늘의 입구</span>
-            <h2 id="sectionTitle">원곡 추천</h2>
+            <span class="eyebrow">DISCOVER</span>
+            <h2 id="sectionTitle">오늘의 다이브 입구</h2>
           </div>
-          <button class="text-btn" id="refreshBtn">추천 새로고침 ↻</button>
+          <button class="text-btn" id="refreshBtn">새로고침 ↻</button>
         </div>
         <div class="track-grid" id="trackGrid"></div>
       </section>
@@ -75,14 +112,14 @@
       <section class="content-section" id="diveSection">
         <div class="section-head">
           <div>
-            <span class="eyebrow">RELATION MAP</span>
+            <span class="eyebrow">RELATION ENGINE</span>
             <h2>다이브 흐름</h2>
           </div>
-          <span class="hint">곡을 누르면 연결 근거가 바뀝니다</span>
+          <span class="hint">원곡 공유 · 서클 · 보컬 · 분위기 · 시대를 조합</span>
         </div>
-        <div id="diveMap" class="dive-map empty-state">
+        <div class="dive-map empty-state" id="diveMap">
           <strong>아직 시작곡이 없습니다.</strong>
-          <span>추천곡이나 검색 결과에서 한 곡을 골라보세요.</span>
+          <span>아무 곡이나 골라 ‘다이브’를 눌러보세요.</span>
         </div>
       </section>
     </main>
@@ -95,6 +132,24 @@
 
   <div class="scrim" id="scrim"></div>
   <div class="toast" id="toast"></div>
+
+  <section class="player-shell" id="playerShell" hidden>
+    <div class="player-video" id="playerVideo"></div>
+    <div class="player-copy">
+      <span id="playerType">NOW PLAYING</span>
+      <strong id="playerTitle">-</strong>
+      <small id="playerMeta">-</small>
+    </div>
+    <div class="player-controls">
+      <button id="playerPrev" title="이전 곡">‹</button>
+      <button id="playerNext" title="다음 곡">›</button>
+      <button id="playerMini" title="미니 플레이어">▱</button>
+      <button id="playerExpand" title="크게 보기" hidden>□</button>
+      <button id="playerClose" title="닫기">×</button>
+    </div>
+  </section>
+
+  <script src="./media.js"></script>
   <script src="./app.js" type="module"></script>
 </body>
 </html>
