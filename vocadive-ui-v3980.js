@@ -1,10 +1,10 @@
-/* VocaDive Unified UI v39.96.0
+/* VocaDive Unified UI v39.97.0
  * YouTube-style app shell, cards, player continuity and route recovery.
  */
 (function(){
 "use strict";
 
-var VERSION="39.96.0";
+var VERSION="39.97.0";
 var raf=0,observer=null,lastRoute="home",navSeq3985=0,workerCheckTimer3986=0;
 var workerState3986={ok:null,reason:"",endpoint:"",at:0};
 
@@ -989,7 +989,7 @@ body[data-vsa-theme="light"] #v3980MenuBtn{background:#edf1f0!important;color:#1
 
 
 
-/* Theme contrast contract · v39.96
+/* Theme contrast contract · v39.97
    Light pages use darker secondary text; Dive remains intentionally dark in both themes. */
 body[data-vsa-theme="light"] #v3980Dock button{color:#536b68!important}
 body[data-vsa-theme="light"] #v3982Menu button small,
@@ -1128,11 +1128,113 @@ body[data-vsa-theme="light"] #v3982Menu,
 body[data-vsa-theme="light"] #v3980Dock,
 body[data-vsa-theme="light"] .topbar{color:#17302e!important}
 
+
+
+/* Light discovery + high-definition thumbnail contract · v39.97
+   Legacy discovery/taste cards had dark-theme !important rules that survived light mode.
+   Keep Dive dark, but make normal discovery surfaces genuinely light and readable. */
+body.v37-ready[data-vsa-theme="light"] :is(.discovery-card,.gem-card){
+ background:#fff!important;border-color:#cbdedb!important;color:#183432!important;
+ box-shadow:0 9px 24px rgba(28,63,59,.07)!important
+}
+body.v37-ready[data-vsa-theme="light"] :is(.discovery-card:hover,.gem-card:hover){
+ border-color:#9fc8c2!important;box-shadow:0 12px 28px rgba(28,63,59,.10)!important
+}
+body.v37-ready[data-vsa-theme="light"] :is(.discovery-title,.gem-title,.gem-topline a){
+ color:#123936!important
+}
+body.v37-ready[data-vsa-theme="light"] :is(.discovery-meta,.gem-meta,.discovery-reason,.rank-note,.gem-status,.taste-summary,.route-info,.help,.gem-explain){
+ color:#526a67!important
+}
+body.v37-ready[data-vsa-theme="light"] .discovery-tag{
+ background:#0f625c!important;border-color:#0f625c!important;color:#f8fffd!important
+}
+body.v37-ready[data-vsa-theme="light"] :is(.gem-reason,.v37-producer-meta span){
+ background:#e8f3f1!important;border-color:#c5dcd8!important;color:#315f59!important
+}
+body.v37-ready[data-vsa-theme="light"] :is(.recommend-prompt-box,.taste-builder,.discovery-controls,.gem-controls,.detective-controlbar,.v37-producer-controls,.v37-safety-card,.v37-ice-extra){
+ background:#fff!important;border-color:#cbdedb!important;box-shadow:none!important
+}
+body.v37-ready[data-vsa-theme="light"] :is(.btn,.mini-btn,.taste-chip,.detective-chip,.detective-mode-btn){
+ background:#f4f8f7!important;border-color:#c6d9d6!important;color:#183432!important;
+ box-shadow:none!important
+}
+body.v37-ready[data-vsa-theme="light"] .btn.primary{
+ background:linear-gradient(135deg,#71ddd2 0%,#74b9ee 52%,#887cff 100%)!important;
+ border-color:transparent!important;color:#07171b!important
+}
+body.v37-ready[data-vsa-theme="light"] :is(input,textarea,select){
+ background:#fff!important;border-color:#c5d9d5!important;color:#173431!important
+}
+body.v37-ready[data-vsa-theme="light"] :is(input,textarea)::placeholder{color:#6a7d7a!important}
+body.v37-ready[data-vsa-theme="light"] .control label{color:#405a57!important}
+body.v37-ready[data-vsa-theme="light"] :is(.discovery-card img,.gem-card img,.v39-thumb img,.v399-related-thumb img){
+ background:#e8efed!important;image-rendering:auto!important
+}
+
 @media(prefers-reduced-motion:reduce){
  *{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
 `;
   document.head.appendChild(s)
+}
+
+
+var thumbObserver3997=null;
+function highResThumbnailUrl3997(raw){
+  var src=String(raw||"").trim();if(!src)return src;
+  try{
+    var u=new URL(src,location.href),host=String(u.hostname||"").toLowerCase();
+    if(host==="nicovideo.cdn.nimg.jp"&&/^\/thumbnails\/\d+\/[^/]+$/i.test(u.pathname)){
+      if(/\.M$/i.test(u.pathname))u.pathname=u.pathname.replace(/\.M$/i,".L");
+      else if(!/\.L$/i.test(u.pathname))u.pathname+=".L";
+      return u.href
+    }
+    if(/(^|\.)smilevideo\.jp$/i.test(host)){
+      var id=u.searchParams.get("i");
+      if(id&&/^\d+(?:\.[A-Za-z0-9]+)?$/.test(id)){
+        id=id.replace(/\.M$/i,"").replace(/\.L$/i,"");
+        u.searchParams.set("i",id+".L");
+        return u.href
+      }
+    }
+  }catch(_){}
+  return src
+}
+function upgradeThumbnail3997(img){
+  if(!img||img.nodeType!==1||String(img.tagName).toUpperCase()!=="IMG")return;
+  var src=String(img.getAttribute("src")||"").trim();if(!src)return;
+  if(img.dataset.v3997HqFailed===src)return;
+  var hq=highResThumbnailUrl3997(src);if(!hq||hq===src)return;
+  if(img.dataset.v3997HqSrc===hq&&String(img.getAttribute("src")||"")===hq)return;
+  img.dataset.v3997OriginalSrc=src;
+  img.dataset.v3997HqSrc=hq;
+  img.decoding="async";
+  img.addEventListener("error",function(){
+    if(img.dataset.v3997HqSrc!==hq)return;
+    var fallback=img.dataset.v3997OriginalSrc||src;
+    img.dataset.v3997HqFailed=fallback;
+    img.removeAttribute("srcset");
+    if(String(img.getAttribute("src")||"")!==fallback)img.setAttribute("src",fallback)
+  },{once:true});
+  img.setAttribute("src",hq)
+}
+function scanThumbnails3997(root){
+  if(!root)return;
+  if(root.nodeType===1&&String(root.tagName).toUpperCase()==="IMG")upgradeThumbnail3997(root);
+  if(root.querySelectorAll)Array.prototype.forEach.call(root.querySelectorAll("img"),upgradeThumbnail3997)
+}
+function installHiResThumb3997(){
+  window.VSAHighResThumbnail3997=highResThumbnailUrl3997;
+  scanThumbnails3997(document.documentElement);
+  if(thumbObserver3997||!window.MutationObserver)return;
+  thumbObserver3997=new MutationObserver(function(muts){
+    muts.forEach(function(m){
+      if(m.type==="attributes"){upgradeThumbnail3997(m.target);return}
+      Array.prototype.forEach.call(m.addedNodes||[],scanThumbnails3997)
+    })
+  });
+  thumbObserver3997.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:["src"]})
 }
 
 function syncWorkerPill(){
@@ -1807,7 +1909,7 @@ function bind(){
 }
 function boot(){
   window.__VSA_WORKER_TOP_OWNER=true;
-  addStyle();ensureTopbar();ensureDock();watchLegacyNav3983();bind();scheduleRepair();syncViewport3986();
+  addStyle();installHiResThumb3997();ensureTopbar();ensureDock();watchLegacyNav3983();bind();scheduleRepair();syncViewport3986();
   document.documentElement.dataset.vocaUi=VERSION;
   checkWorker3986(420);
   setTimeout(function(){ensureTopbar();ensureDock();cleanupLegacyNav();scheduleRepair();syncViewport3986()},250);
