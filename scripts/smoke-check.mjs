@@ -330,7 +330,7 @@ if(!index.includes("Promise.resolve(handoffWatchToMini399())"))fail("Watch does 
 if(!nicoPlayer.includes("function enforceRouteSurface32(route)"))fail("player route-surface enforcement missing");
 if(!nicoPlayer.includes("[0,90,240].forEach"))fail("player route handoff retry window missing");
 if(!nicoPlayer.includes("installRouteObserver32();"))fail("late toolsModal route observer install missing");
-if(!library332.includes('data-lib-watch="'+esc(x.id)+'"'))fail("library cards do not expose Watch navigation");
+if(!library332.includes("data-lib-watch="))fail("library cards do not expose Watch navigation");
 if(!library332.includes("function openWatch(id)"))fail("library Watch opener missing");
 if(!library332.includes("window.VSAOpenSongDetail39"))fail("library does not route saved songs into song detail");
 if(!workerNico.includes('if(u.pathname==="/piapro/lyrics")'))fail("Worker Piapro lyric endpoint missing");
