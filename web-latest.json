@@ -1,6 +1,6 @@
 {
-  "version": "39.85.0",
+  "version": "39.86.0",
   "channel": "web",
-  "publishedAt": "2026-09-28T15:00:00+09:00",
-  "notes": "Stops settings/route observer render loops, reduces Dive DOM overhead, polishes Fold settings layout, and stabilizes Worker settings focus."
+  "publishedAt": "2026-09-28T15:20:00+09:00",
+  "notes": "Hardens Dive entry with direct core route activation plus a dock tap safety fallback."
 }
