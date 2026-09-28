@@ -3355,7 +3355,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.90.0 · Ocean HUD 2.0 · Dive Performance 1.0 · Direct APK Update 1.0 · Search Fix · Rank Turbo 1.0 · Native Brand 0.2 · Android Shell 0.1 · App Foundation 1.0 · Cross-Genre Bridge 1.0 · Relation Trust 3.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.91.0 · Ocean HUD 2.0 · Dive Performance 1.0 · Direct APK Update 1.0 · Search Fix · Rank Turbo 1.0 · Native Brand 0.2 · Android Shell 0.1 · App Foundation 1.0 · Cross-Genre Bridge 1.0 · Relation Trust 3.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -4666,8 +4666,13 @@ function toast(msg){
   clearTimeout(window.__toast); window.__toast=setTimeout(()=>el.classList.remove("show"),2400);
 }
 function setStatus(kind,text){
+  const label=String(text||"");
+  if(window.__VSA_WORKER_TOP_OWNER===true&&!/^Worker\b/i.test(label)){
+    window.__VSA_LAST_ACTIVITY_STATUS={kind:String(kind||""),text:label,at:Date.now()};
+    return;
+  }
   $("#statusDot").className="dot "+(kind||"");
-  $("#statusText").textContent=text;
+  $("#statusText").textContent=label;
 }
 
 
@@ -4922,11 +4927,21 @@ async function fetchJsonRaw(url, timeout=12000){
     const r=await fetch(url,{signal:ctl.signal,headers:{"Accept":"application/json"}});
     const text=await r.text();
     if(!r.ok){
-      if(r.status===414) throw new Error("HTTP 414: 검색 조건이 너무 길어 서버가 거절했습니다.");
-      throw new Error(`HTTP ${r.status}: ${text.slice(0,160)}`);
+      const e=new Error(r.status===414
+        ?"HTTP 414: 검색 조건이 너무 길어 서버가 거절했습니다."
+        :`HTTP ${r.status}: ${text.slice(0,160)}`);
+      e.status=r.status;
+      e.workerReachable=true;
+      throw e;
     }
     let data;
-    try{ data=JSON.parse(text); }catch{ throw new Error("JSON 응답이 아닙니다."); }
+    try{ data=JSON.parse(text); }
+    catch{
+      const e=new Error("JSON 응답이 아닙니다.");
+      e.status=r.status;
+      e.workerReachable=true;
+      throw e;
+    }
     return data;
   } finally { clearTimeout(timer); }
 }
@@ -4954,7 +4969,9 @@ async function fetchNico(opts){
   try{
     const data=await fetchJsonRaw(relayUrl(opts));
     if(!(data && data.meta && typeof data.meta.totalCount!=="undefined")){
-      throw new Error("니코동 API 응답 형식이 올바르지 않습니다.");
+      const e=new Error("니코동 API 응답 형식이 올바르지 않습니다.");
+      e.workerReachable=true;
+      throw e;
     }
     state.route={name:"전용 Cloudflare Worker", endpoint:base};
     state.mode="전용 Worker";
@@ -4962,10 +4979,17 @@ async function fetchNico(opts){
     try{window.dispatchEvent(new CustomEvent("vsa:worker-status",{detail:{ok:true,endpoint:base}}))}catch(_){}
     return data;
   }catch(e){
-    state.route=null;
     state.lastError=String(e?.message||e);
-    $("#routeInfo").textContent="Worker 연결 실패: "+state.lastError;
-    try{window.dispatchEvent(new CustomEvent("vsa:worker-status",{detail:{ok:false,reason:"network",endpoint:base,message:state.lastError}}))}catch(_){}
+    const reachable=e&&e.workerReachable===true;
+    if(reachable){
+      state.route={name:"전용 Cloudflare Worker",endpoint:base};
+      $("#routeInfo").textContent="Worker 연결됨 · API 요청 오류: "+state.lastError;
+      try{window.dispatchEvent(new CustomEvent("vsa:worker-status",{detail:{ok:true,reason:"api-error",endpoint:base,message:state.lastError}}))}catch(_){}
+    }else{
+      state.route=null;
+      $("#routeInfo").textContent="Worker 연결 실패: "+state.lastError;
+      try{window.dispatchEvent(new CustomEvent("vsa:worker-status",{detail:{ok:false,reason:"network",endpoint:base,message:state.lastError}}))}catch(_){}
+    }
     throw e;
   }
 }
@@ -7819,7 +7843,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:(window.VocaDiveUpdater&&window.VocaDiveUpdater.version)||document.documentElement.dataset.vocaUi||"39.90.0",
+    version:(window.VocaDiveUpdater&&window.VocaDiveUpdater.version)||document.documentElement.dataset.vocaUi||"39.91.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -8106,16 +8130,9 @@ async function inferProducerFromSibling37(song){
 }
 function producerResolveCacheKey37(id){return "vsa37ProducerPV:"+String(id||"").toLowerCase()+":v3"}
 async function fetchExactNicoSong37(song){
-  const id=String(song?.contentId||"").trim();
-  if(!/^(sm|nm|so)\d+$/i.test(id)||typeof fetchNico!=="function")return song;
-  try{
-    const d=await fetchNico({
-      year:"all",limit:10,offset:0,mode:"free",query:id,scope:"all",
-      queryTargets:"contentId",sort:"-viewCounter",applyYear:false,applyTier:false
-    });
-    const exact=(d.data||[]).find(function(x){return String(x&&x.contentId||"").toLowerCase()===id.toLowerCase()});
-    return exact?Object.assign({},song||{},exact):song
-  }catch(_){return song}
+  // Niconico Search API의 _targets에는 contentId를 사용할 수 없다.
+  // 발굴 후보는 이미 contentId/title/description/tags를 포함하므로 기존 검색 행을 그대로 사용한다.
+  return song;
 }
 async function resolveSongProducers37(song){
   const id=String(song?.contentId||"").trim(),key=producerResolveCacheKey37(id),merged=new Map();
@@ -9502,7 +9519,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.90.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
+var VER="39.91.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -10050,19 +10067,9 @@ async function fetchWatchMeta399(song){
   vocaCacheSet399(song.contentId,out);return out
 }
 async function enrichRelatedViews399(rows){
-  rows=(rows||[]).filter(function(x){return x&&/^(sm|nm|so)\d+$/i.test(String(x.contentId||""))});
-  if(!rows.length||typeof fetchNico!=="function")return rows;
-  var live=new Map(),ids=rows.map(function(x){return x.contentId});
-  for(var i=0;i<ids.length;i+=20){
-    var group=ids.slice(i,i+20);
-    try{
-      var d=await fetchNico({year:"all",limit:100,offset:0,mode:"free",query:group.join(" OR "),scope:"all",queryTargets:"contentId",sort:"-viewCounter",applyYear:false,applyTier:false});
-      (d.data||[]).forEach(function(s){if(s&&s.contentId)live.set(s.contentId,s)})
-    }catch(e){}
-  }
-  return rows.map(function(x){
-    var y=live.get(x.contentId);return y?Object.assign({},x,y,{__voca:x.__voca,__original:x.__original||false}):x
-  })
+  // contentId는 Niconico Search API의 검색 target이 아니므로 ID OR 재조회는 400을 만든다.
+  // 관계 후보가 가진 기존 메타데이터를 유지하고, 유효한 태그/제목 검색 단계에서만 Worker를 사용한다.
+  return (rows||[]).filter(function(x){return x&&/^(sm|nm|so)\d+$/i.test(String(x.contentId||""))})
 }
 async function fetchRelatedNico399(song){
   if(typeof fetchNico!=="function")return [];
@@ -11263,17 +11270,17 @@ function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
   var base;
-  if(name==="detective")base=seq(["./detective-v11.js?v=39.90.0","./detective-v12.js?v=39.90.0","./detective-v13.js?v=39.90.0","./detective-v14.js?v=39.90.0","./detective-v16.js?v=39.90.0"]);
-  else if(name==="personal")base=seq(["./organizer-v22.js?v=39.90.0","./smart-v23.js?v=39.90.0","./playlist-v24.js?v=39.90.0"]);
-  else if(name==="discovery")base=load("./discovery-v20.js?v=39.90.0");
-  else if(name==="homeData")base=load("./vocalo-home-v28.js?v=39.90.0");
-  else if(name==="universe")base=load("./universe-search-v28.js?v=39.90.0");
-  else if(name==="player")base=load("./nico-player-v32.js?v=39.90.0");
-  else if(name==="deviceSync")base=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.90.0");
-  else if(name==="pwa")base=load("./pwa-v21.js?v=39.90.0");
+  if(name==="detective")base=seq(["./detective-v11.js?v=39.91.0","./detective-v12.js?v=39.91.0","./detective-v13.js?v=39.91.0","./detective-v14.js?v=39.91.0","./detective-v16.js?v=39.91.0"]);
+  else if(name==="personal")base=seq(["./organizer-v22.js?v=39.91.0","./smart-v23.js?v=39.91.0","./playlist-v24.js?v=39.91.0"]);
+  else if(name==="discovery")base=load("./discovery-v20.js?v=39.91.0");
+  else if(name==="homeData")base=load("./vocalo-home-v28.js?v=39.91.0");
+  else if(name==="universe")base=load("./universe-search-v28.js?v=39.91.0");
+  else if(name==="player")base=load("./nico-player-v32.js?v=39.91.0");
+  else if(name==="deviceSync")base=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.91.0");
+  else if(name==="pwa")base=load("./pwa-v21.js?v=39.91.0");
   else if(name==="v33")base=Promise.all([ensure("personal"),ensure("discovery")]).then(function(rows){
     if(rows.some(function(x){return x===false}))return false;
-    return seq(["./voca-app-v33.js?v=39.90.0","./voca-app-v33-1.js?v=39.90.0","./voca-app-v33-2.js?v=39.90.0","./voca-app-v33-3.js?v=39.90.0"]);
+    return seq(["./voca-app-v33.js?v=39.91.0","./voca-app-v33-1.js?v=39.91.0","./voca-app-v33-2.js?v=39.91.0","./voca-app-v33-3.js?v=39.91.0"]);
   });
   else base=Promise.resolve(false);
   var job=Promise.resolve(base).then(function(v){
@@ -11321,13 +11328,13 @@ if("requestIdleCallback" in window)requestIdleCallback(function(){ensure("pwa")}
 else setTimeout(function(){ensure("pwa")},12000);
 })();
 </script>
-<script src="./device-sync-v3938.js?v=39.90.0"></script>
-<script src="./app-platform-v3962.js?v=39.90.0"></script>
-<script src="./entitlements-v3962.js?v=39.90.0"></script>
-<script src="./account-v3962.js?v=39.90.0"></script>
-<script src="./native-shell-v3963.js?v=39.90.0"></script>
-<script src="./app-update-v3966.js?v=39.90.0"></script>
-<script src="./i18n-v3918.js?v=39.90.0"></script>\n<script src="./search-live-v3969.js?v=39.90.0"></script>
+<script src="./device-sync-v3938.js?v=39.91.0"></script>
+<script src="./app-platform-v3962.js?v=39.91.0"></script>
+<script src="./entitlements-v3962.js?v=39.91.0"></script>
+<script src="./account-v3962.js?v=39.91.0"></script>
+<script src="./native-shell-v3963.js?v=39.91.0"></script>
+<script src="./app-update-v3966.js?v=39.91.0"></script>
+<script src="./i18n-v3918.js?v=39.91.0"></script>\n<script src="./search-live-v3969.js?v=39.91.0"></script>
 
 <style id="v3946DivePathStyle">
 /* v39.46 · Dive Path 1.0 — graph-free guided discovery */
@@ -13814,7 +13821,11 @@ function render73(route){
 async function check73(manual){
  if(checking)return false;
  var base=workerBase73(),route=currentRoute73();
- if(!base){last={ok:false,reason:"missing",message:"Worker 주소가 없습니다.",endpoint:""};render73(route);if(manual)openSettings73();return false}
+ if(!base){
+  last={ok:false,reason:"missing",message:"Worker 주소가 없습니다.",endpoint:""};
+  try{window.dispatchEvent(new CustomEvent("vsa:worker-status",{detail:{ok:false,reason:"missing",endpoint:"",message:last.message,source:"health"}}))}catch(_){}
+  render73(route);if(manual)openSettings73();return false
+ }
  checking=true;render73(route);
  try{
   var ctl=new AbortController(),timer=setTimeout(function(){ctl.abort()},8000);
@@ -13823,12 +13834,13 @@ async function check73(manual){
   var data=await r.json().catch(function(){return{}});
   if(!r.ok||!data||data.ok!==true)throw new Error("Worker /health 응답 이상");
   last={ok:true,reason:"",message:"",endpoint:base};
-  try{window.dispatchEvent(new CustomEvent("vsa:worker-status",{detail:{ok:true,endpoint:base}}))}catch(_){}
+  try{window.dispatchEvent(new CustomEvent("vsa:worker-status",{detail:{ok:true,endpoint:base,source:"health"}}))}catch(_){}
   render73(route);
   try{if(manual&&typeof toast==="function")toast("Worker 연결 정상")}catch(_){}
   return true
  }catch(e){
   last={ok:false,reason:"network",message:String(e&&e.message||e),endpoint:base};
+  try{window.dispatchEvent(new CustomEvent("vsa:worker-status",{detail:{ok:false,reason:"network",endpoint:base,message:last.message,source:"health"}}))}catch(_){}
   render73(route);
   try{if(manual&&typeof toast==="function")toast("Worker 연결 실패 · 설정을 확인하세요.")}catch(_){}
   return false
@@ -14299,5 +14311,5 @@ body.mr74-transitioning{overflow:hidden!important}
 }
 </style>
 
-<script src="./vocadive-ui-v3980.js?v=39.90.0"></script>\n</body>
+<script src="./vocadive-ui-v3980.js?v=39.91.0"></script>\n</body>
 </html>

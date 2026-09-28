@@ -4,8 +4,9 @@
 (function(){
 "use strict";
 
-var VERSION="39.90.0";
+var VERSION="39.91.0";
 var raf=0,observer=null,lastRoute="home",navSeq3985=0,workerCheckTimer3986=0;
+var workerState3986={ok:null,reason:"",endpoint:"",at:0};
 
 function q(sel,root){return (root||document).querySelector(sel)}
 function qa(sel,root){return Array.prototype.slice.call((root||document).querySelectorAll(sel))}
@@ -794,16 +795,25 @@ function workerBase3986(){
 }
 function applyWorkerEvent3986(detail){
   detail=detail||{};
-  var base=workerBase3986(),txt=document.getElementById("statusText"),snap=document.getElementById("snapshotLabel");
-  var ok=detail.ok===true,missing=!base||detail.reason==="missing";
+  var base=workerBase3986(),endpoint=String(detail.endpoint||base||"").replace(/\/+$/,""),txt=document.getElementById("statusText"),snap=document.getElementById("snapshotLabel");
+  if(base&&endpoint&&endpoint!==base)return;
+  var ok=detail.ok===true,missing=!base||detail.reason==="missing",source=String(detail.source||"");
+  if(detail.ok===false&&!missing&&source!=="health"){
+    // 개별 API 요청 실패만으로 Worker 자체를 끊김 처리하지 않는다.
+    // 짧은 지연 뒤 /health 결과가 실제 연결 상태를 확정한다.
+    checkWorker3986(160);
+    return
+  }
+  workerState3986={ok:ok,reason:String(detail.reason||""),endpoint:endpoint||base,at:Date.now()};
+  window.__VSA_WORKER_STATE3986=workerState3986;
   var label=ok?"Worker 연결됨":missing?"Worker 설정 필요":"Worker 연결 실패";
   try{
     if(typeof window.setStatus==="function")window.setStatus(ok?"live":missing?"warn":"err",label);
     else if(txt)txt.textContent=label
   }catch(_){if(txt)txt.textContent=label}
-  if(snap)snap.textContent=ok?"검색 연결 정상":missing?"웹검색은 사용 가능":"Worker 연결 확인 필요";
+  if(snap)snap.textContent=ok?(detail.reason==="api-error"?"Worker 정상 · 요청 오류":"검색 연결 정상"):missing?"웹검색은 사용 가능":"Worker 연결 확인 필요";
   try{
-    if(ok)localStorage.setItem("vsa.worker.lastOk3986",JSON.stringify({endpoint:String(detail.endpoint||base),at:Date.now()}));
+    if(ok)localStorage.setItem("vsa.worker.lastOk3986",JSON.stringify({endpoint:endpoint||base,at:Date.now()}));
     else if(detail.ok===false)localStorage.removeItem("vsa.worker.lastOk3986")
   }catch(_){}
   syncWorkerPill()
@@ -1440,6 +1450,7 @@ function bind(){
   }
 }
 function boot(){
+  window.__VSA_WORKER_TOP_OWNER=true;
   addStyle();ensureTopbar();ensureDock();watchLegacyNav3983();bind();scheduleRepair();syncViewport3986();
   document.documentElement.dataset.vocaUi=VERSION;
   checkWorker3986(420);

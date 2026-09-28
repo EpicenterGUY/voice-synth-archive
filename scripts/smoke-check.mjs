@@ -155,6 +155,15 @@ if(!unifiedUi.includes("[data-v37-feature-id]"))fail("feature-card recovery list
 if(!index.includes("data-feature-id=\"'+id+'\" data-v37-feature-id=\"'+id+'\""))fail("Explore feature cards bypass route recovery");
 if(!index.includes("r.bottom>window.innerHeight-88"))fail("mobile Dive detail scroll guard missing");
 
+// 13. Worker truth / invalid Niconico target regressions.
+if(!index.includes("e.workerReachable=true"))fail("HTTP response reachability marker missing");
+if(!index.includes('reason:"api-error"'))fail("Worker API-error classification missing");
+if(index.includes('queryTargets:"contentId"'))fail("invalid Niconico contentId search target returned");
+if(!index.includes('source:"health"'))fail("authoritative Worker health event source missing");
+if(!index.includes("__VSA_WORKER_TOP_OWNER"))fail("top Worker status ownership guard missing");
+if(!unifiedUi.includes("__VSA_WORKER_TOP_OWNER=true"))fail("unified UI does not claim Worker status pill");
+if(!unifiedUi.includes('source!=="health"'))fail("non-health Worker failure debounce missing");
+
 note("classic JS syntax checked");
 note("inline scripts checked: "+inline);
 note("local references checked: "+refs.size);

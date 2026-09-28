@@ -1,6 +1,6 @@
 {
-  "version": "39.90.0",
+  "version": "39.91.0",
   "channel": "web",
-  "publishedAt": "2026-09-28T16:45:00+09:00",
-  "notes": "Rebuilds Explore as an entry-point map, verifies feature-route transitions, shows primary relation reasons on Dive cards, and compacts the candidate detail panel."
+  "publishedAt": "2026-09-28T16:33:00+09:00",
+  "notes": "Stabilizes Worker connection truth, stops API request errors from flipping the connection pill, and removes invalid Niconico contentId target queries in Producer discovery and Dive enrichment."
 }
