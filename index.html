@@ -9668,11 +9668,11 @@ function continueRows396(){
   return out.slice(0,8)
 }
 function heroHtml396(hit){
-  if(!hit||!hit.song)return '<section class="v396-hero"><div class="v396-hero-copy"><div class="v396-hero-kicker">HOME 3.0</div><h2>첫 추천을 준비해볼까요?</h2><p>추천 피드를 한 번 불러오면 여기에서 오늘의 중심곡을 보여줍니다.</p><div class="v396-hero-actions"><button class="primary" type="button" data-v39-refresh-section="DAILY">추천 불러오기</button></div></div></section>';
+  if(!hit||!hit.song)return '<section class="v396-hero"><div class="v396-hero-copy"><div class="v396-hero-kicker">ENTRY POINT</div><h2>첫 입수 지점을 준비해볼까요?</h2><p>추천 피드를 불러오면 바로 다이브를 시작할 수 있는 곡을 골라줍니다.</p><div class="v396-hero-actions"><button class="primary" type="button" data-v39-refresh-section="DAILY">입수 추천 불러오기</button></div></div></section>';
   var s=hit.song,y=s.startTime?new Date(s.startTime).getFullYear():"-",ts=tags(s).filter(function(t){return t&&t.length>1}).slice(0,4),badges=homeStatusBadges396(s.contentId);
   return '<section class="v396-hero"><div class="v396-hero-media">'+
     (s.thumbnailUrl?'<img src="'+E(s.thumbnailUrl)+'" alt="">':'<span class="v39-no-thumb">♪</span>')+
-    '<span class="v396-hero-mark">✦ 오늘의 한 곡 · '+E(label(hit.mark))+'</span></div>'+
+    '<span class="v396-hero-mark">↓ 오늘의 입수 지점 · '+E(label(hit.mark))+'</span></div>'+
     '<div class="v396-hero-copy"><div class="v396-hero-kicker">TODAY · '+E(reason(s,hit.mark))+'</div><h2>'+E(s.title||s.contentId)+'</h2>'+
     '<p>오늘의 입수 지점으로 골랐어요. 이 곡을 중심으로 장르·P·보컬·시대·수층을 따라 더 깊게 탐험할 수 있습니다.</p>'+
     '<div class="v396-hero-meta"><span>'+E(s.contentId)+'</span><span>'+y+'</span><span>조회 '+F(s.viewCounter||0)+'</span></div>'+
