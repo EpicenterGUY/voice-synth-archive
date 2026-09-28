@@ -1,11 +1,11 @@
-/* VocaDive Unified UI v39.79.0
+/* VocaDive Unified UI v39.80.0
  * YouTube-style app shell, cards, player continuity and route recovery.
  */
 (function(){
 "use strict";
 
-var VERSION="39.79.0";
-var raf=0,observer=null,lastRoute="home",navSeq3985=0;
+var VERSION="39.80.0";
+var raf=0,observer=null,lastRoute="home",navSeq3985=0,workerCheckTimer3986=0;
 
 function q(sel,root){return (root||document).querySelector(sel)}
 function qa(sel,root){return Array.prototype.slice.call((root||document).querySelectorAll(sel))}
@@ -96,7 +96,7 @@ body.v37-ready .topbar .status>.pill:first-child{
  min-height:var(--vd-dock-h);padding:5px;gap:3px;
  border:1px solid rgba(176,224,219,.16);border-radius:20px;
  background:rgba(8,19,22,.96);box-shadow:0 14px 38px rgba(0,0,0,.38);
- backdrop-filter:blur(16px)
+ backdrop-filter:blur(16px);transition:transform .18s ease,opacity .18s ease
 }
 #v3980Dock button{
  min-width:0;min-height:56px;border:0;border-radius:15px;background:transparent;color:#819996;
@@ -104,9 +104,10 @@ body.v37-ready .topbar .status>.pill:first-child{
  font-size:8px;font-weight:800;cursor:pointer
 }
 #v3980Dock button i{font-style:normal;font-size:18px;line-height:1}
-#v3980Dock button.active{background:#17343a;color:#f1fffd}
-#v3980Dock button.active i{color:var(--vd-accent)}
+#v3980Dock button.active,#v3980Dock button[aria-current="page"]{background:#17343a;color:#f1fffd}
+#v3980Dock button.active i,#v3980Dock button[aria-current="page"] i{color:var(--vd-accent)}
 body.v331-player-open #v3980Dock{display:none!important}
+body.v3986-keyboard #v3980Dock{transform:translateY(calc(100% + 24px));opacity:0;pointer-events:none}
 
 /* Home: image-first, no prototype boxes. */
 #v37Home,#v35Home{max-width:1440px!important;margin:0 auto!important;padding:16px 0 calc(100px + env(safe-area-inset-bottom))!important}
@@ -585,10 +586,65 @@ function syncWorkerPill(){
   if(!old)return;
   old.id="v3982WorkerPill";
   var text=String(txt&&txt.textContent||"").trim();
-  var state=/연결됨|저장됨|live/i.test(text)?"live":/실패|오프라인|error/i.test(text)?"err":"warn";
+  var state=/연결됨|live/i.test(text)?"live":/실패|오프라인|error/i.test(text)?"err":"warn";
   old.dataset.state=state;
-  old.title=text||"Worker 상태";
+  old.title=(text||"Worker 상태")+" · 눌러서 Worker 주소 설정";
+  old.setAttribute("aria-label",(text||"Worker 상태")+". Worker 주소 설정 열기");
   if(dot&&!dot.className.includes("dot"))dot.classList.add("dot")
+}
+function workerBase3986(){
+  try{return String(localStorage.getItem("vocaloidIcebergProxy")||"").trim().replace(/\/+$/,"").replace(/\/(api|health)$/i,"")}catch(_){return""}
+}
+function applyWorkerEvent3986(detail){
+  detail=detail||{};
+  var base=workerBase3986(),txt=document.getElementById("statusText"),snap=document.getElementById("snapshotLabel");
+  var ok=detail.ok===true,missing=!base||detail.reason==="missing";
+  var label=ok?"Worker 연결됨":missing?"Worker 설정 필요":"Worker 연결 실패";
+  try{
+    if(typeof window.setStatus==="function")window.setStatus(ok?"live":missing?"warn":"err",label);
+    else if(txt)txt.textContent=label
+  }catch(_){if(txt)txt.textContent=label}
+  if(snap)snap.textContent=ok?"검색 연결 정상":missing?"웹검색은 사용 가능":"Worker 연결 확인 필요";
+  try{
+    if(ok)localStorage.setItem("vsa.worker.lastOk3986",JSON.stringify({endpoint:String(detail.endpoint||base),at:Date.now()}));
+    else if(detail.ok===false)localStorage.removeItem("vsa.worker.lastOk3986")
+  }catch(_){}
+  syncWorkerPill()
+}
+function checkWorker3986(delay){
+  clearTimeout(workerCheckTimer3986);
+  workerCheckTimer3986=setTimeout(function(){
+    var base=workerBase3986();
+    if(!base){applyWorkerEvent3986({ok:false,reason:"missing",endpoint:""});return}
+    try{
+      if(window.VSADataBridge73&&typeof window.VSADataBridge73.check==="function"){
+        Promise.resolve(window.VSADataBridge73.check(false)).catch(function(){});
+        return
+      }
+    }catch(_){}
+    var ctl=null,timer=0;
+    try{
+      ctl=new AbortController();timer=setTimeout(function(){try{ctl.abort()}catch(_){}},6000);
+      fetch(base+"/health?t="+Date.now(),{cache:"no-store",signal:ctl.signal,headers:{"Accept":"application/json"}}).then(function(r){
+        return r.json().catch(function(){return{}}).then(function(data){
+          clearTimeout(timer);
+          var ok=!!(r.ok&&data&&data.ok===true);
+          var d={ok:ok,reason:ok?"":"network",endpoint:base,message:ok?"":"Worker /health 응답 이상"};
+          try{window.dispatchEvent(new CustomEvent("vsa:worker-status",{detail:d}))}catch(_){applyWorkerEvent3986(d)}
+        })
+      }).catch(function(e){
+        clearTimeout(timer);
+        var d={ok:false,reason:"network",endpoint:base,message:String(e&&e.message||e)};
+        try{window.dispatchEvent(new CustomEvent("vsa:worker-status",{detail:d}))}catch(_){applyWorkerEvent3986(d)}
+      })
+    }catch(_){}
+  },Math.max(0,Number(delay)||0))
+}
+function syncViewport3986(){
+  if(!window.visualViewport){document.body.classList.remove("v3986-keyboard");return}
+  var vv=window.visualViewport,base=Math.max(document.documentElement.clientHeight||0,window.innerHeight||0);
+  var keyboard=window.innerWidth<900&&base-vv.height>180;
+  document.body.classList.toggle("v3986-keyboard",keyboard)
 }
 function cleanupLegacyNav(){
   qa(".v37-dock,.v36-dock,.v34-dock,.v33-dock,#v30BottomDock,.mobile-bottom-nav,.bottom-nav,.app-bottom-nav").forEach(function(el){
@@ -797,7 +853,7 @@ function ensureDock(){
     ["explore","✦","탐색"],
     ["dive","◉","다이브"],
     ["library","♡","보관함"]
-  ].map(function(x){return'<button type="button" data-v3980="'+x[0]+'"><i>'+x[1]+'</i><span>'+x[2]+'</span></button>'}).join("");
+  ].map(function(x){return'<button type="button" data-v3980="'+x[0]+'" aria-label="'+x[2]+'"><i>'+x[1]+'</i><span>'+x[2]+'</span></button>'}).join("");
   document.body.appendChild(d);
   d.addEventListener("click",function(e){
     var b=e.target.closest("button[data-v3980]");if(!b)return;
@@ -810,7 +866,12 @@ function ensureDock(){
   setDock("home")
 }
 function setDock(v){
-  qa("#v3980Dock button").forEach(function(b){b.classList.toggle("active",b.dataset.v3980===v)})
+  qa("#v3980Dock button").forEach(function(b){
+    var on=b.dataset.v3980===v;
+    b.classList.toggle("active",on);
+    b.setAttribute("aria-current",on?"page":"false");
+    b.setAttribute("aria-pressed",on?"true":"false")
+  })
 }
 function dockForRoute(route){
   route=String(route||"");
@@ -1035,8 +1096,14 @@ function bind(){
   });
   window.addEventListener("popstate",scheduleRepair);
   window.addEventListener("pageshow",scheduleRepair);
-  window.addEventListener("vsa:worker-status",function(){setTimeout(function(){syncWorkerPill();scheduleRepair()},0)});
-  document.addEventListener("visibilitychange",function(){if(!document.hidden)scheduleRepair()});
+  window.addEventListener("vsa:worker-status",function(e){setTimeout(function(){applyWorkerEvent3986(e&&e.detail||{});scheduleRepair()},0)});
+  window.addEventListener("vsa:worker-config-changed",function(){syncWorkerPill();checkWorker3986(180)});
+  document.addEventListener("visibilitychange",function(){if(!document.hidden){scheduleRepair();checkWorker3986(250)}});
+  if(window.visualViewport){
+    window.visualViewport.addEventListener("resize",syncViewport3986);
+    window.visualViewport.addEventListener("scroll",syncViewport3986)
+  }
+  window.addEventListener("resize",syncViewport3986);
   document.addEventListener("click",function(e){
     var m=document.getElementById("v3982Menu"),b=document.getElementById("v3980MenuBtn");
     if(m&&!m.hidden&&!m.contains(e.target)&&e.target!==b)closeMenu3982()
@@ -1054,9 +1121,10 @@ function bind(){
   }
 }
 function boot(){
-  addStyle();ensureTopbar();ensureDock();watchLegacyNav3983();bind();scheduleRepair();
+  addStyle();ensureTopbar();ensureDock();watchLegacyNav3983();bind();scheduleRepair();syncViewport3986();
   document.documentElement.dataset.vocaUi=VERSION;
-  setTimeout(function(){ensureTopbar();ensureDock();cleanupLegacyNav();scheduleRepair()},250);
+  checkWorker3986(420);
+  setTimeout(function(){ensureTopbar();ensureDock();cleanupLegacyNav();scheduleRepair();syncViewport3986()},250);
   setTimeout(function(){ensureTopbar();ensureDock();cleanupLegacyNav();scheduleRepair()},900);
   setTimeout(function(){ensureTopbar();ensureDock();cleanupLegacyNav();scheduleRepair()},2200)
 }
