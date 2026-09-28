@@ -1,51 +1,42 @@
 # TouhouDive
 
-동방 Project 공식 원곡과 2차창작 어레인지를 원곡 계보로 연결해 탐색하고, 확인된 영상은 앱 안에서 재생하는 음악 탐색 앱입니다.
+동방 Project 원곡과 2차창작 어레인지를 계보로 연결해 탐색하고, 확인된 영상은 앱 안에서 재생하는 음악 탐색 앱입니다.
 
-## v0.3.0 — Full Catalog / Player Lifecycle
+## v0.4.0 — UI Rebuild & Stability
 
-### 전체 곡 풀
-- 로컬 seed는 빠른 첫 화면과 검증용 fallback으로 유지
-- 실제 검색은 TouhouDB 전체 `/api/songs` 카탈로그와 연결
-- 50곡 단위 페이지네이션으로 계속 불러오기
-- 검색어, 원곡/2차창작 모드, PV 존재 여부, 정렬을 원격 검색에 반영
-- 곡을 한꺼번에 거대한 JSON으로 내려받지 않아 모바일에서도 초기 로딩을 가볍게 유지
-- 원곡 계보 ID가 아직 로드되지 않았으면 상세 화면에서 해당 원곡을 즉시 hydrate
-- TouhouDB 연결 실패 시 기존 로컬 데이터로 계속 동작
+### UI 대개편
+- 홈 / 탐색 / 다이브 / 원곡 계보 / 보관함 / 기록을 실제 독립 화면처럼 분리
+- 모바일 하단 고정 내비게이션 추가
+- 모바일 사이드 메뉴는 보조 메뉴/테마 용도로 유지
+- 거대한 랜딩 화면을 줄이고 홈 정보를 컴팩트하게 재배치
+- 곡 카드를 썸네일 중심 16:9 미디어 카드로 재설계
+- 모바일 2열 카드, PC 자동 반응형 카드 그리드
+- 필터/정렬을 상단 sticky 도구 영역으로 정리
+- 상세 패널 헤더와 액션 버튼 정리
+- 미니플레이어가 모바일 하단 내비게이션을 가리지 않도록 위치 조정
 
-TouhouDB는 VocaDB와 같은 오픈 API 계열을 사용하므로 곡, 아티스트, PV, 태그, 앨범 메타데이터를 페이지 단위로 가져옵니다.
+### 오류 수정
+- 로컬 seed와 TouhouDB 동일 곡이 이중으로 나타나던 중복 문제 개선
+- TouhouDB ID와 로컬 ID를 canonical alias로 연결해 원곡 계보가 끊기던 문제 수정
+- 빠르게 검색할 때 이전 원격 요청이 최신 결과를 덮어쓰던 race condition 수정
+- 새로고침이 20분 메모리 캐시 때문에 실제 갱신되지 않던 문제 수정
+- 원격 곡을 보관/재생한 뒤 새로 열면 보관함·기록에서 사라지던 문제 수정
+- 모바일 사이드 메뉴 위를 scrim이 덮어 터치가 막힐 수 있던 z-index 오류 수정
+- YouTube API 실패 시 잘못된 `youtube:id` URL을 iframe에 넣던 fallback 오류 수정
+- YouTube API가 늦게 로드되어 이전 곡 플레이어가 뒤늦게 붙는 stale initialization 차단
+- 전체 플레이어에서 뒤 페이지가 스크롤되는 문제 수정
 
-### 인앱 플레이어
+### 데이터
+- 로컬 검증 seed + TouhouDB 라이브 카탈로그
+- 50곡 단위 페이지네이션
+- 검색 / 원곡 / 2차창작 / 영상 필터
+- 원곡 계보 lazy hydration
+- 보관함/기록용 원격 곡 메타데이터 snapshot 저장
+
+### 플레이어
 - YouTube IFrame API
 - NicoNico JS API
-- 재생/일시정지
-- 이전/다음 큐
-- 영상 종료 감지 후 자동 다음곡 ON/OFF
-- 메뉴 이동 시 자동 미니플레이어
-- 미니 → 전체 플레이어 복귀
-- 재생 중 iframe/player 인스턴스를 유지해서 메뉴 이동 시 음원이 끊기지 않음
-- MediaSession 메타데이터와 잠금화면 play/pause/next/prev
+- 재생/일시정지, 이전/다음, 자동 다음곡
+- 화면 이동 시 미니플레이어 유지
+- MediaSession 잠금화면 컨트롤
 - 원본 영상 바로가기
-
-### 데이터 계층
-```
-Local verified seed
-        +
-TouhouDB live catalog
-        ↓
-normalize / deduplicate
-        ↓
-original ↔ arrangement lineage
-        ↓
-search / dive / player queue
-```
-
-한 어레인지가 여러 원곡을 가리킬 수 있도록 내부 모델은 계속 `originalIds[]`를 사용합니다.
-
-## 다음 단계
-1. TouhouDB 라이브 결과 로컬 캐시/IndexedDB 적용
-2. THBWiki/東方編曲録 보강 파이프라인
-3. 서클·앨범·보컬 전용 페이지
-4. 원곡별 어레인지 전체 페이지와 대규모 관계 그래프
-5. Worker 서버측 캐시 및 중복 정규화
-6. 영상 재생 가능 여부 주기적 검증
