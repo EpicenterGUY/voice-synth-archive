@@ -105,6 +105,17 @@ if(!index.includes('modal.dataset.currentView="universe29"'))fail("core Dive dir
 if(!unifiedUi.includes('button[data-v3980="dive"]'))fail("Dive dock safety handler missing");
 if(!unifiedUi.includes("__v3986DiveSafetyHandled"))fail("Dive dock duplicate-tap safety marker missing");
 
+// 9. Dive / Fold performance regressions.
+if(!index.includes("taskLimit=lite?10:23"))fail("mobile Dive candidate task cap regressed");
+if(!index.includes("mapLimit(tasks,tasks.length<=10?3:4,fetchTask59)"))fail("mobile Dive candidate concurrency guard missing");
+if(!index.includes('window.matchMedia("(pointer:coarse)").matches)?28:36'))fail("mobile Dive fetch-size guard missing");
+if(!index.includes(".mr58-map>.mr58-node:nth-of-type(n+5){display:none!important}"))fail("compact Dive card cap missing");
+const player=await text("nico-player-v32.js");
+if(!player.includes('t.classList&&t.classList.contains("tool-view")'))fail("player route observer is not scoped to tool views");
+if(player.includes('new MutationObserver(function(){scheduleSurfaceRepair("mutation")})'))fail("player observer still reacts to every toolsModal mutation");
+if(!unifiedUi.includes('#v3924VolumeMini{display:none!important}'))fail("compact Fold mini-player control reduction missing");
+if(!unifiedUi.includes('[data-v39-open-universe]'))fail("home Dive route safety fallback missing");
+
 note("classic JS syntax checked");
 note("inline scripts checked: "+inline);
 note("local references checked: "+refs.size);
