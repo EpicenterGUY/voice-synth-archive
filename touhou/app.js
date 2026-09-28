@@ -61,7 +61,7 @@ function bind(){
   $("#scrim").onclick=()=>{closePanel();closeMenu();};
   $("#menuBtn").onclick=()=>{$("#sidebar").classList.toggle("is-open");syncScrim();};
   $("#themeBtn").onclick=toggleTheme;
-  $$$("#modeTabs .mode-tab").forEach(btn=>btn.onclick=()=>{
+  $$("#modeTabs .mode-tab").forEach(btn=>btn.onclick=()=>{
     state.mode=btn.dataset.mode;state.filter="전체";syncModeTabs();renderCatalog();loadRemote(true);
   });
   $$(".nav-item[data-view]").forEach(btn=>btn.onclick=()=>nav(btn.dataset.view));
@@ -390,7 +390,7 @@ function nav(view){
 function setView(view){
   state.view=view;
   document.body.dataset.view=view;
-  $$$(".nav-item[data-view]").forEach(x=>x.classList.toggle("is-active",x.dataset.view===view));
+  $$(".nav-item[data-view]").forEach(x=>x.classList.toggle("is-active",x.dataset.view===view));
   const labels={home:"HOME",discover:"DISCOVER",lineage:"LINEAGE",library:"LIBRARY",history:"HISTORY",dive:"DIVE PATH"};
   $("#sectionEyebrow").textContent=labels[view]||"DISCOVER";
   $("#catalogTools").hidden=view==="library"||view==="history";
