@@ -1,6 +1,6 @@
 {
-  "version": "39.83.0",
+  "version": "39.84.0",
   "channel": "web",
-  "publishedAt": "2026-09-28T14:25:00+09:00",
-  "notes": "Urgent Dive dock hotfix: click rebinding, route fallback hardening, and false keyboard lock recovery."
+  "publishedAt": "2026-09-28T14:40:00+09:00",
+  "notes": "Dive resume card, guarded history navigation, dock loading feedback, and duplicate-tap prevention."
 }
