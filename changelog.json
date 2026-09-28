@@ -1,11 +1,28 @@
 {
   "current": {
-    "version": "39.100.0",
+    "version": "39.101.0",
     "releasedAt": "2026-09-28",
-    "title": "Route Watchdog · Black Screen Repair",
-    "summary": "메뉴 전환 직후 비동기 라우트가 늦게 덮어써 도구 모달만 남고 내용이 숨겨지는 검은 화면 상태를 자동 감지·복구하고, 재생 제목 클래스도 버전 독립적인 공용 훅으로 정리했습니다."
+    "title": "Frame Budget · Mobile Performance",
+    "summary": "모바일 메뉴·스크롤·다이브에서 같은 프레임에 반복되던 viewport 계산과 썸네일 DOM 스캔을 배치하고, 긴 카드 목록의 화면 밖 렌더링 비용을 줄이는 1차 성능 최적화를 적용했습니다."
   },
   "entries": [
+    {
+      "version": "39.101.0",
+      "date": "2026-09-28",
+      "title": "Frame Budget · Mobile Performance",
+      "changes": [
+        "visualViewport resize/scroll 및 window resize 이벤트가 연속 발생해도 requestAnimationFrame당 한 번만 키보드/뷰포트 상태를 계산하도록 coalescing",
+        "폴드 접힘·펼침, 모바일 키보드, 스크롤 중 반복되는 layout read와 body class 토글 횟수 감소",
+        "고해상도 썸네일 MutationObserver가 DOM 추가마다 즉시 전체 하위 이미지를 스캔하던 방식을 한 프레임의 root Set 배치 처리로 변경",
+        "초기 고해상도 썸네일 스캔은 requestIdleCallback 또는 짧은 fallback timeout으로 첫 화면 렌더 뒤로 이동",
+        "랭킹·추천·숨은곡·탐정·프로듀서·연관곡 카드에 content-visibility:auto와 intrinsic size를 적용해 화면 밖 카드의 paint/layout 비용 절감",
+        "동일 카드 계열에 layout/paint/style containment를 적용해 긴 목록에서 한 카드 변경이 전체 페이지 레이아웃에 미치는 범위를 축소",
+        "다이브 노드에 layout/paint/style containment를 적용하고 이동 중일 때만 compositor will-change 힌트를 사용하도록 조정",
+        "이동이 끝난 다이브 맵은 will-change:auto로 복귀해 GPU 메모리가 계속 고정되는 현상 방지",
+        "성능 최적화 핵심 훅에 대한 정적 회귀 검사 추가",
+        "웹/PWA/서비스워커/네이티브 셸/검색/기기동기화/UI 버전과 캐시 키를 v39.101.0으로 동기화"
+      ]
+    },
     {
       "version": "39.100.0",
       "date": "2026-09-28",

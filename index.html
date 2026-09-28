@@ -3353,7 +3353,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.100.0 · Ocean HUD 2.0 · Dive Performance 1.0 · Direct APK Update 1.0 · Search Fix · Rank Turbo 1.0 · Native Brand 0.2 · Android Shell 0.1 · App Foundation 1.0 · Cross-Genre Bridge 1.0 · Relation Trust 3.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.101.0 · Ocean HUD 2.0 · Dive Performance 1.0 · Direct APK Update 1.0 · Search Fix · Rank Turbo 1.0 · Native Brand 0.2 · Android Shell 0.1 · App Foundation 1.0 · Cross-Genre Bridge 1.0 · Relation Trust 3.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -7907,7 +7907,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:(window.VocaDiveUpdater&&window.VocaDiveUpdater.version)||document.documentElement.dataset.vocaUi||"39.100.0",
+    version:(window.VocaDiveUpdater&&window.VocaDiveUpdater.version)||document.documentElement.dataset.vocaUi||"39.101.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -9687,7 +9687,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.100.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
+var VER="39.101.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -11452,17 +11452,17 @@ function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
   var base;
-  if(name==="detective")base=seq(["./detective-v11.js?v=39.100.0","./detective-v12.js?v=39.100.0","./detective-v13.js?v=39.100.0","./detective-v14.js?v=39.100.0","./detective-v16.js?v=39.100.0"]);
-  else if(name==="personal")base=seq(["./organizer-v22.js?v=39.100.0","./smart-v23.js?v=39.100.0","./playlist-v24.js?v=39.100.0"]);
-  else if(name==="discovery")base=load("./discovery-v20.js?v=39.100.0");
-  else if(name==="homeData")base=load("./vocalo-home-v28.js?v=39.100.0");
-  else if(name==="universe")base=load("./universe-search-v28.js?v=39.100.0");
-  else if(name==="player")base=load("./nico-player-v32.js?v=39.100.0");
-  else if(name==="deviceSync")base=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.100.0");
-  else if(name==="pwa")base=load("./pwa-v21.js?v=39.100.0");
+  if(name==="detective")base=seq(["./detective-v11.js?v=39.101.0","./detective-v12.js?v=39.101.0","./detective-v13.js?v=39.101.0","./detective-v14.js?v=39.101.0","./detective-v16.js?v=39.101.0"]);
+  else if(name==="personal")base=seq(["./organizer-v22.js?v=39.101.0","./smart-v23.js?v=39.101.0","./playlist-v24.js?v=39.101.0"]);
+  else if(name==="discovery")base=load("./discovery-v20.js?v=39.101.0");
+  else if(name==="homeData")base=load("./vocalo-home-v28.js?v=39.101.0");
+  else if(name==="universe")base=load("./universe-search-v28.js?v=39.101.0");
+  else if(name==="player")base=load("./nico-player-v32.js?v=39.101.0");
+  else if(name==="deviceSync")base=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.101.0");
+  else if(name==="pwa")base=load("./pwa-v21.js?v=39.101.0");
   else if(name==="v33")base=Promise.all([ensure("personal"),ensure("discovery")]).then(function(rows){
     if(rows.some(function(x){return x===false}))return false;
-    return seq(["./voca-app-v33.js?v=39.100.0","./voca-app-v33-1.js?v=39.100.0","./voca-app-v33-2.js?v=39.100.0","./voca-app-v33-3.js?v=39.100.0"]);
+    return seq(["./voca-app-v33.js?v=39.101.0","./voca-app-v33-1.js?v=39.101.0","./voca-app-v33-2.js?v=39.101.0","./voca-app-v33-3.js?v=39.101.0"]);
   });
   else base=Promise.resolve(false);
   var job=Promise.resolve(base).then(function(v){
@@ -11510,13 +11510,13 @@ if("requestIdleCallback" in window)requestIdleCallback(function(){ensure("pwa")}
 else setTimeout(function(){ensure("pwa")},12000);
 })();
 </script>
-<script src="./device-sync-v3938.js?v=39.100.0"></script>
-<script src="./app-platform-v3962.js?v=39.100.0"></script>
-<script src="./entitlements-v3962.js?v=39.100.0"></script>
-<script src="./account-v3962.js?v=39.100.0"></script>
-<script src="./native-shell-v3963.js?v=39.100.0"></script>
-<script src="./app-update-v3966.js?v=39.100.0"></script>
-<script src="./i18n-v3918.js?v=39.100.0"></script>\n<script src="./search-live-v3969.js?v=39.100.0"></script>
+<script src="./device-sync-v3938.js?v=39.101.0"></script>
+<script src="./app-platform-v3962.js?v=39.101.0"></script>
+<script src="./entitlements-v3962.js?v=39.101.0"></script>
+<script src="./account-v3962.js?v=39.101.0"></script>
+<script src="./native-shell-v3963.js?v=39.101.0"></script>
+<script src="./app-update-v3966.js?v=39.101.0"></script>
+<script src="./i18n-v3918.js?v=39.101.0"></script>\n<script src="./search-live-v3969.js?v=39.101.0"></script>
 
 <style id="v3946DivePathStyle">
 /* v39.46 · Dive Path 1.0 — graph-free guided discovery */
@@ -14521,5 +14521,5 @@ body.mr74-transitioning{overflow:hidden!important}
 }
 </style>
 
-<script src="./vocadive-ui-v3980.js?v=39.100.0"></script>\n</body>
+<script src="./vocadive-ui-v3980.js?v=39.101.0"></script>\n</body>
 </html>
