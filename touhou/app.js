@@ -61,10 +61,10 @@ function bind(){
   $("#scrim").onclick=()=>{closePanel();closeMenu();};
   $("#menuBtn").onclick=()=>{$("#sidebar").classList.toggle("is-open");syncScrim();};
   $("#themeBtn").onclick=toggleTheme;
-  $$("#modeTabs .mode-tab").forEach(btn=>btn.onclick=()=>{
+  $$$("#modeTabs .mode-tab").forEach(btn=>btn.onclick=()=>{
     state.mode=btn.dataset.mode;state.filter="전체";syncModeTabs();renderCatalog();loadRemote(true);
   });
-  $(".nav-item[data-view]").forEach(btn=>btn.onclick=()=>nav(btn.dataset.view));
+  $$(".nav-item[data-view]").forEach(btn=>btn.onclick=()=>nav(btn.dataset.view));
   document.addEventListener("keydown",e=>{
     if(e.key==="/"&&document.activeElement!==$("#searchInput")){e.preventDefault();$("#searchInput").focus();}
     if(e.key==="Escape"){closePanel();closeMenu();if(!player.shell.classList.contains("is-mini")&&!player.shell.hidden)player.minimize();}
@@ -390,7 +390,7 @@ function nav(view){
 function setView(view){
   state.view=view;
   document.body.dataset.view=view;
-  $$(".nav-item[data-view]").forEach(x=>x.classList.toggle("is-active",x.dataset.view===view));
+  $$$(".nav-item[data-view]").forEach(x=>x.classList.toggle("is-active",x.dataset.view===view));
   const labels={home:"HOME",discover:"DISCOVER",lineage:"LINEAGE",library:"LIBRARY",history:"HISTORY",dive:"DIVE PATH"};
   $("#sectionEyebrow").textContent=labels[view]||"DISCOVER";
   $("#catalogTools").hidden=view==="library"||view==="history";
@@ -488,7 +488,7 @@ function normalizePersistentIds(){
   writeJson("touhoudive:favorites",[...state.favorites]);
   writeJson("touhoudive:history",state.history);
 }
-function syncModeTabs(){$("#modeTabs .mode-tab").forEach(x=>x.classList.toggle("is-active",x.dataset.mode===state.mode))}
+function syncModeTabs(){$$("#modeTabs .mode-tab").forEach(x=>x.classList.toggle("is-active",x.dataset.mode===state.mode))}
 function setDataHealth(kind,text){
   const el=$("#dataHealth");
   el.classList.toggle("is-loading",kind==="loading");
