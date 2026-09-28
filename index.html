@@ -7254,7 +7254,10 @@ async function buildUniverse(center,force=false){
   }
 
   try{
-    if(window.VSA60PrepareCenterMetadata)await window.VSA60PrepareCenterMetadata(center);
+    if(window.VSA60PrepareCenterMetadata){
+      var metadataJob=Promise.resolve(window.VSA60PrepareCenterMetadata(center)).catch(function(){return center});
+      await Promise.race([metadataJob,new Promise(function(resolve){setTimeout(resolve,450)})]);
+    }
     if(universeBuildSeq!==(Number(window.__VSA_UNIVERSE_BUILD_SEQ)||0))return;
     const tags=informativeTags(center);
     let queryTags=(window.VSA58RelationQueryTags?window.VSA58RelationQueryTags(center,tags):tags.slice(0,5));
@@ -13027,18 +13030,19 @@ function go58(id){
   forceEndTransition58();status58("이동 시간이 길어져 중단했습니다. 다시 눌러주세요.",true)
  },9000);
  status58(toDepth>fromDepth?"잠수 준비 중…":toDepth<fromDepth?"상승 준비 중…":"다음 곡으로 이동 중…");
- return Promise.resolve(playTransition58(fromDepth,toDepth,n.title||n.contentId)).then(function(){
-  if(token!==moveToken58)throw new Error("이전 이동이 취소되었습니다.");
-  try{return timeout58(Promise.resolve(buildUniverse(n,false)),8000,"경로 생성 시간이 초과되었습니다.")}catch(e){return Promise.reject(e)}
- }).then(function(){
+ var transitionJob=Promise.resolve(playTransition58(fromDepth,toDepth,n.title||n.contentId));
+ var buildJob;
+ try{buildJob=timeout58(Promise.resolve(buildUniverse(n,false)),8000,"경로 생성 시간이 초과되었습니다.")}
+ catch(e){buildJob=Promise.reject(e)}
+ return Promise.all([transitionJob,buildJob]).then(function(){
   if(token!==moveToken58)return false;
   endTransition58();setMoving58(false);status58("");
-  setTimeout(function(){
+  requestAnimationFrame(function(){
     try{
       var center=document.querySelector("#universePanel .mr58-center");
       if(center&&window.innerWidth<=699)center.scrollIntoView({behavior:"smooth",block:"start"})
     }catch(_){}
-  },70);
+  });
   return true
  }).catch(function(e){
   if(token!==moveToken58)return false;
