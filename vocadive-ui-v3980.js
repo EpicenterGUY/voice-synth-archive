@@ -558,9 +558,15 @@ body.v37-ready :is(button,a){-webkit-tap-highlight-color:transparent}
 @media(max-width:420px){
  #v3982WorkerPill{max-width:84px!important}
  .v39-media-card{flex-basis:min(72vw,250px)!important;min-width:210px!important}
- .v331-mini{grid-template-columns:68px minmax(0,1fr) repeat(5,30px)!important;gap:3px!important}
- .v331-mini-stage{width:68px!important;height:39px!important}
- .v331-mini button{width:30px!important;height:30px!important}
+ .v331-mini{
+  min-height:54px!important;height:54px!important;
+  grid-template-columns:60px minmax(0,1fr) repeat(4,28px)!important;
+  gap:3px!important;padding:4px!important
+ }
+ .v331-mini-stage{width:60px!important;height:34px!important}
+ .v331-mini-copy small{display:none!important}
+ .v331-mini button{width:28px!important;height:28px!important}
+ #v3924VolumeMini{display:none!important}
 }
 
 /* Fold / compact viewport recovery · v39.78 */
@@ -1203,6 +1209,22 @@ function bind(){
   document.addEventListener("click",function(e){
     var m=document.getElementById("v3982Menu"),b=document.getElementById("v3980MenuBtn");
     if(m&&!m.hidden&&!m.contains(e.target)&&e.target!==b)closeMenu3982()
+  },true);
+  document.addEventListener("click",function(e){
+    var dive=e.target&&e.target.closest?e.target.closest("[data-v39-open-universe]"):null;
+    if(dive){
+      setTimeout(function(){
+        if(!routeIsActive3985("universe29")){
+          try{if(typeof window.openUniverseHub3931==="function")window.openUniverseHub3931();else forceRoute3985("universe29")}catch(_){}
+        }
+      },0);
+      return
+    }
+    var routeEl=e.target&&e.target.closest?e.target.closest("[data-v3981-route]"):null;
+    var route=routeEl&&routeEl.dataset?routeEl.dataset.v3981Route:"";
+    if(route){
+      setTimeout(function(){if(!routeIsActive3985(route))openRoute(route)},0)
+    }
   },true);
   var statusText=document.getElementById("statusText");
   if(statusText&&window.MutationObserver)new MutationObserver(syncWorkerPill).observe(statusText,{childList:true,subtree:true,characterData:true});
