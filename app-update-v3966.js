@@ -1,8 +1,8 @@
-/* VocaDive Direct APK Updater · v39.78.0 */
+/* VocaDive Direct APK Updater · v39.79.0 */
 (function(){
 "use strict";
 
-var VERSION="39.78.0";
+var VERSION="39.79.0";
 var RELEASE_API="https://api.github.com/repos/EpicenterGUY/voice-synth-archive/releases/latest";
 var PREF_CHECK="vocadive.update.autoCheck";
 var PREF_WIFI="vocadive.update.autoDownloadWifi";
