@@ -1399,6 +1399,17 @@ function bind(){
       },140);
       return
     }
+    var featureEl=e.target&&e.target.closest?e.target.closest("[data-v37-feature-id]"):null;
+    if(featureEl){
+      var featureId=featureEl.dataset?featureEl.dataset.v37FeatureId:"";
+      setTimeout(function(){
+        try{
+          var reg=window.VSA37FeatureRegistry&&window.VSA37FeatureRegistry[featureId],expected=reg&&reg.route;
+          if(expected&&!routeIsActive3985(expected)&&typeof window.VSAOpenFeature37==="function")window.VSAOpenFeature37(featureId)
+        }catch(_){}
+      },220);
+      return
+    }
     var routeEl=e.target&&e.target.closest?e.target.closest("[data-v3981-route]"):null;
     var route=routeEl&&routeEl.dataset?routeEl.dataset.v3981Route:"";
     if(route){
