@@ -89,6 +89,17 @@ if(!index.includes("if(!ok)return false"))fail("lazy sequential loader does not 
 if(!index.includes("delete jobs[src]"))fail("failed lazy asset is not retryable");
 if(!index.includes("delete groups[name]"))fail("failed lazy feature group is not retryable");
 
+// 8. UI observer / settings render-loop regressions.
+const unifiedUi=await text("vocadive-ui-v3980.js");
+if(!unifiedUi.includes("summary.innerHTML!==summaryHtml"))fail("settings summary render guard missing");
+if(!unifiedUi.includes("card!==card.parentElement.lastElementChild"))fail("settings update-card move guard missing");
+if(!unifiedUi.includes('n.namespaceURI&&n.namespaceURI!=="http://www.w3.org/1999/xhtml"'))fail("legacy nav observer still scans non-HTML Dive nodes");
+if(!unifiedUi.includes('t.classList.contains("tool-view")||t.classList.contains("tools-body")'))fail("route observer target filter missing");
+
+const liveSearch=await text("search-live-v3969.js");
+if(liveSearch.includes("new MutationObserver(function(){syncRoute()})"))fail("search observer still reacts to every body mutation");
+if(!liveSearch.includes('var searchSelector="#v39GlobalSearch,#globalSearchInput,#v397SearchShell'))fail("search observer selector guard missing");
+
 note("classic JS syntax checked");
 note("inline scripts checked: "+inline);
 note("local references checked: "+refs.size);
