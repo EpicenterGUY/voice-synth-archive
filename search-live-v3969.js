@@ -55,8 +55,11 @@ function recentDirectRunMatches(q){
 function setHint(text,state){
   var box=el("v3969LiveHint");
   if(!box)return;
-  box.textContent=text;
-  box.dataset.state=state||"idle"
+  var copy=el("v3969LiveHintText");
+  if(copy)copy.textContent=text;else box.textContent=text;
+  box.dataset.state=state||"idle";
+  var actions=el("v3969LiveHintActions");
+  if(actions)actions.hidden=(state!=="error")
 }
 function ensureHint(){
   var shell=el("v397SearchShell"),main=el("v398MainRow");
@@ -65,7 +68,7 @@ function ensureHint(){
   box.id="v3969LiveHint";
   box.className="v3969-live-hint";
   box.dataset.state="idle";
-  box.textContent="자동 검색 ON · 입력을 멈추면 결과가 바로 갱신됩니다.";
+  box.innerHTML='<span id="v3969LiveHintText">자동 검색 ON · 입력을 멈추면 결과가 바로 갱신됩니다.</span><span class="v3969-live-actions" id="v3969LiveHintActions" hidden><button type="button" data-v3969-retry>다시 검색</button><button type="button" data-v3969-worker>Worker 설정</button></span>';
   var chips=el("v398ActiveFilters");
   if(chips)chips.insertAdjacentElement("afterend",box);
   else main.insertAdjacentElement("afterend",box)
@@ -181,7 +184,7 @@ async function runFull(q){
     setHint("자동 검색 ON · 검색 결과가 갱신됐습니다.","ok");
     return true
   }catch(e){
-    setHint("자동 검색 실패 · Worker/API 상태를 확인하세요.","error");
+    setHint("자동 검색 실패 · 다시 검색하거나 Worker 연결을 확인하세요.","error");
     return false
   }
 }
@@ -239,7 +242,10 @@ function injectStyle(){
   var style=document.createElement("style");style.id="v3969SearchStyle";
   style.textContent=`
 body.v3969-search-route .topbar .v39-global-search{display:none!important}
-.v3969-live-hint{display:flex;align-items:center;gap:6px;min-height:28px;margin:6px 1px 1px;padding:0 9px;border-radius:9px;border:1px solid rgba(111,213,203,.10);background:#071c22;color:#739a96;font-size:7px;font-weight:800}
+.v3969-live-hint{display:flex;align-items:center;gap:6px;min-height:28px;margin:6px 1px 1px;padding:4px 9px;border-radius:9px;border:1px solid rgba(111,213,203,.10);background:#071c22;color:#739a96;font-size:7px;font-weight:800}
+.v3969-live-hint>span:first-child{min-width:0;flex:1}
+.v3969-live-actions{display:flex;align-items:center;gap:4px;flex:0 0 auto}.v3969-live-actions[hidden]{display:none!important}
+.v3969-live-actions button{min-height:25px;padding:0 7px;border:1px solid rgba(111,213,203,.14);border-radius:7px;background:#0d2b31;color:#b8e9e3;font-size:6.5px;font-weight:900}
 .v3969-live-hint:before{content:"●";font-size:6px;color:#63d6cb}
 .v3969-live-hint[data-state="busy"]:before{animation:v3969pulse .8s infinite alternate}
 .v3969-live-hint[data-state="error"]{color:#d8a9a9;border-color:rgba(230,126,126,.16)}
@@ -259,7 +265,8 @@ body.v3969-search-route .topbar .v39-global-search{display:none!important}
 .v3969-quick-item em{font-style:normal;color:#65bdb5;font-size:14px}.v3969-quick-empty{padding:10px;color:#71948f;font-size:7px;text-align:center}
 @media(max-width:699px){
   body.v3969-search-route .topbar{grid-template-columns:minmax(0,1fr) auto!important}
-  .v3969-live-hint{font-size:7.2px;min-height:30px}
+  .v3969-live-hint{font-size:7.2px;min-height:30px;flex-wrap:wrap}
+  .v3969-live-actions{width:100%;display:grid;grid-template-columns:1fr 1fr}.v3969-live-actions button{min-height:31px;font-size:7px}
   .v3969-quick-item{grid-template-columns:56px minmax(0,1fr) 14px;padding:6px}.v3969-quick-thumb{width:56px}
   .v3969-quick-copy b{font-size:9px}.v3969-quick-copy small{font-size:6.8px}
 }
@@ -276,6 +283,14 @@ function boot(){
   document.addEventListener("focusin",function(e){
     if(e.target&&e.target.id==="v39GlobalSearch")bindInput(e.target,"top");
     if(e.target&&e.target.id==="globalSearchInput"){bindInput(e.target,"main");ensureHint()}
+  });
+  document.addEventListener("click",function(e){
+    if(e.target&&e.target.closest("[data-v3969-retry]")){scheduleFull(0);return}
+    if(e.target&&e.target.closest("[data-v3969-worker]")){
+      var pill=document.getElementById("v3982WorkerPill");
+      if(pill){pill.click();return}
+      try{if(typeof window.openToolsModal==="function")window.openToolsModal("settings29")}catch(_){}
+    }
   });
   var observer=new MutationObserver(function(){syncRoute()});
   observer.observe(document.body,{childList:true,subtree:true})
