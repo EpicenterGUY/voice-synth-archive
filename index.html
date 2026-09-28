@@ -9674,26 +9674,33 @@ function heroHtml396(hit){
     (s.thumbnailUrl?'<img src="'+E(s.thumbnailUrl)+'" alt="">':'<span class="v39-no-thumb">♪</span>')+
     '<span class="v396-hero-mark">✦ 오늘의 한 곡 · '+E(label(hit.mark))+'</span></div>'+
     '<div class="v396-hero-copy"><div class="v396-hero-kicker">TODAY · '+E(reason(s,hit.mark))+'</div><h2>'+E(s.title||s.contentId)+'</h2>'+
-    '<p>오늘 첫 곡으로 골라봤어요. 마음에 들면 보관하거나 비슷한 곡을 이어서 찾아보세요.</p>'+
+    '<p>오늘의 입수 지점으로 골랐어요. 이 곡을 중심으로 장르·P·보컬·시대·수층을 따라 더 깊게 탐험할 수 있습니다.</p>'+
     '<div class="v396-hero-meta"><span>'+E(s.contentId)+'</span><span>'+y+'</span><span>조회 '+F(s.viewCounter||0)+'</span></div>'+
     '<div class="v396-hero-tags">'+(ts.length?ts.map(function(t){return'<span>'+E(t)+'</span>'}).join(""):'<span>태그 정보 없음</span>')+'</div>'+
     (badges?'<div class="v396-hero-status">'+badges+'</div>':'')+
-    '<div class="v396-hero-actions"><button type="button" class="primary" data-v399-play="'+E(s.contentId)+'">▶ 재생</button><button type="button" data-v396-universe="'+E(s.contentId)+'">다이브 패스</button><button type="button" data-v396-save="'+E(s.contentId)+'">♡ 보관</button><button type="button" class="quiet" data-v396-dislike="'+E(s.contentId)+'">관심없음</button></div></div></section>'
+    '<div class="v396-hero-actions"><button type="button" class="primary" data-v396-universe="'+E(s.contentId)+'">↓ 이 곡에서 다이브</button><button type="button" data-v399-play="'+E(s.contentId)+'">▶ 재생</button><button type="button" data-v396-save="'+E(s.contentId)+'">♡ 보관</button><button type="button" class="quiet" data-v396-dislike="'+E(s.contentId)+'">관심없음</button></div></div></section>'
 }
 function continueHtml396(rows){
-  return '<section class="v396-continue"><div class="v396-continue-head"><div><h2>이어보기</h2><p>최근에 본 곡이에요. 이어서 듣거나 주변 곡을 더 찾아보세요. <span class="v3910-device-note">이 기기에만 저장됨</span></p></div></div>'+
-    '<div class="v3910-history-actions v396-history-toolbar"><button type="button" data-v396-personal>최근 기록</button><button type="button" class="danger" data-v3910-clear-history="views">기록 지우기</button></div>'+
+  return '<section class="v396-continue"><div class="v396-continue-head"><div><h2>탐험 기록</h2><p>최근에 발견한 곡이에요. 다시 듣거나 여기서 새로운 다이브를 시작할 수 있습니다. <span class="v3910-device-note">이 기기에만 저장됨</span></p></div></div>'+
+    '<div class="v3910-history-actions v396-history-toolbar"><button type="button" data-v396-personal>전체 탐험 기록</button><button type="button" class="danger" data-v3910-clear-history="views">기록 지우기</button></div>'+
     (rows.length?'<div class="v39-media-grid">'+rows.slice(0,5).map(function(x){return mediaCard39(x,"CONTINUE")}).join("")+'</div>':'<div class="v3910-continue-empty">아직 본 곡이 없어요.<br>곡을 하나 열면 여기에서 바로 이어볼 수 있어요.</div>')+
   '</section>'
+}
+function homeDiveEntry3989(){
+  try{loadUniverseSession39()}catch(_){}
+  var rows=Array.isArray(state.universeHistory)?state.universeHistory:[],idx=Number(state.universeHistoryIndex),last=rows.length?rows[Math.max(0,Math.min(rows.length-1,idx>=0?idx:rows.length-1))]:null;
+  var resume=last?'<button type="button" class="resume" data-v3989-resume="'+E(last.contentId)+'"><span>↻ 이어서</span><b>'+E(last.title||last.contentId)+'</b></button>':'<button type="button" data-v39-open-universe><span>◉ 다이브</span><b>시작 화면 열기</b></button>';
+  return '<section class="v3989-dive-entry"><div class="v3989-dive-entry-copy"><small>VOCADIVE · DISCOVERY OCEAN</small><h1>한 곡에서 시작해, 더 깊이.</h1><p>음성합성곡을 검색해서 끝내지 않고 장르·P·보컬·시대·수층을 따라 다음 곡으로 계속 잠수합니다.</p><div class="v3989-dive-flags"><span>오리지널곡 기본</span><span>UTAU · SynthV 포함</span><span>커버·파생 분리</span></div></div><div class="v3989-dive-actions"><button type="button" class="primary" data-v3989-search><span>⌕ 곡 검색</span><b>아는 곡에서 시작</b></button><button type="button" data-v3989-random><span>⚄ 랜덤 입수</span><b>모르는 곡에서 시작</b></button>'+resume+'</div></section>'
 }
 function render(){
   var r=root(),f=currentFeed(),locale39=document.body.dataset.vsaLocale==="ja"?"ja-JP":"ko-KR",date=new Date().toLocaleDateString(locale39,{month:"long",day:"numeric",weekday:"short"});
   homeContext39=buildHomeContext396();
   var order=homePriority396(),hero=heroPick396(f,order),cont=continueRows396(),heroId=hero&&hero.song&&hero.song.contentId;
-  var intro=homeContext39.signals>=2?"지금 취향에 맞춰 홈 순서를 조금 바꿨어요.":"곡을 보관하거나 반응을 남기면 홈이 조금씩 취향에 맞춰져요.";
   var map={"DAILY":"daily","FOR YOU":"taste","NEW":"newer","DEEP":"hidden"};
-  r.innerHTML='<div class="v396-home-top"><div><small>VOCADIVE · HOME 3.1 · '+E(date)+'</small><h1>오늘은 뭘 들어볼까요?</h1><p>'+E(intro)+'</p></div><div class="v396-home-top-actions"><button type="button" data-v39-open-explore>찾아보기</button><button type="button" data-v39-open-universe>다이브</button><button type="button" class="primary" data-v396-personal>MY</button></div></div>'+
-    '<div class="v396-topic-row"><button data-v39-open-explore>숨은 곡</button><button data-v39-open-universe>비슷한 곡</button><button data-v39-feature="vocalRank">보컬 순위</button><button data-v39-feature="producerDiscovery">숨은 P</button><button data-v39-feature="detective">잊은 곡 찾기</button><button data-v396-personal>내 취향</button></div>'+
+  r.innerHTML='<div class="v3989-home-meta"><small>VOCADIVE · '+E(date)+'</small><button type="button" data-v396-personal>MY · 탐험 기록</button></div>'+
+    homeDiveEntry3989()+
+    '<div class="v3989-gateway-head"><div><small>ENTRY POINTS</small><h2>다른 입수 지점</h2><p>다이브를 시작할 곡을 찾거나, 데이터와 단서로 새로운 경로를 발견하세요.</p></div><button type="button" data-v39-open-explore>전체 탐색 도구</button></div>'+
+    '<div class="v396-topic-row v3989-gateway-row"><button data-v39-feature="gems">숨은 곡</button><button data-v39-feature="vocalRank">보컬 지도</button><button data-v39-feature="producerDiscovery">P 탐색</button><button data-v39-feature="archive">빙산 · 통계</button><button data-v39-feature="detective">곡 탐정</button><button data-v396-personal>내 탐험</button></div>'+
     heroHtml396(hero)+continueHtml396(cont)+
     order.map(function(mark,i){return shelf39(mark,f[map[mark]],heroId,String(i+1))}).join("");
 }
@@ -11059,6 +11066,33 @@ function init(){
     }
     if(e.target.closest("[data-v399-resume]")){var rs399=window.__VSA39_DETAIL_SONG;if(rs399)renderSongDetail39(rs399,true);return}
     if(e.target.closest("[data-v396-personal]")){openPersonal395();return}
+    var resume3989=e.target.closest("[data-v3989-resume]");if(resume3989){
+      var rid3989=resume3989.dataset.v3989Resume,rs3989=getAnySong39(rid3989);
+      if(!rs3989){
+        try{loadUniverseSession39();rs3989=(state.universeHistory||[]).find(function(x){return x&&x.contentId===rid3989})}catch(_){}
+      }
+      if(rs3989){openUniversePage37(rs3989,false);return}
+      openUniverseHub3931();return
+    }
+    var random3989=e.target.closest("[data-v3989-random]");if(random3989){
+      if(random3989.disabled)return;random3989.disabled=true;random3989.setAttribute("aria-busy","true");
+      Promise.resolve(openUniverseHub3931()).then(function(){
+        return typeof randomUniverseWarp39==="function"?randomUniverseWarp39():false
+      }).catch(function(){try{toast("랜덤 입수를 시작하지 못했습니다.")}catch(_){}}).finally(function(){random3989.disabled=false;random3989.removeAttribute("aria-busy")});
+      return
+    }
+    var search3989=e.target.closest("[data-v3989-search]");if(search3989){
+      if(search3989.disabled)return;search3989.disabled=true;search3989.setAttribute("aria-busy","true");
+      Promise.resolve(openUniverseHub3931()).then(function(){
+        if(window.VSAEnsureFeatures)return Promise.resolve(VSAEnsureFeatures("universe")).catch(function(){return false})
+      }).then(function(){
+        if(window.VSADiveRelations58&&typeof window.VSADiveRelations58.focusSearch==="function")return window.VSADiveRelations58.focusSearch();
+        var starter=document.querySelector("#universePanel [data-mr58-search-start]");if(starter){starter.click();return true}
+        var input=document.getElementById("universeSearchInput");if(input){input.focus();input.scrollIntoView({behavior:"smooth",block:"center"});return true}
+        return false
+      }).finally(function(){search3989.disabled=false;search3989.removeAttribute("aria-busy")});
+      return
+    }
     var hs396=e.target.closest("[data-v396-save]");if(hs396){keep(hs396.dataset.v396Save);render();return}
     var hu396=e.target.closest("[data-v396-universe]");if(hu396){var hsu396=getAnySong39(hu396.dataset.v396Universe);if(hsu396)openUniversePage37(hsu396,false);else try{toast("선택한 곡 정보를 다시 불러온 뒤 시도해 주세요.")}catch(_){}return}
     var hd396=e.target.closest("[data-v396-dislike]");if(hd396){dislike(hd396.dataset.v396Dislike);return}
@@ -13215,7 +13249,7 @@ window.VSA58GenreProfile=genreProfile58;
 window.VSA58StyleProfile=styleProfile58;
 window.VSA58MoodProfile=moodProfile58;
 window.VSA58BridgeProfile=bridgeProfile58;
-window.VSADiveRelations58={render:render58,relation:rel58,genres:genreProfile58,bridges:bridgeProfile58,styles:styleProfile58,moods:moodProfile58,setActive:function(a){active58=new Set(a||[]);var d=state.universeData;if(d)render58(d)},setMode:function(m){filterMode58=m==="and"?"and":"or";var d=state.universeData;if(d)render58(d)}};
+window.VSADiveRelations58={render:render58,relation:rel58,genres:genreProfile58,bridges:bridgeProfile58,styles:styleProfile58,moods:moodProfile58,focusSearch:focusSearch58,setActive:function(a){active58=new Set(a||[]);var d=state.universeData;if(d)render58(d)},setMode:function(m){filterMode58=m==="and"?"and":"or";var d=state.universeData;if(d)render58(d)}};
 window.__VSA_DIVE_RENDER_OWNER="relation58";
 window.renderUniverse=render58;
 function boot58(){normalizePanel58();bind58();var d=typeof state!=="undefined"?state.universeData:null;if(d)render58(d)}
