@@ -1,6 +1,6 @@
 {
-  "version": "39.96.0",
+  "version": "39.97.0",
   "channel": "web",
-  "publishedAt": "2026-09-28T17:35:00+09:00",
-  "notes": "Audits and repairs light/dark text contrast, restores readable dark-ocean text inside Dive while light mode is active, and adds runtime theme contrast diagnostics."
+  "publishedAt": "2026-09-28T19:08:00+09:00",
+  "notes": "Fixes unreadable light-mode discovery/recommendation cards and upgrades Niconico thumbnail URLs to the public large image with automatic fallback."
 }

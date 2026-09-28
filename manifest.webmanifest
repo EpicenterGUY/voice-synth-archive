@@ -4,7 +4,7 @@
   "short_name": "VocaDive",
   "description": "앱 내부에서 새 APK를 확인·다운로드하고 Android 설치 확인창으로 이어지는 직접 업데이트 채널을 갖춘 VocaDive 앱",
   "lang": "ko-KR",
-  "start_url": "./?appv=39.96.0",
+  "start_url": "./?appv=39.97.0",
   "scope": "./",
   "display": "standalone",
   "display_override": [
