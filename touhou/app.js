@@ -26,9 +26,9 @@ async function boot(){
     [...state.localOriginals,...state.localArrangements].forEach(remember);
     Object.values(state.snapshots||{}).forEach(x=>x&&remember({...x,snapshot:true}));
     normalizePersistentIds();
-    bind();
     setView("home");
     renderLocalFirst();
+    bind();
     if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
     await connectRemote();
   }catch(err){
@@ -64,7 +64,7 @@ function bind(){
   $$("#modeTabs .mode-tab").forEach(btn=>btn.onclick=()=>{
     state.mode=btn.dataset.mode;state.filter="전체";syncModeTabs();renderCatalog();loadRemote(true);
   });
-  $(".nav-item[data-view]").forEach(btn=>btn.onclick=()=>nav(btn.dataset.view));
+  $$(".nav-item[data-view]").forEach(btn=>btn.onclick=()=>nav(btn.dataset.view));
   document.addEventListener("keydown",e=>{
     if(e.key==="/"&&document.activeElement!==$("#searchInput")){e.preventDefault();$("#searchInput").focus();}
     if(e.key==="Escape"){closePanel();closeMenu();if(!player.shell.classList.contains("is-mini")&&!player.shell.hidden)player.minimize();}
@@ -234,34 +234,6 @@ function dedupe(list){
 }
 function currentPool(){
   const local=[...state.localOriginals,...state.localArrangements].map(x=>byId(x.id)||x);
-  let pool=dedupe([...local,...state.remoteItems]);
-  if(state.mode==="original")pool=pool.filter(t=>t.type==="original");
-  if(state.mode==="arrangement")pool=pool.filter(t=>t.type==="arrangement");
-  return pool;
-}
-function remember(t){
-  if(!t?.id)return t;
-  const old=state.known.get(t.id);
-  state.known.set(t.id,old?{...old,...t}:t);return state.known.get(t.id);
-}
-function dedupe(list){
-  const byId=new Map(),byName=new Map(),out=[];
-  for(const t of list){
-    if(!t?.id||byId.has(t.id))continue;
-    const key=normKey(t.title)+"|"+normKey(t.circle||t.artistString||"");
-    if(key!=="|"&&byName.has(key)){
-      const prev=byName.get(key);
-      if(prev.remote&&!t.remote){
-        const idx=out.indexOf(prev);if(idx>=0)out[idx]=t;byName.set(key,t);byId.set(t.id,t);
-      }
-      continue;
-    }
-    byId.set(t.id,t);if(key!=="|")byName.set(key,t);out.push(t);
-  }
-  return out;
-}
-function currentPool(){
-  const local=[...state.localOriginals,...state.localArrangements];
   let pool=dedupe([...local,...state.remoteItems]);
   if(state.mode==="original")pool=pool.filter(t=>t.type==="original");
   if(state.mode==="arrangement")pool=pool.filter(t=>t.type==="arrangement");
@@ -516,7 +488,7 @@ function normalizePersistentIds(){
   writeJson("touhoudive:favorites",[...state.favorites]);
   writeJson("touhoudive:history",state.history);
 }
-function syncModeTabs(){$("#modeTabs .mode-tab").forEach(x=>x.classList.toggle("is-active",x.dataset.mode===state.mode))}
+function syncModeTabs(){$$("#modeTabs .mode-tab").forEach(x=>x.classList.toggle("is-active",x.dataset.mode===state.mode))}
 function setDataHealth(kind,text){
   const el=$("#dataHealth");
   el.classList.toggle("is-loading",kind==="loading");

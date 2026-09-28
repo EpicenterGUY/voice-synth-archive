@@ -1,8 +1,8 @@
 {
-  "version": "0.4.0",
+  "version": "0.4.1",
   "name": "TouhouDive",
   "channel": "alpha",
-  "updated": "2026-09-28",
+  "updated": "2026-09-29",
   "dataset": "TouhouDB-live+local-v4",
   "features": [
     "ui-rebuild",
@@ -19,6 +19,9 @@
     "player-fallback",
     "persistent-mini-player",
     "auto-next",
-    "media-session"
+    "media-session",
+    "runtime-binding-hotfix",
+    "duplicate-function-cleanup",
+    "boot-render-first"
   ]
 }
