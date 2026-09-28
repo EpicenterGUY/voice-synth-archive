@@ -12995,7 +12995,14 @@ function go58(id){
   try{return timeout58(Promise.resolve(buildUniverse(n,false)),8000,"경로 생성 시간이 초과되었습니다.")}catch(e){return Promise.reject(e)}
  }).then(function(){
   if(token!==moveToken58)return false;
-  endTransition58();setMoving58(false);status58("");return true
+  endTransition58();setMoving58(false);status58("");
+  setTimeout(function(){
+    try{
+      var center=document.querySelector("#universePanel .mr58-center");
+      if(center&&window.innerWidth<=699)center.scrollIntoView({behavior:"smooth",block:"start"})
+    }catch(_){}
+  },70);
+  return true
  }).catch(function(e){
   if(token!==moveToken58)return false;
   moveToken58++;
@@ -13133,7 +13140,7 @@ function bind58(){
    var ds=ev.target.closest("[data-mr58-depth-step]");if(ds){ev.preventDefault();ev.stopImmediatePropagation();if(!ds.disabled)stepDepth58(Number(ds.dataset.mr58DepthStep)||0);return}
    var dt=ev.target.closest("[data-mr58-depth-target]");if(dt){ev.preventDefault();ev.stopImmediatePropagation();if(!dt.disabled&&state.universeData&&depth58(state.universeData.center)!==Number(dt.dataset.mr58DepthTarget))moveDepth58(Number(dt.dataset.mr58DepthTarget));return}
    var g=ev.target.closest("[data-mr58-go]");if(g){ev.preventDefault();ev.stopImmediatePropagation();go58(g.dataset.mr58Go);return}
-   var s=ev.target.closest("[data-mr58-select]");if(s){ev.preventDefault();ev.stopImmediatePropagation();var d=state.universeData,n=find58(s.dataset.mr58Select,d);if(n){selected58=n.contentId;p.classList.add("mr77-candidate-selected");qa58(".mr58-node",p).forEach(function(x){x.classList.toggle("selected",x.dataset.mr58NodeId===selected58)});var info=q58("#universeInfo",p);if(info)info.innerHTML=side58(n,d)}return}
+   var s=ev.target.closest("[data-mr58-select]");if(s){ev.preventDefault();ev.stopImmediatePropagation();var d=state.universeData,n=find58(s.dataset.mr58Select,d);if(n){selected58=n.contentId;p.classList.add("mr77-candidate-selected");qa58(".mr58-node",p).forEach(function(x){x.classList.toggle("selected",x.dataset.mr58NodeId===selected58)});var info=q58("#universeInfo",p);if(info){info.innerHTML=side58(n,d);if(window.innerWidth<=699)setTimeout(function(){try{info.scrollIntoView({behavior:"smooth",block:"nearest"})}catch(_){}},50)}}return}
    var play=ev.target.closest("[data-mr58-play]");if(play){ev.preventDefault();ev.stopImmediatePropagation();if(window.VSAOpenSong39)window.VSAOpenSong39(play.dataset.mr58Play,true);else if(window.VSAOpenSongDetail39)window.VSAOpenSongDetail39(play.dataset.mr58Play,true);return}
    var det=ev.target.closest("[data-mr58-detail]");if(det){ev.preventDefault();ev.stopImmediatePropagation();if(window.VSAOpenSong39)window.VSAOpenSong39(det.dataset.mr58Detail,true);else if(window.VSAOpenSongDetail39)window.VSAOpenSongDetail39(det.dataset.mr58Detail,true);return}
    var pin=ev.target.closest("[data-mr58-pin]");if(pin){ev.preventDefault();ev.stopImmediatePropagation();if(window.toggleUniversePin39)window.toggleUniversePin39(pin.dataset.mr58Pin);var d=state.universeData,n=find58(pin.dataset.mr58Pin,d);if(n){var info=q58("#universeInfo",p);if(info)info.innerHTML=side58(n,d)}return}
@@ -14040,6 +14047,19 @@ body.mr74-transitioning{overflow:hidden!important}
  }
  #universePanel.v3958-rel .mr77-route-head i{font-size:7px}
  #universePanel.v3958-rel .mr58-node.selected{border-color:rgba(118,225,213,.55)!important;box-shadow:inset 0 0 0 1px rgba(105,217,207,.08)!important}
+}
+</style>
+
+
+<style id="v3981DiveInteractionPolish">
+#universePanel.v3958-rel .mr58-node.selected{position:relative!important}
+#universePanel.v3958-rel .mr58-node.selected:after{content:"선택됨";position:absolute;right:7px;top:7px;z-index:4;padding:3px 6px;border-radius:999px;background:rgba(85,221,208,.16);color:#cffff9;font-size:6px;font-weight:950;letter-spacing:.05em;pointer-events:none}
+#universePanel.v3958-rel.mr75-moving .mr58-shell{cursor:progress}
+@media(max-width:699px){
+ #universePanel.v3958-rel.mr77-candidate-selected .universe-side{scroll-margin-top:76px!important;box-shadow:0 18px 40px rgba(0,0,0,.24)!important}
+ #universePanel.v3958-rel .mr58-center{scroll-margin-top:72px!important}
+ #universePanel.v3958-rel .mr58-node.selected{background:linear-gradient(100deg,rgba(10,53,58,.98),rgba(7,33,43,.96))!important}
+ #universePanel.v3958-rel .mr58-node.selected .mr58-node-go{border-color:rgba(116,230,217,.4)!important;background:linear-gradient(180deg,rgba(24,91,94,.98),rgba(12,58,69,.96))!important}
 }
 </style>
 
