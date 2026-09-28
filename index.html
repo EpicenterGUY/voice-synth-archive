@@ -10833,7 +10833,7 @@ function featureDesc37(id){
 function featureButton37(id){
   const f=VSA37_FEATURES[id];if(!f)return"";
   const adv=id==="producer"?' data-v37-advanced="producer"':' data-v37-open="'+f.route+'"';
-  return '<button class="v37-hub-card" type="button" data-feature-id="'+id+'"'+adv+'><span class="v37-hub-icon">'+featureIcon37(id)+'</span><span class="v37-hub-copy"><b>'+f.label+'<span class="v37-use-badge">자주 사용</span></b><small>'+featureDesc37(id)+'</small></span><span class="v37-hub-arrow">›</span></button>'
+  return '<button class="v37-hub-card" type="button" data-feature-id="'+id+'" data-v37-feature-id="'+id+'"'+adv+'><span class="v37-hub-icon">'+featureIcon37(id)+'</span><span class="v37-hub-copy"><b>'+f.label+'<span class="v37-use-badge">자주 사용</span></b><small>'+featureDesc37(id)+'</small></span><span class="v37-hub-arrow">›</span></button>'
 }
 function featureRouteActive3990(route){
   var m=document.getElementById("toolsModal"),t=m&&m.querySelector('.tool-view[data-tool-view="'+String(route||"")+'"]');
