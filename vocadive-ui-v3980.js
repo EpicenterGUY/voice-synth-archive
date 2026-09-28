@@ -1,10 +1,10 @@
-/* VocaDive Unified UI v39.83.0
+/* VocaDive Unified UI v39.84.0
  * YouTube-style app shell, cards, player continuity and route recovery.
  */
 (function(){
 "use strict";
 
-var VERSION="39.83.0";
+var VERSION="39.84.0";
 var raf=0,observer=null,lastRoute="home",navSeq3985=0,workerCheckTimer3986=0;
 
 function q(sel,root){return (root||document).querySelector(sel)}
@@ -106,6 +106,9 @@ body.v37-ready .topbar .status>.pill:first-child{
 #v3980Dock button i{font-style:normal;font-size:18px;line-height:1}
 #v3980Dock button.active,#v3980Dock button[aria-current="page"]{background:#17343a;color:#f1fffd}
 #v3980Dock button.active i,#v3980Dock button[aria-current="page"] i{color:var(--vd-accent)}
+#v3980Dock button.loading{cursor:wait;opacity:.78}
+#v3980Dock button.loading i{animation:v3984DockPulse .72s ease-in-out infinite alternate}
+@keyframes v3984DockPulse{from{transform:scale(.84);opacity:.55}to{transform:scale(1.08);opacity:1}}
 body.v331-player-open #v3980Dock{display:none!important}
 body.v3986-keyboard #v3980Dock{transform:translateY(calc(100% + 24px));opacity:0;pointer-events:none}
 
@@ -869,7 +872,15 @@ function handleDockClick3988(e){
   document.body.classList.remove("v3986-keyboard");
   if(v==="home")goHome();
   else if(v==="explore")openRoute("hub37");
-  else if(v==="dive")openDive3985();
+  else if(v==="dive"){
+    if(b.classList.contains("loading"))return;
+    b.classList.add("loading");b.setAttribute("aria-busy","true");
+    Promise.resolve(openDive3985()).then(function(ok){
+      if(ok===false&&typeof toast==="function")toast("다이브 화면을 열지 못했습니다. 다시 눌러주세요.")
+    }).catch(function(){
+      if(typeof toast==="function")toast("다이브 화면을 열지 못했습니다. 다시 눌러주세요.")
+    }).finally(function(){b.classList.remove("loading");b.removeAttribute("aria-busy")})
+  }
   else if(v==="library")openLibrary()
 }
 function ensureDock(){
@@ -953,7 +964,15 @@ function openDive3985(){
   function lockDive(){
     if(ticket!==navSeq3985)return false;
     var ok=verifyRoute3985("universe29",ticket);
-    if(ok){lastRoute="dive";setDock("dive");scheduleRepair()}
+    if(ok){
+      lastRoute="dive";setDock("dive");scheduleRepair();
+      requestAnimationFrame(function(){
+        try{
+          var page=document.querySelector('[data-tool-view="universe29"].active');
+          if(page&&page.scrollTop>24)page.scrollTo({top:0,behavior:"smooth"})
+        }catch(_){}
+      })
+    }
     return ok
   }
   try{
