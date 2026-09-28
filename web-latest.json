@@ -1,6 +1,6 @@
 {
-  "version": "39.89.0",
+  "version": "39.90.0",
   "channel": "web",
-  "publishedAt": "2026-09-28T16:20:00+09:00",
-  "notes": "Reframes Home around Dive-first discovery with search/random/resume entry points, promotes Dive on the daily pick, reorganizes discovery gateways, and adds route safety fallbacks."
+  "publishedAt": "2026-09-28T16:45:00+09:00",
+  "notes": "Rebuilds Explore as an entry-point map, verifies feature-route transitions, shows primary relation reasons on Dive cards, and compacts the candidate detail panel."
 }
