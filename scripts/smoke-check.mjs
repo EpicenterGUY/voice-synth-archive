@@ -164,6 +164,18 @@ if(!index.includes("__VSA_WORKER_TOP_OWNER"))fail("top Worker status ownership g
 if(!unifiedUi.includes("__VSA_WORKER_TOP_OWNER=true"))fail("unified UI does not claim Worker status pill");
 if(!unifiedUi.includes('source!=="health"'))fail("non-health Worker failure debounce missing");
 
+// 14. Natural palette / producer discovery regressions.
+if(!unifiedUi.includes("--vd-bg:#091113"))fail("neutral VocaDive background token missing");
+if(!unifiedUi.includes("--vd-danger-bg:#1b1517"))fail("semantic error surface token missing");
+if(!unifiedUi.includes("Natural palette · v39.92"))fail("natural palette override missing");
+if(!unifiedUi.includes('body[data-vsa-theme="light"]{'))fail("light palette token override missing");
+if(!index.includes("sampleLimit=Math.min(220"))fail("producer discovery sample cap missing");
+if(!index.includes("resolveSongProducers37(song,{fast:true,allowSibling:false})"))fail("producer fast first pass missing");
+if(!index.includes("Math.min(36,count*3)"))fail("producer rescue cap missing");
+if(!index.includes("producerEvidence37(x)"))fail("producer evidence model missing");
+if(!index.includes("v37-producer-reason"))fail("producer discovery reason card missing");
+if(!index.includes("4500"))fail("VocaDB timeout guard missing");
+
 note("classic JS syntax checked");
 note("inline scripts checked: "+inline);
 note("local references checked: "+refs.size);

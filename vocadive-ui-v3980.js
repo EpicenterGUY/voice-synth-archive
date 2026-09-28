@@ -1,10 +1,10 @@
-/* VocaDive Unified UI v39.90.0
+/* VocaDive Unified UI v39.92.0
  * YouTube-style app shell, cards, player continuity and route recovery.
  */
 (function(){
 "use strict";
 
-var VERSION="39.91.0";
+var VERSION="39.92.0";
 var raf=0,observer=null,lastRoute="home",navSeq3985=0,workerCheckTimer3986=0;
 var workerState3986={ok:null,reason:"",endpoint:"",at:0};
 
@@ -18,18 +18,23 @@ function addStyle(){
   s.id="v3980UnifiedUiStyle";
   s.textContent=`
 :root{
- --vd-bg:#071012;
- --vd-surface:#0d171a;
- --vd-surface-2:#111e21;
- --vd-hover:#172629;
- --vd-line:rgba(185,230,225,.12);
- --vd-line-strong:rgba(135,224,214,.26);
- --vd-text:#f2f7f6;
- --vd-muted:#8fa4a2;
- --vd-soft:#69807e;
- --vd-accent:#6cddd2;
- --vd-accent-2:#8290f4;
- --vd-danger:#e79aa5;
+ --vd-bg:#091113;
+ --vd-surface:#10191b;
+ --vd-surface-2:#152124;
+ --vd-elevated:#182326;
+ --vd-control:#0d1618;
+ --vd-hover:#1a2729;
+ --vd-line:rgba(192,211,209,.10);
+ --vd-line-strong:rgba(151,202,196,.22);
+ --vd-text:#eef4f3;
+ --vd-muted:#91a3a1;
+ --vd-soft:#687a78;
+ --vd-accent:#63d8cf;
+ --vd-accent-2:#7a8ef2;
+ --vd-success:#58c7a7;
+ --vd-warning:#d7b66b;
+ --vd-danger:#d97882;
+ --vd-danger-bg:#1b1517;
  --vd-radius:14px;
  --vd-dock-h:68px;
  color-scheme:dark;
@@ -772,6 +777,119 @@ body.v37-ready :is(button,a){-webkit-tap-highlight-color:transparent}
  body.v37-ready #songList .thumb{width:94px!important;height:53px!important;min-width:94px!important}
  body.v37-ready #songList .song-title{font-size:10.5px!important}
 }
+
+/* Natural palette · v39.92
+   Neutral surfaces carry the product; cyan is reserved for focus/action and Dive depth. */
+body.v37-ready>.app>.topbar{
+ background:rgba(9,17,19,.94)!important;
+ border-bottom-color:var(--vd-line)!important
+}
+#v3980SearchForm{background:var(--vd-control)!important;border-color:var(--vd-line-strong)!important}
+#v3980SearchForm:focus-within{border-color:rgba(99,216,207,.52)!important;box-shadow:0 0 0 2px rgba(99,216,207,.07)!important}
+#v3980SearchBtn,#v3980MenuBtn{background:var(--vd-elevated)!important;color:var(--vd-text)!important}
+#v3980Dock{background:rgba(10,18,20,.96)!important;border-color:var(--vd-line)!important}
+#v3980Dock button{color:#829390!important}
+#v3980Dock button.active,#v3980Dock button[aria-current="page"]{background:#172326!important;color:var(--vd-text)!important}
+
+body.v37-ready :is(.v37-hub-card,.v37-intent-card,.v33-card,.v333-follow-card,.discovery-card,.gem-card,.v37-producer-card,.v37-diag-card,.v37-safety-card,.v37-ice-extra,.v37-vocal-rank-note,.v37-analysis-card,.v37-era-card){
+ background:var(--vd-surface)!important;border-color:var(--vd-line)!important
+}
+body.v37-ready :is(.v37-hub-card,.v37-intent-card,.v33-card,.v333-follow-card,.discovery-card,.gem-card,.v37-producer-card):hover{
+ background:var(--vd-hover)!important;border-color:var(--vd-line-strong)!important
+}
+body.v37-ready :is(input,select,textarea){background:var(--vd-control)!important;border-color:var(--vd-line)!important}
+body.v37-ready :is(input,select,textarea):focus{border-color:rgba(99,216,207,.48)!important;box-shadow:0 0 0 2px rgba(99,216,207,.07)!important}
+
+.v396-home-top-actions button,.v396-topic-row button,.v37-tabs button,.v35-tabs button,
+.v3989-home-meta button,.v3989-gateway-head>button,.v3990-map-hero-actions button,
+.v37-producer-actions button,.v37-ice-actions button,.v37-rank-more,.v37-diag-actions button{
+ background:var(--vd-elevated)!important;border-color:var(--vd-line)!important;color:#c8d4d2!important
+}
+.v396-home-top-actions button.primary,.v3990-map-hero-actions button.primary,.v3981-explore-hero>button,.v33-search-box button{
+ background:var(--vd-accent)!important;color:#071210!important;border-color:transparent!important
+}
+.v37-producer-controls button,.v37-vocal-rank-controls button,.v3989-dive-actions button.primary{
+ background:linear-gradient(135deg,var(--vd-accent),var(--vd-accent-2))!important;color:#071210!important;border-color:transparent!important
+}
+.v396-hero,.v396-hero-copy,.v396-hero-media,.v3990-zone,.v3981-explore-card,
+.v3990-zone .v3919-intent,.v3990-zone .v37-hub-card{
+ background:var(--vd-surface)!important;border-color:var(--vd-line)!important
+}
+.v3990-zone .v3919-intent:hover,.v3990-zone .v37-hub-card:hover,.v3981-explore-card:hover{background:var(--vd-hover)!important}
+.v3981-explore-icon,.v3990-zone-head>span{background:#182729!important;color:#8fd9d2!important}
+.v396-hero-tags span,.v396-badge,.v37-producer-card .score,.v37-producer-meta span{background:var(--vd-surface-2)!important;border-color:var(--vd-line)!important}
+
+.v3989-dive-entry{
+ border-color:rgba(132,176,172,.13)!important;
+ background:
+ radial-gradient(circle at 8% 0%,rgba(99,216,207,.08),transparent 34%),
+ radial-gradient(circle at 90% 18%,rgba(122,142,242,.09),transparent 36%),
+ linear-gradient(155deg,#111c20 0%,#0c161a 55%,#091115 100%)!important
+}
+.v3989-dive-actions button{background:#132024!important;border-color:var(--vd-line)!important;color:var(--vd-text)!important}
+.v3989-dive-actions button:hover{background:#19282b!important;border-color:var(--vd-line-strong)!important}
+.v3989-dive-actions button.resume{background:#142126!important}
+
+/* Errors/statuses use semantic accents instead of full saturated panels. */
+.v3973-worker-note{
+ background:#181813!important;border-color:rgba(215,182,107,.26)!important;color:#e7dcc0!important
+}
+.v3973-worker-copy span{color:#a79c7e!important}
+.v3973-worker-actions button{background:#22211b!important;border-color:rgba(215,182,107,.20)!important;color:#d8cba7!important}
+.v3973-worker-note.good{background:#111b1a!important;border-color:rgba(88,199,167,.28)!important;color:#cae9df!important}
+.v3973-worker-note.good .v3973-worker-copy span{color:#86aaa1!important}
+.v3973-worker-note.good .v3973-worker-actions button{background:#172522!important;border-color:rgba(88,199,167,.22)!important;color:#c7dfd8!important}
+.v3973-worker-note.bad{background:var(--vd-danger-bg)!important;border-color:rgba(217,120,130,.34)!important;color:#ecc9cd!important}
+.v3973-worker-note.bad .v3973-worker-copy span{color:#b99298!important}
+.v3973-worker-note.bad .v3973-worker-actions button{background:#251b1d!important;border-color:rgba(217,120,130,.25)!important;color:#dfc2c6!important}
+.v37-route-error>div{background:var(--vd-danger-bg)!important;border-color:rgba(217,120,130,.34)!important}
+.v37-route-error h2{color:#f0dadd!important}.v37-route-error p{color:#b99399!important}
+.v37-route-error button{background:#251b1d!important;border-color:rgba(217,120,130,.28)!important;color:#ead6d9!important}
+#v3982WorkerPill[data-state="live"]{border-color:rgba(88,199,167,.26)!important;background:#121d1b!important}
+#v3982WorkerPill[data-state="err"]{border-color:rgba(217,120,130,.32)!important;background:var(--vd-danger-bg)!important}
+#v3982WorkerPill[data-state="warn"]{border-color:rgba(215,182,107,.24)!important;background:#181813!important}
+
+/* Producer discovery: compact evidence-first cards. */
+.v37-producer-controls{background:var(--vd-surface)!important;border-color:var(--vd-line)!important}
+.v37-producer-status{background:#0e1719!important;border-color:var(--vd-line)!important;color:var(--vd-muted)!important}
+.v37-producer-card{padding:13px!important;background:var(--vd-surface)!important}
+.v37-producer-source{display:block;color:#78aaa5!important;font-size:6.5px!important;font-weight:900;letter-spacing:.055em}
+.v37-producer-card .score{padding:5px 7px!important;color:#8fdad3!important;font-size:7.5px!important}
+.v37-producer-reason{margin-top:8px;padding:7px 8px;border-left:2px solid rgba(99,216,207,.45);background:#0d1719;color:#bac9c7;font-size:7.5px;line-height:1.45}
+.v37-producer-meta{gap:4px!important}
+.v37-producer-meta span{color:#95a8a5!important}
+.v37-producer-meta span.evidence{color:#8fd1c9!important;border-color:rgba(99,216,207,.22)!important}
+.v37-producer-songs{display:grid!important;gap:5px!important;margin-top:9px!important}
+.v37-producer-song{display:grid;grid-template-columns:58px minmax(0,1fr);gap:8px;align-items:center;min-width:0;padding:5px;border-radius:9px;background:#0d1719}
+.v37-producer-song img,.v37-producer-song-noimg{width:58px;height:33px;object-fit:cover;border-radius:6px;background:#182326}
+.v37-producer-song-noimg{display:grid;place-items:center;color:#75918e}
+.v37-producer-song span{min-width:0}.v37-producer-song b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#dce6e4;font-size:7.5px}
+.v37-producer-song small{display:block;margin-top:2px;color:#738582;font-size:6.5px}
+@media(max-width:420px){.v37-producer-song{grid-template-columns:52px minmax(0,1fr)}.v37-producer-song img,.v37-producer-song-noimg{width:52px;height:30px}}
+
+/* Dive keeps depth, but saturation falls with depth rather than tinting the whole app. */
+#universePanel.v3958-rel .mr74-depth-0{background:linear-gradient(180deg,#173a43 0%,#12313b 38%,#0d2631 100%)!important}
+#universePanel.v3958-rel .mr74-depth-1{background:linear-gradient(180deg,#122f39 0%,#0d2631 45%,#0a1d27 100%)!important}
+#universePanel.v3958-rel .mr74-depth-2{background:linear-gradient(180deg,#0e2832 0%,#0a202a 48%,#081821 100%)!important}
+#universePanel.v3958-rel .mr74-depth-3{background:linear-gradient(180deg,#0b202a 0%,#081922 48%,#07131b 100%)!important}
+#universePanel.v3958-rel .mr74-depth-4{background:linear-gradient(180deg,#091820 0%,#071219 48%,#060c12 100%)!important}
+
+/* Light mode gets the same neutral hierarchy instead of mint-tinting every surface. */
+body[data-vsa-theme="light"]{
+ --vd-bg:#f3f6f5;--vd-surface:#ffffff;--vd-surface-2:#f1f4f3;--vd-elevated:#edf1f0;--vd-control:#ffffff;
+ --vd-hover:#f0f4f3;--vd-line:rgba(49,76,72,.12);--vd-line-strong:rgba(36,111,103,.25);
+ --vd-text:#17302e;--vd-muted:#667b78;--vd-soft:#7e908d;--vd-danger-bg:#fff7f8
+}
+body[data-vsa-theme="light"] .v3989-dive-entry{
+ background:linear-gradient(155deg,#ffffff,#f0f5f4)!important;border-color:rgba(49,76,72,.12)!important
+}
+body[data-vsa-theme="light"] .v37-producer-reason,
+body[data-vsa-theme="light"] .v37-producer-song,
+body[data-vsa-theme="light"] .v37-producer-status{background:#f5f7f6!important}
+body[data-vsa-theme="light"] .v3973-worker-note{background:#fffaf0!important}
+body[data-vsa-theme="light"] .v3973-worker-note.good{background:#f3faf7!important}
+body[data-vsa-theme="light"] .v3973-worker-note.bad{background:#fff7f8!important}
+
 @media(prefers-reduced-motion:reduce){
  *{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }

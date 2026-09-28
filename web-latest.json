@@ -1,6 +1,6 @@
 {
-  "version": "39.91.0",
+  "version": "39.92.0",
   "channel": "web",
-  "publishedAt": "2026-09-28T16:33:00+09:00",
-  "notes": "Stabilizes Worker connection truth, stops API request errors from flipping the connection pill, and removes invalid Niconico contentId target queries in Producer discovery and Dive enrichment."
+  "publishedAt": "2026-09-28T17:05:00+09:00",
+  "notes": "Introduces a neutral natural palette, semantic status colors, evidence-first Producer discovery cards, and a staged faster Producer discovery pipeline."
 }
