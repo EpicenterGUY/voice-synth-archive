@@ -12992,11 +12992,35 @@ function relationReasonRows58(c,n,r){
  if(cs.length){var av=cs.reduce(function(s,k){return s+(r.confidence[k]||0)},0)/cs.length;out.push({k:"근거 신뢰도",v:Math.round(av*100)+"% · 확인 가능한 축만 점수에 반영"})}
  return out
 }
+function reasonRowsHtml58(rows){
+ return (rows||[]).map(function(x){return '<div><b>'+e58(x.k)+'</b><span>'+e58(x.v)+'</span></div>'}).join("")
+}
 function side58(n,d){
- var c=d.center,r=n.contentId===c.contentId?null:rel58(c,n),gs=genreProfile58(n),reasons=r?relationReasonRows58(c,n,r):[],mainReasons=reasons.slice(0,3),moreReasons=reasons.slice(3);
- return '<div class="mr58-side">'+(r?'<button type="button" class="mr90-side-close" data-mr58-close-side aria-label="선택 정보 닫기">×</button>':'')+'<div class="mr58-side-cover">'+(n.thumbnailUrl?'<img src="'+e58(n.thumbnailUrl)+'" alt="">':'<div class="noimg">♪</div>')+'</div><div class="mr58-badges">'+(r?badges58(r,4):badge58("similar","중심곡"))+'</div><h3>'+e58(n.title||n.contentId)+'</h3><div class="mr58-side-meta">'+(year58(n)||"연도 미상")+' · 조회 '+fmt58(views58(n))+(gs.length?' · '+gs.map(function(x){return x.label}).slice(0,2).join(" / "):"")+'</div>'+
-  '<div class="mr58-side-section"><small>왜 연결됐나</small>'+(r?'<div class="mr61-reason-list">'+mainReasons.map(function(x){return '<div><b>'+e58(x.k)+'</b><span>'+e58(x.v)+'</span></div>').join("")+'</div>'+(moreReasons.length?'<details class="mr90-more-reasons"><summary>근거 '+moreReasons.length+'개 더 보기</summary><div class="mr61-reason-list">'+moreReasons.map(function(x){return '<div><b>'+e58(x.k)+'</b><span>'+e58(x.v)+'</span></div>').join("")+'</div></details>':''):'<div class="mr58-badges"><span class="mr58-badge similar">현재 다이브 기준곡</span></div>')+'</div>'+
-  '<div class="mr58-side-actions">'+(r?'<button type="button" class="primary" data-mr58-go="'+e58(n.contentId)+'">↓ 이 곡으로 다이브</button>':'')+'<button type="button" data-mr58-play="'+e58(n.contentId)+'">▶ 듣기</button><button type="button" data-mr58-detail="'+e58(n.contentId)+'">상세</button><button type="button" data-mr58-pin="'+e58(n.contentId)+'">'+((typeof isUniversePinned39==="function"&&isUniversePinned39(n.contentId))?"핀 해제":"핀 고정")+'</button></div></div>'
+ var c=d.center,r=n.contentId===c.contentId?null:rel58(c,n),gs=genreProfile58(n);
+ var reasons=r?relationReasonRows58(c,n,r):[],mainReasons=reasons.slice(0,3),moreReasons=reasons.slice(3);
+ var close=r?'<button type="button" class="mr90-side-close" data-mr58-close-side aria-label="선택 정보 닫기">×</button>':'';
+ var badges=r?badges58(r,4):badge58("similar","중심곡");
+ var genreText=gs.length?' · '+gs.map(function(x){return x.label}).slice(0,2).join(" / "):"";
+ var reasonBlock;
+ if(r){
+   reasonBlock='<div class="mr61-reason-list">'+reasonRowsHtml58(mainReasons)+'</div>';
+   if(moreReasons.length){
+     reasonBlock+='<details class="mr90-more-reasons"><summary>근거 '+moreReasons.length+'개 더 보기</summary><div class="mr61-reason-list">'+reasonRowsHtml58(moreReasons)+'</div></details>'
+   }
+ }else{
+   reasonBlock='<div class="mr58-badges"><span class="mr58-badge similar">현재 다이브 기준곡</span></div>'
+ }
+ var actions=(r?'<button type="button" class="primary" data-mr58-go="'+e58(n.contentId)+'">↓ 이 곡으로 다이브</button>':'')+
+  '<button type="button" data-mr58-play="'+e58(n.contentId)+'">▶ 듣기</button>'+
+  '<button type="button" data-mr58-detail="'+e58(n.contentId)+'">상세</button>'+
+  '<button type="button" data-mr58-pin="'+e58(n.contentId)+'">'+((typeof isUniversePinned39==="function"&&isUniversePinned39(n.contentId))?"핀 해제":"핀 고정")+'</button>';
+ return '<div class="mr58-side">'+close+
+  '<div class="mr58-side-cover">'+(n.thumbnailUrl?'<img src="'+e58(n.thumbnailUrl)+'" alt="">':'<div class="noimg">♪</div>')+'</div>'+
+  '<div class="mr58-badges">'+badges+'</div>'+
+  '<h3>'+e58(n.title||n.contentId)+'</h3>'+
+  '<div class="mr58-side-meta">'+(year58(n)||"연도 미상")+' · 조회 '+fmt58(views58(n))+genreText+'</div>'+
+  '<div class="mr58-side-section"><small>왜 연결됐나</small>'+reasonBlock+'</div>'+
+  '<div class="mr58-side-actions">'+actions+'</div></div>'
 }
 function ensureRelationLoader58(p){
  if(!p)return null;
