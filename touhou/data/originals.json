@@ -1,0 +1,548 @@
+[
+  {
+    "id": "eosd-01",
+    "title": "赤より紅い夢",
+    "work": "東方紅魔郷",
+    "year": 2002,
+    "role": "Title",
+    "character": "",
+    "moods": [
+      "서정",
+      "도입",
+      "몽환"
+    ]
+  },
+  {
+    "id": "eosd-02",
+    "title": "妖魔夜行",
+    "work": "東方紅魔郷",
+    "year": 2002,
+    "role": "Stage 1 Boss",
+    "character": "ルーミア",
+    "moods": [
+      "밤",
+      "요괴",
+      "경쾌"
+    ]
+  },
+  {
+    "id": "eosd-03",
+    "title": "おてんば恋娘",
+    "work": "東方紅魔郷",
+    "year": 2002,
+    "role": "Stage 2 Boss",
+    "character": "チルノ",
+    "moods": [
+      "경쾌",
+      "장난",
+      "얼음"
+    ]
+  },
+  {
+    "id": "eosd-04",
+    "title": "上海紅茶館　～ Chinese Tea",
+    "work": "東方紅魔郷",
+    "year": 2002,
+    "role": "Stage 3",
+    "character": "",
+    "moods": [
+      "동양",
+      "선율",
+      "질주"
+    ]
+  },
+  {
+    "id": "eosd-05",
+    "title": "明治十七年の上海アリス",
+    "work": "東方紅魔郷",
+    "year": 2002,
+    "role": "Stage 3 Boss",
+    "character": "紅 美鈴",
+    "moods": [
+      "동양",
+      "보스",
+      "질주"
+    ]
+  },
+  {
+    "id": "eosd-06",
+    "title": "ラクトガール　～ 少女密室",
+    "work": "東方紅魔郷",
+    "year": 2002,
+    "role": "Stage 4 Boss",
+    "character": "パチュリー・ノーレッジ",
+    "moods": [
+      "어둠",
+      "마법",
+      "밀실"
+    ]
+  },
+  {
+    "id": "eosd-07",
+    "title": "月時計　～ ルナ・ダイアル",
+    "work": "東方紅魔郷",
+    "year": 2002,
+    "role": "Stage 5 Boss",
+    "character": "十六夜 咲夜",
+    "moods": [
+      "질주",
+      "시간",
+      "긴장"
+    ]
+  },
+  {
+    "id": "eosd-08",
+    "title": "亡き王女の為のセプテット",
+    "work": "東方紅魔郷",
+    "year": 2002,
+    "role": "Stage 6 Boss",
+    "character": "レミリア・スカーレット",
+    "moods": [
+      "웅장",
+      "보스",
+      "서정"
+    ]
+  },
+  {
+    "id": "eosd-09",
+    "title": "U.N.オーエンは彼女なのか？",
+    "work": "東方紅魔郷",
+    "year": 2002,
+    "role": "Extra Boss",
+    "character": "フランドール・スカーレット",
+    "moods": [
+      "Extra",
+      "광기",
+      "변칙"
+    ]
+  },
+  {
+    "id": "pcb-01",
+    "title": "遠野幻想物語",
+    "work": "東方妖々夢",
+    "year": 2003,
+    "role": "Stage 2",
+    "character": "",
+    "moods": [
+      "봄",
+      "환상",
+      "여행"
+    ]
+  },
+  {
+    "id": "pcb-02",
+    "title": "人形裁判　～ 人の形弄びし少女",
+    "work": "東方妖々夢",
+    "year": 2003,
+    "role": "Stage 3 Boss",
+    "character": "アリス・マーガトロイド",
+    "moods": [
+      "마법",
+      "인형",
+      "긴장"
+    ]
+  },
+  {
+    "id": "pcb-03",
+    "title": "幽霊楽団　～ Phantom Ensemble",
+    "work": "東方妖々夢",
+    "year": 2003,
+    "role": "Stage 4 Boss",
+    "character": "プリズムリバー三姉妹",
+    "moods": [
+      "밴드",
+      "유령",
+      "경쾌"
+    ]
+  },
+  {
+    "id": "pcb-04",
+    "title": "東方妖々夢　～ Ancient Temple",
+    "work": "東方妖々夢",
+    "year": 2003,
+    "role": "Stage 5",
+    "character": "",
+    "moods": [
+      "전통",
+      "서정",
+      "검"
+    ]
+  },
+  {
+    "id": "pcb-05",
+    "title": "広有射怪鳥事　～ Till When?",
+    "work": "東方妖々夢",
+    "year": 2003,
+    "role": "Stage 5 Boss",
+    "character": "魂魄 妖夢",
+    "moods": [
+      "검",
+      "질주",
+      "보스"
+    ]
+  },
+  {
+    "id": "pcb-06",
+    "title": "幽雅に咲かせ、墨染の桜　～ Border of Life",
+    "work": "東方妖々夢",
+    "year": 2003,
+    "role": "Stage 6 Boss",
+    "character": "西行寺 幽々子",
+    "moods": [
+      "벚꽃",
+      "서정",
+      "웅장"
+    ]
+  },
+  {
+    "id": "pcb-07",
+    "title": "少女幻葬　～ Necro-Fantasy",
+    "work": "東方妖々夢",
+    "year": 2003,
+    "role": "Extra Boss",
+    "character": "八雲 藍",
+    "moods": [
+      "Extra",
+      "환상",
+      "질주"
+    ]
+  },
+  {
+    "id": "pcb-08",
+    "title": "ネクロファンタジア",
+    "work": "東方妖々夢",
+    "year": 2003,
+    "role": "Phantasm Boss",
+    "character": "八雲 紫",
+    "moods": [
+      "심층",
+      "환상",
+      "웅장"
+    ]
+  },
+  {
+    "id": "in-01",
+    "title": "幻視の夜　～ Ghostly Eyes",
+    "work": "東方永夜抄",
+    "year": 2004,
+    "role": "Stage 1",
+    "character": "",
+    "moods": [
+      "밤",
+      "도입",
+      "질주"
+    ]
+  },
+  {
+    "id": "in-02",
+    "title": "蠢々秋月　～ Mooned Insect",
+    "work": "東方永夜抄",
+    "year": 2004,
+    "role": "Stage 1 Boss",
+    "character": "リグル・ナイトバグ",
+    "moods": [
+      "밤",
+      "벌레",
+      "경쾌"
+    ]
+  },
+  {
+    "id": "in-03",
+    "title": "もう歌しか聞こえない",
+    "work": "東方永夜抄",
+    "year": 2004,
+    "role": "Stage 2 Boss",
+    "character": "ミスティア・ローレライ",
+    "moods": [
+      "노래",
+      "밤",
+      "변칙"
+    ]
+  },
+  {
+    "id": "in-04",
+    "title": "プレインエイジア",
+    "work": "東方永夜抄",
+    "year": 2004,
+    "role": "Stage 3 Boss",
+    "character": "上白沢 慧音",
+    "moods": [
+      "역사",
+      "보스",
+      "선율"
+    ]
+  },
+  {
+    "id": "in-05",
+    "title": "少女綺想曲　～ Dream Battle",
+    "work": "東方永夜抄",
+    "year": 2004,
+    "role": "Stage 4 Boss",
+    "character": "博麗 霊夢",
+    "moods": [
+      "무녀",
+      "질주",
+      "보스"
+    ]
+  },
+  {
+    "id": "in-06",
+    "title": "恋色マスタースパーク",
+    "work": "東方永夜抄",
+    "year": 2004,
+    "role": "Stage 4 Boss",
+    "character": "霧雨 魔理沙",
+    "moods": [
+      "마법",
+      "질주",
+      "별"
+    ]
+  },
+  {
+    "id": "in-07",
+    "title": "狂気の瞳　～ Invisible Full Moon",
+    "work": "東方永夜抄",
+    "year": 2004,
+    "role": "Stage 5 Boss",
+    "character": "鈴仙・優曇華院・イナバ",
+    "moods": [
+      "광기",
+      "달",
+      "긴장"
+    ]
+  },
+  {
+    "id": "in-08",
+    "title": "竹取飛翔　～ Lunatic Princess",
+    "work": "東方永夜抄",
+    "year": 2004,
+    "role": "Stage 6 Boss",
+    "character": "蓬莱山 輝夜",
+    "moods": [
+      "달",
+      "웅장",
+      "전설"
+    ]
+  },
+  {
+    "id": "in-09",
+    "title": "月まで届け、不死の煙",
+    "work": "東方永夜抄",
+    "year": 2004,
+    "role": "Extra Boss",
+    "character": "藤原 妹紅",
+    "moods": [
+      "Extra",
+      "불사",
+      "질주"
+    ]
+  },
+  {
+    "id": "mof-01",
+    "title": "人恋し神様　～ Romantic Fall",
+    "work": "東方風神録",
+    "year": 2007,
+    "role": "Stage 1",
+    "character": "",
+    "moods": [
+      "가을",
+      "서정",
+      "도입"
+    ]
+  },
+  {
+    "id": "mof-02",
+    "title": "運命のダークサイド",
+    "work": "東方風神録",
+    "year": 2007,
+    "role": "Stage 2 Boss",
+    "character": "鍵山 雛",
+    "moods": [
+      "액운",
+      "회전",
+      "긴장"
+    ]
+  },
+  {
+    "id": "mof-03",
+    "title": "神々が恋した幻想郷",
+    "work": "東方風神録",
+    "year": 2007,
+    "role": "Stage 3",
+    "character": "",
+    "moods": [
+      "향수",
+      "자연",
+      "서정"
+    ]
+  },
+  {
+    "id": "mof-04",
+    "title": "芥川龍之介の河童　～ Candid Friend",
+    "work": "東方風神録",
+    "year": 2007,
+    "role": "Stage 3 Boss",
+    "character": "河城 にとり",
+    "moods": [
+      "물",
+      "기계",
+      "경쾌"
+    ]
+  },
+  {
+    "id": "mof-05",
+    "title": "妖怪の山　～ Mysterious Mountain",
+    "work": "東方風神録",
+    "year": 2007,
+    "role": "Stage 4 Boss",
+    "character": "射命丸 文",
+    "moods": [
+      "산",
+      "질주",
+      "바람"
+    ]
+  },
+  {
+    "id": "mof-06",
+    "title": "信仰は儚き人間の為に",
+    "work": "東方風神録",
+    "year": 2007,
+    "role": "Stage 5 Boss",
+    "character": "東風谷 早苗",
+    "moods": [
+      "신앙",
+      "서정",
+      "보스"
+    ]
+  },
+  {
+    "id": "mof-07",
+    "title": "神さびた古戦場　～ Suwa Foughten Field",
+    "work": "東方風神録",
+    "year": 2007,
+    "role": "Stage 6 Boss",
+    "character": "八坂 神奈子",
+    "moods": [
+      "신",
+      "웅장",
+      "고전"
+    ]
+  },
+  {
+    "id": "mof-08",
+    "title": "ネイティブフェイス",
+    "work": "東方風神録",
+    "year": 2007,
+    "role": "Extra Boss",
+    "character": "洩矢 諏訪子",
+    "moods": [
+      "Extra",
+      "신",
+      "변칙"
+    ]
+  },
+  {
+    "id": "sa-01",
+    "title": "暗闇の風穴",
+    "work": "東方地霊殿",
+    "year": 2008,
+    "role": "Stage 1",
+    "character": "",
+    "moods": [
+      "지하",
+      "어둠",
+      "도입"
+    ]
+  },
+  {
+    "id": "sa-02",
+    "title": "緑眼のジェラシー",
+    "work": "東方地霊殿",
+    "year": 2008,
+    "role": "Stage 2 Boss",
+    "character": "水橋 パルスィ",
+    "moods": [
+      "질투",
+      "어둠",
+      "선율"
+    ]
+  },
+  {
+    "id": "sa-03",
+    "title": "華のさかづき大江山",
+    "work": "東方地霊殿",
+    "year": 2008,
+    "role": "Stage 3 Boss",
+    "character": "星熊 勇儀",
+    "moods": [
+      "오니",
+      "축제",
+      "강렬"
+    ]
+  },
+  {
+    "id": "sa-04",
+    "title": "少女さとり　～ 3rd eye",
+    "work": "東方地霊殿",
+    "year": 2008,
+    "role": "Stage 4 Boss",
+    "character": "古明地 さとり",
+    "moods": [
+      "심리",
+      "어둠",
+      "변칙"
+    ]
+  },
+  {
+    "id": "sa-05",
+    "title": "死体旅行　～ Be of good cheer!",
+    "work": "東方地霊殿",
+    "year": 2008,
+    "role": "Stage 5 Boss",
+    "character": "火焔猫 燐",
+    "moods": [
+      "지옥",
+      "경쾌",
+      "질주"
+    ]
+  },
+  {
+    "id": "sa-06",
+    "title": "霊知の太陽信仰　～ Nuclear Fusion",
+    "work": "東方地霊殿",
+    "year": 2008,
+    "role": "Stage 6 Boss",
+    "character": "霊烏路 空",
+    "moods": [
+      "핵",
+      "웅장",
+      "보스"
+    ]
+  },
+  {
+    "id": "sa-07",
+    "title": "ラストリモート",
+    "work": "東方地霊殿",
+    "year": 2008,
+    "role": "Extra Stage",
+    "character": "",
+    "moods": [
+      "Extra",
+      "질주",
+      "심층"
+    ]
+  },
+  {
+    "id": "sa-08",
+    "title": "ハルトマンの妖怪少女",
+    "work": "東方地霊殿",
+    "year": 2008,
+    "role": "Extra Boss",
+    "character": "古明地 こいし",
+    "moods": [
+      "Extra",
+      "무의식",
+      "변칙"
+    ]
+  }
+]
