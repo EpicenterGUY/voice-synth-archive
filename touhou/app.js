@@ -4,11 +4,12 @@ const catalog=window.TouhouCatalog;
 const player=new window.TouhouMediaPlayer();
 
 const state={
-  localOriginals:[],localArrangements:[],known:new Map(),remoteItems:[],
-  mode:"all",filter:"전체",sort:"recommend",selected:null,
-  remote:{available:false,loading:false,start:0,total:0,catalogTotal:0,key:"",error:"",counts:{}},
-  favorites:new Set(JSON.parse(localStorage.getItem("touhoudive:favorites")||"[]")),
-  history:JSON.parse(localStorage.getItem("touhoudive:history")||"[]")
+  localOriginals:[],localArrangements:[],known:new Map(),aliases:new Map(),identities:new Map(),remoteItems:[],
+  mode:"all",filter:"전체",sort:"recommend",selected:null,view:"home",
+  remote:{available:false,loading:false,start:0,total:0,catalogTotal:0,key:"",error:"",counts:{},seq:0},
+  favorites:new Set(readJson("touhoudive:favorites",[])),
+  history:readJson("touhoudive:history",[]),
+  snapshots:readJson("touhoudive:snapshots",{})
 };
 let searchTimer=0;
 
@@ -23,7 +24,10 @@ async function boot(){
     state.localOriginals=o.map(x=>({...x,type:"original",circle:"ZUN",album:x.work,originalIds:[],remote:false}));
     state.localArrangements=a.map(x=>({...x,type:"arrangement",remote:false}));
     [...state.localOriginals,...state.localArrangements].forEach(remember);
+    Object.values(state.snapshots||{}).forEach(x=>x&&remember({...x,snapshot:true}));
+    normalizePersistentIds();
     bind();
+    setView("home");
     renderLocalFirst();
     if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
     await connectRemote();
@@ -35,10 +39,19 @@ async function boot(){
 }
 function bind(){
   $("#searchInput").addEventListener("input",()=>{
+    $("#searchClear").hidden=!$("#searchInput").value;
+    if(state.view!=="discover"&&state.view!=="home")setView("discover");
     renderCatalog();
     clearTimeout(searchTimer);
-    searchTimer=setTimeout(()=>loadRemote(true),330);
+    searchTimer=setTimeout(()=>loadRemote(true),300);
   });
+  $("#searchClear").onclick=()=>{
+    $("#searchInput").value="";
+    $("#searchClear").hidden=true;
+    renderCatalog();
+    loadRemote(true);
+    $("#searchInput").focus();
+  };
   $("#sortSelect").addEventListener("change",e=>{state.sort=e.target.value;renderCatalog();loadRemote(true);});
   $("#loadMoreBtn").onclick=()=>loadRemote(false);
   $("#randomBtn").onclick=randomDive;$("#heroDiveBtn").onclick=randomDive;
@@ -51,7 +64,7 @@ function bind(){
   $$("#modeTabs .mode-tab").forEach(btn=>btn.onclick=()=>{
     state.mode=btn.dataset.mode;state.filter="전체";syncModeTabs();renderCatalog();loadRemote(true);
   });
-  $$(".nav-item").forEach(btn=>btn.onclick=()=>nav(btn.dataset.view,btn));
+  $(".nav-item[data-view]").forEach(btn=>btn.onclick=()=>nav(btn.dataset.view));
   document.addEventListener("keydown",e=>{
     if(e.key==="/"&&document.activeElement!==$("#searchInput")){e.preventDefault();$("#searchInput").focus();}
     if(e.key==="Escape"){closePanel();closeMenu();if(!player.shell.classList.contains("is-mini")&&!player.shell.hidden)player.minimize();}
