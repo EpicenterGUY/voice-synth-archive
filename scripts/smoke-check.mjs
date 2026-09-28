@@ -209,6 +209,19 @@ if(!unifiedUi.includes(".mr58-node.selected .mr95-node-peek"))fail("selected Div
 if(!unifiedUi.includes("@media(min-width:380px) and (max-width:699px)"))fail("compact Explore two-column breakpoint missing");
 if(!unifiedUi.includes('button[aria-busy="true"]'))fail("busy control interaction guard missing");
 
+// 18. Theme contrast integrity / runtime audit.
+if(!unifiedUi.includes("Theme contrast contract · v39.96"))fail("v39.96 theme contrast contract missing");
+if(!unifiedUi.includes("--vd-soft:#819491"))fail("dark soft-text contrast token missing");
+if(!unifiedUi.includes("--vd-text:#17302e;--vd-muted:#536b68;--vd-soft:#5c716e"))fail("light readable text tokens missing");
+if(!unifiedUi.includes('body[data-vsa-theme="light"] #universePanel.v3958-rel'))fail("light-mode Dive dark-ocean restore missing");
+if(!unifiedUi.includes('body[data-vsa-theme="light"] .mr74-transition :is(small,b,span)'))fail("light-mode Dive transition text restore missing");
+if(!index.includes("function themeContrastAudit37()"))fail("runtime theme contrast audit missing");
+if(!index.includes("window.VSAThemeContrastAudit37=themeContrastAudit37"))fail("theme contrast audit export missing");
+if(!index.includes("contrast:themeContrastAudit37()"))fail("diagnostics contrast collection missing");
+if(!index.includes("THEME CONTRAST"))fail("diagnostics theme contrast card missing");
+if(!index.includes('new CustomEvent("vsa:theme-change"'))fail("theme-change event missing");
+if(!index.includes('bcs.backgroundImage&&bcs.backgroundImage!=="none"'))fail("contrast gradient false-positive guard missing");
+
 note("classic JS syntax checked");
 note("inline scripts checked: "+inline);
 note("local references checked: "+refs.size);
