@@ -1,6 +1,6 @@
 {
-  "version": "39.82.0",
+  "version": "39.83.0",
   "channel": "web",
-  "publishedAt": "2026-09-28T14:15:00+09:00",
-  "notes": "Dive journey history restored on Ocean Dive, back-navigation-safe mini playback, and player route recovery polish."
+  "publishedAt": "2026-09-28T14:25:00+09:00",
+  "notes": "Urgent Dive dock hotfix: click rebinding, route fallback hardening, and false keyboard lock recovery."
 }
