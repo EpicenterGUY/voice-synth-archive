@@ -1,1 +1,12 @@
-const CACHE="touhoudive-v0.2.0";const CORE=["./","./index.html","./styles.css","./app.js","./media.js","./data/originals.json","./data/arrangements.json","./data/schema.json","./manifest.webmanifest","./icon.svg","./version.json"];self.addEventListener("install",e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting())));self.addEventListener("activate",e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));self.addEventListener("fetch",e=>{if(e.request.method!=="GET")return;const u=new URL(e.request.url);if(u.origin!==location.origin)return;e.respondWith(fetch(e.request).then(r=>{const c=r.clone();caches.open(CACHE).then(x=>x.put(e.request,c));return r}).catch(()=>caches.match(e.request).then(r=>r||caches.match("./index.html"))))});
+const CACHE="touhoudive-v0.3.0";
+const CORE=["./","./index.html","./styles.css","./app.js","./catalog.js","./media.js","./data/originals.json","./data/arrangements.json","./data/schema.json","./manifest.webmanifest","./icon.svg","./version.json"];
+self.addEventListener("install",e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting())));
+self.addEventListener("activate",e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
+self.addEventListener("fetch",e=>{
+  if(e.request.method!=="GET")return;
+  const u=new URL(e.request.url);
+  if(u.origin!==location.origin)return;
+  e.respondWith(fetch(e.request).then(r=>{
+    const c=r.clone();caches.open(CACHE).then(x=>x.put(e.request,c));return r;
+  }).catch(()=>caches.match(e.request).then(r=>r||caches.match("./index.html"))));
+});
