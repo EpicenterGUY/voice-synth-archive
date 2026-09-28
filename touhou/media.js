@@ -28,7 +28,7 @@ function ensureYoutubeApi(){
     s.src="https://www.youtube.com/iframe_api";s.async=true;
     s.onerror=()=>reject(new Error("YouTube player API load failed"));
     document.head.appendChild(s);
-    setTimeout(()=>{if(window.YT&&window.YT.Player)resolve(window.YT)},2500);
+    setTimeout(()=>{if(window.YT&&window.YT.Player)resolve(window.YT);else reject(new Error("YouTube player API timeout"))},4000);
   });
   return ytPromise;
 }
@@ -154,11 +154,18 @@ class TouhouMediaPlayer{
   }
   minimize(){
     if(!this.current)return;
-    this.shell.classList.add("is-mini");document.getElementById("playerExpand").hidden=false;this.syncMeta();
+    this.shell.classList.add("is-mini");
+    document.body.classList.remove("player-open");
+    document.getElementById("playerExpand").hidden=false;
+    this.syncMeta();
   }
   expand(){
     if(!this.current)return;
-    this.shell.classList.remove("is-mini");document.getElementById("playerExpand").hidden=true;this.shell.hidden=false;this.syncMeta();
+    this.shell.classList.remove("is-mini");
+    document.body.classList.add("player-open");
+    document.getElementById("playerExpand").hidden=true;
+    this.shell.hidden=false;
+    this.syncMeta();
   }
   routeChange(){if(this.current&&!this.shell.hidden)this.minimize()}
   setAutoNext(on){
@@ -202,7 +209,7 @@ class TouhouMediaPlayer{
   setPlaybackState(v){try{if("mediaSession" in navigator)navigator.mediaSession.playbackState=v}catch(_){}}
   close(){
     this.destroySurface();this.current=null;this.queue=[];this.index=-1;this.playing=false;
-    this.shell.hidden=true;this.shell.classList.remove("is-mini");this.setPlaybackState("none");
+    this.shell.hidden=true;this.shell.classList.remove("is-mini");document.body.classList.remove("player-open");this.setPlaybackState("none");
     try{if("mediaSession" in navigator)navigator.mediaSession.metadata=null}catch(_){}
     this.syncControls();
   }
