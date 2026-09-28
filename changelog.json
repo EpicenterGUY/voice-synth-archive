@@ -1,11 +1,28 @@
 {
   "current": {
-    "version": "39.97.0",
+    "version": "39.98.0",
     "releasedAt": "2026-09-28",
-    "title": "Light Cards · HQ Thumbnails",
-    "summary": "라이트모드 추천·탐색 카드의 흰 배경 위 흰 글자 충돌을 실제 렌더링 계층에서 수정하고, 니코니코 대형 썸네일을 우선 사용해 카드 이미지를 더 선명하게 표시합니다."
+    "title": "Playback Repair · Release CI Cleanup",
+    "summary": "추천 카드의 외부 탭 재생을 VocaDive 내부 Watch로 통일하고 고해상도 썸네일 실패 시 원본 이미지가 다시 보이도록 복구했으며, 서명키가 없는 일반 main 푸시에서 signed-release CI가 매번 실패하던 흐름을 정리했습니다."
   },
   "entries": [
+    {
+      "version": "39.98.0",
+      "date": "2026-09-28",
+      "title": "Playback Repair · Release CI Cleanup",
+      "changes": [
+        "입문 추천·취향 추천 카드 제목과 듣기 버튼이 니코니코 새 탭으로 빠지던 흐름을 VocaDive 내부 Watch 재생으로 변경",
+        "숨은 명곡 카드도 제목과 앱에서 듣기 버튼으로 내부 플레이어를 열고, 외부 니코니코 링크는 별도 액션으로 분리",
+        "추천 결과는 getAnySong39의 guide/taste/hiddenGems 캐시를 그대로 사용해 상세·미니플레이어·다이브 연결을 유지",
+        "v39.97 고해상도 .L 썸네일이 없는 구곡에서 기존 onerror가 이미지를 숨긴 뒤 원본 URL로 복귀해도 계속 안 보이던 문제 수정",
+        "HQ 썸네일 fallback 원본이 로드되면 visibility/opacity를 다시 복구하도록 처리",
+        "Android signed release가 영구 서명키가 없는 상태에서도 package.json 변경마다 자동 실행되어 빨간 실패를 만들던 main push 트리거 제거",
+        "signed release는 app-v* 태그 또는 수동 실행에서만 동작하도록 분리하고, 누락된 서명 secret을 한 번에 모두 표시하도록 개선",
+        "Android debug/release 워크플로의 actions/setup-java를 v5로 업데이트",
+        "내부 재생·HQ fallback·signed release 트리거에 대한 정적 회귀 검사 추가",
+        "웹/PWA/서비스워커/네이티브 셸/검색/기기동기화/UI 버전과 캐시 키를 v39.98.0으로 동기화"
+      ]
+    },
     {
       "version": "39.97.0",
       "date": "2026-09-28",
