@@ -1,0 +1,18 @@
+{
+  "name": "TouhouDive",
+  "short_name": "TouhouDive",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#080b13",
+  "theme_color": "#0b1020",
+  "description": "동방 프로젝트 공식 원곡 탐색 앱",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
