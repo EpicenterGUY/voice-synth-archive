@@ -10238,6 +10238,24 @@ function leaveWatchRoute399(){
     return false
   })
 }
+var watchRouteHandoff39102=false;
+window.addEventListener("vsa:route-change",function(e){
+  var route=String(e&&e.detail&&e.detail.route||window.__VSA37_CURRENT_ROUTE||"");
+  if(!route||route==="songDetail39"||watchRouteHandoff39102)return;
+  var rawFrame=document.getElementById("v399InlineFrame"),detail=document.querySelector('[data-tool-view="songDetail39"]');
+  var ownedInline=false;
+  try{
+    var st=window.VSANicoPlayer&&VSANicoPlayer.state?VSANicoPlayer.state():null;
+    ownedInline=!!(st&&st.currentId&&st.inline)
+  }catch(_){}
+  if(!rawFrame&&!ownedInline)return;
+  if(rawFrame&&detail&&!detail.contains(rawFrame)&&!ownedInline)return;
+  watchRouteHandoff39102=true;
+  Promise.resolve(handoffWatchToMini399()).then(function(ok){
+    if(!ok&&rawFrame)stopWatchInline399(true)
+  }).finally(function(){setTimeout(function(){watchRouteHandoff39102=false},0)})
+});
+
 function ensureWatch399(){
   var song=window.__VSA39_DETAIL_SONG;if(!song)return;
   var p=document.querySelector('[data-tool-view="songDetail39"]');if(!p||!p.classList.contains("active"))return;
