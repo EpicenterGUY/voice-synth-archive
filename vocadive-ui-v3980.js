@@ -935,12 +935,16 @@ function goHome(){
   lastRoute="home";setDock("home");scheduleRepair()
 }
 function runSearch(value){
-  var query=String(value||"").trim();
+  var query=String(value||"").trim(),ticket=++navSeq3985;
   return ensureV33().then(function(ok){
-    if(!ok){openRoute("search29");return false}
-    openRaw("searchHub33");lastRoute="explore";setDock("explore");
+    if(ticket!==navSeq3985)return false;
+    if(!ok){return openRoute("search29",ticket)}
+    openRaw("searchHub33");
+    if(ticket!==navSeq3985)return false;
+    verifyRoute3985("searchHub33",ticket);lastRoute="explore";setDock("explore");
     var tries=0;
     function fill(){
+      if(ticket!==navSeq3985)return;
       var input=document.getElementById("v33Query"),btn=document.getElementById("v33SearchRun");
       if(input){
         input.value=query;
