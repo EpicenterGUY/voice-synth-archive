@@ -10894,7 +10894,9 @@ function refreshHub37(){
 }
 function ensureHub37(){
   var body=document.querySelector("#toolsModal .tools-body");if(!body)return null;
-  var v=body.querySelector('[data-tool-view="hub37"]');if(v){refreshHub37();return v}
+  var v=body.querySelector('[data-tool-view="hub37"]');
+  if(v&&!v.classList.contains("v3990-entry-map")){try{v.remove()}catch(_){if(v.parentNode)v.parentNode.removeChild(v)}v=null}
+  if(v){refreshHub37();return v}
   v=document.createElement("section");v.className="tool-view v37-native-hub v393-native-explore v3990-entry-map";v.dataset.toolView="hub37";
   v.innerHTML=
     '<div class="v3990-map-hero"><div><small>VOCADIVE · ENTRY MAP 3.0</small><h2>어디서 잠수할까요?</h2><p>찾고 싶은 방식에 따라 입수 지점을 고르세요. 어느 길로 들어가도 곡을 발견하면 바로 다이브로 이어집니다.</p></div><div class="v3990-map-hero-actions"><button type="button" class="primary" data-v37-feature-id="universe">◉ 다이브 시작</button><button type="button" data-v37-feature-id="settings">⚙ 설정</button></div></div>'+
