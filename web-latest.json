@@ -2,5 +2,5 @@
   "version": "39.80.0",
   "channel": "web",
   "publishedAt": "2026-09-28T09:48:00+09:00",
-  "notes": "Live Worker health state, accurate connection colors, keyboard-safe mobile dock, and navigation accessibility polish."
+  "notes": "Live Worker health state, accurate connection colors, keyboard-safe mobile dock, route polish, and search retry/Worker recovery actions."
 }
