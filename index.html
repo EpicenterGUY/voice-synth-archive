@@ -12888,7 +12888,7 @@ function scene58(d){
  return '<div class="mr58-shell mr74-depth-'+dep+(liteOcean58()?' mr76-lite':'')+'" data-mr74-depth="'+dep+'">'+seaLayers58(dep)+'<div class="mr58-content">'+
   '<div class="mr58-head"><div><small>VOCADIVE · OCEAN DIVE 1.3</small><h3>다음 곡 선택</h3><p>수층을 고르고 <b>이동</b>을 누르면 실제 잠수하듯 다음 곡으로 넘어갑니다. 깊어질수록 빛과 해류 분위기도 달라집니다.</p></div>'+summary58(rows)+'</div>'+
   depthNav58(d)+'<details class="mr72-advanced"><summary>연결 조건 <span>유사곡 · 장르 · P · 보컬 · 시대</span></summary>'+filters58(d)+'</details>'+
-  '<div class="mr77-route-head"><span><small>NEXT CURRENT</small><b>다음 이동 후보</b><i>카드를 누르면 연결 이유 · 이동 버튼은 즉시 다이브</i></span><em>'+rows.length+' ROUTES</em></div>'+
+  '<div class="mr77-route-head"><span><small>NEXT CURRENT · '+e58(DEPTH58[dep].short)+'</small><b>다음 이동 후보</b><i>카드를 누르면 연결 이유 · 이동 버튼은 즉시 다이브</i></span><em>'+rows.length+' ROUTES · '+fmt58(views58(c))+'회</em></div>'+
   '<div class="mr58-map">'+rows.map(function(x,i){return node58(x,i,c)}).join("")+center58(c,d)+(rows.length?"":'<div class="mr58-empty">현재 조건에 맞는 후보가 없습니다.<br>연결 조건을 줄이거나 다른 수층을 선택하세요.</div>')+'</div></div></div>'
 }
 function find58(id,d){return d&&(d.nodes||[]).find(function(n){return n&&n.contentId===id})}
@@ -12986,7 +12986,11 @@ function transitionOverlay58(){
 function transitionName58(dir){return dir==="down"?"심층으로 하강 중":dir==="up"?"수면 방향으로 상승 중":"해류를 따라 이동 중"}
 function setMoving58(on){
  moving58=!!on;
- var p=q58("#universePanel");if(p)p.classList.toggle("mr75-moving",moving58);
+ var p=q58("#universePanel");
+ if(p){
+   p.classList.toggle("mr75-moving",moving58);
+   if(moving58)p.setAttribute("aria-busy","true");else p.removeAttribute("aria-busy")
+ }
  if(!moving58&&transitionSafety58){clearTimeout(transitionSafety58);transitionSafety58=0}
 }
 function playTransition58(fromDepth,toDepth,title){
@@ -14177,6 +14181,22 @@ body.mr74-transitioning{overflow:hidden!important}
  #universePanel.v3958-rel .mr58-center{scroll-margin-top:72px!important}
  #universePanel.v3958-rel .mr58-node.selected{background:linear-gradient(100deg,rgba(10,53,58,.98),rgba(7,33,43,.96))!important}
  #universePanel.v3958-rel .mr58-node.selected .mr58-node-go{border-color:rgba(116,230,217,.4)!important;background:linear-gradient(180deg,rgba(24,91,94,.98),rgba(12,58,69,.96))!important}
+}
+</style>
+
+<style id="v3988DiveSpeedFeedback">
+#universePanel.v3958-rel .mr58-node-main,
+#universePanel.v3958-rel .mr58-node-go,
+#universePanel.v3958-rel .mr58-center-actions button,
+#universePanel.v3958-rel .mr72-depth button{touch-action:manipulation}
+#universePanel.v3958-rel.mr75-moving .mr77-route-head em{color:#bdf7ef!important;background:rgba(14,76,80,.52)!important}
+#universePanel.v3958-rel.mr75-moving .mr77-route-head em:before{content:"CALC · ";color:#72dfd4;font-weight:950;letter-spacing:.08em}
+#universePanel.v3958-rel.mr75-moving .mr58-node-go{box-shadow:inset 0 0 0 1px rgba(115,224,213,.12)}
+#universePanel.v3958-rel[aria-busy="true"] .mr72-depth-status:empty:before{content:"다음 경로 계산 중…";color:#7fd6ce}
+@media(max-width:420px){
+ #universePanel.v3958-rel .mr77-route-head i{display:none!important}
+ #universePanel.v3958-rel .mr77-route-head{align-items:center!important}
+ #universePanel.v3958-rel .mr77-route-head em{font-size:6px!important;padding:4px 6px!important}
 }
 </style>
 
