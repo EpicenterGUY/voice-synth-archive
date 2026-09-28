@@ -891,7 +891,7 @@ body[data-vsa-theme="light"] .v3973-worker-note.good{background:#f3faf7!importan
 body[data-vsa-theme="light"] .v3973-worker-note.bad{background:#fff7f8!important}
 body[data-vsa-theme="light"].v37-ready>.app>.topbar{background:rgba(255,255,255,.94)!important;border-bottom-color:var(--vd-line)!important}
 body[data-vsa-theme="light"] #v3980Dock{background:rgba(255,255,255,.96)!important;border-color:var(--vd-line)!important;box-shadow:0 12px 28px rgba(31,55,52,.08)!important}
-body[data-vsa-theme="light"] #v3980Dock button{color:#70817f!important}
+body[data-vsa-theme="light"] #v3980Dock button{color:#536b68!important}
 body[data-vsa-theme="light"] #v3980Dock button.active,
 body[data-vsa-theme="light"] #v3980Dock button[aria-current="page"]{background:#edf1f0!important;color:#17302e!important}
 body[data-vsa-theme="light"] .v3981-explore-icon,
@@ -949,7 +949,7 @@ body[data-vsa-theme="light"] .tools-body>.tool-view:not([data-tool-view="univers
 body[data-vsa-theme="light"] .tools-body>.tool-view:not([data-tool-view="universe29"]) :is(input,select,textarea){
  color:#17302e!important;background:#fff!important;border-color:var(--vd-line)!important
 }
-body[data-vsa-theme="light"] .tools-body>.tool-view:not([data-tool-view="universe29"]) :is(input,textarea)::placeholder{color:#81918f!important}
+body[data-vsa-theme="light"] .tools-body>.tool-view:not([data-tool-view="universe29"]) :is(input,textarea)::placeholder{color:#5c716e!important}
 body[data-vsa-theme="light"] .tools-body>.tool-view:not([data-tool-view="universe29"]) .v37-producer-card .score,
 body[data-vsa-theme="light"] .tools-body>.tool-view:not([data-tool-view="universe29"]) .v37-producer-meta span{
  color:#4f6966!important;background:#f0f4f3!important
@@ -958,7 +958,7 @@ body[data-vsa-theme="light"] .tools-body>.tool-view:not([data-tool-view="univers
  color:#2c7169!important;border-color:rgba(47,113,106,.20)!important
 }
 body[data-vsa-theme="light"] .tools-body>.tool-view:not([data-tool-view="universe29"]) .v37-producer-song b{color:#203936!important}
-body[data-vsa-theme="light"] .tools-body>.tool-view:not([data-tool-view="universe29"]) .v37-producer-song-noimg{background:#e8eeec!important;color:#56736f!important}
+body[data-vsa-theme="light"] .tools-body>.tool-view:not([data-tool-view="universe29"]) .v37-producer-song-noimg{background:#e8eeec!important;color:#4f6966!important}
 body[data-vsa-theme="light"] .tools-body>.tool-view:not([data-tool-view="universe29"]) :is(.primary,.v37-producer-controls button,.v37-vocal-rank-controls button){
  background:linear-gradient(135deg,var(--vd-accent),var(--vd-accent-2))!important;color:#071210!important;border-color:transparent!important
 }
@@ -967,14 +967,14 @@ body[data-vsa-theme="light"] #v3982Menu button{color:#17302e!important}
 body[data-vsa-theme="light"] #v3982Menu button:hover{background:#f0f4f3!important}
 body[data-vsa-theme="light"] #v3982Menu button i{background:#e8efed!important;color:#2f716a!important}
 body[data-vsa-theme="light"] #v3982Menu button small,
-body[data-vsa-theme="light"] #v3982Menu button em{color:#6f817e!important}
+body[data-vsa-theme="light"] #v3982Menu button em{color:#536b68!important}
 body[data-vsa-theme="light"] #v3983SurfaceNotice{background:#fff!important;color:#29423f!important;border-color:var(--vd-line)!important}
 
 /* Home Dive entry and Worker pill were still using dark-theme foregrounds on light surfaces. */
 body[data-vsa-theme="light"] .v3989-dive-entry-copy>small{color:#2f716a!important}
 body[data-vsa-theme="light"] .v3989-dive-entry-copy h1{color:#17302e!important}
-body[data-vsa-theme="light"] .v3989-dive-entry-copy p{color:#667b78!important}
-body[data-vsa-theme="light"] .v3989-dive-flags span{background:#edf3f1!important;color:#56736f!important;border-color:var(--vd-line)!important}
+body[data-vsa-theme="light"] .v3989-dive-entry-copy p{color:#536b68!important}
+body[data-vsa-theme="light"] .v3989-dive-flags span{background:#edf3f1!important;color:#4f6966!important;border-color:var(--vd-line)!important}
 body[data-vsa-theme="light"] .v3989-dive-actions button b{color:#17302e!important}
 body[data-vsa-theme="light"] .v3989-dive-actions button span{color:#2f716a!important}
 body[data-vsa-theme="light"] .v3989-dive-actions button.primary b,
