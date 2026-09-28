@@ -136,6 +136,20 @@ if(!index.includes('data-v39-feature="archive"'))fail("Home archive entry point 
 if(!unifiedUi.includes(".v3989-dive-entry"))fail("Dive-first Home responsive style missing");
 if(!unifiedUi.includes("[data-v3989-search],[data-v3989-random],[data-v3989-resume]"))fail("Home Dive route safety fallback missing");
 
+// 12. Explore entry-map / Dive detail regressions.
+if(!index.includes("VOCADIVE · ENTRY MAP 3.0"))fail("Explore entry-map identity missing");
+if(!index.includes('className="tool-view v37-native-hub v393-native-explore v3990-entry-map"'))fail("Explore entry-map DOM marker missing");
+if(!index.includes('!v.classList.contains("v3990-entry-map")'))fail("stale Explore hub rebuild guard missing");
+if(!index.includes("function featureRouteActive3990(route)"))fail("feature route verification helper missing");
+if(!index.includes("verifyFeatureRoute3990(id,f.route)"))fail("generic feature route recovery missing");
+if(!index.includes("function primaryReason58(r)"))fail("Dive primary relation reason missing");
+if(!index.includes("mr90-node-reason"))fail("Dive card primary reason output missing");
+if(!index.includes("data-mr58-close-side"))fail("Dive detail close action missing");
+if(!index.includes("mainReasons=reasons.slice(0,3)"))fail("Dive detail reason cap missing");
+if(!index.includes("mr90-more-reasons"))fail("Dive extra reasons disclosure missing");
+if(!unifiedUi.includes(".v3990-map-hero"))fail("Explore entry-map responsive style missing");
+if(!unifiedUi.includes(".mr90-side-close"))fail("Dive compact detail style missing");
+
 note("classic JS syntax checked");
 note("inline scripts checked: "+inline);
 note("local references checked: "+refs.size);
