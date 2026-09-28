@@ -1,5 +1,18 @@
 [
   {
+    "id": "lls-bad-apple",
+    "title": "Bad Apple!!",
+    "work": "東方幻想郷 ～ Lotus Land Story",
+    "year": 1998,
+    "role": "Stage 3",
+    "character": "",
+    "moods": [
+      "구작",
+      "질주",
+      "몽환"
+    ]
+  },
+  {
     "id": "eosd-01",
     "title": "赤より紅い夢",
     "work": "東方紅魔郷",

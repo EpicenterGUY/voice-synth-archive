@@ -1,0 +1,35 @@
+{
+  "version": 2,
+  "entities": {
+    "track": [
+      "id",
+      "type",
+      "title",
+      "year",
+      "moods",
+      "media"
+    ],
+    "original": [
+      "work",
+      "role",
+      "character"
+    ],
+    "arrangement": [
+      "circle",
+      "album",
+      "originalIds",
+      "artists"
+    ],
+    "media": [
+      "provider",
+      "id",
+      "url"
+    ]
+  },
+  "notes": [
+    "Original and arrangement entries stay separate.",
+    "Arrangement tracks may reference multiple originalIds.",
+    "The client only embeds media when a verified media object exists.",
+    "Large-scale ingestion should move arrangement search to Worker/API paging."
+  ]
+}

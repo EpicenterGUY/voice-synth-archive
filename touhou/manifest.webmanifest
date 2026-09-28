@@ -4,9 +4,9 @@
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#080b13",
-  "theme_color": "#0b1020",
-  "description": "동방 프로젝트 공식 원곡 탐색 앱",
+  "background_color": "#080b12",
+  "theme_color": "#0a0d17",
+  "description": "동방 Project 원곡과 2차창작 어레인지 계보 탐색 및 인앱 영상 재생",
   "icons": [
     {
       "src": "./icon.svg",
