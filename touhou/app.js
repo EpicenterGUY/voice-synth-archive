@@ -334,7 +334,7 @@ function card(t){
   const by=t.type==="arrangement"
     ? [t.circle,(t.artists?.vocal||[]).join(", ")].filter(Boolean).join(" · ")
     : [t.work||t.artistString,t.role,t.character].filter(Boolean).join(" · ");
-  const thumb=t.thumb?" style=\\"background-image:url('"+escAttr(t.thumb)+"')\\"":"";
+  const thumb=t.thumb?' style="background-image:url(&quot;'+escAttr(t.thumb)+'&quot;)"':"";
   const originLine=t.type==="arrangement"
     ? "원곡 · "+(origins.join(" / ")||(t.originalIds?.length?"계보 연결 가능":"매칭 준비 중"))
     : (t.year||"연도 미상")+" · "+countChildren(t.id)+"개 연결";
@@ -438,21 +438,31 @@ function startDive(t){
   window.scrollTo({top:0,behavior:"smooth"});player.routeChange();
 }
 function relations(t){
-  const pool=[...state.known.values()],tOrig=new Set(t.type==="original"?[t.id]:(t.originalIds||[]));
-  return pool.filter(x=>x.id!==t.id).map(x=>{
-    let score=0,reasons=[];const xOrig=new Set(x.type==="original"?[x.id]:(x.originalIds||[]));
-    const shared=[...tOrig].filter(id=>xOrig.has(id));if(shared.length){score+=12*shared.length;reasons.push("같은 원곡 계보");}
-    if(t.type==="original"&&(x.originalIds||[]).includes(t.id)){score+=16;reasons.unshift("이 원곡의 어레인지");}
-    if(x.type==="original"&&(t.originalIds||[]).includes(x.id)){score+=16;reasons.unshift("원곡으로 이동");}
-    if(t.work&&x.work===t.work){score+=5;reasons.push("같은 작품");}
-    if(t.circle&&x.circle&&t.circle===x.circle&&t.circle!=="ZUN"){score+=7;reasons.push("같은 서클");}
-    const tv=t.artists?.vocal||[],xv=x.artists?.vocal||[];if(tv.some(v=>xv.includes(v))){score+=6;reasons.push("같은 보컬");}
-    const moods=(t.moods||[]).filter(m=>(x.moods||[]).includes(m));if(moods.length){score+=2*moods.length;reasons.push("태그 "+moods[0]);}
-    const yd=Math.abs((t.year||2000)-(x.year||2000));score+=Math.max(0,2-yd/5);if(player.playable(x))score+=.5;
+  const pool=[...state.known.values()];
+  const tOrig=new Set(t.type==="original"?[resolveId(t.id)]:originalIds(t));
+  return pool.filter(x=>resolveId(x.id)!==resolveId(t.id)).map(x=>{
+    let score=0,reasons=[];
+    const xOrig=new Set(x.type==="original"?[resolveId(x.id)]:originalIds(x));
+    const shared=[...tOrig].filter(id=>xOrig.has(id));
+    if(shared.length){score+=12*shared.length;reasons.push("같은 원곡 계보")}
+    if(t.type==="original"&&originalIds(x).includes(resolveId(t.id))){score+=16;reasons.unshift("이 원곡의 어레인지")}
+    if(x.type==="original"&&originalIds(t).includes(resolveId(x.id))){score+=16;reasons.unshift("원곡으로 이동")}
+    if(t.work&&x.work===t.work){score+=5;reasons.push("같은 작품")}
+    if(t.circle&&x.circle&&t.circle===x.circle&&t.circle!=="ZUN"){score+=7;reasons.push("같은 서클")}
+    const tv=t.artists?.vocal||[],xv=x.artists?.vocal||[];
+    if(tv.some(v=>xv.includes(v))){score+=6;reasons.push("같은 보컬")}
+    const moods=(t.moods||[]).filter(m=>(x.moods||[]).includes(m));
+    if(moods.length){score+=2*moods.length;reasons.push("태그 "+moods[0])}
+    const yd=Math.abs((t.year||2000)-(x.year||2000));
+    score+=Math.max(0,2-yd/5);
+    if(player.playable(x))score+=.5;
     return{track:x,score,reason:reasons[0]||"시대·태그 브리지"};
   }).filter(x=>x.score>0).sort((a,b)=>b.score-a.score);
 }
-function relationText(t){const r=relations(t).slice(0,3);return r.length?`${r.map(x=>x.track.title).join(" → ")} 쪽으로 이어지는 ${r[0].reason} 흐름이 강합니다.`:"전체 DB에서 연결 후보를 더 불러오면 관계가 확장됩니다."}
+function relationText(t){
+  const r=relations(t).slice(0,3);
+  return r.length?r.map(x=>x.track.title).join(" → ")+" · "+r[0].reason:"전체 DB에서 연결 후보를 더 불러오면 관계가 확장됩니다.";
+}
 function countChildren(id){
   const target=resolveId(id);
   return [...state.known.values()].filter(a=>originalIds(a).includes(target)).length;
@@ -469,15 +479,52 @@ function sortList(list,sort){
 }
 function recommendScore(t){return (Number(t.ratingScore)||0)*3+(Number(t.favoritedTimes)||0)*.08+(player.playable(t)?5:0)+(t.type==="arrangement"?2:0)+(t.originalIds?.length?3:0)+(t.moods?.length||0)*.2}
 function randomDive(){const pool=currentPool();if(pool.length)startDive(pool[Math.floor(Math.random()*pool.length)])}
-function toggleFavorite(id){state.favorites.has(id)?state.favorites.delete(id):state.favorites.add(id);localStorage.setItem("touhoudive:favorites",JSON.stringify([...state.favorites]));openTrack(byId(id));toast(state.favorites.has(id)?"보관함에 저장했습니다.":"보관함에서 제거했습니다.");}
-function pushHistory(id){state.history=[id,...state.history.filter(x=>x!==id)].slice(0,60);localStorage.setItem("touhoudive:history",JSON.stringify(state.history));}
-function syncModeTabs(){$$("#modeTabs .mode-tab").forEach(x=>x.classList.toggle("is-active",x.dataset.mode===state.mode))}
+function snapshotTrack(t){
+  return{id:t.id,type:t.type,title:t.title,aliases:t.aliases||[],year:t.year||null,work:t.work||"",role:t.role||"",character:t.character||"",circle:t.circle||"",album:t.album||"",moods:t.moods||[],originalIds:t.originalIds||[],artists:t.artists||{},artistString:t.artistString||"",media:t.media||null,thumb:t.thumb||"",source:t.source||null,touhoudbId:t.touhoudbId||null,remote:!!t.remote};
+}
+function persistSnapshot(t){
+  if(!t)return;
+  const s=snapshotTrack(t);state.snapshots[s.id]=s;
+  const keys=Object.keys(state.snapshots);
+  if(keys.length>120)for(const k of keys.slice(0,keys.length-120))delete state.snapshots[k];
+  writeJson("touhoudive:snapshots",state.snapshots);
+}
+function toggleFavorite(t){
+  const id=resolveId(t.id);
+  state.favorites.has(id)?state.favorites.delete(id):state.favorites.add(id);
+  persistSnapshot(t);writeJson("touhoudive:favorites",[...state.favorites]);
+  openTrack(byId(id)||t);
+  toast(state.favorites.has(id)?"보관함에 저장했습니다.":"보관함에서 제거했습니다.");
+}
+function pushHistory(id,t){
+  id=resolveId(id);
+  state.history=[id,...state.history.map(resolveId).filter(x=>x!==id)].slice(0,60);
+  if(t)persistSnapshot(t);
+  writeJson("touhoudive:history",state.history);
+}
+function normalizePersistentIds(){
+  state.favorites=new Set([...state.favorites].map(resolveId));
+  state.history=state.history.map(resolveId);
+  writeJson("touhoudive:favorites",[...state.favorites]);
+  writeJson("touhoudive:history",state.history);
+}
+function syncModeTabs(){$("#modeTabs .mode-tab").forEach(x=>x.classList.toggle("is-active",x.dataset.mode===state.mode))}
+function setDataHealth(kind,text){
+  const el=$("#dataHealth");
+  el.classList.toggle("is-loading",kind==="loading");
+  el.classList.toggle("is-error",kind==="error");
+  $("#datasetStatus").textContent=text;
+}
 function closePanel(){$("#detailPanel").classList.remove("is-open");$("#detailPanel").setAttribute("aria-hidden","true");syncScrim();}
 function closeMenu(){$("#sidebar").classList.remove("is-open");syncScrim();}
 function syncScrim(){const on=$("#detailPanel").classList.contains("is-open")||$("#sidebar").classList.contains("is-open");$("#scrim").classList.toggle("is-open",on);}
 function toggleTheme(){const html=document.documentElement,next=html.dataset.theme==="light"?"dark":"light";html.dataset.theme=next;localStorage.setItem("touhoudive:theme",next);}
 function toast(msg){const el=$("#toast");el.textContent=msg;el.classList.add("show");clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove("show"),1700);}
 function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
+function uniq(a){return [...new Set((a||[]).filter(Boolean))]}
+function readJson(key,fallback){try{return JSON.parse(localStorage.getItem(key)||"")||fallback}catch{return fallback}}
+function writeJson(key,value){try{localStorage.setItem(key,JSON.stringify(value))}catch{}}
+function emptyCard(title,sub){return '<div class="empty-state" style="grid-column:1/-1;min-height:190px"><div class="empty-icon">東</div><strong>'+esc(title)+'</strong><span>'+esc(sub)+'</span></div>'}
 function fmt(n){return Number(n||0).toLocaleString()}
 function normKey(v){return String(v||"").normalize("NFKC").toLowerCase().replace(/[\s\u3000\p{P}\p{S}]+/gu,"")}
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}
