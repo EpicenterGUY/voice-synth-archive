@@ -292,7 +292,23 @@ function boot(){
       try{if(typeof window.openToolsModal==="function")window.openToolsModal("settings29")}catch(_){}
     }
   });
-  var observer=new MutationObserver(function(){syncRoute()});
+  var searchSelector="#v39GlobalSearch,#globalSearchInput,#v397SearchShell,#v398MainRow,#searchScope,#v398Year,#v398Tier,#v398Sort";
+  var syncQueued=false;
+  function queueSync(){
+    if(syncQueued)return;
+    syncQueued=true;
+    requestAnimationFrame(function(){syncQueued=false;syncRoute()})
+  }
+  var observer=new MutationObserver(function(muts){
+    for(var i=0;i<muts.length;i++){
+      var groups=[muts[i].addedNodes||[],muts[i].removedNodes||[]];
+      for(var g=0;g<groups.length;g++)for(var j=0;j<groups[g].length;j++){
+        var n=groups[g][j];
+        if(!n||n.nodeType!==1)continue;
+        if((n.matches&&n.matches(searchSelector))||(n.querySelector&&n.querySelector(searchSelector))){queueSync();return}
+      }
+    }
+  });
   observer.observe(document.body,{childList:true,subtree:true})
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(boot,30)});
