@@ -186,6 +186,91 @@ body.v3986-keyboard #v3980Dock{transform:translateY(calc(100% + 24px));opacity:0
 .v39-media-reason{color:#75aaa4!important}
 .v39-more:hover{background:#182729!important}
 
+/* Dive-first Home · v39.89 */
+.v3989-home-meta{
+ display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 2px 8px;color:var(--vd-soft)
+}
+.v3989-home-meta small{font-size:7px;font-weight:900;letter-spacing:.12em}
+.v3989-home-meta button{
+ min-height:31px;padding:0 10px;border:0;border-radius:999px;background:#142326;color:#b7cbc8;font-size:7.5px;font-weight:900
+}
+.v3989-dive-entry{
+ position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(330px,.85fr);gap:18px;align-items:end;
+ min-height:282px;margin-bottom:18px;padding:24px;border:1px solid rgba(119,223,213,.15);border-radius:22px;
+ background:
+ radial-gradient(circle at 8% 0%,rgba(83,220,207,.14),transparent 34%),
+ radial-gradient(circle at 90% 18%,rgba(103,123,232,.16),transparent 36%),
+ linear-gradient(155deg,#09252e 0%,#071820 54%,#050e16 100%);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.025)
+}
+.v3989-dive-entry:after{
+ content:"";position:absolute;left:-8%;right:-8%;bottom:-72px;height:150px;border-radius:50%;
+ border:1px solid rgba(102,219,208,.08);box-shadow:0 -20px 80px rgba(47,157,168,.06);pointer-events:none
+}
+.v3989-dive-entry-copy{position:relative;z-index:1;max-width:760px}
+.v3989-dive-entry-copy>small{display:block;color:#75ded4;font-size:8px;font-weight:950;letter-spacing:.14em}
+.v3989-dive-entry-copy h1{margin:7px 0 8px;color:#f2fffd;font-size:39px;line-height:1.02;letter-spacing:-.055em}
+.v3989-dive-entry-copy p{max-width:680px;margin:0;color:#91aca9;font-size:10.5px;line-height:1.6}
+.v3989-dive-flags{display:flex;gap:6px;flex-wrap:wrap;margin-top:15px}
+.v3989-dive-flags span{
+ min-height:25px;display:inline-flex;align-items:center;padding:0 8px;border:1px solid rgba(131,218,209,.10);
+ border-radius:999px;background:rgba(6,31,39,.58);color:#8fb7b3;font-size:6.5px;font-weight:850
+}
+.v3989-dive-actions{position:relative;z-index:1;display:grid;grid-template-columns:1fr;gap:7px}
+.v3989-dive-actions button{
+ min-width:0;min-height:61px;display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;column-gap:10px;
+ padding:9px 12px;border:1px solid rgba(137,222,213,.13);border-radius:14px;background:rgba(8,30,37,.86);
+ color:#e2f5f2;text-align:left;touch-action:manipulation
+}
+.v3989-dive-actions button:hover{background:rgba(13,44,51,.94);border-color:rgba(125,225,215,.28)}
+.v3989-dive-actions button.primary{border-color:rgba(117,229,217,.30);background:linear-gradient(135deg,rgba(26,93,99,.96),rgba(45,65,111,.94))}
+.v3989-dive-actions button.resume{background:linear-gradient(135deg,rgba(11,56,61,.94),rgba(16,39,55,.94))}
+.v3989-dive-actions button span{grid-row:1 / span 2;color:#77ddd4;font-size:9px;font-weight:950;white-space:nowrap}
+.v3989-dive-actions button b{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#f1fffd;font-size:10px}
+.v3989-dive-actions button[aria-busy="true"]{cursor:wait;opacity:.72}
+.v3989-gateway-head{
+ display:flex;align-items:end;justify-content:space-between;gap:12px;margin:0 2px 9px;padding-top:4px
+}
+.v3989-gateway-head small{display:block;color:#62a6a0;font-size:6.5px;font-weight:950;letter-spacing:.13em}
+.v3989-gateway-head h2{margin:3px 0 2px;font-size:20px;letter-spacing:-.04em}
+.v3989-gateway-head p{margin:0;color:var(--vd-muted);font-size:8.5px}
+.v3989-gateway-head>button{
+ flex:0 0 auto;min-height:33px;padding:0 11px;border:0;border-radius:999px;background:#152629;color:#c7dad7;font-size:8px;font-weight:900
+}
+.v3989-gateway-row{margin-bottom:9px!important}
+.v3989-gateway-row button{touch-action:manipulation}
+@media(min-width:700px) and (max-width:1099px){
+ .v3989-dive-entry{grid-template-columns:1fr;min-height:0;padding:20px}
+ .v3989-dive-actions{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .v3989-dive-actions button{grid-template-columns:1fr;align-content:center;gap:3px;min-height:64px;text-align:center}
+ .v3989-dive-actions button span{grid-row:auto}
+}
+@media(max-width:699px){
+ .v3989-home-meta{margin:0 1px 7px}
+ .v3989-dive-entry{grid-template-columns:1fr;gap:14px;min-height:0;margin-bottom:14px;padding:16px 14px;border-radius:18px}
+ .v3989-dive-entry-copy h1{font-size:28px;margin:6px 0 7px}
+ .v3989-dive-entry-copy p{font-size:9px;line-height:1.5}
+ .v3989-dive-flags{margin-top:11px;gap:4px}
+ .v3989-dive-flags span{min-height:22px;padding:0 6px;font-size:6px}
+ .v3989-dive-actions{grid-template-columns:1fr 1fr;gap:6px}
+ .v3989-dive-actions button{min-height:54px;padding:7px 9px;grid-template-columns:1fr;align-content:center;gap:2px;text-align:center}
+ .v3989-dive-actions button span{grid-row:auto;font-size:8px}
+ .v3989-dive-actions button b{font-size:8px}
+ .v3989-dive-actions button:nth-child(3){grid-column:1/-1}
+ .v3989-gateway-head{align-items:center}
+ .v3989-gateway-head h2{font-size:18px}
+ .v3989-gateway-head p{display:none}
+ .v3989-gateway-head>button{min-height:31px;font-size:7px}
+ .v3989-gateway-row{padding-bottom:8px!important}
+}
+@media(max-width:420px){
+ .v3989-dive-entry{padding:13px 11px}
+ .v3989-dive-entry-copy h1{font-size:25px}
+ .v3989-dive-entry-copy p{font-size:8.5px}
+ .v3989-dive-actions button{min-height:50px}
+ .v3989-home-meta button{min-height:29px;padding:0 8px;font-size:6.5px}
+}
+
 /* Explore is a discovery hub, not a producer-only page. */
 .v3981-explore-hero{
  display:flex;align-items:end;justify-content:space-between;gap:16px;
@@ -1218,6 +1303,15 @@ function bind(){
           try{if(typeof window.openUniverseHub3931==="function")window.openUniverseHub3931();else forceRoute3985("universe29")}catch(_){}
         }
       },0);
+      return
+    }
+    var homeDive=e.target&&e.target.closest?e.target.closest("[data-v3989-search],[data-v3989-random],[data-v3989-resume]"):null;
+    if(homeDive){
+      setTimeout(function(){
+        if(!routeIsActive3985("universe29")){
+          try{openDive3985()}catch(_){try{forceRoute3985("universe29")}catch(__){}}
+        }
+      },140);
       return
     }
     var routeEl=e.target&&e.target.closest?e.target.closest("[data-v3981-route]"):null;
