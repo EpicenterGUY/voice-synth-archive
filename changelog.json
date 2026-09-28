@@ -1,11 +1,25 @@
 {
   "current": {
-    "version": "39.85.0",
+    "version": "39.86.0",
     "releasedAt": "2026-09-28",
-    "title": "Performance Guard · Fold Settings Polish",
-    "summary": "설정 화면 반복 재렌더와 다이브 중 전역 DOM 감시를 줄이고, Fold 설정 배치와 Worker 포커스 동작을 안정화했습니다."
+    "title": "Dive Entry Hard Fix",
+    "summary": "다이브 탭이 눌려도 화면 전환이 안 되는 상태를 우회하지 않고 코어 라우트에서 직접 복구하도록 수정했습니다."
   },
   "entries": [
+    {
+      "version": "39.86.0",
+      "date": "2026-09-28",
+      "title": "Dive Entry Hard Fix",
+      "changes": [
+        "하단 다이브 탭 클릭을 문서 캡처 단계에서 직접 가로채는 안전 핸들러를 추가해 기존 도크 리스너 상태와 무관하게 진입 가능하도록 수정",
+        "openUniverseHub3931이 openToolsModal 한 경로에만 의존하지 않고 universe29 화면을 직접 활성화하도록 변경",
+        "toolsModal과 universe29 대상 화면의 hidden/active/display 상태를 강제로 동기화해 눌렸지만 화면이 안 바뀌는 상태를 복구",
+        "다이브 라우트 활성화 시 vsa:route-change를 명시적으로 발생시켜 Relation/Ocean Dive 렌더러가 즉시 재결합되도록 수정",
+        "다이브 모듈 로드가 실패해도 화면 자체는 먼저 열리고 이후 재시도/오류 표시가 가능하도록 변경",
+        "다이브 도크 안전경로와 코어 라우트 직접 활성화가 사라지면 정적 검사에서 실패하도록 회귀 테스트 추가",
+        "웹/PWA/서비스워커/네이티브 셸/검색/기기동기화/UI 버전 및 캐시 키를 v39.86.0으로 동기화"
+      ]
+    },
     {
       "version": "39.85.0",
       "date": "2026-09-28",
