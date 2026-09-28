@@ -74,7 +74,7 @@ function renderLocalFirst(){
   state.remoteItems=[];
   updateStats();
   renderCatalog("로컬 카탈로그");
-  $("#datasetStatus").textContent=`로컬 ${state.known.size}곡 · TouhouDB 연결 확인 중`;
+  setDataHealth("loading","로컬 "+state.known.size+"곡 · TouhouDB 연결 중");
   $("#catalogMeta").textContent="로컬 seed 표시 중 · 라이브 카탈로그 연결 확인 중";
 }
 async function connectRemote(){
@@ -83,9 +83,8 @@ async function connectRemote(){
     const status=await catalog.status();
     if(!status.ok)throw new Error(status.error||"TouhouDB unavailable");
     state.remote.available=true;state.remote.catalogTotal=status.total||0;state.remote.total=state.remote.catalogTotal;
-    $("#datasetStatus").textContent=`TouhouDB LIVE · 전체 ${fmt(state.remote.catalogTotal)}곡 카탈로그`;
-    $("#statLinks").textContent=fmt(state.remote.catalogTotal);
-    $("#statLinksMeta").textContent="TouhouDB 전체 등록곡";
+    setDataHealth("ok","TouhouDB LIVE · "+fmt(state.remote.catalogTotal)+"곡");
+    updateCatalogTotal();
     loadRemoteCounts();
     await loadRemote(true);
   }catch(e){remoteFail(String(e?.message||e));}
@@ -105,7 +104,7 @@ async function loadRemoteCounts(){
 }
 function remoteFail(msg){
   state.remote.available=false;state.remote.error=msg||"연결 실패";
-  $("#datasetStatus").textContent="TouhouDB 오프라인 · 로컬 데이터 사용";
+  setDataHealth("error","TouhouDB 오프라인 · 로컬 모드");
   $("#catalogMeta").textContent="라이브 카탈로그 연결 실패 · 로컬 데이터로 계속 사용 가능";
   $("#loadMoreBtn").disabled=true;$("#loadMoreBtn").textContent="라이브 DB 연결 안 됨";
 }
@@ -298,25 +297,34 @@ function updateStats(){
   $("#statOriginal").textContent=fmt(state.remote.counts.original||loaded.filter(x=>x.type==="original").length||localOrig);
   $("#statArrangement").textContent=fmt(state.remote.counts.arrangement||loaded.filter(x=>x.type==="arrangement").length||localArr);
   $("#statMedia").textContent=fmt(loaded.filter(t=>player.playable(t)).length);
-  if(state.remote.catalogTotal){$("#statLinks").textContent=fmt(state.remote.catalogTotal);$("#statLinksMeta").textContent="TouhouDB 전체 등록곡";}
   $("#statOriginalMeta").textContent=state.remote.counts.original?"TouhouDB 원곡 분류":"로컬 + 현재 로드";
   $("#statArrangementMeta").textContent=state.remote.counts.arrangement?"TouhouDB 어레인지 분류":"로컬 + 현재 로드";
+  updateCatalogTotal();
+}
+function updateCatalogTotal(){
+  const n=state.remote.catalogTotal||state.remote.total||state.known.size;
+  $("#statLinks").textContent=fmt(n);
+  $("#statLinksMeta").textContent=state.remote.catalogTotal?"TouhouDB 전체 등록곡":"현재 로드";
+  $("#heroCatalogCount").textContent=fmt(n)+" tracks";
 }
 function syncCatalogFooter(){
   const btn=$("#loadMoreBtn"),meta=$("#catalogMeta");
+  const special=state.view==="library"||state.view==="history";
+  $("#catalogFooter").hidden=special;
+  if(special)return;
   if(!state.remote.available){
     btn.disabled=true;btn.textContent="라이브 DB 오프라인";return;
   }
   btn.disabled=state.remote.loading||(state.remote.total>0&&state.remote.start>=state.remote.total);
-  btn.textContent=state.remote.loading?"불러오는 중…":(btn.disabled?"현재 범위 모두 로드":"전체 카탈로그 더 불러오기");
-  meta.innerHTML=`<span class="remote-pulse">TouhouDB</span> · 현재 조건 ${fmt(state.remoteItems.length)}곡 로드${state.remote.total?" / 전체 "+fmt(state.remote.total):""}${state.remote.error?" · 최근 오류":""}`;
+  btn.textContent=state.remote.loading?"불러오는 중…":(btn.disabled?"현재 범위 모두 로드":"더 불러오기");
+  meta.innerHTML='<span class="remote-pulse">TouhouDB</span> · '+fmt(state.remoteItems.length)+'곡 로드'+(state.remote.total?" / "+fmt(state.remote.total):"")+(state.remote.error?" · 오류 있음":"");
 }
 function catalogTitle(q,count){
   if(q)return `전체 DB 검색 · ${count}곡 표시`;
   if(state.filter!=="전체")return state.filter;
   if(state.mode==="original")return "동방 원곡 전체 탐색";
   if(state.mode==="arrangement")return "동방 2차창작 전체 탐색";
-  return "원곡 + 2차창작 전체 카탈로그";
+  return state.view==="home"?"오늘의 다이브 입구":"전체 카탈로그";
 }
 function renderGrid(list){
   const grid=$("#trackGrid");
