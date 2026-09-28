@@ -212,7 +212,7 @@ if(!unifiedUi.includes("@media(min-width:380px) and (max-width:699px)"))fail("co
 if(!unifiedUi.includes('button[aria-busy="true"]'))fail("busy control interaction guard missing");
 
 // 18. Theme contrast integrity / runtime audit.
-if(!unifiedUi.includes("Theme contrast contract · v39.100"))fail("v39.100 theme contrast contract missing");
+if(!unifiedUi.includes("Theme contrast contract · v39.101"))fail("v39.101 theme contrast contract missing");
 if(!unifiedUi.includes("--vd-soft:#819491"))fail("dark soft-text contrast token missing");
 if(!unifiedUi.includes("--vd-text:#17302e;--vd-muted:#536b68;--vd-soft:#5c716e"))fail("light readable text tokens missing");
 if(!unifiedUi.includes('body[data-vsa-theme="light"] #universePanel.v3958-rel'))fail("light-mode Dive dark-ocean restore missing");
@@ -242,7 +242,7 @@ for(const src of [index,unifiedUi]){
 
 
 // 19. Light discovery readability + HQ thumbnail regressions.
-if(!unifiedUi.includes("Light discovery + high-definition thumbnail contract · v39.100"))fail("v39.100 light discovery/HQ thumbnail contract missing");
+if(!unifiedUi.includes("Light discovery + high-definition thumbnail contract · v39.101"))fail("v39.101 light discovery/HQ thumbnail contract missing");
 if(!unifiedUi.includes('body.v37-ready[data-vsa-theme="light"] :is(.discovery-card,.gem-card)'))fail("light discovery card surface override missing");
 if(!unifiedUi.includes('body.v37-ready[data-vsa-theme="light"] :is(.discovery-title,.gem-title,.gem-topline a)'))fail("light discovery title override missing");
 if(!unifiedUi.includes("function highResThumbnailUrl3997("))fail("HQ Niconico thumbnail resolver missing");
@@ -253,7 +253,7 @@ if(!unifiedUi.includes("installHiResThumb3997();"))fail("HQ thumbnail installer 
 
 
 // 20. In-app recommendation playback / HQ fallback recovery / signed-release trigger safety.
-if(!unifiedUi.includes("Internal discovery playback · v39.100"))fail("v39.100 internal discovery playback style missing");
+if(!unifiedUi.includes("Internal discovery playback · v39.101"))fail("v39.101 internal discovery playback style missing");
 if(!index.includes('class="discovery-title vsa-play-title" data-v399-play="${esc(s.contentId)}"'))fail("guide/taste title no longer routes to in-app Watch");
 if(!index.includes('class="gem-title vsa-play-title" data-v399-play="${esc(s.contentId)}"'))fail("hidden-gem title no longer routes to in-app Watch");
 if(!index.includes(">▶ 앱에서 듣기</button>"))fail("recommendation in-app listen action missing");
@@ -268,7 +268,7 @@ if(!androidRelease.includes("missing=()"))fail("signed release does not collect 
 
 
 // 21. Detective/ranking in-app playback + terminal thumbnail placeholder.
-if(!unifiedUi.includes("Broken thumbnail placeholder · v39.100"))fail("v39.100 broken-thumbnail placeholder style missing");
+if(!unifiedUi.includes("Broken thumbnail placeholder · v39.101"))fail("v39.101 broken-thumbnail placeholder style missing");
 if(!unifiedUi.includes("function installBrokenThumbFallback3999()"))fail("broken-thumbnail fallback handler missing");
 if(!unifiedUi.includes('img.matches(".thumb,.gem-thumb,.detective-thumb,.discovery-card img,.v39-thumb img,.v399-related-thumb img,.v37-producer-song img")'))fail("thumbnail fallback scope missing");
 if(!unifiedUi.includes("img.replaceWith(fb)"))fail("terminal broken thumbnail is not replaced with placeholder");
@@ -281,7 +281,7 @@ if(!index.includes('data-v399-play="${esc(s.contentId)}">▶ 앱에서 듣기</b
 
 
 // 22. Tool-route black-screen watchdog / stable playback hooks.
-if(!unifiedUi.includes("Route visibility watchdog · v39.100"))fail("v39.100 route visibility watchdog missing");
+if(!unifiedUi.includes("Route visibility watchdog · v39.101"))fail("v39.101 route visibility watchdog missing");
 if(!unifiedUi.includes("function routeLooksHealthy39100(route)"))fail("route health checker missing");
 if(!unifiedUi.includes("function repairRoute39100(route,reason)"))fail("route repair function missing");
 if(!unifiedUi.includes('modal.querySelectorAll(".tool-view").forEach'))fail("route repair does not normalize competing tool views");
@@ -293,6 +293,21 @@ if(index.includes("v3998-play-title")||index.includes("v3999-play-title"))fail("
 if(!index.includes('class="discovery-title vsa-play-title"'))fail("stable discovery playback title hook missing");
 if(!index.includes('class="detective-card-title vsa-play-title"'))fail("stable detective playback title hook missing");
 if(!index.includes('class="song-title vsa-play-title"'))fail("stable ranking playback title hook missing");
+
+
+
+// 23. Frame-budget performance pass.
+if(!unifiedUi.includes("Performance frame budget · v39.101"))fail("v39.101 frame-budget CSS missing");
+if(!unifiedUi.includes("@supports(content-visibility:auto)"))fail("off-screen content-visibility optimization missing");
+if(!unifiedUi.includes("contain-intrinsic-size:auto 170px"))fail("intrinsic size guard for virtualized cards missing");
+if(!unifiedUi.includes("var viewportRaf39101=0"))fail("viewport RAF coalescer missing");
+if(!unifiedUi.includes("function scheduleViewport39101()"))fail("viewport scheduler missing");
+if(unifiedUi.includes('visualViewport.addEventListener("resize",syncViewport3986)'))fail("visualViewport resize still calls sync directly");
+if(unifiedUi.includes('visualViewport.addEventListener("scroll",syncViewport3986)'))fail("visualViewport scroll still calls sync directly");
+if(!unifiedUi.includes("thumbScanRoots39101=new Set()"))fail("thumbnail mutation batching set missing");
+if(!unifiedUi.includes("function queueThumbnailScan39101(root)"))fail("thumbnail mutation batch scheduler missing");
+if(!unifiedUi.includes('requestIdleCallback(initial,{timeout:500})'))fail("initial thumbnail upgrade is not deferred off first paint");
+if(!unifiedUi.includes('#universePanel.v3958-rel .mr58-node{contain:layout paint style}'))fail("Dive node layout containment missing");
 
 note("classic JS syntax checked");
 note("inline scripts checked: "+inline);
