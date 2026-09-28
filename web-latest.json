@@ -1,6 +1,6 @@
 {
-  "version": "39.97.0",
+  "version": "39.98.0",
   "channel": "web",
-  "publishedAt": "2026-09-28T19:08:00+09:00",
-  "notes": "Fixes unreadable light-mode discovery/recommendation cards and upgrades Niconico thumbnail URLs to the public large image with automatic fallback."
+  "publishedAt": "2026-09-28T22:18:00+09:00",
+  "notes": "Routes recommendation listening through VocaDive Watch, restores original thumbnails after HQ fallback failures, and stops unsigned main pushes from failing the signed-release workflow."
 }
