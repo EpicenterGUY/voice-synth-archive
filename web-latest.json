@@ -1,6 +1,6 @@
 {
-  "version": "39.84.0",
+  "version": "39.85.0",
   "channel": "web",
-  "publishedAt": "2026-09-28T14:40:00+09:00",
-  "notes": "Dive resume card, guarded history navigation, dock loading feedback, and duplicate-tap prevention."
+  "publishedAt": "2026-09-28T15:00:00+09:00",
+  "notes": "Stops settings/route observer render loops, reduces Dive DOM overhead, polishes Fold settings layout, and stabilizes Worker settings focus."
 }
