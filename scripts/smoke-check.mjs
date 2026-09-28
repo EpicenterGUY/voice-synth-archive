@@ -210,7 +210,7 @@ if(!unifiedUi.includes("@media(min-width:380px) and (max-width:699px)"))fail("co
 if(!unifiedUi.includes('button[aria-busy="true"]'))fail("busy control interaction guard missing");
 
 // 18. Theme contrast integrity / runtime audit.
-if(!unifiedUi.includes("Theme contrast contract · v39.96"))fail("v39.96 theme contrast contract missing");
+if(!unifiedUi.includes("Theme contrast contract · v39.97"))fail("v39.97 theme contrast contract missing");
 if(!unifiedUi.includes("--vd-soft:#819491"))fail("dark soft-text contrast token missing");
 if(!unifiedUi.includes("--vd-text:#17302e;--vd-muted:#536b68;--vd-soft:#5c716e"))fail("light readable text tokens missing");
 if(!unifiedUi.includes('body[data-vsa-theme="light"] #universePanel.v3958-rel'))fail("light-mode Dive dark-ocean restore missing");
@@ -237,6 +237,16 @@ for(const src of [index,unifiedUi]){
     if(color&&bg&&hexContrast3996(color[1],bg[1])<4.5)fail("low light-mode static contrast: "+m[1].trim()+" "+color[1]+" on "+bg[1])
   }
 }
+
+
+// 19. Light discovery readability + HQ thumbnail regressions.
+if(!unifiedUi.includes("Light discovery + high-definition thumbnail contract · v39.97"))fail("v39.97 light discovery/HQ thumbnail contract missing");
+if(!unifiedUi.includes('body.v37-ready[data-vsa-theme="light"] :is(.discovery-card,.gem-card)'))fail("light discovery card surface override missing");
+if(!unifiedUi.includes('body.v37-ready[data-vsa-theme="light"] :is(.discovery-title,.gem-title,.gem-topline a)'))fail("light discovery title override missing");
+if(!unifiedUi.includes("function highResThumbnailUrl3997("))fail("HQ Niconico thumbnail resolver missing");
+if(!unifiedUi.includes('u.pathname+=".L"'))fail("Niconico large-thumbnail upgrade missing");
+if(!unifiedUi.includes("v3997HqFailed"))fail("HQ thumbnail fallback guard missing");
+if(!unifiedUi.includes("installHiResThumb3997();"))fail("HQ thumbnail installer is not wired into boot");
 
 note("classic JS syntax checked");
 note("inline scripts checked: "+inline);
