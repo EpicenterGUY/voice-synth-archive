@@ -40,7 +40,7 @@ async function boot(){
 function bind(){
   $("#searchInput").addEventListener("input",()=>{
     $("#searchClear").hidden=!$("#searchInput").value;
-    if(state.view!=="discover"&&state.view!=="home")setView("discover");
+    if($("#searchInput").value&&state.view!=="discover")setView("discover");
     renderCatalog();
     clearTimeout(searchTimer);
     searchTimer=setTimeout(()=>loadRemote(true),300);
