@@ -1,6 +1,6 @@
 {
-  "version": "39.78.0",
+  "version": "39.79.0",
   "channel": "web",
-  "publishedAt": "2026-09-28T02:15:00+09:00",
-  "notes": "Fold/compact UI recovery, direct Worker URL shortcut, and automatic next-song playback control."
+  "publishedAt": "2026-09-28T09:40:00+09:00",
+  "notes": "Dive/Explore route-state sync, stale navigation cancellation, and bottom-tab self-heal."
 }
