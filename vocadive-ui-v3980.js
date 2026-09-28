@@ -1,10 +1,10 @@
-/* VocaDive Unified UI v39.80.0
+/* VocaDive Unified UI v39.81.0
  * YouTube-style app shell, cards, player continuity and route recovery.
  */
 (function(){
 "use strict";
 
-var VERSION="39.80.0";
+var VERSION="39.81.0";
 var raf=0,observer=null,lastRoute="home",navSeq3985=0,workerCheckTimer3986=0;
 
 function q(sel,root){return (root||document).querySelector(sel)}
@@ -502,12 +502,17 @@ body.v37-ready :is(button,a){-webkit-tap-highlight-color:transparent}
  .v331-player-stage{width:100%!important;aspect-ratio:16/9!important}
  .v331-mini{
    left:8px!important;right:8px!important;bottom:calc(72px + env(safe-area-inset-bottom))!important;
-   min-height:64px!important;grid-template-columns:92px minmax(0,1fr) repeat(4,34px)!important;
-   gap:5px!important;padding:4px!important;border-radius:12px!important
+   min-height:62px!important;grid-template-columns:78px minmax(0,1fr) repeat(5,32px)!important;
+   gap:4px!important;padding:5px!important;border-radius:13px!important
  }
- .v331-mini-stage{width:92px!important;height:52px!important}
- .v331-mini button{width:34px!important;height:34px!important}
- #v332PrevMini{display:none!important}
+ .v331-mini-stage{width:78px!important;height:44px!important}
+ .v331-mini-copy b{font-size:8.5px!important}
+ .v331-mini-copy small{font-size:6.5px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+ .v331-mini button{width:32px!important;height:32px!important}
+ #v332PrevMini,#v3921PipMini{display:none!important}
+ #v332NextMini{display:grid!important}
+ .v331-mini.v3987-mini-ready{animation:v3987MiniReady .18s ease-out}
+ @keyframes v3987MiniReady{from{opacity:.55;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 }
 @media(min-width:1100px){
  body.v37-ready>.app{margin-left:86px!important;padding:0 28px 40px!important}
@@ -530,8 +535,11 @@ body.v37-ready :is(button,a){-webkit-tap-highlight-color:transparent}
  .v396-hero-media{min-height:230px!important}
  .v396-hero-copy{padding:16px 13px!important}
  .v396-hero-copy h2{font-size:22px!important}
- .v39-media-grid{display:flex!important;overflow-x:auto!important;gap:12px!important;scroll-snap-type:x proximity}
- .v39-media-card{flex:0 0 min(78vw,300px)!important;scroll-snap-align:start}
+ .v39-media-grid{display:flex!important;overflow-x:auto!important;gap:10px!important;scroll-snap-type:x proximity;scroll-padding:0 6px 0 0!important;padding-right:6px!important}
+ .v39-media-card{flex:0 0 min(68vw,280px)!important;scroll-snap-align:start;min-width:220px!important}
+ .v39-thumb{aspect-ratio:16/9!important}
+ .v39-media-title{font-size:11.5px!important;line-height:1.35!important;display:-webkit-box!important;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden!important}
+ .v39-media-meta,.v39-media-reason{font-size:8.5px!important}
  .v3981-explore-hero{align-items:flex-start;flex-direction:column;padding-top:4px}
  .v3981-explore-hero h2{font-size:25px}
  .v3981-explore-hero>button{width:100%}
@@ -541,6 +549,14 @@ body.v37-ready :is(button,a){-webkit-tap-highlight-color:transparent}
  .v3981-explore-copy b{font-size:11px}
  .v3981-explore-copy em{font-size:7.5px}
  .v3981-producer-section .v397-producer-grid{grid-template-columns:1fr!important}
+}
+
+
+@media(max-width:420px){
+ .v39-media-card{flex-basis:min(72vw,250px)!important;min-width:210px!important}
+ .v331-mini{grid-template-columns:68px minmax(0,1fr) repeat(5,30px)!important;gap:3px!important}
+ .v331-mini-stage{width:68px!important;height:39px!important}
+ .v331-mini button{width:30px!important;height:30px!important}
 }
 
 /* Fold / compact viewport recovery · v39.78 */
