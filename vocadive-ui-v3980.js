@@ -1,10 +1,10 @@
-/* VocaDive Unified UI v39.95.0
+/* VocaDive Unified UI v39.96.0
  * YouTube-style app shell, cards, player continuity and route recovery.
  */
 (function(){
 "use strict";
 
-var VERSION="39.95.0";
+var VERSION="39.96.0";
 var raf=0,observer=null,lastRoute="home",navSeq3985=0,workerCheckTimer3986=0;
 var workerState3986={ok:null,reason:"",endpoint:"",at:0};
 
@@ -28,7 +28,7 @@ function addStyle(){
  --vd-line-strong:rgba(151,202,196,.22);
  --vd-text:#eef4f3;
  --vd-muted:#91a3a1;
- --vd-soft:#687a78;
+ --vd-soft:#819491;
  --vd-accent:#63d8cf;
  --vd-accent-2:#7a8ef2;
  --vd-success:#58c7a7;
@@ -878,7 +878,7 @@ body.v37-ready :is(input,select,textarea):focus{border-color:rgba(99,216,207,.48
 body[data-vsa-theme="light"]{
  --vd-bg:#f3f6f5;--vd-surface:#ffffff;--vd-surface-2:#f1f4f3;--vd-elevated:#edf1f0;--vd-control:#ffffff;
  --vd-hover:#f0f4f3;--vd-line:rgba(49,76,72,.12);--vd-line-strong:rgba(36,111,103,.25);
- --vd-text:#17302e;--vd-muted:#667b78;--vd-soft:#7e908d;--vd-danger-bg:#fff7f8
+ --vd-text:#17302e;--vd-muted:#536b68;--vd-soft:#5c716e;--vd-danger-bg:#fff7f8
 }
 body[data-vsa-theme="light"] .v3989-dive-entry{
  background:linear-gradient(155deg,#ffffff,#f0f5f4)!important;border-color:rgba(49,76,72,.12)!important
@@ -987,6 +987,80 @@ body[data-vsa-theme="light"] #v3980SearchBtn,
 body[data-vsa-theme="light"] #v3980MenuBtn{background:#edf1f0!important;color:#17302e!important}
 
 
+
+
+/* Theme contrast contract · v39.96
+   Light pages use darker secondary text; Dive remains intentionally dark in both themes. */
+body[data-vsa-theme="light"] #v3980Dock button{color:#536b68!important}
+body[data-vsa-theme="light"] #v3982Menu button small,
+body[data-vsa-theme="light"] #v3982Menu button em{color:#536b68!important}
+body[data-vsa-theme="light"] .tools-body>.tool-view:not([data-tool-view="universe29"]) :is(p,small,em,.meta,.sub,.v37-hub-copy small,.v3919-intent small,.v39-media-meta,.v39-media-reason){
+ color:var(--vd-muted)!important
+}
+body[data-vsa-theme="light"] .tools-body>.tool-view:not([data-tool-view="universe29"]) :is(input,textarea)::placeholder{color:var(--vd-soft)!important}
+body[data-vsa-theme="light"] .v3989-dive-entry-copy p,
+body[data-vsa-theme="light"] .v3989-gateway-head p,
+body[data-vsa-theme="light"] .v3990-map-hero p,
+body[data-vsa-theme="light"] .v3990-zone-head em,
+body[data-vsa-theme="light"] .v3990-zone .v37-hub-copy small,
+body[data-vsa-theme="light"] .v3990-zone .v3919-intent small{color:var(--vd-muted)!important}
+
+/* Dark mode: prevent legacy light-text overrides from leaving secondary copy too dim. */
+body:not([data-vsa-theme="light"]) .tools-body>.tool-view:not([data-tool-view="universe29"]) :is(h1,h2,h3,h4,b,strong,label,summary){color:var(--vd-text)!important}
+body:not([data-vsa-theme="light"]) .tools-body>.tool-view:not([data-tool-view="universe29"]) :is(p,small,em,.meta,.sub){color:var(--vd-muted)!important}
+body:not([data-vsa-theme="light"]) .tools-body>.tool-view:not([data-tool-view="universe29"]) :is(input,textarea)::placeholder{color:var(--vd-soft)!important}
+
+/* The global light theme used dark heading/body colors. Restore the dark-ocean contract inside Dive. */
+body[data-vsa-theme="light"] #universePanel.v3958-rel{
+ color:#dff5f2!important;background:#091820!important
+}
+body[data-vsa-theme="light"] #universePanel.v3958-rel :is(.mr58-head h3,.mr58-center h2,.mr58-side h3,.mr71-start h3,.mr77-route-head b){
+ color:#effffc!important
+}
+body[data-vsa-theme="light"] #universePanel.v3958-rel :is(.mr58-head p,.mr71-start p,.mr58-side-meta,.mr77-route-head i){
+ color:#9bb8b4!important
+}
+body[data-vsa-theme="light"] #universePanel.v3958-rel :is(.mr58-head small,.mr58-center small,.mr71-start small,.mr72-depth-head small,.mr77-route-head small){
+ color:#7fd3cb!important
+}
+body[data-vsa-theme="light"] #universePanel.v3958-rel .mr58-node-copy b{color:#f0fffd!important}
+body[data-vsa-theme="light"] #universePanel.v3958-rel .mr58-node-copy small{color:#9db8b4!important}
+body[data-vsa-theme="light"] #universePanel.v3958-rel .mr90-node-reason{color:#8fcac4!important}
+body[data-vsa-theme="light"] #universePanel.v3958-rel .mr61-reason-list b{color:#8ee0d7!important}
+body[data-vsa-theme="light"] #universePanel.v3958-rel .mr61-reason-list span{color:#b8d5d1!important}
+body[data-vsa-theme="light"] #universePanel.v3958-rel .mr58-side-section small,
+body[data-vsa-theme="light"] #universePanel.v3958-rel .mr90-more-reasons>summary{color:#89aaa6!important}
+body[data-vsa-theme="light"] #universePanel.v3958-rel :is(.mr58-center-actions button,.mr58-side-actions button,.mr58-node-go,.mr95-node-peek-actions button){
+ color:#dcefed!important;background:#103039!important
+}
+body[data-vsa-theme="light"] #universePanel.v3958-rel :is(.mr58-center-actions button.primary,.mr58-side-actions button.primary){
+ color:#071210!important;background:linear-gradient(135deg,#63d8cf,#7a8ef2)!important
+}
+body[data-vsa-theme="light"] #universePanel.v3958-rel .mr58-filter{color:#a7c4c0!important;background:#0d3239!important}
+body[data-vsa-theme="light"] #universePanel.v3958-rel .mr58-filter.active{color:#effffc!important}
+body[data-vsa-theme="light"] #universePanel.v3958-rel .mr61-match button{color:#9fb8b5!important}
+body[data-vsa-theme="light"] #universePanel.v3958-rel .mr61-match button.active{color:#effffc!important}
+body[data-vsa-theme="light"] .mr74-transition :is(small,b,span){color:#effffc!important}
+body[data-vsa-theme="light"] .mr74-transition .mr75-trans-depth i{border-color:rgba(213,245,241,.20)!important}
+
+/* Legacy light-mode copy that sat below 4.5:1 on white cards is overridden here. */
+body[data-vsa-theme="light"] :is(
+ .v393-native-explore .v37-hub-section-head small,
+ .v393-native-explore .v3922-group-head small,
+ .v393-native-explore .v37-hub-copy small,
+ .v393-native-explore .v37-quick-chip small,
+ .v3922-rank-hero p,
+ .v3925-keyword-head small,
+ .v3925-ice-control small,
+ .v3929-guide-scope-head small,
+ .v395-action small,
+ .v3920-fold-body>p
+){color:#536b68!important}
+
+/* Keep Watch's dark player shell readable while the surrounding page is light. */
+body[data-vsa-theme="light"] .tools-modal[data-current-view="songDetail39"] .v399-player-shell :is(small,span,b,strong,p){
+ color:#e6f2f0!important
+}
 
 /* Dive inline detail + compact Explore · v39.95 */
 #universePanel.v3958-rel .mr95-node-peek{display:none}
