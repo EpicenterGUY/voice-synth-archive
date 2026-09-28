@@ -152,6 +152,7 @@ if(!unifiedUi.includes(".mr90-side-close"))fail("Dive compact detail style missi
 if(!index.includes("window.VSAOpenFeature37=openFeatureById37"))fail("feature opener export missing");
 if(!unifiedUi.includes("window.VSAOpenFeature37"))fail("feature-card route recovery caller missing");
 if(!unifiedUi.includes("[data-v37-feature-id]"))fail("feature-card recovery listener missing");
+if(!index.includes('data-feature-id="'+id+'" data-v37-feature-id="'+id+'"'))fail("Explore feature cards bypass route recovery");
 if(!index.includes("r.bottom>window.innerHeight-88"))fail("mobile Dive detail scroll guard missing");
 
 note("classic JS syntax checked");
