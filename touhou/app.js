@@ -4,8 +4,8 @@ const catalog=window.TouhouCatalog;
 const player=new window.TouhouMediaPlayer();
 
 const state={
-  localOriginals:[],localArrangements:[],known:new Map(),aliases:new Map(),identities:new Map(),remoteItems:[],
-  mode:"all",filter:"전체",sort:"recommend",selected:null,view:"home",
+  localOriginals:[],localArrangements:[],known:new Map(),aliases:new Map(),identities:new Map(),remoteItems:[],works:[],
+  mode:"all",filter:"전체",workFilter:"",sort:"recommend",selected:null,view:"home",
   remote:{available:false,loading:false,start:0,total:0,catalogTotal:0,key:"",error:"",counts:{},seq:0},
   favorites:new Set(readJson("touhoudive:favorites",[])),
   history:readJson("touhoudive:history",[]),
@@ -17,15 +17,19 @@ boot();
 
 async function boot(){
   try{
-    const [o,a]=await Promise.all([
+    const [o,a,w]=await Promise.all([
       fetch("./data/originals.json",{cache:"no-store"}).then(r=>r.json()),
-      fetch("./data/arrangements.json",{cache:"no-store"}).then(r=>r.json())
+      fetch("./data/arrangements.json",{cache:"no-store"}).then(r=>r.json()),
+      fetch("./data/works.json",{cache:"no-store"}).then(r=>r.json())
     ]);
+    state.works=w;
+    catalog?.setWorks?.(w);
     state.localOriginals=o.map(x=>({...x,type:"original",circle:"ZUN",album:x.work,originalIds:[],remote:false}));
     state.localArrangements=a.map(x=>({...x,type:"arrangement",remote:false}));
     [...state.localOriginals,...state.localArrangements].forEach(remember);
     Object.values(state.snapshots||{}).forEach(x=>x&&remember({...x,snapshot:true}));
     normalizePersistentIds();
+    renderWorkSelect();
     setView("home");
     renderLocalFirst();
     bind();
@@ -52,6 +56,7 @@ function bind(){
     loadRemote(true);
     $("#searchInput").focus();
   };
+  $("#workSelect").addEventListener("change",e=>{state.workFilter=e.target.value;if(state.workFilter&&state.view==="home")setView("discover");renderCatalog();loadRemote(true);});
   $("#sortSelect").addEventListener("change",e=>{state.sort=e.target.value;renderCatalog();loadRemote(true);});
   $("#loadMoreBtn").onclick=()=>loadRemote(false);
   $("#randomBtn").onclick=randomDive;$("#heroDiveBtn").onclick=randomDive;
@@ -109,8 +114,9 @@ function remoteFail(msg){
   $("#loadMoreBtn").disabled=true;$("#loadMoreBtn").textContent="라이브 DB 연결 안 됨";
 }
 function remoteKey(){
-  return JSON.stringify({q:$("#searchInput").value.trim(),mode:state.mode,filter:state.filter,sort:state.sort});
+  return JSON.stringify({q:$("#searchInput").value.trim(),mode:state.mode,filter:state.filter,work:state.workFilter,sort:state.sort});
 }
+function selectedWork(){return state.works.find(w=>w.id===state.workFilter)||null}
 function remoteSort(){
   if(state.sort==="year-desc"||state.sort==="year-asc")return"PublishDate";
   if(state.sort==="title")return"Name";
@@ -128,12 +134,13 @@ async function loadRemote(reset=false,force=false){
   syncCatalogFooter();
   if(force&&catalog?.clearCache)catalog.clearCache();
   try{
+    const work=selectedWork();
     const res=await catalog.search({
       query:$("#searchInput").value.trim(),mode:state.mode,start,maxResults:50,
-      sort:remoteSort(),onlyWithPvs:state.filter==="영상 있음",force
+      sort:remoteSort(),onlyWithPvs:state.filter==="영상 있음",tagName:work?.tag||"",force
     });
     if(seq!==state.remote.seq||key!==remoteKey())return;
-    let incoming=(res.items||[]).map(remember);
+    let incoming=(res.items||[]).map(t=>{const work=selectedWork();return remember(work?{...t,workId:work.id,work:t.work||work.title}:t)});
     if(state.mode==="original")incoming=incoming.filter(t=>t.type==="original");
     if(state.mode==="arrangement")incoming=incoming.filter(t=>t.type==="arrangement");
     state.remoteItems=dedupe([...state.remoteItems,...incoming]);
@@ -243,7 +250,9 @@ function renderCatalog(title){
   renderFilters();
   let list=currentPool();
   if(state.filter==="영상 있음")list=list.filter(t=>player.playable(t));
-  else if(state.filter!=="전체")list=list.filter(t=>t.work===state.filter||t.circle===state.filter);
+  else if(state.filter!=="전체")list=list.filter(t=>t.circle===state.filter);
+  const work=selectedWork();
+  if(work)list=list.filter(t=>trackMatchesWork(t,work));
   const q=$("#searchInput").value.trim().toLowerCase();
   if(q)list=list.filter(t=>searchBlob(t).includes(q));
   list=sortList(list,state.sort);
@@ -252,15 +261,28 @@ function renderCatalog(title){
   $("#sectionTitle").textContent=title||catalogTitle(q,list.length);
   updateStats();syncCatalogFooter();
 }
+function renderWorkSelect(){
+  const select=$("#workSelect");
+  const groups=[["pc98","PC-98 · TH01–05"],["main","Windows 본편 · TH06–20"],["spinoff","공식 외전"]];
+  select.innerHTML='<option value="">전체 작품 · '+state.works.length+'게임</option>'+groups.map(([kind,label])=>{
+    const options=state.works.filter(w=>w.kind===kind).map(w=>'<option value="'+escAttr(w.id)+'">TH'+esc(w.number)+' · '+esc(w.title)+'</option>').join("");
+    return '<optgroup label="'+escAttr(label)+'">'+options+'</optgroup>';
+  }).join("");
+  select.value=state.workFilter||"";
+}
+function trackMatchesWork(t,work){
+  if(!work)return true;
+  if(t.workId===work.id)return true;
+  const hay=[t.work,t.album,...(t.moods||[]),...(t.aliases||[])].filter(Boolean).join(" ").normalize("NFKC").toLowerCase();
+  return [work.title,work.tag,...(work.aliases||[])].some(v=>v&&hay.includes(String(v).normalize("NFKC").toLowerCase()));
+}
 function renderFilters(){
   const base=currentPool(),out=["전체","영상 있음"];
   if(state.mode==="arrangement"){
-    [...new Set(base.map(x=>x.circle).filter(Boolean))].slice(0,12).forEach(x=>out.push(x));
-  }else if(state.mode==="original"){
-    [...new Set(base.map(x=>x.work).filter(Boolean))].slice(0,12).forEach(x=>out.push(x));
+    uniq(base.map(x=>x.circle).filter(Boolean)).slice(0,10).forEach(x=>out.push(x));
   }
   if(!out.includes(state.filter))state.filter="전체";
-  $("#quickFilters").innerHTML=out.map(x=>`<button class="filter-chip ${x===state.filter?"is-active":""}" data-filter="${escAttr(x)}">${esc(x)}</button>`).join("");
+  $("#quickFilters").innerHTML=out.map(x=>'<button class="filter-chip '+(x===state.filter?"is-active":"")+'" data-filter="'+escAttr(x)+'">'+esc(x)+'</button>').join("");
   $$("#quickFilters .filter-chip").forEach(b=>b.onclick=()=>{state.filter=b.dataset.filter;renderCatalog();loadRemote(true);});
 }
 function updateStats(){
@@ -293,6 +315,8 @@ function syncCatalogFooter(){
 }
 function catalogTitle(q,count){
   if(q)return `전체 DB 검색 · ${count}곡 표시`;
+  const work=selectedWork();
+  if(work)return "TH"+work.number+" · "+work.title;
   if(state.filter!=="전체")return state.filter;
   if(state.mode==="original")return "동방 원곡 전체 탐색";
   if(state.mode==="arrangement")return "동방 2차창작 전체 탐색";
@@ -373,7 +397,7 @@ function nav(view){
   player.routeChange();
   setView(view);
   if(view==="home"){
-    state.mode="all";state.filter="전체";syncModeTabs();
+    state.mode="all";state.filter="전체";state.workFilter="";syncModeTabs();$("#workSelect").value="";
     $("#searchInput").value="";$("#searchClear").hidden=true;
     renderCatalog("오늘의 다이브 입구");loadRemote(true);
   }else if(view==="discover"){

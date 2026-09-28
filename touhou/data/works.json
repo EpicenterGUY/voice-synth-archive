@@ -1,0 +1,454 @@
+[
+  {
+    "id": "th01",
+    "number": "1",
+    "kind": "pc98",
+    "year": 1997,
+    "title": "東方靈異伝",
+    "subtitle": "Highly Responsive to Prayers",
+    "tag": "靈異伝",
+    "aliases": [
+      "東方靈異伝",
+      "東方霊異伝",
+      "Highly Responsive to Prayers"
+    ]
+  },
+  {
+    "id": "th02",
+    "number": "2",
+    "kind": "pc98",
+    "year": 1997,
+    "title": "東方封魔録",
+    "subtitle": "the Story of Eastern Wonderland",
+    "tag": "封魔録",
+    "aliases": [
+      "東方封魔録",
+      "Story of Eastern Wonderland"
+    ]
+  },
+  {
+    "id": "th03",
+    "number": "3",
+    "kind": "pc98",
+    "year": 1997,
+    "title": "東方夢時空",
+    "subtitle": "Phantasmagoria of Dim.Dream",
+    "tag": "夢時空",
+    "aliases": [
+      "東方夢時空",
+      "Phantasmagoria of Dim.Dream"
+    ]
+  },
+  {
+    "id": "th04",
+    "number": "4",
+    "kind": "pc98",
+    "year": 1998,
+    "title": "東方幻想郷",
+    "subtitle": "Lotus Land Story",
+    "tag": "幻想郷",
+    "aliases": [
+      "東方幻想郷",
+      "Lotus Land Story"
+    ]
+  },
+  {
+    "id": "th05",
+    "number": "5",
+    "kind": "pc98",
+    "year": 1998,
+    "title": "東方怪綺談",
+    "subtitle": "Mystic Square",
+    "tag": "怪綺談",
+    "aliases": [
+      "東方怪綺談",
+      "Mystic Square"
+    ]
+  },
+  {
+    "id": "th06",
+    "number": "6",
+    "kind": "main",
+    "year": 2002,
+    "title": "東方紅魔郷",
+    "subtitle": "the Embodiment of Scarlet Devil",
+    "tag": "紅魔郷",
+    "aliases": [
+      "東方紅魔郷",
+      "Embodiment of Scarlet Devil",
+      "EoSD"
+    ]
+  },
+  {
+    "id": "th07",
+    "number": "7",
+    "kind": "main",
+    "year": 2003,
+    "title": "東方妖々夢",
+    "subtitle": "Perfect Cherry Blossom",
+    "tag": "妖々夢",
+    "aliases": [
+      "東方妖々夢",
+      "Perfect Cherry Blossom",
+      "PCB"
+    ]
+  },
+  {
+    "id": "th075",
+    "number": "7.5",
+    "kind": "spinoff",
+    "year": 2004,
+    "title": "東方萃夢想",
+    "subtitle": "Immaterial and Missing Power",
+    "tag": "萃夢想",
+    "aliases": [
+      "東方萃夢想",
+      "Immaterial and Missing Power",
+      "IaMP"
+    ]
+  },
+  {
+    "id": "th08",
+    "number": "8",
+    "kind": "main",
+    "year": 2004,
+    "title": "東方永夜抄",
+    "subtitle": "Imperishable Night",
+    "tag": "永夜抄",
+    "aliases": [
+      "東方永夜抄",
+      "Imperishable Night",
+      "IN"
+    ]
+  },
+  {
+    "id": "th09",
+    "number": "9",
+    "kind": "main",
+    "year": 2005,
+    "title": "東方花映塚",
+    "subtitle": "Phantasmagoria of Flower View",
+    "tag": "花映塚",
+    "aliases": [
+      "東方花映塚",
+      "Phantasmagoria of Flower View",
+      "PoFV"
+    ]
+  },
+  {
+    "id": "th095",
+    "number": "9.5",
+    "kind": "spinoff",
+    "year": 2005,
+    "title": "東方文花帖",
+    "subtitle": "Shoot the Bullet",
+    "tag": "文花帖",
+    "aliases": [
+      "東方文花帖",
+      "Shoot the Bullet",
+      "StB"
+    ]
+  },
+  {
+    "id": "th10",
+    "number": "10",
+    "kind": "main",
+    "year": 2007,
+    "title": "東方風神録",
+    "subtitle": "Mountain of Faith",
+    "tag": "風神録",
+    "aliases": [
+      "東方風神録",
+      "Mountain of Faith",
+      "MoF"
+    ]
+  },
+  {
+    "id": "th105",
+    "number": "10.5",
+    "kind": "spinoff",
+    "year": 2008,
+    "title": "東方緋想天",
+    "subtitle": "Scarlet Weather Rhapsody",
+    "tag": "緋想天",
+    "aliases": [
+      "東方緋想天",
+      "Scarlet Weather Rhapsody",
+      "SWR"
+    ]
+  },
+  {
+    "id": "th11",
+    "number": "11",
+    "kind": "main",
+    "year": 2008,
+    "title": "東方地霊殿",
+    "subtitle": "Subterranean Animism",
+    "tag": "地霊殿",
+    "aliases": [
+      "東方地霊殿",
+      "Subterranean Animism",
+      "SA"
+    ]
+  },
+  {
+    "id": "th12",
+    "number": "12",
+    "kind": "main",
+    "year": 2009,
+    "title": "東方星蓮船",
+    "subtitle": "Undefined Fantastic Object",
+    "tag": "星蓮船",
+    "aliases": [
+      "東方星蓮船",
+      "Undefined Fantastic Object",
+      "UFO"
+    ]
+  },
+  {
+    "id": "th123",
+    "number": "12.3",
+    "kind": "spinoff",
+    "year": 2009,
+    "title": "東方非想天則",
+    "subtitle": "超弩級ギニョルの謎を追え",
+    "tag": "非想天則",
+    "aliases": [
+      "東方非想天則",
+      "Hisoutensoku"
+    ]
+  },
+  {
+    "id": "th125",
+    "number": "12.5",
+    "kind": "spinoff",
+    "year": 2010,
+    "title": "ダブルスポイラー",
+    "subtitle": "東方文花帖",
+    "tag": "ダブルスポイラー",
+    "aliases": [
+      "ダブルスポイラー",
+      "Double Spoiler"
+    ]
+  },
+  {
+    "id": "th128",
+    "number": "12.8",
+    "kind": "spinoff",
+    "year": 2010,
+    "title": "妖精大戦争",
+    "subtitle": "東方三月精",
+    "tag": "妖精大戦争",
+    "aliases": [
+      "妖精大戦争",
+      "Fairy Wars"
+    ]
+  },
+  {
+    "id": "th13",
+    "number": "13",
+    "kind": "main",
+    "year": 2011,
+    "title": "東方神霊廟",
+    "subtitle": "Ten Desires",
+    "tag": "神霊廟",
+    "aliases": [
+      "東方神霊廟",
+      "Ten Desires",
+      "TD"
+    ]
+  },
+  {
+    "id": "th135",
+    "number": "13.5",
+    "kind": "spinoff",
+    "year": 2013,
+    "title": "東方心綺楼",
+    "subtitle": "Hopeless Masquerade",
+    "tag": "心綺楼",
+    "aliases": [
+      "東方心綺楼",
+      "Hopeless Masquerade",
+      "HM"
+    ]
+  },
+  {
+    "id": "th14",
+    "number": "14",
+    "kind": "main",
+    "year": 2013,
+    "title": "東方輝針城",
+    "subtitle": "Double Dealing Character",
+    "tag": "輝針城",
+    "aliases": [
+      "東方輝針城",
+      "Double Dealing Character",
+      "DDC"
+    ]
+  },
+  {
+    "id": "th143",
+    "number": "14.3",
+    "kind": "spinoff",
+    "year": 2014,
+    "title": "弾幕アマノジャク",
+    "subtitle": "Impossible Spell Card",
+    "tag": "弾幕アマノジャク",
+    "aliases": [
+      "弾幕アマノジャク",
+      "Impossible Spell Card",
+      "ISC"
+    ]
+  },
+  {
+    "id": "th145",
+    "number": "14.5",
+    "kind": "spinoff",
+    "year": 2015,
+    "title": "東方深秘録",
+    "subtitle": "Urban Legend in Limbo",
+    "tag": "深秘録",
+    "aliases": [
+      "東方深秘録",
+      "Urban Legend in Limbo",
+      "ULiL"
+    ]
+  },
+  {
+    "id": "th15",
+    "number": "15",
+    "kind": "main",
+    "year": 2015,
+    "title": "東方紺珠伝",
+    "subtitle": "Legacy of Lunatic Kingdom",
+    "tag": "紺珠伝",
+    "aliases": [
+      "東方紺珠伝",
+      "Legacy of Lunatic Kingdom",
+      "LoLK"
+    ]
+  },
+  {
+    "id": "th155",
+    "number": "15.5",
+    "kind": "spinoff",
+    "year": 2017,
+    "title": "東方憑依華",
+    "subtitle": "Antinomy of Common Flowers",
+    "tag": "憑依華",
+    "aliases": [
+      "東方憑依華",
+      "Antinomy of Common Flowers",
+      "AoCF"
+    ]
+  },
+  {
+    "id": "th16",
+    "number": "16",
+    "kind": "main",
+    "year": 2017,
+    "title": "東方天空璋",
+    "subtitle": "Hidden Star in Four Seasons",
+    "tag": "天空璋",
+    "aliases": [
+      "東方天空璋",
+      "Hidden Star in Four Seasons",
+      "HSiFS"
+    ]
+  },
+  {
+    "id": "th165",
+    "number": "16.5",
+    "kind": "spinoff",
+    "year": 2018,
+    "title": "秘封ナイトメアダイアリー",
+    "subtitle": "Violet Detector",
+    "tag": "秘封ナイトメアダイアリー",
+    "aliases": [
+      "秘封ナイトメアダイアリー",
+      "Violet Detector",
+      "VD"
+    ]
+  },
+  {
+    "id": "th17",
+    "number": "17",
+    "kind": "main",
+    "year": 2019,
+    "title": "東方鬼形獣",
+    "subtitle": "Wily Beast and Weakest Creature",
+    "tag": "鬼形獣",
+    "aliases": [
+      "東方鬼形獣",
+      "Wily Beast and Weakest Creature",
+      "WBaWC"
+    ]
+  },
+  {
+    "id": "th175",
+    "number": "17.5",
+    "kind": "spinoff",
+    "year": 2021,
+    "title": "東方剛欲異聞",
+    "subtitle": "水没した沈愁地獄",
+    "tag": "剛欲異聞",
+    "aliases": [
+      "東方剛欲異聞",
+      "Sunken Fossil World"
+    ]
+  },
+  {
+    "id": "th18",
+    "number": "18",
+    "kind": "main",
+    "year": 2021,
+    "title": "東方虹龍洞",
+    "subtitle": "Unconnected Marketeers",
+    "tag": "虹龍洞",
+    "aliases": [
+      "東方虹龍洞",
+      "Unconnected Marketeers",
+      "UM"
+    ]
+  },
+  {
+    "id": "th185",
+    "number": "18.5",
+    "kind": "spinoff",
+    "year": 2022,
+    "title": "バレットフィリア達の闇市場",
+    "subtitle": "100th Black Market",
+    "tag": "バレットフィリア達の闇市場",
+    "aliases": [
+      "バレットフィリア達の闇市場",
+      "100th Black Market"
+    ]
+  },
+  {
+    "id": "th19",
+    "number": "19",
+    "kind": "main",
+    "year": 2023,
+    "title": "東方獣王園",
+    "subtitle": "Unfinished Dream of All Living Ghost",
+    "tag": "獣王園",
+    "aliases": [
+      "東方獣王園",
+      "Unfinished Dream of All Living Ghost",
+      "UDoALG"
+    ]
+  },
+  {
+    "id": "th20",
+    "number": "20",
+    "kind": "main",
+    "year": 2025,
+    "title": "東方錦上京",
+    "subtitle": "Fossilized Wonders",
+    "tag": "錦上京",
+    "aliases": [
+      "東方錦上京",
+      "Fossilized Wonders"
+    ]
+  }
+]

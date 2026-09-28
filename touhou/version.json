@@ -1,9 +1,9 @@
 {
-  "version": "0.4.1",
+  "version": "0.4.2",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-09-29",
-  "dataset": "TouhouDB-live+local-v4",
+  "dataset": "TouhouDB-live+33-work-registry",
   "features": [
     "ui-rebuild",
     "route-views",
@@ -22,6 +22,10 @@
     "media-session",
     "runtime-binding-hotfix",
     "duplicate-function-cleanup",
-    "boot-render-first"
+    "boot-render-first",
+    "33-game-work-registry",
+    "work-selector",
+    "touhoudb-tag-filter",
+    "work-inference"
   ]
 }

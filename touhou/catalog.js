@@ -3,6 +3,7 @@
 const API="https://touhoudb.com/api";
 const TTL=20*60*1000;
 const cache=new Map();
+let workRegistry=[];
 
 function arr(v){return Array.isArray(v)?v:[]}
 function clean(v){return String(v??"").trim()}
@@ -36,6 +37,10 @@ function artistRoles(item){
 }
 function tags(item){
   return uniq(arr(item?.tags).map(x=>nameValue(x?.tag||x)).filter(Boolean)).slice(0,18);
+}
+function inferWorks(item){
+  const hay=[...tags(item),albumName(item),clean(item?.name),clean(item?.defaultName),clean(item?.additionalNames)].filter(Boolean).join(" ").normalize("NFKC").toLowerCase();
+  return workRegistry.filter(w=>[w.title,w.tag,...(w.aliases||[])].some(v=>v&&hay.includes(String(v).normalize("NFKC").toLowerCase())));
 }
 function albumName(item){
   const a=arr(item?.albums)[0];
@@ -80,6 +85,7 @@ function toTrack(item){
   const artistString=clean(item?.artistString)||artistNames(item).join(", ");
   const title=clean(item?.name||item?.defaultName||aliases[0]||("TouhouDB #"+id));
   const media=bestMedia(item);
+  const works=inferWorks(item);
   return {
     id:"tdb-"+id,
     touhoudbId:id,
@@ -87,7 +93,9 @@ function toTrack(item){
     title,
     aliases,
     year:yearFrom(item),
-    work:"",
+    work:works[0]?.title||"",
+    workId:works[0]?.id||"",
+    workIds:works.map(w=>w.id),
     role:clean(item?.songType)||"Song",
     character:"",
     circle:type==="arrangement"?circleName(item,roles):(artistString||"ZUN"),
@@ -133,6 +141,7 @@ async function search(opts={}){
   p.set("lang","Japanese");
   p.set("sort",opts.sort||"RatingScore");
   if(opts.onlyWithPvs)p.set("onlyWithPvs","true");
+  if(opts.tagName){p.append("tagName",opts.tagName);p.set("childTags","true");}
   let url=API+"/songs?"+p.toString(),d,typedOk=true;
   try{
     d=await fetchJson(url,!!opts.force);
@@ -171,5 +180,6 @@ async function status(opts={}){
   }catch(e){return{ok:false,error:String(e?.message||e)}}
 }
 function clearCache(){cache.clear()}
-window.TouhouCatalog={search,hydrate,status,clearCache,toTrack,apiBase:API};
+function setWorks(works){workRegistry=Array.isArray(works)?works:[]}
+window.TouhouCatalog={search,hydrate,status,clearCache,setWorks,toTrack,apiBase:API};
 })();
