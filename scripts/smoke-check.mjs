@@ -212,7 +212,7 @@ if(!unifiedUi.includes("@media(min-width:380px) and (max-width:699px)"))fail("co
 if(!unifiedUi.includes('button[aria-busy="true"]'))fail("busy control interaction guard missing");
 
 // 18. Theme contrast integrity / runtime audit.
-if(!unifiedUi.includes("Theme contrast contract · v39.98"))fail("v39.98 theme contrast contract missing");
+if(!unifiedUi.includes("Theme contrast contract · v39.99"))fail("v39.99 theme contrast contract missing");
 if(!unifiedUi.includes("--vd-soft:#819491"))fail("dark soft-text contrast token missing");
 if(!unifiedUi.includes("--vd-text:#17302e;--vd-muted:#536b68;--vd-soft:#5c716e"))fail("light readable text tokens missing");
 if(!unifiedUi.includes('body[data-vsa-theme="light"] #universePanel.v3958-rel'))fail("light-mode Dive dark-ocean restore missing");
@@ -242,7 +242,7 @@ for(const src of [index,unifiedUi]){
 
 
 // 19. Light discovery readability + HQ thumbnail regressions.
-if(!unifiedUi.includes("Light discovery + high-definition thumbnail contract · v39.98"))fail("v39.98 light discovery/HQ thumbnail contract missing");
+if(!unifiedUi.includes("Light discovery + high-definition thumbnail contract · v39.99"))fail("v39.99 light discovery/HQ thumbnail contract missing");
 if(!unifiedUi.includes('body.v37-ready[data-vsa-theme="light"] :is(.discovery-card,.gem-card)'))fail("light discovery card surface override missing");
 if(!unifiedUi.includes('body.v37-ready[data-vsa-theme="light"] :is(.discovery-title,.gem-title,.gem-topline a)'))fail("light discovery title override missing");
 if(!unifiedUi.includes("function highResThumbnailUrl3997("))fail("HQ Niconico thumbnail resolver missing");
@@ -253,7 +253,7 @@ if(!unifiedUi.includes("installHiResThumb3997();"))fail("HQ thumbnail installer 
 
 
 // 20. In-app recommendation playback / HQ fallback recovery / signed-release trigger safety.
-if(!unifiedUi.includes("Internal discovery playback · v39.98"))fail("v39.98 internal discovery playback style missing");
+if(!unifiedUi.includes("Internal discovery playback · v39.99"))fail("v39.99 internal discovery playback style missing");
 if(!index.includes('class="discovery-title v3998-play-title" data-v399-play="${esc(s.contentId)}"'))fail("guide/taste title no longer routes to in-app Watch");
 if(!index.includes('class="gem-title v3998-play-title" data-v399-play="${esc(s.contentId)}"'))fail("hidden-gem title no longer routes to in-app Watch");
 if(!index.includes(">▶ 앱에서 듣기</button>"))fail("recommendation in-app listen action missing");
@@ -264,6 +264,19 @@ if(!androidRelease.includes('tags:\n      - "app-v*"'))fail("signed release tag 
 if(!androidRelease.includes("actions/setup-java@v5"))fail("signed release still uses deprecated setup-java v4");
 if(!androidDebug.includes("actions/setup-java@v5"))fail("debug build still uses deprecated setup-java v4");
 if(!androidRelease.includes("missing=()"))fail("signed release does not collect all missing signing secrets");
+
+
+
+// 21. Detective/ranking in-app playback + terminal thumbnail placeholder.
+if(!unifiedUi.includes("Broken thumbnail placeholder · v39.99"))fail("v39.99 broken-thumbnail placeholder style missing");
+if(!unifiedUi.includes("function installBrokenThumbFallback3999()"))fail("broken-thumbnail fallback handler missing");
+if(!unifiedUi.includes('img.matches(".thumb,.gem-thumb,.detective-thumb,.discovery-card img,.v39-thumb img,.v399-related-thumb img,.v37-producer-song img")'))fail("thumbnail fallback scope missing");
+if(!unifiedUi.includes("img.replaceWith(fb)"))fail("terminal broken thumbnail is not replaced with placeholder");
+if(!unifiedUi.includes("installBrokenThumbFallback3999();"))fail("broken-thumbnail fallback is not wired into boot");
+if(!index.includes('class="detective-card-title v3999-play-title" data-v399-play="${esc(s.contentId)}"'))fail("detective title still bypasses in-app Watch");
+if(!index.includes(">▶ 앱에서 확인</button>"))fail("detective in-app confirm action missing");
+if(!index.includes('class="song-title v3999-play-title" data-v399-play="${esc(s.contentId)}"'))fail("ranking title still bypasses in-app Watch");
+if(!index.includes('data-v399-play="${esc(s.contentId)}">▶ 앱에서 듣기</button>'))fail("ranking in-app listen action missing");
 
 note("classic JS syntax checked");
 note("inline scripts checked: "+inline);
