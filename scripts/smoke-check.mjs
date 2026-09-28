@@ -107,7 +107,7 @@ if(!unifiedUi.includes("__v3986DiveSafetyHandled"))fail("Dive dock duplicate-tap
 
 // 9. Dive / Fold performance regressions.
 if(!index.includes("taskLimit=lite?10:23"))fail("mobile Dive candidate task cap regressed");
-if(!index.includes("mapLimit(tasks,tasks.length<=10?3:4,fetchTask59)"))fail("mobile Dive candidate concurrency guard missing");
+if(!index.includes("mapLimit(batchTasks,batchTasks.length<=10?3:4,fetchTask59)"))fail("mobile Dive candidate concurrency guard missing");
 if(!index.includes('window.matchMedia("(pointer:coarse)").matches)?28:36'))fail("mobile Dive fetch-size guard missing");
 if(!index.includes(".mr58-map>.mr58-node:nth-of-type(n+5){display:none!important}"))fail("compact Dive card cap missing");
 const player=await text("nico-player-v32.js");
