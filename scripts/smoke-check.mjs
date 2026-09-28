@@ -100,6 +100,11 @@ const liveSearch=await text("search-live-v3969.js");
 if(liveSearch.includes("new MutationObserver(function(){syncRoute()})"))fail("search observer still reacts to every body mutation");
 if(!liveSearch.includes('var searchSelector="#v39GlobalSearch,#globalSearchInput,#v397SearchShell'))fail("search observer selector guard missing");
 
+if(!index.includes('source:"core-dive"'))fail("core Dive route activation event missing");
+if(!index.includes('modal.dataset.currentView="universe29"'))fail("core Dive direct route activation missing");
+if(!unifiedUi.includes('button[data-v3980="dive"]'))fail("Dive dock safety handler missing");
+if(!unifiedUi.includes("__v3986DiveSafetyHandled"))fail("Dive dock duplicate-tap safety marker missing");
+
 note("classic JS syntax checked");
 note("inline scripts checked: "+inline);
 note("local references checked: "+refs.size);
