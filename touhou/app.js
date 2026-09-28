@@ -33,7 +33,7 @@ async function boot(){
     await connectRemote();
   }catch(err){
     console.error(err);
-    $("#datasetStatus").textContent="로컬 데이터 로드 실패";
+    setDataHealth("error","로컬 데이터 로드 실패");
     $("#trackGrid").innerHTML='<div class="empty-state" style="grid-column:1/-1;min-height:220px"><strong>데이터를 불러오지 못했습니다.</strong><span>새로고침 후 다시 시도해 주세요.</span></div>';
   }
 }
@@ -394,7 +394,7 @@ async function hydrateAndOpen(id){
 function playTrack(t){
   if(!t||!player.playable(t)){toast("확인된 인앱 영상이 아직 없습니다.");return;}
   const queue=currentPool().filter(x=>player.playable(x));
-  player.play(t,queue);pushHistory(t.id);
+  player.play(t,queue);pushHistory(t.id,t);
 }
 function nav(view){
   closeMenu();
