@@ -1,11 +1,11 @@
-/* VocaDive Unified UI v39.78.0
+/* VocaDive Unified UI v39.79.0
  * YouTube-style app shell, cards, player continuity and route recovery.
  */
 (function(){
 "use strict";
 
-var VERSION="39.78.0";
-var raf=0,observer=null,lastRoute="home";
+var VERSION="39.79.0";
+var raf=0,observer=null,lastRoute="home",navSeq3985=0;
 
 function q(sel,root){return (root||document).querySelector(sel)}
 function qa(sel,root){return Array.prototype.slice.call((root||document).querySelectorAll(sel))}
@@ -803,8 +803,8 @@ function ensureDock(){
     var b=e.target.closest("button[data-v3980]");if(!b)return;
     var v=b.dataset.v3980;
     if(v==="home")goHome();
-    else if(v==="explore")openRoute("explore33");
-    else if(v==="dive")openRoute("universe29");
+    else if(v==="explore")openRoute("hub37");
+    else if(v==="dive")openDive3985();
     else if(v==="library")openLibrary()
   });
   setDock("home")
@@ -816,10 +816,59 @@ function dockForRoute(route){
   route=String(route||"");
   if(!route||route==="home"||route==="home29")return"home";
   if(route==="universe29")return"dive";
-  if(route==="libraryHub33"||route==="library22"||route==="tasteHub33")return"library";
-  if(route==="explore33"||route==="producerDiscover37"||route==="vocalRank37"||route==="archive29"||route==="detective")return"explore";
-  if(route==="searchHub33"||route==="search29")return"explore";
+  if(["personal395","taste","tasteHub33","smart23","playlist24","libraryHub33","library22","saved","history"].includes(route))return"library";
+  if(["hub37","explore33","searchHub33","search29","producerDiscover37","producerDetail33","vocalRank37","archive29","detective","gems","guide"].includes(route))return"explore";
   return lastRoute||"home"
+}
+
+function activeToolRoute3985(){
+  var modal=document.getElementById("toolsModal");
+  if(!modal||modal.hidden)return"";
+  var active=q(".tools-body>.tool-view.active",modal);
+  return String(active&&active.dataset&&active.dataset.toolView||modal.dataset.currentView||"")
+}
+function routeIsActive3985(name){
+  name=String(name||"");
+  var modal=document.getElementById("toolsModal");
+  if(!modal||modal.hidden)return false;
+  var active=activeToolRoute3985();
+  return active===name&&String(window.__VSA37_CURRENT_ROUTE||active)===name
+}
+function forceRoute3985(name){
+  name=String(name||"");
+  try{if(typeof window.ensureCorePages37==="function")window.ensureCorePages37()}catch(_){}
+  try{
+    if(typeof window.setToolView==="function"&&window.setToolView(name)!==false)return routeIsActive3985(name)
+  }catch(_){}
+  var modal=document.getElementById("toolsModal"),target=modal&&q('.tools-body>[data-tool-view="'+CSS.escape(name)+'"]',modal);
+  if(!modal||!target)return false;
+  qa(".tools-body>.tool-view",modal).forEach(function(v){
+    var on=v===target;v.classList.toggle("active",on);v.hidden=!on;
+    if(on)v.style.removeProperty("display");else v.style.setProperty("display","none","important")
+  });
+  modal.hidden=false;modal.dataset.currentView=name;document.body.classList.add("tools-open");
+  window.__VSA37_CURRENT_ROUTE=name;
+  try{window.dispatchEvent(new CustomEvent("vsa:route-change",{detail:{route:name}}))}catch(_){}
+  return true
+}
+function verifyRoute3985(name,ticket){
+  if(ticket!=null&&ticket!==navSeq3985)return false;
+  if(routeIsActive3985(name))return true;
+  return forceRoute3985(name)
+}
+function openDive3985(){
+  var ticket=++navSeq3985;
+  setDock("dive");
+  try{
+    if(typeof window.openUniverseHub3931==="function"){
+      return Promise.resolve(window.openUniverseHub3931()).then(function(){
+        if(ticket!==navSeq3985)return false;
+        [0,80,240].forEach(function(ms){setTimeout(function(){verifyRoute3985("universe29",ticket);if(ticket===navSeq3985)setDock("dive")},ms)});
+        return true
+      }).catch(function(){return openRoute("universe29",ticket)})
+    }
+  }catch(_){}
+  return openRoute("universe29",ticket)
 }
 
 function ensureV33(){
@@ -831,16 +880,24 @@ function ensureV33(){
 }
 function openRaw(name){
   try{
-    if(window.VSAV33&&window.VSAV33.openView&&(name==="explore33"||name==="searchHub33"||name==="libraryHub33"||name==="tasteHub33")){window.VSAV33.openView(name);return true}
-    if(typeof window.openToolsModal==="function"){window.openToolsModal(name);setTimeout(function(){try{if(typeof window.setToolView==="function")window.setToolView(name)}catch(_){}},0);return true}
+    if(window.VSAV33&&window.VSAV33.openView&&(name==="explore33"||name==="searchHub33"||name==="libraryHub33"||name==="tasteHub33")){
+      window.VSAV33.openView(name);return true
+    }
+    if(typeof window.openToolsModal==="function"){
+      window.openToolsModal(name);
+      if(routeIsActive3985(name))return true;
+      return forceRoute3985(name)
+    }
   }catch(_){}
   return false
 }
-function openRoute(name){
+function openRoute(name,existingTicket){
   name=String(name||"");
+  var ticket=existingTicket==null?++navSeq3985:existingTicket;
   var needsV33=/^(explore33|searchHub33|libraryHub33|tasteHub33)$/.test(name);
   var job=needsV33?ensureV33():Promise.resolve(true);
   return job.then(function(ok){
+    if(ticket!==navSeq3985)return false;
     if(needsV33&&!ok){
       if(name==="searchHub33")name="search29";
       else if(name==="libraryHub33")name="library22";
@@ -849,15 +906,20 @@ function openRoute(name){
     }
     try{if(typeof window.ensureCorePages37==="function")window.ensureCorePages37()}catch(_){}
     var opened=openRaw(name);
-    if(!opened&&name!=="hub37")opened=openRaw("hub37");
+    if(!opened&&name!=="hub37"){name="hub37";opened=openRaw(name)}
+    if(ticket!==navSeq3985)return false;
+    verifyRoute3985(name,ticket);
     lastRoute=dockForRoute(name);setDock(lastRoute);scheduleRepair();
+    setTimeout(function(){if(ticket===navSeq3985){verifyRoute3985(name,ticket);lastRoute=dockForRoute(name);setDock(lastRoute)}},90);
     return !!opened
   }).catch(function(){
-    try{openRaw("hub37")}catch(_){}
+    if(ticket!==navSeq3985)return false;
+    try{openRaw("hub37");verifyRoute3985("hub37",ticket);lastRoute="explore";setDock("explore")}catch(_){}
     scheduleRepair();return false
   })
 }
 function openLibrary(){
+  ++navSeq3985;
   try{
     if(window.VSA332Library&&window.VSA332Library.open){window.VSA332Library.open();lastRoute="library";setDock("library");scheduleRepair();return}
     if(window.VSAOrganizer22&&window.VSAOrganizer22.openLibrary){window.VSAOrganizer22.openLibrary("saved");lastRoute="library";setDock("library");scheduleRepair();return}
@@ -865,6 +927,7 @@ function openLibrary(){
   openRoute("libraryHub33")
 }
 function goHome(){
+  ++navSeq3985;
   try{if(typeof window.closeToolsModal==="function")window.closeToolsModal()}catch(_){}
   try{document.body.classList.remove("tools-open")}catch(_){}
   var h=document.getElementById("v37Home")||document.getElementById("v35Home");
@@ -899,6 +962,12 @@ function repairRoute(){
   raf=0;raiseStyle();cleanupLegacyNav();syncWorkerPill();
   var modal=document.getElementById("toolsModal");
   var route=String(window.__VSA37_CURRENT_ROUTE||"");
+  var activeRoute=activeToolRoute3985();
+  if(modal&&!modal.hidden&&activeRoute&&activeRoute!==route){
+    var declaredTarget=route?q('.tools-body>[data-tool-view="'+CSS.escape(route)+'"]',modal):null;
+    if(declaredTarget){forceRoute3985(route);activeRoute=route}
+    else{route=activeRoute;window.__VSA37_CURRENT_ROUTE=activeRoute}
+  }
   var player=q(".v331-player"),mini=q(".v331-mini");
   var playerOpen=!!(player&&!player.hidden);
   var miniOpen=!!(mini&&!mini.hidden);
