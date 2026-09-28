@@ -137,7 +137,7 @@ if(!unifiedUi.includes(".v3989-dive-entry"))fail("Dive-first Home responsive sty
 if(!unifiedUi.includes("[data-v3989-search],[data-v3989-random],[data-v3989-resume]"))fail("Home Dive route safety fallback missing");
 
 // 12. Explore entry-map / Dive detail regressions.
-if(!index.includes("VOCADIVE · ENTRY MAP 3.0"))fail("Explore entry-map identity missing");
+if(!index.includes("VOCADIVE · ENTRY MAP 3.1"))fail("Explore entry-map identity missing");
 if(!index.includes('className="tool-view v37-native-hub v393-native-explore v3990-entry-map"'))fail("Explore entry-map DOM marker missing");
 if(!index.includes('!v.classList.contains("v3990-entry-map")'))fail("stale Explore hub rebuild guard missing");
 if(!index.includes("function featureRouteActive3990(route)"))fail("feature route verification helper missing");
@@ -153,7 +153,7 @@ if(!index.includes("window.VSAOpenFeature37=openFeatureById37"))fail("feature op
 if(!unifiedUi.includes("window.VSAOpenFeature37"))fail("feature-card route recovery caller missing");
 if(!unifiedUi.includes("[data-v37-feature-id]"))fail("feature-card recovery listener missing");
 if(!index.includes("data-feature-id=\"'+id+'\" data-v37-feature-id=\"'+id+'\""))fail("Explore feature cards bypass route recovery");
-if(!index.includes("r.bottom>window.innerHeight-88"))fail("mobile Dive detail scroll guard missing");
+if(!index.includes("card.scrollIntoView({behavior:\"smooth\",block:\"nearest\"})"))fail("mobile Dive selected-card scroll guard missing");
 
 // 13. Worker truth / invalid Niconico target regressions.
 if(!index.includes("e.workerReachable=true"))fail("HTTP response reachability marker missing");
@@ -197,6 +197,17 @@ if(!unifiedUi.includes('message:ok?"":"Worker /health 응답 이상",source:"hea
 if(!unifiedUi.includes('message:String(e&&e.message||e),source:"health"'))fail("fallback Worker network failure is not authoritative");
 if(!unifiedUi.includes(".app-bottom-nav,.mobile-section-nav"))fail("stale mobile section nav cleanup missing");
 if(!unifiedUi.includes("Dive interaction polish · v39.94"))fail("Dive interaction polish missing");
+
+// 17. Inline Dive detail / compact Explore / action semantics.
+if(!index.includes("function moveActionLabel58(c,n)"))fail("direction-aware Dive action label missing");
+if(!index.includes('class="mr95-node-peek"'))fail("mobile inline Dive detail missing");
+if(!index.includes('setAttribute("aria-expanded",on?"true":"false")'))fail("Dive candidate expanded state missing");
+if(!index.includes('VSAOpenSong39(det.dataset.mr58Detail,false)'))fail("Dive detail still autoplays");
+if(!index.includes('recordRuntimeError37("producer-hub-load"'))fail("Producer hub lazy-load failure recovery missing");
+if(!unifiedUi.includes("Dive inline detail + compact Explore · v39.95"))fail("v39.95 UI polish missing");
+if(!unifiedUi.includes(".mr58-node.selected .mr95-node-peek"))fail("selected Dive inline detail style missing");
+if(!unifiedUi.includes("@media(min-width:380px) and (max-width:699px)"))fail("compact Explore two-column breakpoint missing");
+if(!unifiedUi.includes('button[aria-busy="true"]'))fail("busy control interaction guard missing");
 
 note("classic JS syntax checked");
 note("inline scripts checked: "+inline);
