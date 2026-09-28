@@ -1,4 +1,4 @@
-/* VocaDive in-app Nico player v39.78 · Native Lifecycle Playback 2.6 */
+/* VocaDive in-app Nico player v39.81 · Native Lifecycle Playback 2.7 */
 (function(){
 "use strict";
 var modal=null,mini=null,frame=null,fullStage=null,miniStage=null,inlineHost=null,currentId="",currentTitle="",pushed=false,queue=[],queueIndex=-1,autoNext=true,pipWindow=null,pipClosing=false,lastPlayerStatus=0,maxVolume=true,volumeAppliedFor="",playerVolume=100,volumePopover=null,surfaceRepairTimer=0;
@@ -172,12 +172,20 @@ function setMediaPosition(data){
     try{navigator.mediaSession.setPositionState({duration:d,playbackRate:1,position:Math.min(p,d)})}catch(e){}
   }
 }
+function mediaAction32(action){
+  if(!currentId)return false;
+  if(action==="play"){sendNico("play");lastPlayerStatus=2;setMediaPlaybackState("playing")}
+  else if(action==="pause"){sendNico("pause");lastPlayerStatus=3;setMediaPlaybackState("paused")}
+  else if(action==="next")playRelative(1);
+  else if(action==="prev")playRelative(-1);
+  updatePlaybackUi();updateQueueUi();return true
+}
 function initMediaSession(){
   if(!("mediaSession" in navigator))return;
-  try{navigator.mediaSession.setActionHandler("play",function(){sendNico("play")})}catch(e){}
-  try{navigator.mediaSession.setActionHandler("pause",function(){sendNico("pause")})}catch(e){}
-  try{navigator.mediaSession.setActionHandler("nexttrack",function(){playRelative(1)})}catch(e){}
-  try{navigator.mediaSession.setActionHandler("previoustrack",function(){playRelative(-1)})}catch(e){}
+  try{navigator.mediaSession.setActionHandler("play",function(){mediaAction32("play")})}catch(e){}
+  try{navigator.mediaSession.setActionHandler("pause",function(){mediaAction32("pause")})}catch(e){}
+  try{navigator.mediaSession.setActionHandler("nexttrack",function(){mediaAction32("next")})}catch(e){}
+  try{navigator.mediaSession.setActionHandler("previoustrack",function(){mediaAction32("prev")})}catch(e){}
 }
 function handleNicoMessage(e){
   if(e.origin!==NICO_ORIGIN||!frame||e.source!==frame.contentWindow)return;
@@ -365,11 +373,14 @@ function detachToMini(){
   if(pipWindow&&!pipWindow.closed)return true;
   toggleVolumePopover(false);inlineHost=null;
   if(frame.parentNode!==miniStage)miniStage.appendChild(frame);
-  modal.hidden=true;mini.hidden=false;document.body.classList.remove("v331-player-open");updateQueueUi();updatePlaybackUi();
+  modal.hidden=true;mini.hidden=false;document.body.classList.remove("v331-player-open");
+  mini.dataset.songId=String(currentId);
+  updateQueueUi();updatePlaybackUi();
+  requestAnimationFrame(function(){try{mini.classList.add("v3987-mini-ready")}catch(_){}});
   return true
 }
 function collapsePlayer(){if(!modal||modal.hidden)return;detachToMini()}
-function expandPlayer(){if(!mini||mini.hidden)return;if(pipWindow&&!pipWindow.closed)return;toggleVolumePopover(false);inlineHost=null;if(frame.parentNode!==fullStage)fullStage.appendChild(frame);mini.hidden=true;modal.hidden=false;document.body.classList.add("v331-player-open")}
+function expandPlayer(){if(!mini||mini.hidden)return;if(pipWindow&&!pipWindow.closed)return;toggleVolumePopover(false);inlineHost=null;if(frame.parentNode!==fullStage)fullStage.appendChild(frame);mini.hidden=true;mini.classList.remove("v3987-mini-ready");modal.hidden=false;document.body.classList.add("v331-player-open");updatePlaybackUi();updateQueueUi()}
 function returnToWatch(){
   if(currentId&&typeof window.VSAOpenSongDetail39==="function"){
     try{if(window.VSAOpenSongDetail39(currentId,false))return true}catch(e){}
@@ -423,6 +434,7 @@ function restorePlaybackSnapshot32(snap,opts){
   if(!snap||!snap.currentId)return false;
   var id=String(snap.currentId),title=String(snap.currentTitle||id),items=Array.isArray(snap.queue)?snap.queue:[{id:id,title:title}];
   if(Number.isFinite(Number(snap.volume)))setPlayerVolume(Number(snap.volume),true);
+  if(typeof snap.autoNext==="boolean")setAutoNext(snap.autoNext,true);
   setQueue(items,id);
   if(Number.isFinite(Number(snap.index))&&queue.length){
     queueIndex=Math.max(0,Math.min(queue.length-1,Number(snap.index)));
@@ -441,7 +453,7 @@ function restorePlaybackSnapshot32(snap,opts){
 function closePlayer(back){
   if(!modal)return;
   toggleVolumePopover(false);pipClosing=true;try{if(pipWindow&&!pipWindow.closed)pipWindow.close()}catch(e){}restoreFromPip(false);pipClosing=false;
-  modal.hidden=true;mini.hidden=true;document.body.classList.remove("v331-player-open");
+  modal.hidden=true;mini.hidden=true;mini.classList.remove("v3987-mini-ready");document.body.classList.remove("v331-player-open");
   stopFrame32();
   inlineHost=null;currentId="";currentTitle="";queue=[];queueIndex=-1;lastPlayerStatus=0;setMediaPlaybackState("none");try{if("mediaSession" in navigator)navigator.mediaSession.metadata=null}catch(e){}markPlaying();
   if(back&&pushed){pushed=false;try{history.back()}catch(e){}}else pushed=false;
