@@ -124,6 +124,18 @@ if(!index.includes("if(map.size<44)await runBatch"))fail("mobile Dive second-wav
 if(!index.includes('p.setAttribute("aria-busy","true")'))fail("Dive moving aria-busy feedback missing");
 if(!index.includes('id="v3988DiveSpeedFeedback"'))fail("Dive lightweight move feedback style missing");
 
+// 11. Dive-first Home identity / entry action regressions.
+if(!index.includes("function homeDiveEntry3989()"))fail("Dive-first Home entry renderer missing");
+if(!index.includes("한 곡에서 시작해, 더 깊이."))fail("Dive-first Home identity copy missing");
+if(!index.includes('data-v3989-search'))fail("Home Dive search entry missing");
+if(!index.includes('data-v3989-random'))fail("Home random Dive entry missing");
+if(!index.includes('data-v3989-resume'))fail("Home resume Dive entry missing");
+if(!index.includes("focusSearch:focusSearch58"))fail("Dive search focus API missing");
+if(!index.includes("↓ 이 곡에서 다이브"))fail("home recommendation does not prioritize Dive");
+if(!index.includes('data-v39-feature="archive"'))fail("Home archive entry point missing");
+if(!unifiedUi.includes(".v3989-dive-entry"))fail("Dive-first Home responsive style missing");
+if(!unifiedUi.includes("[data-v3989-search],[data-v3989-random],[data-v3989-resume]"))fail("Home Dive route safety fallback missing");
+
 note("classic JS syntax checked");
 note("inline scripts checked: "+inline);
 note("local references checked: "+refs.size);
