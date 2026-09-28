@@ -970,6 +970,22 @@ body[data-vsa-theme="light"] #v3982Menu button small,
 body[data-vsa-theme="light"] #v3982Menu button em{color:#6f817e!important}
 body[data-vsa-theme="light"] #v3983SurfaceNotice{background:#fff!important;color:#29423f!important;border-color:var(--vd-line)!important}
 
+/* Home Dive entry and Worker pill were still using dark-theme foregrounds on light surfaces. */
+body[data-vsa-theme="light"] .v3989-dive-entry-copy>small{color:#2f716a!important}
+body[data-vsa-theme="light"] .v3989-dive-entry-copy h1{color:#17302e!important}
+body[data-vsa-theme="light"] .v3989-dive-entry-copy p{color:#667b78!important}
+body[data-vsa-theme="light"] .v3989-dive-flags span{background:#edf3f1!important;color:#56736f!important;border-color:var(--vd-line)!important}
+body[data-vsa-theme="light"] .v3989-dive-actions button b{color:#17302e!important}
+body[data-vsa-theme="light"] .v3989-dive-actions button span{color:#2f716a!important}
+body[data-vsa-theme="light"] .v3989-dive-actions button.primary b,
+body[data-vsa-theme="light"] .v3989-dive-actions button.primary span{color:#071210!important}
+body[data-vsa-theme="light"] #v3982WorkerPill{color:#405c58!important}
+body[data-vsa-theme="light"] #v3982WorkerPill[data-state="live"]{color:#2f716a!important}
+body[data-vsa-theme="light"] #v3982WorkerPill[data-state="warn"]{color:#7d672f!important}
+body[data-vsa-theme="light"] #v3982WorkerPill[data-state="err"]{color:#994b55!important}
+body[data-vsa-theme="light"] #v3980SearchBtn,
+body[data-vsa-theme="light"] #v3980MenuBtn{background:#edf1f0!important;color:#17302e!important}
+
 @media(prefers-reduced-motion:reduce){
  *{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
