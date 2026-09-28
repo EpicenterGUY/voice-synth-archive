@@ -116,6 +116,14 @@ if(player.includes('new MutationObserver(function(){scheduleSurfaceRepair("mutat
 if(!unifiedUi.includes('#v3924VolumeMini{display:none!important}'))fail("compact Fold mini-player control reduction missing");
 if(!unifiedUi.includes('[data-v39-open-universe]'))fail("home Dive route safety fallback missing");
 
+// 10. Dive transition latency / staged mobile relation search.
+if(!index.includes("Promise.all([transitionJob,buildJob])"))fail("Dive route build no longer overlaps transition");
+if(!index.includes("setTimeout(resolve,450)"))fail("Dive center metadata budget missing");
+if(!index.includes("if(lite&&tasks.length>7)"))fail("mobile Dive staged candidate search missing");
+if(!index.includes("if(map.size<44)await runBatch"))fail("mobile Dive second-wave threshold missing");
+if(!index.includes('p.setAttribute("aria-busy","true")'))fail("Dive moving aria-busy feedback missing");
+if(!index.includes('id="v3988DiveSpeedFeedback"'))fail("Dive lightweight move feedback style missing");
+
 note("classic JS syntax checked");
 note("inline scripts checked: "+inline);
 note("local references checked: "+refs.size);
