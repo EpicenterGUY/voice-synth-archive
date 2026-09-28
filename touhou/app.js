@@ -351,8 +351,11 @@ function card(t){
   '</article>';
 }
 function openTrack(t){
-  if(!t)return;state.selected=t;pushHistory(t.id);
-  const fav=state.favorites.has(t.id),origins=originalTracks(t),children=[...state.known.values()].filter(a=>(a.originalIds||[]).includes(t.id));
+  if(!t)return;
+  t=byId(t.id)||t;
+  state.selected=t;pushHistory(t.id,t);
+  const canonicalId=resolveId(t.id);
+  const fav=state.favorites.has(canonicalId),origins=originalTracks(t),children=[...state.known.values()].filter(a=>originalIds(a).includes(canonicalId));
   const artistLine=t.type==="arrangement"
     ? [t.circle&&"Circle "+t.circle,(t.artists?.arranger||[]).length&&"Arrange "+t.artists.arranger.join(", "),(t.artists?.vocal||[]).length&&"Vocal "+t.artists.vocal.join(", ")].filter(Boolean).join("<br>")
     : [t.work||t.artistString,t.role,t.character&&"Character "+t.character].filter(Boolean).join("<br>");
@@ -367,7 +370,7 @@ function openTrack(t){
   $("#detailPanel").classList.add("is-open");$("#detailPanel").setAttribute("aria-hidden","false");syncScrim();
   const play=$("#detailPlay");if(play)play.onclick=()=>{if(player.playable(t)){playTrack(t);closePanel();}};
   $("#detailDive").onclick=()=>{startDive(t);closePanel();};
-  $("#favBtn").onclick=()=>toggleFavorite(t.id);
+  $("#favBtn").onclick=()=>toggleFavorite(t);
   $("#detailContent").querySelectorAll("[data-lineage]").forEach(b=>b.onclick=()=>openTrack(byId(b.dataset.lineage)));
   $("#detailContent").querySelectorAll("[data-hydrate]").forEach(b=>b.onclick=()=>hydrateAndOpen(b.dataset.hydrate));
 }
@@ -385,27 +388,54 @@ function playTrack(t){
   const queue=currentPool().filter(x=>player.playable(x));
   player.play(t,queue);pushHistory(t.id);
 }
-function nav(view,btn){
-  $$(".nav-item").forEach(x=>x.classList.toggle("is-active",x===btn));closeMenu();player.routeChange();
-  if(view==="home"){state.mode="all";state.filter="전체";syncModeTabs();$("#searchInput").value="";renderCatalog("오늘의 다이브 입구");loadRemote(true);window.scrollTo({top:0,behavior:"smooth"});}
-  else if(view==="discover"){renderCatalog("전체 탐색");$("#catalogSection").scrollIntoView({behavior:"smooth"});}
-  else if(view==="dive"){$("#diveSection").scrollIntoView({behavior:"smooth"});}
-  else if(view==="lineage"){renderLineageOverview();$("#catalogSection").scrollIntoView({behavior:"smooth"});}
-  else if(view==="library"){renderSpecial([...state.known.values()].filter(t=>state.favorites.has(t.id)),"보관한 곡");}
-  else if(view==="history"){renderSpecial(state.history.map(id=>byId(id)).filter(Boolean),"최근 본 곡");}
+function nav(view){
+  closeMenu();
+  player.routeChange();
+  setView(view);
+  if(view==="home"){
+    state.mode="all";state.filter="전체";syncModeTabs();
+    $("#searchInput").value="";$("#searchClear").hidden=true;
+    renderCatalog("오늘의 다이브 입구");loadRemote(true);
+  }else if(view==="discover"){
+    renderCatalog("전체 카탈로그");
+  }else if(view==="lineage"){
+    renderLineageOverview();
+  }else if(view==="library"){
+    renderSpecial([...state.favorites].map(byId).filter(Boolean),"보관함");
+  }else if(view==="history"){
+    renderSpecial(state.history.map(byId).filter(Boolean),"최근 기록");
+  }
+  window.scrollTo({top:0,behavior:"smooth"});
 }
-function renderSpecial(list,title){renderGrid(list);$("#sectionTitle").textContent=title;$("#catalogSection").scrollIntoView({behavior:"smooth"});}
+function setView(view){
+  state.view=view;
+  document.body.dataset.view=view;
+  $$(".nav-item[data-view]").forEach(x=>x.classList.toggle("is-active",x.dataset.view===view));
+  const labels={home:"HOME",discover:"DISCOVER",lineage:"LINEAGE",library:"LIBRARY",history:"HISTORY",dive:"DIVE PATH"};
+  $("#sectionEyebrow").textContent=labels[view]||"DISCOVER";
+  $("#catalogTools").hidden=view==="library"||view==="history";
+  syncCatalogFooter();
+}
+function renderSpecial(list,title){
+  renderGrid(dedupe(list));
+  $("#sectionTitle").textContent=title;
+  updateStats();syncCatalogFooter();
+}
 function renderLineageOverview(){
   const list=currentPool().filter(t=>t.type==="original").sort((a,b)=>countChildren(b.id)-countChildren(a.id)||(a.year||9999)-(b.year||9999));
-  renderGrid(list);$("#sectionTitle").textContent="원곡 → 2차창작 계보";
+  renderGrid(list);
+  $("#sectionTitle").textContent="원곡 → 2차창작 계보";
+  syncCatalogFooter();
 }
 function startDive(t){
-  if(!t)return;state.selected=t;pushHistory(t.id);
+  if(!t)return;
+  t=byId(t.id)||t;
+  state.selected=t;pushHistory(t.id,t);setView("dive");
   const related=relations(t).slice(0,9);
   $("#diveMap").classList.remove("empty-state");
   $("#diveMap").innerHTML=`<div class="dive-origin"><div><small>START · ${t.type.toUpperCase()}</small><strong>${esc(t.title)}</strong></div><span>${esc(t.type==="arrangement"?(t.circle||""):(t.work||t.artistString||""))}</span></div><div class="relation-list">${related.map(r=>`<button class="relation-card" data-rel="${r.track.id}"><small>${esc(r.reason)}</small><strong>${esc(r.track.title)}</strong><span>${esc(r.track.type==="arrangement"?(r.track.circle||""):(r.track.work||r.track.artistString||""))}</span></button>`).join("")}</div>`;
   $("#diveMap").querySelectorAll("[data-rel]").forEach(b=>b.onclick=()=>startDive(byId(b.dataset.rel)));
-  $("#diveSection").scrollIntoView({behavior:"smooth",block:"start"});player.routeChange();
+  window.scrollTo({top:0,behavior:"smooth"});player.routeChange();
 }
 function relations(t){
   const pool=[...state.known.values()],tOrig=new Set(t.type==="original"?[t.id]:(t.originalIds||[]));
