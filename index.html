@@ -9418,7 +9418,9 @@ $("#proxyInput").addEventListener("change",e=>{
   e.target.value=v;
   localStorage.setItem("vocaloidIcebergProxy",v);
   state.route=null;
+  setStatus("warn",v ? "Worker 저장됨" : "Worker 설정 필요");
   $("#routeInfo").textContent=v ? "Worker 주소가 저장되었습니다. ‘연결 확인’을 눌러주세요." : "중계 주소가 비어 있습니다.";
+  try{window.dispatchEvent(new CustomEvent("vsa:worker-config-changed",{detail:{endpoint:v}}))}catch(_){}
 });
 $("#testConnectionBtn").textContent="Worker 연결 확인";
 $("#testConnectionBtn").onclick=async()=>{
@@ -9457,8 +9459,8 @@ if(!relayBase()){
   setStatus("warn","Worker 설정 필요");
   $("#snapshotLabel").textContent="웹검색은 사용 가능";
 }else{
-  setStatus("live","Worker 저장됨");
-  $("#snapshotLabel").textContent="검색할 때 연결 확인";
+  setStatus("warn","Worker 저장됨");
+  $("#snapshotLabel").textContent="연결 확인 중";
 }
 </script>
 <script id="v37CriticalBoot">
