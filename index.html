@@ -12881,13 +12881,25 @@ function center58(c,d){
   '<div class="mr76-depth-gauge"><span><b>'+e58(dm.name)+'</b><small>현재 탐색 수심</small></span><i><b style="width:'+depthPct+'%"></b></i><em>'+depthPct+'%</em></div>'+
   '<div class="mr58-center-actions"><button type="button" class="primary mr76-play" data-mr58-play="'+e58(c.contentId)+'">▶ 지금 듣기</button><button type="button" data-mr58-detail="'+e58(c.contentId)+'">곡 상세</button><button type="button" data-mr58-random>⤓ 랜덤 다이브</button></div></div>'
 }
+function primaryReason58(r){
+ if(!r)return "유사도 연결";
+ if(r.producer)return "같은 P / 프로듀서";
+ if(r.vocal)return "같은 보컬";
+ if(r.genres&&r.genres.length)return "같은 장르 · "+genreLabel58(r.genres[0]);
+ if(r.bridgePairs&&r.bridgePairs.length)return "인접 장르 브리지";
+ if(r.styles&&r.styles.length)return "비슷한 스타일";
+ if(r.moods&&r.moods.length)return "비슷한 분위기";
+ if(r.era>=.68)return r.yearDiff===0?"같은 시대":r.yearDiff+"년 차이";
+ if(r.depth===1)return "같은 수층";
+ return "태그 유사도 "+Math.round((r.base||r.score||0)*100)+"%"
+}
 function node58(x,i,c){
  var n=x.song,r=x.rel,p=pos58(i,r),dm=depthMeta58(n),delta=depth58(n)-depth58(c),dir=delta>0?"deeper":delta<0?"shallower":"same",match=Math.round(r.score*100);
- var dirLabel=delta>0?"DEEPER":delta<0?"UPPER":"CURRENT";
+ var dirLabel=delta>0?"DEEPER":delta<0?"UPPER":"CURRENT",reason=primaryReason58(r);
  return '<article class="mr58-node mr75-'+dir+'" style="left:'+p[0]+'%;top:'+p[1]+'%;transform:translate(-50%,-50%);--mr75-order:'+i+';--mr75-enter-delay:'+(i*55)+'ms;--mr75-float-delay:-'+(i*310)+'ms;--mr76-match:'+match+'%" data-mr58-node-id="'+e58(n.contentId)+'" data-mr75-dir="'+dir+'">'+
   '<button type="button" class="mr58-node-main" data-mr58-select="'+e58(n.contentId)+'">'+
    (n.thumbnailUrl?'<img src="'+e58(n.thumbnailUrl)+'" loading="lazy" alt="">':'<span class="noimg">♪</span>')+
-   '<span class="mr58-node-copy"><span class="mr76-node-kicker"><i>'+dirLabel+' · '+e58(dm.name)+'</i><em>'+match+'%</em></span><b>'+e58(n.title||n.contentId)+'</b><small>'+(year58(n)||"연도 미상")+' · '+fmt58(views58(n))+'회</small><em class="mr58-node-score">'+e58(depthDirection58(c,n))+'</em><span class="mr76-node-meter"><i></i></span></span>'+
+   '<span class="mr58-node-copy"><span class="mr76-node-kicker"><i>'+dirLabel+' · '+e58(dm.name)+'</i><em>'+match+'%</em></span><b>'+e58(n.title||n.contentId)+'</b><small>'+(year58(n)||"연도 미상")+' · '+fmt58(views58(n))+'회</small><em class="mr90-node-reason">'+e58(reason)+'</em><span class="mr76-node-meter"><i></i></span></span>'+
   '</button><button type="button" class="mr58-node-go" data-mr58-go="'+e58(n.contentId)+'">'+(delta>0?"잠수 ↓":delta<0?"상승 ↑":"이동 →")+'</button>'+
   '<span class="mr58-badges">'+badges58(r,3)+'</span></article>'
 }
@@ -12979,10 +12991,10 @@ function relationReasonRows58(c,n,r){
  return out
 }
 function side58(n,d){
- var c=d.center,r=n.contentId===c.contentId?null:rel58(c,n),gs=genreProfile58(n),reasons=r?relationReasonRows58(c,n,r):[];
- return '<div class="mr58-side"><div class="mr58-side-cover">'+(n.thumbnailUrl?'<img src="'+e58(n.thumbnailUrl)+'" alt="">':'<div class="noimg">♪</div>')+'</div><div class="mr58-badges">'+(r?badges58(r,9):badge58("similar","중심곡"))+'</div><h3>'+e58(n.title||n.contentId)+'</h3><div class="mr58-side-meta">'+(year58(n)||"연도 미상")+' · 조회 '+fmt58(views58(n))+(gs.length?' · '+gs.map(function(x){return x.label}).slice(0,3).join(" / "):"")+'</div>'+
-  '<div class="mr58-side-section"><small>왜 연결됐나</small>'+(r?'<div class="mr61-reason-list">'+reasons.map(function(x){return '<div><b>'+e58(x.k)+'</b><span>'+e58(x.v)+'</span></div>'}).join("")+'</div>':'<div class="mr58-badges"><span class="mr58-badge similar">현재 다이브 기준곡</span></div>')+'</div>'+
-  '<div class="mr58-side-actions">'+(r?'<button type="button" class="primary" data-mr58-go="'+e58(n.contentId)+'">이 곡으로 다이브</button>':'')+'<button type="button" data-mr58-play="'+e58(n.contentId)+'">▶ 바로 듣기</button><button type="button" data-mr58-detail="'+e58(n.contentId)+'">곡 상세</button><button type="button" data-mr58-pin="'+e58(n.contentId)+'">'+((typeof isUniversePinned39==="function"&&isUniversePinned39(n.contentId))?"핀 해제":"핀 고정")+'</button></div></div>'
+ var c=d.center,r=n.contentId===c.contentId?null:rel58(c,n),gs=genreProfile58(n),reasons=r?relationReasonRows58(c,n,r):[],mainReasons=reasons.slice(0,3),moreReasons=reasons.slice(3);
+ return '<div class="mr58-side"><button type="button" class="mr90-side-close" data-mr58-close-side aria-label="선택 정보 닫기">×</button><div class="mr58-side-cover">'+(n.thumbnailUrl?'<img src="'+e58(n.thumbnailUrl)+'" alt="">':'<div class="noimg">♪</div>')+'</div><div class="mr58-badges">'+(r?badges58(r,4):badge58("similar","중심곡"))+'</div><h3>'+e58(n.title||n.contentId)+'</h3><div class="mr58-side-meta">'+(year58(n)||"연도 미상")+' · 조회 '+fmt58(views58(n))+(gs.length?' · '+gs.map(function(x){return x.label}).slice(0,2).join(" / "):"")+'</div>'+
+  '<div class="mr58-side-section"><small>왜 연결됐나</small>'+(r?'<div class="mr61-reason-list">'+mainReasons.map(function(x){return '<div><b>'+e58(x.k)+'</b><span>'+e58(x.v)+'</span></div>').join("")+'</div>'+(moreReasons.length?'<details class="mr90-more-reasons"><summary>근거 '+moreReasons.length+'개 더 보기</summary><div class="mr61-reason-list">'+moreReasons.map(function(x){return '<div><b>'+e58(x.k)+'</b><span>'+e58(x.v)+'</span></div>').join("")+'</div></details>':''):'<div class="mr58-badges"><span class="mr58-badge similar">현재 다이브 기준곡</span></div>')+'</div>'+
+  '<div class="mr58-side-actions">'+(r?'<button type="button" class="primary" data-mr58-go="'+e58(n.contentId)+'">↓ 이 곡으로 다이브</button>':'')+'<button type="button" data-mr58-play="'+e58(n.contentId)+'">▶ 듣기</button><button type="button" data-mr58-detail="'+e58(n.contentId)+'">상세</button><button type="button" data-mr58-pin="'+e58(n.contentId)+'">'+((typeof isUniversePinned39==="function"&&isUniversePinned39(n.contentId))?"핀 해제":"핀 고정")+'</button></div></div>'
 }
 function ensureRelationLoader58(p){
  if(!p)return null;
@@ -13254,6 +13266,7 @@ function bind58(){
    }
    var ds=ev.target.closest("[data-mr58-depth-step]");if(ds){ev.preventDefault();ev.stopImmediatePropagation();if(!ds.disabled)stepDepth58(Number(ds.dataset.mr58DepthStep)||0);return}
    var dt=ev.target.closest("[data-mr58-depth-target]");if(dt){ev.preventDefault();ev.stopImmediatePropagation();if(!dt.disabled&&state.universeData&&depth58(state.universeData.center)!==Number(dt.dataset.mr58DepthTarget))moveDepth58(Number(dt.dataset.mr58DepthTarget));return}
+   var closeSide=ev.target.closest("[data-mr58-close-side]");if(closeSide){ev.preventDefault();ev.stopImmediatePropagation();selected58=null;p.classList.remove("mr77-candidate-selected");qa58(".mr58-node",p).forEach(function(x){x.classList.remove("selected")});var d0=state.universeData;if(d0&&d0.center){var info0=q58("#universeInfo",p);if(info0)info0.innerHTML=side58(d0.center,d0)}return}
    var g=ev.target.closest("[data-mr58-go]");if(g){ev.preventDefault();ev.stopImmediatePropagation();go58(g.dataset.mr58Go);return}
    var s=ev.target.closest("[data-mr58-select]");if(s){ev.preventDefault();ev.stopImmediatePropagation();var d=state.universeData,n=find58(s.dataset.mr58Select,d);if(n){selected58=n.contentId;p.classList.add("mr77-candidate-selected");qa58(".mr58-node",p).forEach(function(x){x.classList.toggle("selected",x.dataset.mr58NodeId===selected58)});var info=q58("#universeInfo",p);if(info){info.innerHTML=side58(n,d);if(window.innerWidth<=699)setTimeout(function(){try{info.scrollIntoView({behavior:"smooth",block:"nearest"})}catch(_){}},50)}}return}
    var play=ev.target.closest("[data-mr58-play]");if(play){ev.preventDefault();ev.stopImmediatePropagation();if(window.VSAOpenSong39)window.VSAOpenSong39(play.dataset.mr58Play,true);else if(window.VSAOpenSongDetail39)window.VSAOpenSongDetail39(play.dataset.mr58Play,true);return}
