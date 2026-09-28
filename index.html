@@ -13310,7 +13310,7 @@ function tasks59(center,tags,queryTags){
  var priority={producer:0,vocal:1,genre:2,bridge:3,style:4,mood:5,similar:6,era:7,depth:8};
  tasks.sort(function(a,b){return priority[a.lane]-priority[b.lane]});
  var lite=false;try{lite=window.matchMedia&&window.matchMedia("(pointer:coarse)").matches}catch(_){}
- var caps=lite?{producer:2,vocal:2,genre:3,bridge:2,style:1,mood:1,similar:2,era:1,depth:1}:{producer:3,vocal:3,genre:4,bridge:4,style:2,mood:2,similar:3,era:1,depth:1},used={},out=[],taskLimit=lite?14:23;
+ var caps=lite?{producer:2,vocal:2,genre:2,bridge:2,style:1,mood:1,similar:1,era:1,depth:1}:{producer:3,vocal:3,genre:4,bridge:4,style:2,mood:2,similar:3,era:1,depth:1},used={},out=[],taskLimit=lite?10:23;
  tasks.forEach(function(t){used[t.lane]=used[t.lane]||0;if(used[t.lane]<(caps[t.lane]||2)&&out.length<taskLimit){used[t.lane]++;out.push(t)}});
  return out
 }
@@ -13326,7 +13326,7 @@ async function fetchTask59(t){
  var sort=t.lane==="producer"?"-startTime":t.lane==="genre"||t.lane==="bridge"||t.lane==="style"||t.lane==="mood"?"-mylistCounter":t.lane==="vocal"?"-commentCounter":t.lane==="era"?"-startTime":"-viewCounter";
  try{
    var d=await fetchNico({
-     year:"all",limit:36,offset:0,mode:"free",query:t.tag,scope:"all",
+     year:"all",limit:(window.matchMedia&&window.matchMedia("(pointer:coarse)").matches)?28:36,offset:0,mode:"free",query:t.tag,scope:"all",
      queryTargets:t.lane==="producer"?"title,description,tags":"tagsExact",sort:sort,applyYear:false,applyTier:false,
      dateRange:t.dateRange||null,numericFilters:t.numericFilters||null
    });
@@ -13341,7 +13341,7 @@ async function fetchTask59(t){
  }catch(_){return[]}
 }
 window.VSA59CollectRelationCandidates=async function(center,tags,queryTags){
- var tasks=tasks59(center,tags,queryTags),batches=await mapLimit(tasks,4,fetchTask59),map=new Map(),laneStats={};
+ var tasks=tasks59(center,tags,queryTags),batches=await mapLimit(tasks,tasks.length<=10?3:4,fetchTask59),map=new Map(),laneStats={};
  tasks.forEach(function(t,i){
    var rows=batches[i]||[];laneStats[t.lane]=(laneStats[t.lane]||0)+rows.length;
    rows.forEach(function(s){
@@ -14079,7 +14079,7 @@ body.mr74-transitioning{overflow:hidden!important}
  #universePanel.v3958-rel .mr58-node-main{grid-template-columns:76px minmax(0,1fr)!important}
  #universePanel.v3958-rel .mr58-node-main img,
  #universePanel.v3958-rel .mr58-node-main .noimg{width:76px!important;height:50px!important}
- #universePanel.v3958-rel .mr58-map>.mr58-node:nth-of-type(n+7){display:none!important}
+ #universePanel.v3958-rel .mr58-map>.mr58-node:nth-of-type(n+5){display:none!important}
 }
 </style>
 
