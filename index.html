@@ -7862,8 +7862,18 @@ function themeContrastAudit37(){
     var el=rows[i];
     try{
       if(el.closest("svg,[hidden],.mr74-transition:not(.show)"))continue;
+      if(el.children.length&&!el.matches("button,a,label,summary"))continue;
       var cs=getComputedStyle(el);
       if(cs.display==="none"||cs.visibility==="hidden"||Number(cs.opacity||1)<.18)continue;
+      var complex=false,bgNode=el,bgGuard=0;
+      while(bgNode&&bgNode.nodeType===1&&bgGuard++<8){
+        var bcs=getComputedStyle(bgNode);
+        if(bcs.backgroundImage&&bcs.backgroundImage!=="none"){complex=true;break}
+        var brgb=parseCssRgb37(bcs.backgroundColor);
+        if(brgb&&brgb[3]>.94)break;
+        bgNode=bgNode.parentElement
+      }
+      if(complex)continue;
       var rect=el.getBoundingClientRect();if(rect.width<2||rect.height<2)continue;
       var text=(el.matches("input,textarea,select")?(el.value||el.placeholder||""):(el.innerText||el.textContent||"")).trim();
       if(!text)continue;
