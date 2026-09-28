@@ -1,8 +1,8 @@
-/* VocaDive App Platform Foundation · v39.93.0 */
+/* VocaDive App Platform Foundation · v39.94.0 */
 (function(){
 "use strict";
 
-var BUILD="39.93.0";
+var BUILD="39.94.0";
 var listeners=new Map();
 
 function cap(){
