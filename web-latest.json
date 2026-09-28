@@ -1,6 +1,6 @@
 {
-  "version": "39.98.0",
+  "version": "39.99.0",
   "channel": "web",
-  "publishedAt": "2026-09-28T22:18:00+09:00",
-  "notes": "Routes recommendation listening through VocaDive Watch, restores original thumbnails after HQ fallback failures, and stops unsigned main pushes from failing the signed-release workflow."
+  "publishedAt": "2026-09-28T22:25:00+09:00",
+  "notes": "Unifies Detective and ranking playback with VocaDive Watch and replaces terminally broken thumbnails with an in-app placeholder instead of leaving blank cards."
 }

@@ -1,10 +1,10 @@
-/* VocaDive Unified UI v39.98.0
+/* VocaDive Unified UI v39.99.0
  * YouTube-style app shell, cards, player continuity and route recovery.
  */
 (function(){
 "use strict";
 
-var VERSION="39.98.0";
+var VERSION="39.99.0";
 var raf=0,observer=null,lastRoute="home",navSeq3985=0,workerCheckTimer3986=0;
 var workerState3986={ok:null,reason:"",endpoint:"",at:0};
 
@@ -989,7 +989,7 @@ body[data-vsa-theme="light"] #v3980MenuBtn{background:#edf1f0!important;color:#1
 
 
 
-/* Theme contrast contract · v39.98
+/* Theme contrast contract · v39.99
    Light pages use darker secondary text; Dive remains intentionally dark in both themes. */
 body[data-vsa-theme="light"] #v3980Dock button{color:#536b68!important}
 body[data-vsa-theme="light"] #v3982Menu button small,
@@ -1130,7 +1130,7 @@ body[data-vsa-theme="light"] .topbar{color:#17302e!important}
 
 
 
-/* Light discovery + high-definition thumbnail contract · v39.98
+/* Light discovery + high-definition thumbnail contract · v39.99
    Legacy discovery/taste cards had dark-theme !important rules that survived light mode.
    Keep Dive dark, but make normal discovery surfaces genuinely light and readable. */
 body.v37-ready[data-vsa-theme="light"] :is(.discovery-card,.gem-card){
@@ -1174,12 +1174,33 @@ body.v37-ready[data-vsa-theme="light"] :is(.discovery-card img,.gem-card img,.v3
 
 
 
-/* Internal discovery playback · v39.98 */
+/* Internal discovery playback · v39.99 */
 .discovery-title.v3998-play-title,.gem-title.v3998-play-title{
  display:block;width:100%;padding:0;border:0;background:transparent;text-align:left;
  color:inherit;font:inherit;font-weight:inherit;line-height:inherit;cursor:pointer
 }
 .discovery-title.v3998-play-title:hover,.gem-title.v3998-play-title:hover{text-decoration:underline}
+
+
+
+/* Broken thumbnail placeholder · v39.99 */
+.v3999-play-title{
+ display:block;width:100%;padding:0;border:0;background:transparent!important;
+ color:inherit!important;font:inherit;font-weight:inherit;line-height:inherit;text-align:left;cursor:pointer
+}
+.v3999-play-title:hover{text-decoration:underline}
+.v3999-thumb-fallback{
+ display:grid!important;place-items:center!important;flex:0 0 auto;
+ background:linear-gradient(145deg,#183033,#102326)!important;color:#86b9b3!important;
+ font-size:22px!important;font-weight:900!important;line-height:1!important;overflow:hidden
+}
+.discovery-card .v3999-thumb-fallback{width:100%!important;aspect-ratio:16/9!important}
+.gem-card .v3999-thumb-fallback{width:100%!important;aspect-ratio:16/8.5!important}
+.detective-card .v3999-thumb-fallback{aspect-ratio:16/9!important}
+.song .v3999-thumb-fallback{aspect-ratio:16/9!important}
+body[data-vsa-theme="light"] .v3999-thumb-fallback{
+ background:linear-gradient(145deg,#e8f1ef,#dce9e6)!important;color:#4d7771!important
+}
 
 @media(prefers-reduced-motion:reduce){
  *{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
@@ -1189,7 +1210,7 @@ body.v37-ready[data-vsa-theme="light"] :is(.discovery-card img,.gem-card img,.v3
 }
 
 
-/* HQ thumbnail recovery · v39.98 */
+/* HQ thumbnail recovery · v39.99 */
 var thumbObserver3997=null;
 function highResThumbnailUrl3997(raw){
   var src=String(raw||"").trim();if(!src)return src;
@@ -1251,6 +1272,29 @@ function installHiResThumb3997(){
     })
   });
   thumbObserver3997.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:["src"]})
+}
+
+
+function installBrokenThumbFallback3999(){
+  if(window.__VSA_BROKEN_THUMB_3999)return;
+  window.__VSA_BROKEN_THUMB_3999=true;
+  document.addEventListener("error",function(ev){
+    var img=ev&&ev.target;
+    if(!img||img.nodeType!==1||String(img.tagName).toUpperCase()!=="IMG")return;
+    try{
+      var current=String(img.getAttribute("src")||"");
+      var hq=String(img.dataset&&img.dataset.v3997HqSrc||"");
+      if(hq&&current===hq)return;
+      if(!img.matches(".thumb,.gem-thumb,.detective-thumb,.discovery-card img,.v39-thumb img,.v399-related-thumb img,.v37-producer-song img"))return;
+      var fb=document.createElement("span");
+      fb.className=(String(img.className||"").trim()+" v3999-thumb-fallback").trim();
+      fb.setAttribute("aria-hidden","true");
+      fb.textContent="♪";
+      if(img.width)fb.style.width=img.width+"px";
+      if(img.height)fb.style.minHeight=img.height+"px";
+      img.replaceWith(fb)
+    }catch(_){}
+  },true)
 }
 
 function syncWorkerPill(){
@@ -1925,7 +1969,7 @@ function bind(){
 }
 function boot(){
   window.__VSA_WORKER_TOP_OWNER=true;
-  addStyle();installHiResThumb3997();ensureTopbar();ensureDock();watchLegacyNav3983();bind();scheduleRepair();syncViewport3986();
+  addStyle();installHiResThumb3997();installBrokenThumbFallback3999();ensureTopbar();ensureDock();watchLegacyNav3983();bind();scheduleRepair();syncViewport3986();
   document.documentElement.dataset.vocaUi=VERSION;
   checkWorker3986(420);
   setTimeout(function(){ensureTopbar();ensureDock();cleanupLegacyNav();scheduleRepair();syncViewport3986()},250);
