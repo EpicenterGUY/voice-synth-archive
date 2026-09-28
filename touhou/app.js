@@ -6,7 +6,7 @@ const player=new window.TouhouMediaPlayer();
 const state={
   localOriginals:[],localArrangements:[],known:new Map(),remoteItems:[],
   mode:"all",filter:"전체",sort:"recommend",selected:null,
-  remote:{available:false,loading:false,start:0,total:0,key:"",error:"",counts:{}},
+  remote:{available:false,loading:false,start:0,total:0,catalogTotal:0,key:"",error:"",counts:{}},
   favorites:new Set(JSON.parse(localStorage.getItem("touhoudive:favorites")||"[]")),
   history:JSON.parse(localStorage.getItem("touhoudive:history")||"[]")
 };
@@ -69,9 +69,9 @@ async function connectRemote(){
   try{
     const status=await catalog.status();
     if(!status.ok)throw new Error(status.error||"TouhouDB unavailable");
-    state.remote.available=true;state.remote.total=status.total||0;
-    $("#datasetStatus").textContent=`TouhouDB LIVE · 전체 ${fmt(state.remote.total)}곡 카탈로그`;
-    $("#statLinks").textContent=fmt(state.remote.total);
+    state.remote.available=true;state.remote.catalogTotal=status.total||0;state.remote.total=state.remote.catalogTotal;
+    $("#datasetStatus").textContent=`TouhouDB LIVE · 전체 ${fmt(state.remote.catalogTotal)}곡 카탈로그`;
+    $("#statLinks").textContent=fmt(state.remote.catalogTotal);
     $("#statLinksMeta").textContent="TouhouDB 전체 등록곡";
     loadRemoteCounts();
     await loadRemote(true);
@@ -128,7 +128,7 @@ async function loadRemote(reset=false,force=false){
     state.remote.error="";
     renderCatalog(force?"새 추천":undefined);
     $("#datasetStatus").textContent=`TouhouDB LIVE · 현재 ${fmt(state.remoteItems.length)}곡 로드 · 전체 ${fmt(state.remote.total)}곡`;
-    $("#statLinks").textContent=fmt(state.remote.total);
+    $("#statLinks").textContent=fmt(state.remote.catalogTotal||state.remote.total);
     $("#statLinksMeta").textContent="TouhouDB 전체 등록곡";
   }catch(e){
     state.remote.error=String(e?.message||e);
@@ -195,7 +195,7 @@ function updateStats(){
   $("#statOriginal").textContent=fmt(state.remote.counts.original||loaded.filter(x=>x.type==="original").length||localOrig);
   $("#statArrangement").textContent=fmt(state.remote.counts.arrangement||loaded.filter(x=>x.type==="arrangement").length||localArr);
   $("#statMedia").textContent=fmt(loaded.filter(t=>player.playable(t)).length);
-  if(state.remote.total){$("#statLinks").textContent=fmt(state.remote.total);$("#statLinksMeta").textContent="TouhouDB 전체 등록곡";}
+  if(state.remote.catalogTotal){$("#statLinks").textContent=fmt(state.remote.catalogTotal);$("#statLinksMeta").textContent="TouhouDB 전체 등록곡";}
   $("#statOriginalMeta").textContent=state.remote.counts.original?"TouhouDB 원곡 분류":"로컬 + 현재 로드";
   $("#statArrangementMeta").textContent=state.remote.counts.arrangement?"TouhouDB 어레인지 분류":"로컬 + 현재 로드";
 }
