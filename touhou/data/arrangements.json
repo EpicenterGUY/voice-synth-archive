@@ -1,0 +1,110 @@
+[
+  {
+    "id": "arr-iosys-cirno-perfect",
+    "type": "arrangement",
+    "title": "チルノのパーフェクトさんすう教室",
+    "year": 2008,
+    "circle": "IOSYS",
+    "album": "東方氷雪歌集",
+    "moods": [
+      "전파",
+      "코믹",
+      "경쾌"
+    ],
+    "originalIds": [
+      "eosd-03"
+    ],
+    "artists": {
+      "arranger": [
+        "ARM"
+      ],
+      "vocal": [
+        "miko"
+      ],
+      "lyricist": [
+        "夕野ヨシミ"
+      ]
+    },
+    "media": {
+      "provider": "youtube",
+      "id": "5ETmrso3Dt8",
+      "url": "https://www.youtube.com/watch?v=5ETmrso3Dt8"
+    },
+    "source": {
+      "name": "IOSYS music",
+      "url": "https://www.youtube.com/watch?v=5ETmrso3Dt8"
+    }
+  },
+  {
+    "id": "arr-cc-help-erin",
+    "type": "arrangement",
+    "title": "Help me, ERINNNNNN!!",
+    "year": 2004,
+    "circle": "COOL&CREATE",
+    "album": "東方ストライク",
+    "moods": [
+      "라이브",
+      "콜",
+      "경쾌"
+    ],
+    "originalIds": [
+      "in-08"
+    ],
+    "artists": {
+      "arranger": [
+        "ビートまりお"
+      ],
+      "vocal": [
+        "ビートまりお"
+      ],
+      "lyricist": [
+        "ビートまりお"
+      ]
+    },
+    "media": {
+      "provider": "youtube",
+      "id": "Jg8RKOUxCa4",
+      "url": "https://www.youtube.com/watch?v=Jg8RKOUxCa4"
+    },
+    "source": {
+      "name": "beatMARIO / COOL&CREATE",
+      "url": "https://www.youtube.com/watch?v=Jg8RKOUxCa4"
+    }
+  },
+  {
+    "id": "arr-ar-bad-apple",
+    "type": "arrangement",
+    "title": "Bad Apple!! feat. nomico",
+    "year": 2007,
+    "circle": "Alstroemeria Records",
+    "album": "Lovelight",
+    "moods": [
+      "보컬",
+      "댄스",
+      "전자"
+    ],
+    "originalIds": [
+      "lls-bad-apple"
+    ],
+    "artists": {
+      "arranger": [
+        "Masayoshi Minoshima"
+      ],
+      "vocal": [
+        "nomico"
+      ],
+      "lyricist": [
+        "Haruka"
+      ]
+    },
+    "media": {
+      "provider": "youtube",
+      "id": "oEj8vNP_1I0",
+      "url": "https://www.youtube.com/watch?v=oEj8vNP_1I0"
+    },
+    "source": {
+      "name": "Touhou arrangement reference",
+      "url": "https://www.youtube.com/watch?v=oEj8vNP_1I0"
+    }
+  }
+]
