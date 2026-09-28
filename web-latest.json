@@ -1,6 +1,6 @@
 {
-  "version": "39.79.0",
+  "version": "39.80.0",
   "channel": "web",
-  "publishedAt": "2026-09-28T09:40:00+09:00",
-  "notes": "Dive/Explore route-state sync, stale navigation cancellation, and bottom-tab self-heal."
+  "publishedAt": "2026-09-28T09:48:00+09:00",
+  "notes": "Live Worker health state, accurate connection colors, keyboard-safe mobile dock, and navigation accessibility polish."
 }
