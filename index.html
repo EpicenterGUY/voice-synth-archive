@@ -13018,7 +13018,7 @@ function primaryReason58(r){
 function node58(x,i,c){
  var n=x.song,r=x.rel,p=pos58(i,r),dm=depthMeta58(n),delta=depth58(n)-depth58(c),dir=delta>0?"deeper":delta<0?"shallower":"same",match=Math.round(r.score*100);
  var dirLabel=delta>0?"DEEPER":delta<0?"UPPER":"CURRENT",reason=primaryReason58(r),reasonRows=relationReasonRows58(c,n,r).slice(0,2);
- var peek='<div class="mr95-node-peek" aria-hidden="true"><div class="mr95-node-peek-reasons">'+reasonRowsHtml58(reasonRows)+'</div><div class="mr95-node-peek-actions">'+
+ var peek='<div class="mr95-node-peek"><div class="mr95-node-peek-reasons">'+reasonRowsHtml58(reasonRows)+'</div><div class="mr95-node-peek-actions">'+
   '<button type="button" data-mr58-play="'+e58(n.contentId)+'">▶ 듣기</button><button type="button" data-mr58-detail="'+e58(n.contentId)+'">상세</button><button type="button" data-mr58-pin="'+e58(n.contentId)+'">'+((typeof isUniversePinned39==="function"&&isUniversePinned39(n.contentId))?"핀 해제":"핀 고정")+'</button></div></div>';
  return '<article class="mr58-node mr75-'+dir+'" style="left:'+p[0]+'%;top:'+p[1]+'%;transform:translate(-50%,-50%);--mr75-order:'+i+';--mr75-enter-delay:'+(i*55)+'ms;--mr75-float-delay:-'+(i*310)+'ms;--mr76-match:'+match+'%" data-mr58-node-id="'+e58(n.contentId)+'" data-mr75-dir="'+dir+'">'+
   '<button type="button" class="mr58-node-main" data-mr58-select="'+e58(n.contentId)+'" aria-expanded="false">'+
