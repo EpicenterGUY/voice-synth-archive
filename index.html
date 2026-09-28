@@ -8186,7 +8186,7 @@ async function resolveSongProducers37(song,opts){
   try{if(id)localStorage.setItem(key,JSON.stringify({at:Date.now(),producers:producers}))}catch(_){}
   return producers
 }
-function producerDiscoveryScore37(x,mode){function producerDiscoveryScore37(x,mode){
+function producerDiscoveryScore37(x,mode){
   const avg=x.views/Math.max(1,x.count),react=((x.mylists+2)/(x.views+900))*1000,under=1-Math.min(1,Math.log10(avg+10)/6),count=Math.min(1,x.count/5),recent=x.latest>=new Date().getFullYear()-3?1:0;
   let score=.30*under+.29*Math.min(1,react/25)+.25*count+.16*recent;
   if(mode==="deep")score=.48*under+.27*Math.min(1,react/25)+.17*count+.08*recent;
@@ -8317,7 +8317,7 @@ function renderProducerDiscovery37(){
       '<div class="v37-producer-actions"><button type="button" data-v37-producer-detail="'+esc(x.name)+'">프로듀서 상세</button><button type="button" data-v37-producer-follow="'+esc(x.name)+'">♡ 팔로우</button><button type="button" data-v37-producer-search="'+esc(x.name)+'">곡 검색</button></div></article>'
   }).join("")
 }
-function ensureProducerDiscovery37(page){function ensureProducerDiscovery37(page){
+function ensureProducerDiscovery37(page){
   if(!page||page.querySelector("#v37ProducerDiscoveryBody"))return;
   const body=document.createElement("div");body.id="v37ProducerDiscoveryBody";
   body.innerHTML='<div class="v37-producer-controls">'+
