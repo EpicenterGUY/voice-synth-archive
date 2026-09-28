@@ -1,11 +1,27 @@
 {
   "current": {
-    "version": "39.84.0",
+    "version": "39.85.0",
     "releasedAt": "2026-09-28",
-    "title": "Dive Resume · Navigation Guard",
-    "summary": "다이브 진입 피드백과 이전 다이브 이어하기, 경로 기록 연타 방지까지 추가했습니다."
+    "title": "Performance Guard · Fold Settings Polish",
+    "summary": "설정 화면 반복 재렌더와 다이브 중 전역 DOM 감시를 줄이고, Fold 설정 배치와 Worker 포커스 동작을 안정화했습니다."
   },
   "entries": [
+    {
+      "version": "39.85.0",
+      "date": "2026-09-28",
+      "title": "Performance Guard · Fold Settings Polish",
+      "changes": [
+        "설정 화면에서 요약 UI를 매 라우트 복구마다 다시 그리며 MutationObserver를 재호출할 수 있던 반복 렌더 구조를 차단",
+        "앱 업데이트 카드를 이미 마지막 위치에 있을 때 다시 삽입하지 않도록 해 불필요한 DOM mutation 제거",
+        "도구 모달 라우트 감시를 실제 화면 구조 변경으로 제한해 다이브 그래프·카드 렌더가 라우트 복구를 계속 호출하지 않도록 수정",
+        "구형 내비 감시가 SVG 등 비-HTML 다이브 노드까지 검사하지 않도록 제한해 다이브 렌더 오버헤드 감소",
+        "실시간 검색 MutationObserver가 모든 body 변경을 추적하던 구조를 검색 관련 DOM만 감시하도록 변경",
+        "설정 요약 4개 카드를 데스크톱 4열, Fold/컴팩트 2×2로 재배치하고 작은 화면 Worker 상태 pill 폭을 조정",
+        "Worker 상태 pill을 누를 때 설정 화면이 실제 활성화된 뒤 주소 입력에 한 번만 포커스하고 성공 후 불필요한 재스크롤을 중지",
+        "관찰자/설정 렌더 회귀를 잡는 정적 smoke check 추가",
+        "웹/PWA/서비스워커/네이티브 셸/검색/기기동기화/UI 버전 및 캐시 키를 v39.85.0으로 동기화"
+      ]
+    },
     {
       "version": "39.84.0",
       "date": "2026-09-28",
