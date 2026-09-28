@@ -12909,7 +12909,8 @@ function startScreen58(p){
  var stage=q58(".universe-stage",p);
  if(stage)stage.innerHTML='<div class="mr71-start"><div class="mr71-start-mark">↓</div><small>VOCADIVE · START</small><h3>다이브를 시작할 곡을 골라주세요</h3><p>곡을 직접 검색하거나 랜덤곡으로 바로 시작할 수 있습니다. 기본 모집단은 음성합성 오리지널곡입니다.</p><div class="mr71-start-actions"><button type="button" class="primary" data-mr58-random-start>🎲 랜덤 다이브</button><button type="button" data-mr58-search-start>곡 검색</button></div><div class="mr71-start-status" aria-live="polite"></div></div>';
  var info=q58("#universeInfo",p);
- if(info)info.innerHTML='<div class="mr71-empty-side"><small>RELATION BRIDGE</small><b>아직 중심곡이 없습니다.</b><span>시작곡을 고르면 관계곡과 연결 이유가 여기에 표시됩니다.</span></div>'
+ if(info)info.innerHTML='<div class="mr71-empty-side"><small>RELATION BRIDGE</small><b>아직 중심곡이 없습니다.</b><span>시작곡을 고르면 관계곡과 연결 이유가 여기에 표시됩니다.</span></div>';
+ try{if(typeof renderUniverseJourney39==="function")renderUniverseJourney39()}catch(_){}
 }
 function normalizePanel58(){
  var p=q58("#universePanel");if(!p)return null;
@@ -12929,6 +12930,7 @@ function render58(d){
  var stage=q58(".universe-stage",p);if(stage)stage.innerHTML=scene58(d);
  bindOceanVisibility58();
  var info=q58("#universeInfo",p);if(info)info.innerHTML=side58(d.center,d);
+ try{if(typeof renderUniverseJourney39==="function")renderUniverseJourney39()}catch(_){}
  p.classList.remove("mr77-candidate-selected");selected58=null;bind58()
 }
 function status58(msg,bad){
@@ -13465,7 +13467,6 @@ window.VSA60ProducerResolver={resolve:resolve60};
 
 <style id="v3971DiveStartRecovery">
 /* v39.71 · empty dive + random start recovery */
-#universePanel.v3958-rel #v39UniverseJourney,
 #universePanel.v3958-rel #dg50Toolbar,
 #universePanel.v3958-rel #sea48Modebar,
 #universePanel.v3958-rel #oc49Toolbar,
@@ -14050,6 +14051,34 @@ body.mr74-transitioning{overflow:hidden!important}
 }
 </style>
 
+
+
+<style id="v3982DiveJourneyPolish">
+#universePanel.v3958-rel #v39UniverseJourney{
+ display:grid!important;grid-template-columns:auto minmax(0,1fr)!important;gap:8px!important;align-items:center!important;
+ position:sticky;top:4px;z-index:86;margin:0 0 9px!important;padding:6px 7px!important;
+ border:1px solid rgba(118,219,209,.14)!important;border-radius:13px!important;
+ background:rgba(4,24,31,.94)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+ box-shadow:0 10px 28px rgba(0,8,15,.14)!important
+}
+#universePanel.v3958-rel #v39UniverseJourney .u39-nav{display:flex!important;align-items:center!important;gap:4px!important;min-width:0}
+#universePanel.v3958-rel #v39UniverseJourney .u39-nav:before{content:"DIVE LOG";padding:0 4px!important;color:#67a8a2!important;font-size:6px!important;font-weight:950!important;letter-spacing:.12em!important;white-space:nowrap}
+#universePanel.v3958-rel #v39UniverseJourney .u39-nav button{min-width:34px!important;min-height:31px!important;padding:0 8px!important;border-radius:9px!important;background:#0a3038!important;font-size:7px!important}
+#universePanel.v3958-rel #v39UniverseJourney [data-u39-warp]{background:linear-gradient(135deg,#16484f,#253d64)!important;color:#eafffc!important}
+#universePanel.v3958-rel #v39UniverseJourney .u39-pin-count{margin-left:2px!important;min-height:25px!important;padding:0 7px!important;font-size:6.5px!important}
+#universePanel.v3958-rel #v39UniverseJourney .u39-trail{display:flex!important;gap:4px!important;min-width:0!important;overflow-x:auto!important;scrollbar-width:none!important;scroll-snap-type:x proximity}
+#universePanel.v3958-rel #v39UniverseJourney .u39-trail::-webkit-scrollbar{display:none!important}
+#universePanel.v3958-rel #v39UniverseJourney .u39-trail button{flex:0 0 auto!important;max-width:150px!important;min-height:28px!important;padding:0 8px!important;scroll-snap-align:start;background:#092931!important;color:#7da5a1!important;font-size:6.5px!important}
+#universePanel.v3958-rel #v39UniverseJourney .u39-trail button.active{background:linear-gradient(135deg,#175158,#2d446d)!important;color:#effffc!important;box-shadow:inset 0 0 0 1px rgba(123,229,218,.18)!important}
+@media(max-width:699px){
+ #universePanel.v3958-rel #v39UniverseJourney{grid-template-columns:1fr!important;gap:5px!important;top:2px!important;padding:6px!important;border-radius:12px!important}
+ #universePanel.v3958-rel #v39UniverseJourney .u39-nav{display:grid!important;grid-template-columns:34px 34px minmax(82px,1fr) auto!important;gap:4px!important}
+ #universePanel.v3958-rel #v39UniverseJourney .u39-nav:before{display:none!important}
+ #universePanel.v3958-rel #v39UniverseJourney .u39-nav button{width:100%!important;padding:0 5px!important;min-height:34px!important;font-size:7px!important}
+ #universePanel.v3958-rel #v39UniverseJourney .u39-pin-count{white-space:nowrap!important;justify-self:end!important}
+ #universePanel.v3958-rel #v39UniverseJourney .u39-trail button{max-width:126px!important;min-height:27px!important;font-size:6.5px!important}
+}
+</style>
 
 <style id="v3981DiveInteractionPolish">
 #universePanel.v3958-rel .mr58-node.selected{position:relative!important}
