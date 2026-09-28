@@ -83,7 +83,10 @@ async function loadRemoteCounts(){
       catalog.search({mode:"original",start:0,maxResults:1,sort:"RatingScore"}),
       catalog.search({mode:"arrangement",start:0,maxResults:1,sort:"RatingScore"})
     ]);
-    state.remote.counts={original:orig.total||0,arrangement:arr.total||0};
+    state.remote.counts={
+      original:orig.typed?(orig.total||0):0,
+      arrangement:arr.typed?(arr.total||0):0
+    };
     updateStats();
   }catch(e){}
 }
