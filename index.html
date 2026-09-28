@@ -3353,7 +3353,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.97.0 · Ocean HUD 2.0 · Dive Performance 1.0 · Direct APK Update 1.0 · Search Fix · Rank Turbo 1.0 · Native Brand 0.2 · Android Shell 0.1 · App Foundation 1.0 · Cross-Genre Bridge 1.0 · Relation Trust 3.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.98.0 · Ocean HUD 2.0 · Dive Performance 1.0 · Direct APK Update 1.0 · Search Fix · Rank Turbo 1.0 · Native Brand 0.2 · Android Shell 0.1 · App Foundation 1.0 · Cross-Genre Bridge 1.0 · Relation Trust 3.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -6661,7 +6661,7 @@ async function buildGuide(){
 function renderGuide(preset){
   const summary=$("#guideSummary"),meta=state.guideLastMeta||{},tier=meta.tier,terms=meta.terms||[];
   if(summary)summary.innerHTML='<b>'+esc(preset.label)+'</b> · <b>'+esc(guideScopeLabel37(meta.scope||guideScopeValue37()))+'</b> · '+(tier?('<b>'+esc(tier.name)+'</b> '+esc(tier.range)):'빙산 전체')+' · '+(terms.length?('키워드 '+terms.slice(0,4).map(esc).join(" · ")+(terms.length>4?' 외 '+(terms.length-4)+'개':'')):'키워드 자동')+' · '+state.guideSongs.length+'곡 랜덤 추천';
-  $("#guideGrid").innerHTML=state.guideSongs.map((x,i)=>{const s=x.song,tags=informativeTags(s).slice(0,4);return`<article class="discovery-card"><img src="${esc(s.thumbnailUrl||"")}" loading="lazy" onerror="this.style.visibility='hidden'"><div class="discovery-body"><a class="discovery-title" href="https://www.nicovideo.jp/watch/${encodeURIComponent(s.contentId)}" target="_blank" rel="noopener">${i+1}. ${esc(s.title||s.contentId)}</a><div class="discovery-meta"><span>조회 ${fmt(s.viewCounter||0)}</span><span>${songYear(s)||"-"}년</span></div><div class="discovery-tags">${tags.map(t=>`<span class="discovery-tag">${esc(t)}</span>`).join("")}</div><div class="discovery-reason">${esc(preset.reason)}</div><div class="gem-actions"><button class="mini-btn" onclick="openGuideUniverse('${esc(s.contentId)}')">다이브 패스</button><button class="mini-btn" onclick="window.open('https://www.nicovideo.jp/watch/${encodeURIComponent(s.contentId)}','_blank','noopener')">듣기</button></div></div></article>`}).join("");
+  $("#guideGrid").innerHTML=state.guideSongs.map((x,i)=>{const s=x.song,tags=informativeTags(s).slice(0,4);return`<article class="discovery-card"><img src="${esc(s.thumbnailUrl||"")}" loading="lazy" onerror="this.style.visibility='hidden'"><div class="discovery-body"><button type="button" class="discovery-title v3998-play-title" data-v399-play="${esc(s.contentId)}">${i+1}. ${esc(s.title||s.contentId)}</button><div class="discovery-meta"><span>조회 ${fmt(s.viewCounter||0)}</span><span>${songYear(s)||"-"}년</span></div><div class="discovery-tags">${tags.map(t=>`<span class="discovery-tag">${esc(t)}</span>`).join("")}</div><div class="discovery-reason">${esc(preset.reason)}</div><div class="gem-actions"><button type="button" class="mini-btn" onclick="openGuideUniverse('${esc(s.contentId)}')">다이브 패스</button><button type="button" class="mini-btn" data-v399-play="${esc(s.contentId)}">▶ 앱에서 듣기</button></div></div></article>`}).join("");
 }
 function openGuideUniverse(id){const x=state.guideSongs.find(x=>x.song.contentId===id);if(!x)return;openUniversePage37(x.song,false)}
 function parseTastePrompt(){
@@ -6680,7 +6680,7 @@ async function recommendTaste(){
   if(state.busy)return;if(!relayBase()){toast("먼저 Worker를 연결하세요.");return}const parsed=parseTastePrompt(),fame=$("#tasteFame").value,era=eraBounds($("#tasteEra").value),fb=fameBounds(fame);state.busy=true;$("#tasteRecommendBtn").disabled=true;$("#tasteGrid").innerHTML='<div class="discovery-empty">취향에 맞는 곡을 찾는 중…</div>';
   try{const uniq=new Map();if(parsed.terms.length){const batches=await mapLimit(parsed.terms.slice(0,6),3,async t=>fetchTasteTag(t,fb[0],fb[1]));for(const s of batches.flat())uniq.set(s.contentId,s)}if(uniq.size<15){const nf={viewCounter:{gte:fb[0]}};if(fb[1]!=null)nf.viewCounter.lte=fb[1];for(const sort of["-mylistCounter","-viewCounter","-commentCounter"]){try{const d=await fetchRandomRecommendationBatch37({year:"all",mode:"ranking",sort,applyYear:false,applyTier:false,numericFilters:nf},1);for(const s of(d.data||[]))uniq.set(s.contentId,s)}catch{}}}let rows=filterAdultRows37(filterDiscoveryOriginalRows37([...uniq.values()],"taste").rows,"taste").rows.filter(s=>!era||inEra(s,era));if(!rows.length)throw new Error("필터 조건을 통과한 음성합성 원곡이 없습니다.");const scored=rows.map(s=>({song:s,score:tasteMatchScore(s,parsed.terms,era,fame)})).sort((a,b)=>b.score-a.score),count=+$("#tasteCount").value||20;state.tasteSongs=diversifySongs(scored,count);renderTaste(parsed)}catch(e){$("#tasteGrid").innerHTML=`<div class="discovery-empty">추천 실패<br><small>${esc(String(e?.message||e))}</small></div>`}finally{state.busy=false;$("#tasteRecommendBtn").disabled=false}
 }
-function renderTaste(parsed){$("#tasteSummary").innerHTML=`해석한 취향: <b>${parsed.terms.length?parsed.terms.map(esc).join(" · "):"특정 태그 없음"}</b> · ${state.tasteSongs.length}곡 랜덤 추천 · 다시 누르면 새 조합`;$("#tasteGrid").innerHTML=state.tasteSongs.map((x,i)=>{const s=x.song,tags=informativeTags(s).slice(0,4);return`<article class="discovery-card"><img src="${esc(s.thumbnailUrl||"")}" loading="lazy" onerror="this.style.visibility='hidden'"><div class="discovery-body"><a class="discovery-title" href="https://www.nicovideo.jp/watch/${encodeURIComponent(s.contentId)}" target="_blank" rel="noopener">${i+1}. ${esc(s.title||s.contentId)}</a><div class="discovery-meta"><span>취향 일치 ${(x.score*100).toFixed(1)}%</span><span>조회 ${fmt(s.viewCounter||0)}</span><span>${songYear(s)||"-"}년</span></div><div class="discovery-tags">${tags.map(t=>`<span class="discovery-tag">${esc(t)}</span>`).join("")}</div><div class="gem-actions"><button class="mini-btn" onclick="openTasteUniverse('${esc(s.contentId)}')">비슷한 곡</button><button class="mini-btn" onclick="window.open('https://www.nicovideo.jp/watch/${encodeURIComponent(s.contentId)}','_blank','noopener')">듣기</button></div></div></article>`}).join("")}
+function renderTaste(parsed){$("#tasteSummary").innerHTML=`해석한 취향: <b>${parsed.terms.length?parsed.terms.map(esc).join(" · "):"특정 태그 없음"}</b> · ${state.tasteSongs.length}곡 랜덤 추천 · 다시 누르면 새 조합`;$("#tasteGrid").innerHTML=state.tasteSongs.map((x,i)=>{const s=x.song,tags=informativeTags(s).slice(0,4);return`<article class="discovery-card"><img src="${esc(s.thumbnailUrl||"")}" loading="lazy" onerror="this.style.visibility='hidden'"><div class="discovery-body"><button type="button" class="discovery-title v3998-play-title" data-v399-play="${esc(s.contentId)}">${i+1}. ${esc(s.title||s.contentId)}</button><div class="discovery-meta"><span>취향 일치 ${(x.score*100).toFixed(1)}%</span><span>조회 ${fmt(s.viewCounter||0)}</span><span>${songYear(s)||"-"}년</span></div><div class="discovery-tags">${tags.map(t=>`<span class="discovery-tag">${esc(t)}</span>`).join("")}</div><div class="gem-actions"><button type="button" class="mini-btn" onclick="openTasteUniverse('${esc(s.contentId)}')">비슷한 곡</button><button type="button" class="mini-btn" data-v399-play="${esc(s.contentId)}">▶ 앱에서 듣기</button></div></div></article>`}).join("")}
 function openTasteUniverse(id){const x=state.tasteSongs.find(x=>x.song.contentId===id);if(!x)return;openUniversePage37(x.song,false)}
 
 const GEM_PRESETS={
@@ -6937,7 +6937,7 @@ function renderHiddenGems(){
       <img class="gem-thumb" src="${esc(s.thumbnailUrl||"")}" loading="lazy" onerror="this.style.visibility='hidden'">
       <div class="gem-body">
         <div class="gem-topline">
-          <a class="gem-title" href="https://www.nicovideo.jp/watch/${encodeURIComponent(s.contentId)}" target="_blank" rel="noopener">${i+1}. ${esc(s.title||s.contentId)}</a>
+          <button type="button" class="gem-title v3998-play-title" data-v399-play="${esc(s.contentId)}">${i+1}. ${esc(s.title||s.contentId)}</button>
           <div class="gem-score"><strong>${x.score.toFixed(1)}</strong>발굴점수</div>
         </div>
         <div class="gem-meta">
@@ -6952,9 +6952,10 @@ function renderHiddenGems(){
         <div class="gem-reasons">${x.reasons.map(r=>`<span class="gem-reason">${esc(r)}</span>`).join("")}</div>
         <div class="gem-rankline" id="gemRank_${esc(s.contentId)}">현재 모집단 전체 순위는 버튼을 누르면 계산합니다.</div>
         <div class="gem-actions">
-          <button class="mini-btn" onclick="calculateGemRank('${esc(s.contentId)}')">전체 순위 계산</button>
-          <button class="mini-btn" onclick="openGemUniverse('${esc(s.contentId)}')">다이브 패스</button>
-          <button class="mini-btn" onclick="window.open('https://www.nicovideo.jp/watch/${encodeURIComponent(s.contentId)}','_blank','noopener')">니코동 열기</button>
+          <button type="button" class="mini-btn" data-v399-play="${esc(s.contentId)}">▶ 앱에서 듣기</button>
+          <button type="button" class="mini-btn" onclick="calculateGemRank('${esc(s.contentId)}')">전체 순위 계산</button>
+          <button type="button" class="mini-btn" onclick="openGemUniverse('${esc(s.contentId)}')">다이브 패스</button>
+          <button type="button" class="mini-btn" onclick="window.open('https://www.nicovideo.jp/watch/${encodeURIComponent(s.contentId)}','_blank','noopener')">니코동 ↗</button>
         </div>
       </div>
     </article>`;
@@ -7904,7 +7905,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:(window.VocaDiveUpdater&&window.VocaDiveUpdater.version)||document.documentElement.dataset.vocaUi||"39.97.0",
+    version:(window.VocaDiveUpdater&&window.VocaDiveUpdater.version)||document.documentElement.dataset.vocaUi||"39.98.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -9684,7 +9685,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.97.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
+var VER="39.98.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -11449,17 +11450,17 @@ function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
   var base;
-  if(name==="detective")base=seq(["./detective-v11.js?v=39.97.0","./detective-v12.js?v=39.97.0","./detective-v13.js?v=39.97.0","./detective-v14.js?v=39.97.0","./detective-v16.js?v=39.97.0"]);
-  else if(name==="personal")base=seq(["./organizer-v22.js?v=39.97.0","./smart-v23.js?v=39.97.0","./playlist-v24.js?v=39.97.0"]);
-  else if(name==="discovery")base=load("./discovery-v20.js?v=39.97.0");
-  else if(name==="homeData")base=load("./vocalo-home-v28.js?v=39.97.0");
-  else if(name==="universe")base=load("./universe-search-v28.js?v=39.97.0");
-  else if(name==="player")base=load("./nico-player-v32.js?v=39.97.0");
-  else if(name==="deviceSync")base=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.97.0");
-  else if(name==="pwa")base=load("./pwa-v21.js?v=39.97.0");
+  if(name==="detective")base=seq(["./detective-v11.js?v=39.98.0","./detective-v12.js?v=39.98.0","./detective-v13.js?v=39.98.0","./detective-v14.js?v=39.98.0","./detective-v16.js?v=39.98.0"]);
+  else if(name==="personal")base=seq(["./organizer-v22.js?v=39.98.0","./smart-v23.js?v=39.98.0","./playlist-v24.js?v=39.98.0"]);
+  else if(name==="discovery")base=load("./discovery-v20.js?v=39.98.0");
+  else if(name==="homeData")base=load("./vocalo-home-v28.js?v=39.98.0");
+  else if(name==="universe")base=load("./universe-search-v28.js?v=39.98.0");
+  else if(name==="player")base=load("./nico-player-v32.js?v=39.98.0");
+  else if(name==="deviceSync")base=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.98.0");
+  else if(name==="pwa")base=load("./pwa-v21.js?v=39.98.0");
   else if(name==="v33")base=Promise.all([ensure("personal"),ensure("discovery")]).then(function(rows){
     if(rows.some(function(x){return x===false}))return false;
-    return seq(["./voca-app-v33.js?v=39.97.0","./voca-app-v33-1.js?v=39.97.0","./voca-app-v33-2.js?v=39.97.0","./voca-app-v33-3.js?v=39.97.0"]);
+    return seq(["./voca-app-v33.js?v=39.98.0","./voca-app-v33-1.js?v=39.98.0","./voca-app-v33-2.js?v=39.98.0","./voca-app-v33-3.js?v=39.98.0"]);
   });
   else base=Promise.resolve(false);
   var job=Promise.resolve(base).then(function(v){
@@ -11507,13 +11508,13 @@ if("requestIdleCallback" in window)requestIdleCallback(function(){ensure("pwa")}
 else setTimeout(function(){ensure("pwa")},12000);
 })();
 </script>
-<script src="./device-sync-v3938.js?v=39.97.0"></script>
-<script src="./app-platform-v3962.js?v=39.97.0"></script>
-<script src="./entitlements-v3962.js?v=39.97.0"></script>
-<script src="./account-v3962.js?v=39.97.0"></script>
-<script src="./native-shell-v3963.js?v=39.97.0"></script>
-<script src="./app-update-v3966.js?v=39.97.0"></script>
-<script src="./i18n-v3918.js?v=39.97.0"></script>\n<script src="./search-live-v3969.js?v=39.97.0"></script>
+<script src="./device-sync-v3938.js?v=39.98.0"></script>
+<script src="./app-platform-v3962.js?v=39.98.0"></script>
+<script src="./entitlements-v3962.js?v=39.98.0"></script>
+<script src="./account-v3962.js?v=39.98.0"></script>
+<script src="./native-shell-v3963.js?v=39.98.0"></script>
+<script src="./app-update-v3966.js?v=39.98.0"></script>
+<script src="./i18n-v3918.js?v=39.98.0"></script>\n<script src="./search-live-v3969.js?v=39.98.0"></script>
 
 <style id="v3946DivePathStyle">
 /* v39.46 · Dive Path 1.0 — graph-free guided discovery */
@@ -14518,5 +14519,5 @@ body.mr74-transitioning{overflow:hidden!important}
 }
 </style>
 
-<script src="./vocadive-ui-v3980.js?v=39.97.0"></script>\n</body>
+<script src="./vocadive-ui-v3980.js?v=39.98.0"></script>\n</body>
 </html>
