@@ -1,6 +1,6 @@
 {
-  "version": "39.93.0",
+  "version": "39.94.0",
   "channel": "web",
-  "publishedAt": "2026-09-28T17:28:00+09:00",
-  "notes": "Repairs light-mode text contrast across Home, tools, Worker/menu surfaces and connects Producer discovery representative songs directly to Watch and Dive."
+  "publishedAt": "2026-09-28T17:42:00+09:00",
+  "notes": "Shows all six compact Dive candidates on phones, softens depth-aware transitions, fixes fallback Worker health recursion, and removes stale legacy mobile nav overlays."
 }
