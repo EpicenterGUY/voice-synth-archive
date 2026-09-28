@@ -8,12 +8,11 @@ on:
         required: false
         type: string
   push:
-    branches:
-      - main
+    # Signed releases require a permanent keystore. Normal main-branch version
+    # bumps are covered by android-debug.yml and must not fail just because
+    # signing secrets have not been configured yet.
     tags:
       - "app-v*"
-    paths:
-      - "package.json"
 
 permissions:
   contents: write
@@ -42,7 +41,7 @@ jobs:
           node-version: "22"
 
       - name: Set up Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: "temurin"
           java-version: "21"
@@ -51,13 +50,17 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          missing=()
           for name in ANDROID_KEYSTORE_BASE64 ANDROID_KEYSTORE_PASSWORD ANDROID_KEY_ALIAS ANDROID_KEY_PASSWORD; do
             if [ -z "${!name:-}" ]; then
-              echo "::error::Missing GitHub Actions secret: $name"
-              echo "::error::Direct APK updates require one permanent Android signing key. Do not commit the keystore to the repository."
-              exit 1
+              missing+=("$name")
             fi
           done
+          if [ "${#missing[@]}" -gt 0 ]; then
+            printf '::error::Missing GitHub Actions secret: %s\n' "${missing[@]}"
+            echo "::error::Direct APK updates require one permanent Android signing key. Do not commit the keystore to the repository."
+            exit 1
+          fi
 
       - name: Resolve release version
         id: meta

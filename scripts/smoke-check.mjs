@@ -12,6 +12,8 @@ async function exists(path){try{await access(join(root,path));return true}catch{
 function versionOf(src,re,label){const m=src.match(re);if(!m){fail(label+" version not found");return""}return m[1]}
 
 const index=await text("index.html");
+const androidRelease=await text(".github/workflows/android-release.yml");
+const androidDebug=await text(".github/workflows/android-debug.yml");
 
 // 1. Classic root JS syntax.
 for(const ent of await readdir(root,{withFileTypes:true})){
@@ -210,7 +212,7 @@ if(!unifiedUi.includes("@media(min-width:380px) and (max-width:699px)"))fail("co
 if(!unifiedUi.includes('button[aria-busy="true"]'))fail("busy control interaction guard missing");
 
 // 18. Theme contrast integrity / runtime audit.
-if(!unifiedUi.includes("Theme contrast contract · v39.97"))fail("v39.97 theme contrast contract missing");
+if(!unifiedUi.includes("Theme contrast contract · v39.98"))fail("v39.98 theme contrast contract missing");
 if(!unifiedUi.includes("--vd-soft:#819491"))fail("dark soft-text contrast token missing");
 if(!unifiedUi.includes("--vd-text:#17302e;--vd-muted:#536b68;--vd-soft:#5c716e"))fail("light readable text tokens missing");
 if(!unifiedUi.includes('body[data-vsa-theme="light"] #universePanel.v3958-rel'))fail("light-mode Dive dark-ocean restore missing");
@@ -240,13 +242,28 @@ for(const src of [index,unifiedUi]){
 
 
 // 19. Light discovery readability + HQ thumbnail regressions.
-if(!unifiedUi.includes("Light discovery + high-definition thumbnail contract · v39.97"))fail("v39.97 light discovery/HQ thumbnail contract missing");
+if(!unifiedUi.includes("Light discovery + high-definition thumbnail contract · v39.98"))fail("v39.98 light discovery/HQ thumbnail contract missing");
 if(!unifiedUi.includes('body.v37-ready[data-vsa-theme="light"] :is(.discovery-card,.gem-card)'))fail("light discovery card surface override missing");
 if(!unifiedUi.includes('body.v37-ready[data-vsa-theme="light"] :is(.discovery-title,.gem-title,.gem-topline a)'))fail("light discovery title override missing");
 if(!unifiedUi.includes("function highResThumbnailUrl3997("))fail("HQ Niconico thumbnail resolver missing");
 if(!unifiedUi.includes('u.pathname+=".L"'))fail("Niconico large-thumbnail upgrade missing");
 if(!unifiedUi.includes("v3997HqFailed"))fail("HQ thumbnail fallback guard missing");
 if(!unifiedUi.includes("installHiResThumb3997();"))fail("HQ thumbnail installer is not wired into boot");
+
+
+
+// 20. In-app recommendation playback / HQ fallback recovery / signed-release trigger safety.
+if(!unifiedUi.includes("Internal discovery playback · v39.98"))fail("v39.98 internal discovery playback style missing");
+if(!index.includes('class="discovery-title v3998-play-title" data-v399-play="${esc(s.contentId)}"'))fail("guide/taste title no longer routes to in-app Watch");
+if(!index.includes('class="gem-title v3998-play-title" data-v399-play="${esc(s.contentId)}"'))fail("hidden-gem title no longer routes to in-app Watch");
+if(!index.includes(">▶ 앱에서 듣기</button>"))fail("recommendation in-app listen action missing");
+if(!unifiedUi.includes('img.addEventListener("load",function(){'))fail("HQ thumbnail fallback load recovery missing");
+if(!unifiedUi.includes('img.style.visibility=""'))fail("HQ fallback does not restore hidden thumbnails");
+if(androidRelease.includes("branches:\n      - main"))fail("signed release still auto-runs on ordinary main pushes without signing secrets");
+if(!androidRelease.includes('tags:\n      - "app-v*"'))fail("signed release tag trigger missing");
+if(!androidRelease.includes("actions/setup-java@v5"))fail("signed release still uses deprecated setup-java v4");
+if(!androidDebug.includes("actions/setup-java@v5"))fail("debug build still uses deprecated setup-java v4");
+if(!androidRelease.includes("missing=()"))fail("signed release does not collect all missing signing secrets");
 
 note("classic JS syntax checked");
 note("inline scripts checked: "+inline);
