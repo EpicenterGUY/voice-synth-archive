@@ -71,8 +71,8 @@ function cleanPiaproPageText(html){
 function extractPiaproLyrics(html,url){
   const text=cleanPiaproPageText(html);
   const lyricCategory=/カテゴリ\s*[:：]?\s*歌詞/.test(text);
-  const titlePage=/テキスト[「"].+?[」"]/.test(text)||/<title[^>]*>[\s\S]*?テキスト/i.test(String(html||""));
-  if(!lyricCategory&&!titlePage)return {ok:false,error:"not a Piapro lyrics text page"};
+  const lyricTitle=/<title[^>]*>[\s\S]*?(?:歌詞|lyrics)[\s\S]*?<\/title>/i.test(String(html||""));
+  if(!lyricCategory&&!lyricTitle)return {ok:false,error:"not a Piapro lyrics text page"};
   let start=text.indexOf("ログイン・新規登録");
   if(start<0)start=text.indexOf("新規登録");
   if(start>=0)start=text.indexOf("\n",start);
