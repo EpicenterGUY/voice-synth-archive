@@ -391,7 +391,7 @@ body.v37-ready #songList+.loadmore{
 
 #v3982WorkerPill{cursor:pointer!important;user-select:none!important}
 .v3983-settings-summary{
- display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 12px!important
+ display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:0 0 12px!important
 }
 .v3983-settings-summary button{
  min-width:0;min-height:86px;padding:12px;border:1px solid var(--vd-line);border-radius:13px;
@@ -425,7 +425,7 @@ body.v37-ready #songList+.loadmore{
  background:#0b181b;color:#c8ddda;font-size:8px;font-weight:800;box-shadow:0 10px 28px rgba(0,0,0,.34)
 }
 @media(max-width:699px){
- .v3983-settings-summary{grid-template-columns:1fr!important}
+ .v3983-settings-summary{grid-template-columns:repeat(2,minmax(0,1fr))!important}
  [data-tool-view="settings29"] .settings-grid{grid-template-columns:1fr!important}
  [data-tool-view="settings29"] #v3966UpdateCard{grid-column:auto!important}
  [data-tool-view="settings29"] .settings-grid>.control,
@@ -556,6 +556,7 @@ body.v37-ready :is(button,a){-webkit-tap-highlight-color:transparent}
 
 
 @media(max-width:420px){
+ #v3982WorkerPill{max-width:84px!important}
  .v39-media-card{flex-basis:min(72vw,250px)!important;min-width:210px!important}
  .v331-mini{grid-template-columns:68px minmax(0,1fr) repeat(5,30px)!important;gap:3px!important}
  .v331-mini-stage{width:68px!important;height:39px!important}
@@ -564,6 +565,7 @@ body.v37-ready :is(button,a){-webkit-tap-highlight-color:transparent}
 
 /* Fold / compact viewport recovery · v39.78 */
 @media(min-width:700px) and (max-width:1099px){
+ .v3983-settings-summary{grid-template-columns:repeat(2,minmax(0,1fr))!important}
  body.v37-ready>.app>.topbar{grid-template-columns:auto minmax(240px,1fr) auto!important;grid-template-areas:"brand search status"!important;align-items:center!important}
  body.v37-ready>.app>.topbar>.brand{grid-area:brand!important}
  body.v37-ready>.app>.topbar>.v39-global-search,body.v37-ready>.app>.topbar>#v3980SearchForm{grid-area:search!important;width:100%!important;min-width:0!important}
