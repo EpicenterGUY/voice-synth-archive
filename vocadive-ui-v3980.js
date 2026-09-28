@@ -1,10 +1,10 @@
-/* VocaDive Unified UI v39.101.0
+/* VocaDive Unified UI v39.102.0
  * YouTube-style app shell, cards, player continuity and route recovery.
  */
 (function(){
 "use strict";
 
-var VERSION="39.101.0";
+var VERSION="39.102.0";
 var raf=0,observer=null,lastRoute="home",navSeq3985=0,workerCheckTimer3986=0;
 var workerState3986={ok:null,reason:"",endpoint:"",at:0};
 
@@ -989,7 +989,7 @@ body[data-vsa-theme="light"] #v3980MenuBtn{background:#edf1f0!important;color:#1
 
 
 
-/* Theme contrast contract · v39.101
+/* Theme contrast contract · v39.102
    Light pages use darker secondary text; Dive remains intentionally dark in both themes. */
 body[data-vsa-theme="light"] #v3980Dock button{color:#536b68!important}
 body[data-vsa-theme="light"] #v3982Menu button small,
@@ -1130,7 +1130,7 @@ body[data-vsa-theme="light"] .topbar{color:#17302e!important}
 
 
 
-/* Light discovery + high-definition thumbnail contract · v39.101
+/* Light discovery + high-definition thumbnail contract · v39.102
    Legacy discovery/taste cards had dark-theme !important rules that survived light mode.
    Keep Dive dark, but make normal discovery surfaces genuinely light and readable. */
 body.v37-ready[data-vsa-theme="light"] :is(.discovery-card,.gem-card){
@@ -1174,7 +1174,7 @@ body.v37-ready[data-vsa-theme="light"] :is(.discovery-card img,.gem-card img,.v3
 
 
 
-/* Internal discovery playback · v39.101 */
+/* Internal discovery playback · v39.102 */
 .discovery-title.vsa-play-title,.gem-title.vsa-play-title{
  display:block;width:100%;padding:0;border:0;background:transparent;text-align:left;
  color:inherit;font:inherit;font-weight:inherit;line-height:inherit;cursor:pointer
@@ -1183,7 +1183,7 @@ body.v37-ready[data-vsa-theme="light"] :is(.discovery-card img,.gem-card img,.v3
 
 
 
-/* Broken thumbnail placeholder · v39.101 */
+/* Broken thumbnail placeholder · v39.102 */
 .vsa-play-title{
  display:block;width:100%;padding:0;border:0;background:transparent!important;
  color:inherit!important;font:inherit;font-weight:inherit;line-height:inherit;text-align:left;cursor:pointer
@@ -1204,7 +1204,7 @@ body[data-vsa-theme="light"] .v3999-thumb-fallback{
 
 
 
-/* Performance frame budget · v39.101
+/* Performance frame budget · v39.102
    Long recommendation/ranking lists skip off-screen paint work; Dive movement
    stays on compositor-friendly layers without permanently pinning GPU memory. */
 @supports(content-visibility:auto){
@@ -1231,7 +1231,7 @@ body[data-vsa-theme="light"] .v3999-thumb-fallback{
 }
 
 
-/* HQ thumbnail recovery · v39.101 */
+/* HQ thumbnail recovery · v39.102 */
 var thumbObserver3997=null;
 function highResThumbnailUrl3997(raw){
   var src=String(raw||"").trim();if(!src)return src;
@@ -1332,7 +1332,7 @@ function installBrokenThumbFallback3999(){
 }
 
 
-/* Route visibility watchdog · v39.101
+/* Route visibility watchdog · v39.102
    Repairs the recurring "black tools screen" state where the modal/backdrop
    is visible but the requested tool-view was left hidden by a late async route. */
 var routeRepairTimers39100=[];

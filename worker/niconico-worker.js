@@ -5,6 +5,7 @@
  *   GET  /api      -> Niconico Snapshot Search relay
  *   GET  /image    -> safe Niconico thumbnail proxy
  *   GET  /health
+ *   GET  /piapro/lyrics -> linked Piapro text-page lyric extractor
  *
  * Detective backend (D1 binding name: DB):
  *   GET  /detective/status
@@ -41,6 +42,56 @@ function json(data,status=200){
     headers:{"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store",...cors()}
   });
 }
+function safePiaproHost(host){
+  host=String(host||"").toLowerCase();
+  return host==="piapro.jp" || host.endsWith(".piapro.jp");
+}
+function decodeHtmlEntities(v){
+  return String(v||"")
+    .replace(/&nbsp;|&#160;/gi," ")
+    .replace(/&amp;/gi,"&")
+    .replace(/&lt;/gi,"<")
+    .replace(/&gt;/gi,">")
+    .replace(/&quot;/gi,'"')
+    .replace(/&#39;|&apos;/gi,"'")
+    .replace(/&#x([0-9a-f]+);/gi,(_,x)=>String.fromCodePoint(parseInt(x,16)||0))
+    .replace(/&#(\d+);/g,(_,x)=>String.fromCodePoint(parseInt(x,10)||0));
+}
+function cleanPiaproPageText(html){
+  let t=String(html||"")
+    .replace(/<script\b[\s\S]*?<\/script>/gi,"")
+    .replace(/<style\b[\s\S]*?<\/style>/gi,"")
+    .replace(/<!--[\s\S]*?-->/g,"")
+    .replace(/<(?:br|hr)\b[^>]*>/gi,"\n")
+    .replace(/<\/(?:p|div|li|section|article|h[1-6]|a|pre|blockquote)>/gi,"\n")
+    .replace(/<[^>]+>/g," ");
+  t=decodeHtmlEntities(t).replace(/\r/g,"").replace(/[ \t]+\n/g,"\n").replace(/\n[ \t]+/g,"\n");
+  return t.replace(/\n{3,}/g,"\n\n").trim();
+}
+function extractPiaproLyrics(html,url){
+  const text=cleanPiaproPageText(html);
+  const lyricCategory=/カテゴリ\s*[:：]?\s*歌詞/.test(text);
+  const lyricTitle=/<title[^>]*>[\s\S]*?(?:歌詞|lyrics)[\s\S]*?<\/title>/i.test(String(html||""));
+  if(!lyricCategory&&!lyricTitle)return {ok:false,error:"not a Piapro lyrics text page"};
+  let start=text.indexOf("ログイン・新規登録");
+  if(start<0)start=text.indexOf("新規登録");
+  if(start>=0)start=text.indexOf("\n",start);
+  else start=0;
+  let end=text.indexOf("\nライセンス",Math.max(0,start));
+  if(end<0)end=text.indexOf("ライセンス",Math.max(0,start));
+  if(end<0||end<=start) return {ok:false,error:"lyrics block not found"};
+  let lyrics=text.slice(Math.max(0,start),end).trim();
+  lyrics=lyrics
+    .replace(/^(?:オンガク|イラスト|テキスト|3Dモデル|タグ|ユーザー|ツール|作品・ユーザーを検索)\s*$/gm,"")
+    .replace(/\n{3,}/g,"\n\n").trim();
+  if(lyrics.length<20)return {ok:false,error:"lyrics block too short"};
+  if(lyrics.length>24000)lyrics=lyrics.slice(0,24000);
+  let title="";
+  const mt=String(html||"").match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+  if(mt)title=decodeHtmlEntities(mt[1].replace(/<[^>]+>/g," ")).replace(/\s+/g," ").trim();
+  return {ok:true,url:String(url||""),title,lyrics,source:"Piapro"};
+}
+
 function safeImageHost(host){
   host=String(host||"").toLowerCase();
   return host==="nicovideo.jp" || host.endsWith(".nicovideo.jp") ||
@@ -983,7 +1034,7 @@ export default {
 
     if(u.pathname==="/" || u.pathname==="/health"){
       return json({
-        ok:true,service:"voice-synth-archive-worker",version:"19.0",
+        ok:true,service:"voice-synth-archive-worker",version:"20.0",
         detectiveIndex:await dbReady(env),
         semanticIndex:semanticEnabled(env),
         visualIndex:visualEnabled(env),
@@ -1005,6 +1056,32 @@ export default {
     if(u.pathname==="/detective/reindex-visual" && request.method==="POST")return handleManualVisualReindex(request,env);
 
     if(request.method!=="GET") return json({ok:false,error:"GET only"},405);
+
+    if(u.pathname==="/piapro/lyrics"){
+      const target=u.searchParams.get("url");
+      if(!target)return json({ok:false,error:"missing url"},400);
+      let tu;
+      try{tu=new URL(target)}catch{return json({ok:false,error:"invalid url"},400)}
+      if(tu.protocol!=="https:" || !safePiaproHost(tu.hostname) || !/^\/t\/[A-Za-z0-9_-]+\/?$/.test(tu.pathname)){
+        return json({ok:false,error:"Piapro text URL not allowed"},403);
+      }
+      try{
+        const r=await fetch(tu.toString(),{
+          headers:{
+            "Accept":"text/html,application/xhtml+xml",
+            "Accept-Language":"ja,en;q=0.8",
+            "User-Agent":"VocaDive/20.0 lyric-link resolver"
+          },
+          cf:{cacheEverything:true,cacheTtl:3600}
+        });
+        if(!r.ok)return json({ok:false,error:"Piapro upstream "+r.status},r.status);
+        const html=await r.text();
+        const out=extractPiaproLyrics(html,tu.toString());
+        return json(out,out.ok?200:404);
+      }catch(e){
+        return json({ok:false,error:String(e?.message||e)},502);
+      }
+    }
 
     if(u.pathname==="/image"){
       const target=u.searchParams.get("url");
@@ -1037,7 +1114,7 @@ export default {
 
     const out=new URL(NICO_API);
     for(const [k,v] of u.searchParams)out.searchParams.append(k,v);
-    if(!out.searchParams.has("_context"))out.searchParams.set("_context","voice_synth_archive_v19");
+    if(!out.searchParams.has("_context"))out.searchParams.set("_context","voice_synth_archive_v20");
     if(!out.searchParams.has("_limit"))out.searchParams.set("_limit","20");
 
     const limit=Math.min(100,Math.max(0,Number(out.searchParams.get("_limit"))||20));
@@ -1047,7 +1124,7 @@ export default {
 
     try{
       const r=await fetch(out.toString(),{
-        headers:{"Accept":"application/json","User-Agent":"voice-synth-niconico-archive/19.0"}
+        headers:{"Accept":"application/json","User-Agent":"voice-synth-niconico-archive/20.0"}
       });
       const body=await r.text();
       return new Response(body,{

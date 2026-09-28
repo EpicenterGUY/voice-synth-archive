@@ -14,6 +14,9 @@ function versionOf(src,re,label){const m=src.match(re);if(!m){fail(label+" versi
 const index=await text("index.html");
 const androidRelease=await text(".github/workflows/android-release.yml");
 const androidDebug=await text(".github/workflows/android-debug.yml");
+const nicoPlayer=await text("nico-player-v32.js");
+const library332=await text("voca-app-v33-2.js");
+const workerNico=await text("worker/niconico-worker.js");
 
 // 1. Classic root JS syntax.
 for(const ent of await readdir(root,{withFileTypes:true})){
@@ -212,7 +215,7 @@ if(!unifiedUi.includes("@media(min-width:380px) and (max-width:699px)"))fail("co
 if(!unifiedUi.includes('button[aria-busy="true"]'))fail("busy control interaction guard missing");
 
 // 18. Theme contrast integrity / runtime audit.
-if(!unifiedUi.includes("Theme contrast contract · v39.101"))fail("v39.101 theme contrast contract missing");
+if(!unifiedUi.includes("Theme contrast contract · v39.102"))fail("v39.102 theme contrast contract missing");
 if(!unifiedUi.includes("--vd-soft:#819491"))fail("dark soft-text contrast token missing");
 if(!unifiedUi.includes("--vd-text:#17302e;--vd-muted:#536b68;--vd-soft:#5c716e"))fail("light readable text tokens missing");
 if(!unifiedUi.includes('body[data-vsa-theme="light"] #universePanel.v3958-rel'))fail("light-mode Dive dark-ocean restore missing");
@@ -242,7 +245,7 @@ for(const src of [index,unifiedUi]){
 
 
 // 19. Light discovery readability + HQ thumbnail regressions.
-if(!unifiedUi.includes("Light discovery + high-definition thumbnail contract · v39.101"))fail("v39.101 light discovery/HQ thumbnail contract missing");
+if(!unifiedUi.includes("Light discovery + high-definition thumbnail contract · v39.102"))fail("v39.102 light discovery/HQ thumbnail contract missing");
 if(!unifiedUi.includes('body.v37-ready[data-vsa-theme="light"] :is(.discovery-card,.gem-card)'))fail("light discovery card surface override missing");
 if(!unifiedUi.includes('body.v37-ready[data-vsa-theme="light"] :is(.discovery-title,.gem-title,.gem-topline a)'))fail("light discovery title override missing");
 if(!unifiedUi.includes("function highResThumbnailUrl3997("))fail("HQ Niconico thumbnail resolver missing");
@@ -253,7 +256,7 @@ if(!unifiedUi.includes("installHiResThumb3997();"))fail("HQ thumbnail installer 
 
 
 // 20. In-app recommendation playback / HQ fallback recovery / signed-release trigger safety.
-if(!unifiedUi.includes("Internal discovery playback · v39.101"))fail("v39.101 internal discovery playback style missing");
+if(!unifiedUi.includes("Internal discovery playback · v39.102"))fail("v39.102 internal discovery playback style missing");
 if(!index.includes('class="discovery-title vsa-play-title" data-v399-play="${esc(s.contentId)}"'))fail("guide/taste title no longer routes to in-app Watch");
 if(!index.includes('class="gem-title vsa-play-title" data-v399-play="${esc(s.contentId)}"'))fail("hidden-gem title no longer routes to in-app Watch");
 if(!index.includes(">▶ 앱에서 듣기</button>"))fail("recommendation in-app listen action missing");
@@ -268,7 +271,7 @@ if(!androidRelease.includes("missing=()"))fail("signed release does not collect 
 
 
 // 21. Detective/ranking in-app playback + terminal thumbnail placeholder.
-if(!unifiedUi.includes("Broken thumbnail placeholder · v39.101"))fail("v39.101 broken-thumbnail placeholder style missing");
+if(!unifiedUi.includes("Broken thumbnail placeholder · v39.102"))fail("v39.102 broken-thumbnail placeholder style missing");
 if(!unifiedUi.includes("function installBrokenThumbFallback3999()"))fail("broken-thumbnail fallback handler missing");
 if(!unifiedUi.includes('img.matches(".thumb,.gem-thumb,.detective-thumb,.discovery-card img,.v39-thumb img,.v399-related-thumb img,.v37-producer-song img")'))fail("thumbnail fallback scope missing");
 if(!unifiedUi.includes("img.replaceWith(fb)"))fail("terminal broken thumbnail is not replaced with placeholder");
@@ -281,7 +284,7 @@ if(!index.includes('data-v399-play="${esc(s.contentId)}">▶ 앱에서 듣기</b
 
 
 // 22. Tool-route black-screen watchdog / stable playback hooks.
-if(!unifiedUi.includes("Route visibility watchdog · v39.101"))fail("v39.101 route visibility watchdog missing");
+if(!unifiedUi.includes("Route visibility watchdog · v39.102"))fail("v39.102 route visibility watchdog missing");
 if(!unifiedUi.includes("function routeLooksHealthy39100(route)"))fail("route health checker missing");
 if(!unifiedUi.includes("function repairRoute39100(route,reason)"))fail("route repair function missing");
 if(!unifiedUi.includes('modal.querySelectorAll(".tool-view").forEach'))fail("route repair does not normalize competing tool views");
@@ -297,7 +300,7 @@ if(!index.includes('class="song-title vsa-play-title"'))fail("stable ranking pla
 
 
 // 23. Frame-budget performance pass.
-if(!unifiedUi.includes("Performance frame budget · v39.101"))fail("v39.101 frame-budget CSS missing");
+if(!unifiedUi.includes("Performance frame budget · v39.102"))fail("v39.102 frame-budget CSS missing");
 if(!unifiedUi.includes("@supports(content-visibility:auto)"))fail("off-screen content-visibility optimization missing");
 if(!unifiedUi.includes("contain-intrinsic-size:auto 170px"))fail("intrinsic size guard for virtualized cards missing");
 if(!unifiedUi.includes("var viewportRaf39101=0"))fail("viewport RAF coalescer missing");
@@ -308,6 +311,31 @@ if(!unifiedUi.includes("thumbScanRoots39101=new Set()"))fail("thumbnail mutation
 if(!unifiedUi.includes("function queueThumbnailScan39101(root)"))fail("thumbnail mutation batch scheduler missing");
 if(!unifiedUi.includes('requestIdleCallback(initial,{timeout:500})'))fail("initial thumbnail upgrade is not deferred off first paint");
 if(!unifiedUi.includes('#universePanel.v3958-rel .mr58-node{contain:layout paint style}'))fail("Dive node layout containment missing");
+
+
+
+// 24. Metadata quality / producer rescue / Piapro lyrics / mini handoff / library Watch.
+if(!index.includes("function cleanDescription399(v)"))fail("clean song-description normalizer missing");
+if(!index.includes('return{text:nico,source:"니코동 투고문"}'))fail("Niconico uploader description is not preferred");
+if(!index.includes('id="v399AboutSource"'))fail("song-description source label missing");
+if(!index.includes("vsa37ProducerPV:")||!index.includes('":v4"'))fail("producer cache v4 invalidation missing");
+if(!index.includes("function fetchVocadbProducerFallback37(song,id)"))fail("VocaDB title/PV producer rescue missing");
+if(!index.includes('u.searchParams.set("fields","Artists,PVs,Names,Tags,WebLinks")'))fail("producer metadata request is still too narrow");
+if(!index.includes('else if(!voiceRole&&(known||/(?:P|Ｐ)$/u.test(name)))'))fail("P-name fallback for uncategorized VocaDB artists missing");
+if(!index.includes("function piaproLinks399(entry,song)"))fail("Piapro lyric-link discovery missing");
+if(!index.includes('base+"/piapro/lyrics?url="+encodeURIComponent(url)'))fail("Piapro lyric Worker request missing");
+if(!index.includes("VocaDB·Piapro에서 표시 가능한 가사를 찾지 못했습니다."))fail("combined lyric empty state missing");
+if(!index.includes("watchRouteHandoff39102"))fail("Watch route handoff guard missing");
+if(!index.includes("Promise.resolve(handoffWatchToMini399())"))fail("Watch does not force mini handoff on route change");
+if(!nicoPlayer.includes("function enforceRouteSurface32(route)"))fail("player route-surface enforcement missing");
+if(!nicoPlayer.includes("[0,90,240].forEach"))fail("player route handoff retry window missing");
+if(!nicoPlayer.includes("installRouteObserver32();"))fail("late toolsModal route observer install missing");
+if(!library332.includes('data-lib-watch="'+esc(x.id)+'"'))fail("library cards do not expose Watch navigation");
+if(!library332.includes("function openWatch(id)"))fail("library Watch opener missing");
+if(!library332.includes("window.VSAOpenSongDetail39"))fail("library does not route saved songs into song detail");
+if(!workerNico.includes('if(u.pathname==="/piapro/lyrics")'))fail("Worker Piapro lyric endpoint missing");
+if(!workerNico.includes("safePiaproHost"))fail("Worker Piapro host allowlist missing");
+if(!workerNico.includes("extractPiaproLyrics"))fail("Worker Piapro lyric extractor missing");
 
 note("classic JS syntax checked");
 note("inline scripts checked: "+inline);

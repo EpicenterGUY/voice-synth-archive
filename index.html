@@ -2958,11 +2958,11 @@ body.v37-ready .tools-modal[data-current-view="songDetail39"] .v3920-stats .v399
 .v3920-fold>summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px}
 .v3920-fold>summary::-webkit-details-marker{display:none}.v3920-fold>summary b{display:block;color:#eafaf7;font-size:13px}.v3920-fold>summary small{display:block;margin-top:2px;color:#668b87;font-size:7px}
 .v3920-fold>summary i{font-style:normal;color:#68c9c0;font-size:16px}.v3920-fold[open]>summary i{font-size:0}.v3920-fold[open]>summary i:after{content:"−";font-size:16px}
-.v3920-fold-body{padding:0 14px 14px}.v3920-fold-body>p{margin:0;padding:11px;border-radius:11px;background:#05181d;color:#789b97;font-size:8px;line-height:1.75;white-space:pre-wrap}
+.v3920-fold-body{padding:0 14px 14px}.v3920-fold-body>p{margin:0;padding:11px;border-radius:11px;background:#05181d;color:#789b97;font-size:8px;line-height:1.75;white-space:pre-wrap}.v399-about-source{display:block;margin:6px 3px 0;color:#668b87;font-size:6.5px}
 .v3920-fold .v399-lyric-text{max-height:62dvh}
 body[data-vsa-theme="light"] .v3920-credit,body[data-vsa-theme="light"] .v3920-fold,body[data-vsa-theme="light"] .v3920-side{background:#fff!important;border-color:#cfe2de!important}
 body[data-vsa-theme="light"] .v3920-credit .v392-detail-chips button,body[data-vsa-theme="light"] .v3920-credit .v392-detail-chips span,body[data-vsa-theme="light"] .v3920-tags summary{background:#e7f3f0!important;color:#426b66!important}
-body[data-vsa-theme="light"] .v3920-fold-body>p{background:#f5f9f8!important;color:#536b68!important}
+body[data-vsa-theme="light"] .v3920-fold-body>p{background:#f5f9f8!important;color:#536b68!important}body[data-vsa-theme="light"] .v399-about-source{color:#647b78!important}
 @media(max-width:1050px){
   .v3920-watch{grid-template-columns:minmax(0,1fr) 300px!important}
   body.v37-ready .tools-modal[data-current-view="songDetail39"] .v3920-watch{grid-template-columns:minmax(0,1fr) 300px!important}
@@ -3353,7 +3353,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.101.0 · Ocean HUD 2.0 · Dive Performance 1.0 · Direct APK Update 1.0 · Search Fix · Rank Turbo 1.0 · Native Brand 0.2 · Android Shell 0.1 · App Foundation 1.0 · Cross-Genre Bridge 1.0 · Relation Trust 3.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.102.0 · Ocean HUD 2.0 · Dive Performance 1.0 · Direct APK Update 1.0 · Search Fix · Rank Turbo 1.0 · Native Brand 0.2 · Android Shell 0.1 · App Foundation 1.0 · Cross-Genre Bridge 1.0 · Relation Trust 3.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -7907,7 +7907,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:(window.VocaDiveUpdater&&window.VocaDiveUpdater.version)||document.documentElement.dataset.vocaUi||"39.101.0",
+    version:(window.VocaDiveUpdater&&window.VocaDiveUpdater.version)||document.documentElement.dataset.vocaUi||"39.102.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -8090,14 +8090,18 @@ function pushProducerCredit37(map,name,source,role,priority,id){
 function vocadbProducerList37(item){
   const out=new Map();
   for(const a of (Array.isArray(item?.artists)?item.artists:[])){
-    const cats=[a?.categories,a?.effectiveRoles,a?.roles,a?.role].filter(Boolean).join(" ");
+    const name=vocadbArtistName37(a);if(!name)continue;
+    const artistType=String(a?.artist?.artistType||a?.artistType||"");
+    const cats=[a?.categories,a?.effectiveRoles,a?.roles,a?.role,artistType].filter(Boolean).join(" ");
+    const known=PRODUCER_KNOWN_MAP37.has(normalizeSourceTag37(name));
+    const voiceRole=/Vocalist|VoiceSynthesizer|Vocaloid|UTAU|SynthesizerV|CeVIO|VoiceProvider/i.test(cats);
     let role="",priority=0;
     if(/Producer/i.test(cats)){role="Producer";priority=100}
     else if(/Composer|Music|作曲/i.test(cats)){role="Composer";priority=94}
     else if(/Arranger|Arrange|編曲/i.test(cats)){role="Arranger";priority=82}
     else if(/Lyricist|Lyrics|作詞/i.test(cats)){role="Lyricist";priority=72}
+    else if(!voiceRole&&(known||/(?:P|Ｐ)$/u.test(name))){role="Producer";priority=76}
     else continue;
-    const name=vocadbArtistName37(a);if(!name)continue;
     const id=Number(a?.artist?.id||a?.id)||0;
     pushProducerCredit37(out,name,"VocaDB",role,priority,id)
   }
@@ -8197,11 +8201,50 @@ async function inferProducerFromSibling37(song){
   }catch(_){}
   return[]
 }
-function producerResolveCacheKey37(id){return "vsa37ProducerPV:"+String(id||"").toLowerCase()+":v3"}
+function producerResolveCacheKey37(id){return "vsa37ProducerPV:"+String(id||"").toLowerCase()+":v4"}
 async function fetchExactNicoSong37(song){
   // Niconico Search API의 _targets에는 contentId를 사용할 수 없다.
   // 발굴 후보는 이미 contentId/title/description/tags를 포함하므로 기존 검색 행을 그대로 사용한다.
   return song;
+}
+function vocadbSongTitle37(item){return String(item?.name||item?.defaultName||item?.additionalNames||"").trim()}
+function vocadbPvHasNico37(item,id){
+  id=String(id||"").toLowerCase();
+  return (Array.isArray(item?.pvs)?item.pvs:[]).some(function(p){
+    return /NicoNico/i.test(String(p?.service||p?.serviceName||""))&&String(p?.pvId||p?.id||"").toLowerCase()===id
+  })
+}
+function producerTitleScore37(item,song,id){
+  var a=normalizeSourceTag37(vocadbSongTitle37(item)),b=normalizeSourceTag37(song&&song.title||"");
+  var score=vocadbPvHasNico37(item,id)?1000:0;
+  if(a&&b){
+    if(a===b)score+=180;
+    else if(a.includes(b)||b.includes(a))score+=105;
+    else{
+      var short=a.length<b.length?a:b,long=a.length<b.length?b:a;
+      if(short.length>=4&&long.includes(short))score+=70
+    }
+  }
+  return score
+}
+async function fetchVocadbProducerFallback37(song,id){
+  var title=String(song&&song.title||"").replace(/[【\[（(][^】\]）)]{0,50}[】\]）)]/g," ").replace(/\s+/g," ").trim();
+  if(!title)return[];
+  var ctl=null,timer=0;
+  try{
+    var u=new URL("https://vocadb.net/api/songs");
+    u.searchParams.set("query",title);
+    u.searchParams.set("fields","Artists,PVs,Names,Tags");
+    u.searchParams.set("maxResults","8");
+    u.searchParams.set("lang","Default");
+    ctl=new AbortController();timer=setTimeout(function(){try{ctl.abort()}catch(_){}},4500);
+    var r=await fetch(u.toString(),{signal:ctl.signal,headers:{"Accept":"application/json"}});
+    if(!r.ok)return[];
+    var payload=await r.json(),items=Array.isArray(payload)?payload:(Array.isArray(payload?.items)?payload.items:[]);
+    items=items.slice().sort(function(a,b){return producerTitleScore37(b,song,id)-producerTitleScore37(a,song,id)});
+    if(!items.length||producerTitleScore37(items[0],song,id)<70)return[];
+    return vocadbProducerList37(items[0]).map(function(p){return Object.assign({},p,{source:(p.source||"VocaDB")+" · 제목/PV 보강"})})
+  }catch(_){return[]}finally{if(timer)clearTimeout(timer)}
 }
 async function resolveSongProducers37(song,opts){
   opts=opts||{};
@@ -8212,7 +8255,8 @@ async function resolveSongProducers37(song,opts){
       if(cached&&Array.isArray(cached.producers)&&cached.producers.length&&age<2592000000){
         rememberProducerFamily37(song,cached.producers);return cached.producers
       }
-      if(cached&&Array.isArray(cached.producers)&&!cached.producers.length&&age<10800000){
+      // 빈 결과는 오래 붙잡지 않는다. 예전 음수 캐시 때문에 P명이 한동안 계속 비는 현상을 줄인다.
+      if(cached&&Array.isArray(cached.producers)&&!cached.producers.length&&age<1800000){
         var famCached=cachedProducerFamily37(song);if(famCached.length)return famCached
       }
     }catch(_){}
@@ -8224,21 +8268,26 @@ async function resolveSongProducers37(song,opts){
   // 발굴 모드에서는 VocaDB 왕복을 생략해 수백 곡 직렬 조회를 막는다.
   const strongLocal=[...merged.values()].some(function(p){return Number(p.priority||0)>=88});
   if(!(opts.fast===true&&strongLocal)&&/^(sm|nm|so)\d+$/i.test(id)){
-    let ctl=null,timer=0;
+    let ctl=null,timer=0,item=null;
     try{
       const u=new URL("https://vocadb.net/api/songs/byPv");
       u.searchParams.set("pvService","NicoNicoDouga");
       u.searchParams.set("pvId",id);
-      u.searchParams.set("fields","Artists");
-      u.searchParams.set("lang","Japanese");
+      u.searchParams.set("fields","Artists,PVs,Names,Tags,WebLinks");
+      u.searchParams.set("lang","Default");
       ctl=new AbortController();
       timer=setTimeout(function(){try{ctl.abort()}catch(_){}},4500);
       const r=await fetch(u.toString(),{signal:ctl.signal,headers:{"Accept":"application/json"}});
       if(r.ok){
-        const item=await r.json();
+        item=await r.json();
         vocadbProducerList37(item).forEach(function(p){pushProducerCredit37(merged,p.name,p.source,p.role,p.priority,p.id)})
       }
     }catch(_){}finally{if(timer)clearTimeout(timer)}
+    // byPv가 없거나 Artist role 메타데이터가 빈 곡은 제목 + 원본 PV를 한 번 더 교차 확인한다.
+    if(!merged.size&&opts.fast!==true){
+      const rescue=await fetchVocadbProducerFallback37(nicoSong,id);
+      rescue.forEach(function(p){pushProducerCredit37(merged,p.name,p.source,p.role,p.priority,p.id)})
+    }
   }
   let producers=[...merged.values()].sort(function(a,b){
     const an=a.nicoName?1:0,bn=b.nicoName?1:0;
@@ -9687,7 +9736,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.101.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
+var VER="39.102.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -10189,6 +10238,24 @@ function leaveWatchRoute399(){
     return false
   })
 }
+var watchRouteHandoff39102=false;
+window.addEventListener("vsa:route-change",function(e){
+  var route=String(e&&e.detail&&e.detail.route||window.__VSA37_CURRENT_ROUTE||"");
+  if(!route||route==="songDetail39"||watchRouteHandoff39102)return;
+  var rawFrame=document.getElementById("v399InlineFrame"),detail=document.querySelector('[data-tool-view="songDetail39"]');
+  var ownedInline=false;
+  try{
+    var st=window.VSANicoPlayer&&VSANicoPlayer.state?VSANicoPlayer.state():null;
+    ownedInline=!!(st&&st.currentId&&st.inline)
+  }catch(_){}
+  if(!rawFrame&&!ownedInline)return;
+  if(rawFrame&&detail&&!detail.contains(rawFrame)&&!ownedInline)return;
+  watchRouteHandoff39102=true;
+  Promise.resolve(handoffWatchToMini399()).then(function(ok){
+    if(!ok&&rawFrame)stopWatchInline399(true)
+  }).finally(function(){setTimeout(function(){watchRouteHandoff39102=false},0)})
+});
+
 function ensureWatch399(){
   var song=window.__VSA39_DETAIL_SONG;if(!song)return;
   var p=document.querySelector('[data-tool-view="songDetail39"]');if(!p||!p.classList.contains("active"))return;
@@ -10206,12 +10273,71 @@ function nicoEmbed399(id,autoplay){
   return "https://embed.nicovideo.jp/watch/"+encodeURIComponent(id)+"?"+q
 }
 function vocaCacheGet399(id){
-  try{var x=JSON.parse(localStorage.getItem("vsa399.vocadb."+id)||"null");if(x&&Date.now()-x.at<7*86400000)return x.data}catch(e){}return null
+  try{var x=JSON.parse(localStorage.getItem("vsa399.vocadb2."+id)||"null");if(x&&Date.now()-x.at<7*86400000)return x.data}catch(e){}return null
 }
-function vocaCacheSet399(id,data){try{localStorage.setItem("vsa399.vocadb."+id,JSON.stringify({at:Date.now(),data:data}))}catch(e){}}
+function vocaCacheSet399(id,data){try{localStorage.setItem("vsa399.vocadb2."+id,JSON.stringify({at:Date.now(),data:data}))}catch(e){}}
+function htmlText399(v){
+  var s=String(v==null?"":v);
+  if(!s)return"";
+  s=s.replace(/<br\s*\/?\s*>/gi,"\n").replace(/<\/(?:p|div|li|section|article|h[1-6])>/gi,"\n").replace(/<[^>]+>/g," ");
+  try{var ta=document.createElement("textarea");ta.innerHTML=s;s=ta.value}catch(_){}
+  return s.replace(/[\u200B-\u200D\uFEFF]/g,"").replace(/\r/g,"").replace(/[ \t]+\n/g,"\n").replace(/\n[ \t]+/g,"\n").replace(/[ \t]{2,}/g," ").replace(/\n{3,}/g,"\n\n").trim()
+}
+function cleanDescription399(v){
+  var s=htmlText399(v);
+  if(!s||s==="[object Object]"||/^[\[{][\s\S]{0,800}[\]}]$/.test(s))return"";
+  s=s.replace(/(?:^|\n)\s*(?:動画説明文|description)\s*[:：]\s*/ig,"\n").trim();
+  return s.length>6000?s.slice(0,6000)+"…":s
+}
+function watchDescription399(song,entry){
+  // VocaDB의 번역/편집 설명보다 실제 투고자가 적은 니코동 설명을 우선한다.
+  var nico=cleanDescription399(song&&song.description),voca=cleanDescription399(entry&&entry.description);
+  if(nico)return{text:nico,source:"니코동 투고문"};
+  if(voca)return{text:voca,source:"VocaDB"};
+  return{text:"설명 정보가 없습니다.",source:""}
+}
 function lyricValue399(x){return String(x&&((x.value!=null&&x.value)||x.text||x.lyrics||x.content)||"").trim()}
-function lyricLabel399(x,i){return String(x&&(x.cultureCode||x.language||x.translationType||x.name)||("가사 "+(i+1)))}
+function lyricLabel399(x,i){
+  var provider=lyricProvider399(x),label=String(x&&(x.cultureCode||x.language||x.translationType||x.name)||"").trim();
+  return label?(provider+" · "+label):(provider+" 가사 "+(i+1))
+}
 function lyricSource399(x){return String(x&&(x.source||x.sourceUrl||x.url)||"")}
+function lyricProvider399(x){var s=lyricSource399(x);return String(x&&x.__provider||(/piapro\.jp/i.test(s)?"Piapro":"VocaDB"))}
+function piaproLinks399(entry,song){
+  var out=new Set();
+  function add(v){
+    String(v||"").match(/https?:\/\/(?:www\.)?piapro\.jp\/t\/[A-Za-z0-9_-]+\/?/ig)?.forEach(function(u){out.add(u.replace(/[),.、。]+$/,""))})
+  }
+  (Array.isArray(entry&&entry.webLinks)?entry.webLinks:[]).forEach(function(x){add(x&&x.url);add(x&&x.description)});
+  (Array.isArray(entry&&entry.lyrics)?entry.lyrics:[]).forEach(function(x){add(lyricSource399(x))});
+  add(entry&&entry.description);add(song&&song.description);
+  return [...out].slice(0,3)
+}
+function piaproCacheKey399(url){return "vsa399.piapro."+String(url||"").replace(/[^A-Za-z0-9]/g,"_").slice(-120)}
+async function fetchPiaproLyric399(url){
+  var key=piaproCacheKey399(url);
+  try{var cached=JSON.parse(localStorage.getItem(key)||"null");if(cached&&Date.now()-cached.at<7*86400000&&cached.row)return cached.row}catch(_){}
+  var base="";try{base=typeof relayBase==="function"?relayBase():""}catch(_){}
+  if(!base)return null;
+  try{
+    var ctl=new AbortController(),timer=setTimeout(function(){try{ctl.abort()}catch(_){}},5000);
+    var r=await fetch(base+"/piapro/lyrics?url="+encodeURIComponent(url),{signal:ctl.signal,headers:{"Accept":"application/json"}});
+    clearTimeout(timer);
+    if(!r.ok)return null;
+    var d=await r.json();if(!d||!d.ok||!String(d.lyrics||"").trim())return null;
+    var row={value:String(d.lyrics).trim(),source:String(d.url||url),name:"원문",__provider:"Piapro"};
+    try{localStorage.setItem(key,JSON.stringify({at:Date.now(),row:row}))}catch(_){}
+    return row
+  }catch(_){return null}
+}
+async function fetchPiaproLyrics399(entry,song){
+  var links=piaproLinks399(entry,song),rows=[];
+  for(var i=0;i<links.length;i++){
+    var row=await fetchPiaproLyric399(links[i]);if(row)rows.push(row);
+    if(rows.length>=2)break
+  }
+  return rows
+}
 function relatedVocaSongs399(payload,currentId){
   var found=[],seen=new Set([String(currentId||"")]);
   function addItem(raw){
@@ -10228,7 +10354,7 @@ async function fetchWatchMeta399(song){
   var cached=vocaCacheGet399(song.contentId);if(cached)return cached;
   var out={entry:null,related:null};
   try{
-    var u=new URL("https://vocadb.net/api/songs/byPv");u.searchParams.set("pvService","NicoNicoDouga");u.searchParams.set("pvId",song.contentId);u.searchParams.set("fields","Lyrics,Artists,PVs,ThumbUrl,Tags");u.searchParams.set("lang","Default");
+    var u=new URL("https://vocadb.net/api/songs/byPv");u.searchParams.set("pvService","NicoNicoDouga");u.searchParams.set("pvId",song.contentId);u.searchParams.set("fields","Lyrics,Artists,PVs,ThumbUrl,Tags,WebLinks,Names");u.searchParams.set("lang","Default");
     var r=await fetch(u.toString(),{headers:{Accept:"application/json"}});if(r.ok)out.entry=await r.json()
   }catch(e){}
   if(out.entry&&out.entry.id){
@@ -10303,12 +10429,17 @@ function selectLyric399(index){
   var rows=window.__VSA399_LYRICS||[],x=rows[+index||0],text=document.getElementById("v399LyricText"),src=document.getElementById("v399LyricSource");if(!x||!text)return;
   text.textContent=lyricValue399(x)||"표시할 가사 내용이 없습니다.";
   document.querySelectorAll("[data-v399-lyric]").forEach(function(b){b.classList.toggle("active",+b.dataset.v399Lyric===+index)});
-  if(src){var s=lyricSource399(x);src.innerHTML=s?('VocaDB 등록 가사 · 출처: '+( /^https?:\/\//i.test(s)?'<a href="'+E(s)+'" target="_blank" rel="noopener">'+E(s)+'</a>':E(s))):'VocaDB 등록 가사'}
+  if(src){
+    var s=lyricSource399(x),provider=lyricProvider399(x);
+    src.innerHTML=s?(E(provider)+" 등록 가사 · 출처: "+(/^https?:\/\//i.test(s)?'<a href="'+E(s)+'" target="_blank" rel="noopener">'+E(s)+'</a>':E(s))):(E(provider)+" 등록 가사")
+  }
 }
-function renderLyrics399(entry){
-  var box=document.getElementById("v399Lyrics");if(!box)return;var rows=(entry&&entry.lyrics||[]).filter(function(x){return lyricValue399(x)});
+function renderLyrics399(entry,extraRows){
+  var box=document.getElementById("v399Lyrics");if(!box)return;
+  var rows=(Array.isArray(entry&&entry.lyrics)?entry.lyrics:[]).concat(Array.isArray(extraRows)?extraRows:[]).filter(function(x){return lyricValue399(x)});
+  var seen=new Set();rows=rows.filter(function(x){var k=lyricValue399(x).replace(/\s+/g,"").slice(0,500);if(!k||seen.has(k))return false;seen.add(k);return true});
   window.__VSA399_LYRICS=rows;
-  if(!rows.length){box.innerHTML='<div class="v399-empty">VocaDB에 표시 가능한 가사가 등록되어 있지 않습니다.</div>';return}
+  if(!rows.length){box.innerHTML='<div class="v399-empty">VocaDB·Piapro에서 표시 가능한 가사를 찾지 못했습니다.</div>';return}
   box.innerHTML='<div class="v399-lyric-tabs">'+rows.map(function(x,i){return'<button type="button" data-v399-lyric="'+i+'">'+E(lyricLabel399(x,i))+'</button>'}).join("")+'</div><pre class="v399-lyric-text" id="v399LyricText"></pre><div class="v399-lyric-source" id="v399LyricSource"></div>';
   selectLyric399(0)
 }
@@ -10319,13 +10450,16 @@ async function hydrateWatch399(song){
   ]);
   if(!window.__VSA39_DETAIL_SONG||window.__VSA39_DETAIL_SONG.contentId!==song.contentId)return;
   var meta=pair[0]||{entry:null,related:null},remote=pair[1]||[];
-  renderLyrics399(meta.entry);
+  var piapro=await fetchPiaproLyrics399(meta.entry,song).catch(function(){return[]});
+  if(!window.__VSA39_DETAIL_SONG||window.__VSA39_DETAIL_SONG.contentId!==song.contentId)return;
+  renderLyrics399(meta.entry,piapro);
   var extra=relatedVocaSongs399(meta.related,song.contentId);
   extra=await enrichRelatedViews399(extra).catch(function(){return extra});
   if(!window.__VSA39_DETAIL_SONG||window.__VSA39_DETAIL_SONG.contentId!==song.contentId)return;
   renderWatchRelated399(song,extra,remote,true);
-  var about=document.getElementById("v399AboutText");
-  if(about&&meta.entry){about.textContent=meta.entry.description||song.description||"설명 정보가 없습니다."}
+  var about=document.getElementById("v399AboutText"),aboutSource=document.getElementById("v399AboutSource"),desc=watchDescription399(song,meta.entry);
+  if(about)about.textContent=desc.text;
+  if(aboutSource)aboutSource.textContent=desc.source?("출처 · "+desc.source):""
 }
 function savedPlayerVolume3926(){
   try{
@@ -10381,8 +10515,8 @@ function renderSongDetail39(song,autoplay){
     '<aside class="v399-side v3920-side"><div class="v399-side-head"><div><h3>다음 곡</h3><small>비슷한 원곡 위주</small></div><small id="v399RelatedCount"></small></div><div class="v399-related-list" id="v399Related"></div></aside>'+
   '</div>'+
   '<div class="v3920-below">'+
-    '<details class="v3920-fold"><summary><span><b>곡 설명</b><small>니코동·VocaDB에 등록된 설명</small></span><i>＋</i></summary><div class="v3920-fold-body"><p id="v399AboutText">'+E(song.description||"설명 정보를 확인하는 중…")+'</p></div></details>'+
-    '<details class="v3920-fold"><summary><span><b>가사</b><small>VocaDB에 등록된 경우 표시</small></span><i>＋</i></summary><div class="v3920-fold-body" id="v399Lyrics"><div class="v399-empty">가사를 확인하는 중…</div></div></details>'+
+    '<details class="v3920-fold"><summary><span><b>곡 설명</b><small>투고자 설명을 우선 표시</small></span><i>＋</i></summary><div class="v3920-fold-body"><p id="v399AboutText">'+E(watchDescription399(song,null).text)+'</p><small class="v399-about-source" id="v399AboutSource">'+E(watchDescription399(song,null).source?("출처 · "+watchDescription399(song,null).source):"")+'</small></div></details>'+
+    '<details class="v3920-fold"><summary><span><b>가사</b><small>VocaDB · Piapro에 등록된 경우 표시</small></span><i>＋</i></summary><div class="v3920-fold-body" id="v399Lyrics"><div class="v399-empty">가사를 확인하는 중…</div></div></details>'+
   '</div>';
   renderWatchRelated399(song,[],[],false);
   syncWatchVolume3926(p);
@@ -11452,17 +11586,17 @@ function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
   var base;
-  if(name==="detective")base=seq(["./detective-v11.js?v=39.101.0","./detective-v12.js?v=39.101.0","./detective-v13.js?v=39.101.0","./detective-v14.js?v=39.101.0","./detective-v16.js?v=39.101.0"]);
-  else if(name==="personal")base=seq(["./organizer-v22.js?v=39.101.0","./smart-v23.js?v=39.101.0","./playlist-v24.js?v=39.101.0"]);
-  else if(name==="discovery")base=load("./discovery-v20.js?v=39.101.0");
-  else if(name==="homeData")base=load("./vocalo-home-v28.js?v=39.101.0");
-  else if(name==="universe")base=load("./universe-search-v28.js?v=39.101.0");
-  else if(name==="player")base=load("./nico-player-v32.js?v=39.101.0");
-  else if(name==="deviceSync")base=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.101.0");
-  else if(name==="pwa")base=load("./pwa-v21.js?v=39.101.0");
+  if(name==="detective")base=seq(["./detective-v11.js?v=39.102.0","./detective-v12.js?v=39.102.0","./detective-v13.js?v=39.102.0","./detective-v14.js?v=39.102.0","./detective-v16.js?v=39.102.0"]);
+  else if(name==="personal")base=seq(["./organizer-v22.js?v=39.102.0","./smart-v23.js?v=39.102.0","./playlist-v24.js?v=39.102.0"]);
+  else if(name==="discovery")base=load("./discovery-v20.js?v=39.102.0");
+  else if(name==="homeData")base=load("./vocalo-home-v28.js?v=39.102.0");
+  else if(name==="universe")base=load("./universe-search-v28.js?v=39.102.0");
+  else if(name==="player")base=load("./nico-player-v32.js?v=39.102.0");
+  else if(name==="deviceSync")base=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.102.0");
+  else if(name==="pwa")base=load("./pwa-v21.js?v=39.102.0");
   else if(name==="v33")base=Promise.all([ensure("personal"),ensure("discovery")]).then(function(rows){
     if(rows.some(function(x){return x===false}))return false;
-    return seq(["./voca-app-v33.js?v=39.101.0","./voca-app-v33-1.js?v=39.101.0","./voca-app-v33-2.js?v=39.101.0","./voca-app-v33-3.js?v=39.101.0"]);
+    return seq(["./voca-app-v33.js?v=39.102.0","./voca-app-v33-1.js?v=39.102.0","./voca-app-v33-2.js?v=39.102.0","./voca-app-v33-3.js?v=39.102.0"]);
   });
   else base=Promise.resolve(false);
   var job=Promise.resolve(base).then(function(v){
@@ -11510,13 +11644,13 @@ if("requestIdleCallback" in window)requestIdleCallback(function(){ensure("pwa")}
 else setTimeout(function(){ensure("pwa")},12000);
 })();
 </script>
-<script src="./device-sync-v3938.js?v=39.101.0"></script>
-<script src="./app-platform-v3962.js?v=39.101.0"></script>
-<script src="./entitlements-v3962.js?v=39.101.0"></script>
-<script src="./account-v3962.js?v=39.101.0"></script>
-<script src="./native-shell-v3963.js?v=39.101.0"></script>
-<script src="./app-update-v3966.js?v=39.101.0"></script>
-<script src="./i18n-v3918.js?v=39.101.0"></script>\n<script src="./search-live-v3969.js?v=39.101.0"></script>
+<script src="./device-sync-v3938.js?v=39.102.0"></script>
+<script src="./app-platform-v3962.js?v=39.102.0"></script>
+<script src="./entitlements-v3962.js?v=39.102.0"></script>
+<script src="./account-v3962.js?v=39.102.0"></script>
+<script src="./native-shell-v3963.js?v=39.102.0"></script>
+<script src="./app-update-v3966.js?v=39.102.0"></script>
+<script src="./i18n-v3918.js?v=39.102.0"></script>\n<script src="./search-live-v3969.js?v=39.102.0"></script>
 
 <style id="v3946DivePathStyle">
 /* v39.46 · Dive Path 1.0 — graph-free guided discovery */
@@ -14521,5 +14655,5 @@ body.mr74-transitioning{overflow:hidden!important}
 }
 </style>
 
-<script src="./vocadive-ui-v3980.js?v=39.101.0"></script>\n</body>
+<script src="./vocadive-ui-v3980.js?v=39.102.0"></script>\n</body>
 </html>
