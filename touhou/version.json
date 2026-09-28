@@ -1,7 +1,13 @@
 {
-  "version": "0.1.0",
+  "version": "0.2.0",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-09-28",
-  "dataset": "official-game-originals-seed"
+  "dataset": "original+arrangement-v2",
+  "features": [
+    "unified-catalog",
+    "lineage",
+    "in-app-video",
+    "mini-player"
+  ]
 }
