@@ -1,6 +1,6 @@
 {
   "name": "vocadive",
-  "version": "39.78.0",
+  "version": "39.79.0",
   "private": true,
   "releaseChannel": "direct",
   "description": "VocaDive native app foundation for Android/iOS packaging.",
