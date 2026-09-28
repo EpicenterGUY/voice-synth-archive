@@ -106,8 +106,8 @@ function toTrack(item){
     remote:true
   };
 }
-async function fetchJson(url){
-  const hit=cache.get(url);if(hit&&Date.now()-hit.at<TTL)return hit.data;
+async function fetchJson(url,force=false){
+  const hit=cache.get(url);if(!force&&hit&&Date.now()-hit.at<TTL)return hit.data;
   const ctl=new AbortController();const timer=setTimeout(()=>ctl.abort(),12000);
   try{
     const r=await fetch(url,{signal:ctl.signal,headers:{Accept:"application/json"}});
@@ -135,7 +135,7 @@ async function search(opts={}){
   if(opts.onlyWithPvs)p.set("onlyWithPvs","true");
   let url=API+"/songs?"+p.toString(),d,typedOk=true;
   try{
-    d=await fetchJson(url);
+    d=await fetchJson(url,!!opts.force);
   }catch(e){
     // Some TouhouDB deployments are stricter about multi-value SongType flags.
     // Fall back to an untyped page and classify it client-side instead of losing the whole catalog.
@@ -143,8 +143,9 @@ async function search(opts={}){
     typedOk=false;
     p.delete("songTypes");
     url=API+"/songs?"+p.toString();
-    d=await fetchJson(url);
+    d=await fetchJson(url,!!opts.force);
   }
+  const consumed=arr(d?.items).length;
   let items=arr(d?.items).map(toTrack);
   if(opts.mode==="original")items=items.filter(x=>x.type==="original");
   if(opts.mode==="arrangement")items=items.filter(x=>x.type==="arrangement");
@@ -153,7 +154,8 @@ async function search(opts={}){
     total:Number(d?.totalCount)||items.length,
     start:Number(opts.start)||0,
     raw:d,
-    typed:!st||typedOk
+    typed:!st||typedOk,
+    consumed
   };
 }
 async function hydrate(id){
@@ -162,11 +164,12 @@ async function hydrate(id){
   const d=await fetchJson(API+"/songs/"+n+"?fields=AdditionalNames,Artists,Names,PVs,Tags,ThumbUrl,Albums,MainPicture,WebLinks&lang=Japanese");
   return toTrack(d);
 }
-async function status(){
+async function status(opts={}){
   try{
-    const d=await search({start:0,maxResults:1,sort:"RatingScore"});
+    const d=await search({start:0,maxResults:1,sort:"RatingScore",force:!!opts.force});
     return {ok:true,total:d.total};
   }catch(e){return{ok:false,error:String(e?.message||e)}}
 }
-window.TouhouCatalog={search,hydrate,status,toTrack,apiBase:API};
+function clearCache(){cache.clear()}
+window.TouhouCatalog={search,hydrate,status,clearCache,toTrack,apiBase:API};
 })();
