@@ -125,3 +125,11 @@
 - 화면 DOM에는 60곡씩만 표시하지만 검색/통계 데이터는 전체 메타 인덱스를 사용
 - 전체 샤드는 별도 Cache Storage에 보관하여 앱 업데이트 후에도 재다운로드를 최소화
 - 전체 데이터셋 갱신 시 샤드 캐시 자동 교체
+
+
+## v0.8.1 — Full-index speed / truthful media total
+
+- 전수 수집 병렬도 3 → 6, 페이지 대기 100ms → 40ms
+- 전수 샤드 생성 전에는 현재 브라우저 캐시 300~400곡을 재생 가능 전체값으로 표시하지 않음
+- 전수 샤드가 없을 때는 TouhouDB 전체 PV 등록곡 수를 임시 모집단으로 표시
+- 전수 샤드가 완성되면 YouTube / NicoNico / SoundCloud / Piapro / Bilibili / Bandcamp 화이트리스트 기준 정확한 재생 후보 수로 자동 교체

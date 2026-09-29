@@ -38,7 +38,7 @@ async function boot(){
     setView("home");
     renderLocalFirst();
     bind();
-    if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js?v=0.8.0").then(r=>r.update()).catch(()=>{});
+    if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js?v=0.8.1").then(r=>r.update()).catch(()=>{});
     connectFullDataset();
     await connectRemote();
   }catch(err){
@@ -166,13 +166,15 @@ async function connectRemote(){
 }
 async function loadRemoteCounts(){
   try{
-    const [orig,arr]=await Promise.all([
+    const [orig,arr,pv]=await Promise.all([
       catalog.search({mode:"original",start:0,maxResults:1,sort:"RatingScore"}),
-      catalog.search({mode:"arrangement",start:0,maxResults:1,sort:"RatingScore"})
+      catalog.search({mode:"arrangement",start:0,maxResults:1,sort:"RatingScore"}),
+      catalog.search({start:0,maxResults:1,sort:"RatingScore",onlyWithPvs:true})
     ]);
     state.remote.counts={
       original:orig.typed?(orig.total||0):0,
-      arrangement:arr.typed?(arr.total||0):0
+      arrangement:arr.typed?(arr.total||0):0,
+      pv:Number(pv.total)||0
     };
     updateStats();
   }catch(e){}
@@ -399,13 +401,13 @@ function updateStats(){
   const localOrig=state.localOriginals.length,localArr=state.localArrangements.length;
   const originalCount=meta?.counts?.original||state.remote.counts.original||loaded.filter(x=>x.type==="original").length||localOrig;
   const arrangementCount=meta?.counts?.arrangement||state.remote.counts.arrangement||loaded.filter(x=>x.type==="arrangement").length||localArr;
-  const mediaCount=meta?.counts?.mediaCandidates??null;
+  const mediaCount=meta?.counts?.mediaCandidates??state.remote.counts.pv??null;
   $("#statOriginal").textContent=fmt(originalCount);
   $("#statArrangement").textContent=fmt(arrangementCount);
   $("#statMedia").textContent=mediaCount===null?"집계 중":fmt(mediaCount);
   $("#statOriginalMeta").textContent=meta?"전체 인덱스":"TouhouDB 원곡 분류";
   $("#statArrangementMeta").textContent=meta?"전체 인덱스":"TouhouDB 어레인지 분류";
-  $("#statMediaMeta").textContent=meta?"전체 "+fmt(meta.indexed)+"곡에서 PV 후보 확인":"전수 인덱스 생성 후 확정";
+  $("#statMediaMeta").textContent=meta?"허용 PV 전수 집계":state.remote.counts.pv?"TouhouDB 전체 PV 등록곡 · 화이트리스트 검증 전":"전수 인덱스 생성 후 확정";
   updateCatalogTotal();
 }
 function updateCatalogTotal(){
