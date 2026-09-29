@@ -288,6 +288,7 @@ function currentPool(){
   return pool;
 }
 function renderCatalog(title){
+  refreshRanks();
   renderFilters();
   let list=currentPool();
   if(state.filter==="영상 있음")list=list.filter(t=>player.playable(t));
@@ -554,7 +555,9 @@ function startDive(t,opts={}){
   state.selected=t;
   pushHistory(t.id,t);
   setView("dive");
-  const related=relations(t).slice(0,9);
+  refreshRanks();
+  const mobile=window.matchMedia("(max-width:860px)").matches;
+  const related=relations(t).slice(0,mobile?6:9);
   const origin=originalTracks(t)[0]||null;
   const depthMeters=state.diveDepth*180;
   const stage=$("#diveStage"),empty=$("#diveEmpty");
@@ -565,11 +568,13 @@ function startDive(t,opts={}){
     : "";
   const playAction=player.playable(t)?'<button data-current-play="'+escAttr(t.id)+'">▶ 재생</button>':"";
   const originAction=t.type==="arrangement"?'<button class="origin-jump" data-current-origin="'+escAttr(t.id)+'">↖ 원곡</button>':"";
+  const currentRank=trackRank(t);
   stage.innerHTML=originNode+
-    '<article class="dive-current"><small>CURRENT DEPTH · '+depthMeters+'m</small><h3>'+esc(t.title)+'</h3><p>'+esc(t.type==="arrangement"?(t.circle||"Arrangement"):(t.work||t.artistString||"Original"))+'</p><div class="dive-current-actions">'+playAction+originAction+'<button data-current-open="'+escAttr(t.id)+'">상세</button></div></article>'+
+    '<article class="dive-current"><small>CURRENT DEPTH · '+depthMeters+'m · 종합 #'+currentRank.rank+'</small><h3>'+esc(t.title)+'</h3><p>'+esc(t.type==="arrangement"?(t.circle||"Arrangement"):(t.work||t.artistString||"Original"))+'</p><div class="dive-current-actions">'+playAction+originAction+'<button data-current-open="'+escAttr(t.id)+'">상세</button></div></article>'+
     related.map((r,i)=>{
       const p=positions[i]||[50,88];
-      return '<button class="dive-node" style="--x:'+p[0]+'%;--y:'+p[1]+'%" data-rel="'+escAttr(r.track.id)+'"><small>'+esc(r.reason)+'</small><strong>'+esc(r.track.title)+'</strong><span>'+esc(r.track.type==="arrangement"?(r.track.circle||""):(r.track.work||r.track.artistString||""))+'</span></button>';
+      const rank=trackRank(r.track);
+      return '<button class="dive-node" style="--x:'+p[0]+'%;--y:'+p[1]+'%" data-rel="'+escAttr(r.track.id)+'"><small>'+esc(r.reason)+' · 종합 #'+rank.rank+'</small><strong>'+esc(r.track.title)+'</strong><span>'+esc(r.track.type==="arrangement"?(r.track.circle||""):(r.track.work||r.track.artistString||""))+'</span></button>';
     }).join("")+
     '<div class="dive-depth-chip">DIVE '+(state.diveDepth+1)+' · '+depthMeters+'m · '+related.length+' SIGNALS</div>';
   stage.querySelectorAll("[data-rel]").forEach(b=>b.onclick=()=>startDive(byId(b.dataset.rel),{continue:true}));
@@ -710,7 +715,7 @@ function renderIceberg(){
     return '<section class="ice-layer" style="--ice-a:'+row.layer.a+';--ice-b:'+row.layer.b+'">'+
       '<div class="ice-layer-head"><div><small>LAYER '+(i+1)+'</small><strong>'+row.layer.name+'</strong><span>'+row.layer.sub+'</span></div>'+
       '<span>'+(archiveTracks?'전체 환산 '+fmt(row.archiveCount)+'곡 · ':'')+'표본 '+fmt(row.items.length)+'곡 · '+metric.label+' '+statValue(lo)+'–'+statValue(hi)+'</span></div>'+
-      '<div class="ice-tracks">'+display.map(t=>'<button class="ice-track" data-ice-dive="'+escAttr(t.id)+'"><b>'+esc(t.title)+'</b><small>'+esc(t.type==="arrangement"?(t.circle||"Arrangement"):(t.work||"Original"))+'</small><small class="ice-metric">'+esc(metric.label)+' · '+esc(statValue(icebergMetricValue(t)))+'</small>'+(t.type==="arrangement"?'<small class="ice-origin">↖ '+esc(originalNames(t)[0]||"원곡 연결 확인")+'</small>':'')+'</button>').join("")+'</div>'+
+      '<div class="ice-tracks">'+display.map(t=>{const rank=trackRank(t);return '<button class="ice-track" data-ice-dive="'+escAttr(t.id)+'"><span class="ice-rank">종합 #'+rank.rank+'</span><b>'+esc(t.title)+'</b><small>'+esc(t.type==="arrangement"?(t.circle||"Arrangement"):(t.work||"Original"))+'</small><small class="ice-metric">'+esc(metric.label)+' · '+esc(statValue(icebergMetricValue(t)))+'</small>'+(t.type==="arrangement"?'<small class="ice-origin">↖ '+esc(originalNames(t)[0]||"원곡 연결 확인")+'</small>':'')+'</button>'}).join("")+'</div>'+
       (row.items.length>display.length?'<div class="ice-layer-more">이 권역 '+fmt(row.items.length-display.length)+'곡 더 있음</div>':"")+
     '</section>';
   }).join("");
@@ -750,6 +755,24 @@ function searchBlob(t){
   const originals=originalNames(t).join(" "),artists=t.artists?Object.values(t.artists).flat().join(" "):"";
   return [t.title,...(t.aliases||[]),t.work,t.role,t.character,t.circle,t.album,t.artistString,artists,originals,...(t.moods||[])].filter(Boolean).join(" ").toLowerCase();
 }
+function overallRankScore(t){
+  const rating=Math.max(0,Number(t.ratingScore)||0);
+  const favorites=Math.max(0,Number(t.favoritedTimes)||0);
+  const hits=Math.max(0,Number(t.hitCount)||0);
+  const relationsCount=t.type==="original"?countChildren(t.id):originalIds(t).length;
+  return rating*4+Math.log10(favorites+1)*14+Math.log10(hits+1)*4+relationsCount*3+(player.playable(t)?4:0)+(t.touhoudbId?1:0);
+}
+function refreshRanks(){
+  const pool=dedupe([...state.known.values()]).sort((a,b)=>overallRankScore(b)-overallRankScore(a)||recommendScore(b)-recommendScore(a)||a.title.localeCompare(b.title,"ja"));
+  state.rankIndex=new Map(pool.map((t,i)=>[resolveId(t.id),{rank:i+1,score:overallRankScore(t)}]));
+  state.rankTotal=pool.length;
+}
+function trackRank(t){
+  if(!t)return{rank:"—",score:0,total:state.rankTotal||0};
+  if(!state.rankIndex.size||state.rankTotal!==state.known.size||!state.rankIndex.has(resolveId(t.id)))refreshRanks();
+  const row=state.rankIndex.get(resolveId(t.id))||{rank:"—",score:overallRankScore(t)};
+  return{...row,total:state.rankTotal};
+}
 function sortList(list,sort){
   if(sort==="year-desc")return [...list].sort((a,b)=>(b.year||0)-(a.year||0));
   if(sort==="year-asc")return [...list].sort((a,b)=>(a.year||9999)-(b.year||9999));
@@ -759,7 +782,7 @@ function sortList(list,sort){
 function recommendScore(t){return (Number(t.ratingScore)||0)*3+(Number(t.favoritedTimes)||0)*.08+(player.playable(t)?5:0)+(t.type==="arrangement"?2:0)+(t.originalIds?.length?3:0)+(t.moods?.length||0)*.2}
 function randomDive(){const pool=currentPool();if(pool.length)startDive(pool[Math.floor(Math.random()*pool.length)])}
 function snapshotTrack(t){
-  return{id:t.id,type:t.type,title:t.title,aliases:t.aliases||[],year:t.year||null,work:t.work||"",workId:t.workId||"",workIds:t.workIds||[],role:t.role||"",character:t.character||"",circle:t.circle||"",album:t.album||"",moods:t.moods||[],originalIds:t.originalIds||[],artists:t.artists||{},artistString:t.artistString||"",media:t.media||null,thumb:t.thumb||"",source:t.source||null,touhoudbId:t.touhoudbId||null,ratingScore:Number(t.ratingScore)||0,favoritedTimes:Number(t.favoritedTimes)||0,hitCount:Number(t.hitCount)||0,remote:!!t.remote};
+  return{id:t.id,type:t.type,title:t.title,aliases:t.aliases||[],year:t.year||null,work:t.work||"",workId:t.workId||"",workIds:t.workIds||[],role:t.role||"",character:t.character||"",circle:t.circle||"",album:t.album||"",moods:t.moods||[],originalIds:t.originalIds||[],artists:t.artists||{},artistString:t.artistString||"",media:t.media||null,mediaCandidates:t.mediaCandidates||[],mediaUnavailable:!!t.mediaUnavailable,thumb:t.thumb||"",source:t.source||null,touhoudbId:t.touhoudbId||null,ratingScore:Number(t.ratingScore)||0,favoritedTimes:Number(t.favoritedTimes)||0,hitCount:Number(t.hitCount)||0,remote:!!t.remote};
 }
 function persistSnapshot(t){
   if(!t)return;
