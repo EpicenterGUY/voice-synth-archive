@@ -1,6 +1,6 @@
 {
-  "version": "39.109.0",
+  "version": "39.110.0",
   "channel": "web",
-  "publishedAt": "2026-09-29T11:28:00+09:00",
-  "notes": "Adds a vertical Dive Log depth map for the current iceberg voyage, showing visited tiers and center songs, session-persisted route history, deepest point stats, and clickable rewind-to-stop navigation."
+  "publishedAt": "2026-09-29T11:38:00+09:00",
+  "notes": "Adds persistent saved expedition cards for Dive Log routes, route statistics including deepest tier, unique songs, average views and a heuristic exploration rarity score, plus replayable saved voyages that retrace tiers and center songs."
 }
