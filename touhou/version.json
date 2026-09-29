@@ -1,5 +1,5 @@
 {
-  "version": "0.9.0",
+  "version": "0.9.1",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-09-29",
@@ -78,6 +78,10 @@
     "popularity-rank",
     "original-influence-rank",
     "derivative-circle-album-impact",
-    "trusted-link-list"
+    "trusted-link-list",
+    "official-original-classification",
+    "fan-original-category",
+    "raw-song-type",
+    "official-original-count-fix"
   ]
 }
