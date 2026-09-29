@@ -173,3 +173,14 @@ body[data-view="dive"] .iceberg-ui{display:none!important}
   .dive-node{min-height:80px}
   .track-badges{gap:4px}.rank-badge,.type-badge,.media-badge{padding:3px 5px;font-size:6.5px}
 }
+
+/* v0.6.1 dive empty-state + archive-rank fixes */
+@media(max-width:860px){
+  body[data-view="dive"] .dive-ocean{min-height:560px!important}
+  body[data-view="dive"] .dive-stage:not([hidden]){min-height:500px}
+  body[data-view="dive"] .dive-empty{min-height:560px}
+}
+.rank-badge{white-space:nowrap}
+.detail-rank{flex-wrap:wrap}
+.detail-rank span{line-height:1.45}
+.catalog-footer{scroll-margin-bottom:110px}

@@ -35,7 +35,7 @@ async function boot(){
     setView("home");
     renderLocalFirst();
     bind();
-    if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js?v=0.6.0").then(r=>r.update()).catch(()=>{});
+    if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js?v=0.6.1").then(r=>r.update()).catch(()=>{});
     await connectRemote();
   }catch(err){
     console.error(err);
@@ -89,6 +89,15 @@ function bind(){
     if(e.key==="/"&&document.activeElement!==$("#searchInput")){e.preventDefault();$("#searchInput").focus();}
     if(e.key==="Escape"){closePanel();closeMenu();if(!player.shell.classList.contains("is-mini")&&!player.shell.hidden)player.minimize();}
   });
+  if("IntersectionObserver" in window){
+    const io=new IntersectionObserver(entries=>{
+      if(!entries.some(x=>x.isIntersecting))return;
+      if(!state.remote.available||state.remote.loading||state.remote.start>=state.remote.total)return;
+      if(!["home","discover","lineage"].includes(state.view))return;
+      loadRemote(false);
+    },{rootMargin:"700px 0px"});
+    io.observe($("#catalogFooter"));
+  }
 }
 function renderLocalFirst(){
   state.remoteItems=[];
@@ -179,7 +188,7 @@ async function warmCatalog(){
   state.remote.warming=true;
   const key=remoteKey();
   try{
-    for(let i=0;i<3;i++){
+    for(let i=0;i<6;i++){
       await new Promise(r=>setTimeout(r,220));
       if(key!==remoteKey()||state.remote.loading||state.remote.start>=state.remote.total)break;
       await loadRemote(false);
@@ -352,8 +361,13 @@ function syncCatalogFooter(){
     btn.disabled=true;btn.textContent="라이브 DB 오프라인";return;
   }
   btn.disabled=state.remote.loading||(state.remote.total>0&&state.remote.start>=state.remote.total);
-  btn.textContent=state.remote.loading?"불러오는 중…":(btn.disabled?"현재 범위 모두 로드":"더 불러오기");
-  meta.innerHTML='<span class="remote-pulse">TouhouDB</span> · '+fmt(state.remoteItems.length)+'곡 로드'+(state.remote.total?" / "+fmt(state.remote.total):"")+(state.remote.error?" · 오류 있음":"");
+  btn.textContent=state.remote.loading?"다음 페이지 불러오는 중…":(btn.disabled?"현재 API 범위 모두 로드":"다음 50곡");
+  const archiveTotal=Math.max(0,Number(state.archiveSource?.arrangementTracks)||0);
+  meta.innerHTML='<span class="remote-pulse">TouhouDB</span> · 현재 캐시 '+fmt(state.remoteItems.length)+'곡'+
+    (state.remote.total?" / API "+fmt(state.remote.total)+"곡":"")+
+    (archiveTotal?" · 아카이브 "+fmt(archiveTotal)+"곡":"")+
+    (!btn.disabled?" · 아래로 스크롤하면 계속 로드":"")+
+    (state.remote.error?" · 오류 있음":"");
 }
 function catalogTitle(q,count){
   if(q)return `전체 DB 검색 · ${count}곡 표시`;
@@ -416,11 +430,11 @@ function openTrack(t,opts={}){
   const canLookup=!player.playable(t)&&state.remote.available;
   const missing=(t.originalIds||[]).filter(id=>!byId(id));
   $("#detailContent").innerHTML=`
-    <div class="detail-hero"><div class="detail-kicker">${t.type==="original"?"ORIGINAL":"ARRANGEMENT"} · ${t.touhoudbId?(t.remote?"TOUHOUDB LIVE":"LOCAL + TOUHOUDB"):"LOCAL VERIFIED"}</div><div class="detail-rank"><strong>종합 #${rank.rank}</strong><span>현재 로드 ${rank.total}곡 기준 · ${rank.score.toFixed(1)}pt</span></div><h2>${esc(t.title)}</h2><div class="detail-meta">${artistLine}<br>${t.year||""}${t.album?" · "+esc(t.album):""}</div></div>
+    <div class="detail-hero"><div class="detail-kicker">${t.type==="original"?"ORIGINAL":"ARRANGEMENT"} · ${t.touhoudbId?(t.remote?"TOUHOUDB LIVE":"LOCAL + TOUHOUDB"):"LOCAL VERIFIED"}</div><div class="detail-rank"><strong>종합 ${rankText(rank)} / ${fmt(rank.total)}</strong><span>${rank.estimated?"아카이브 환산 · ":""}표본 #${rank.sampleRank||"—"}/${fmt(rank.sampleTotal)} · ${rank.score.toFixed(1)}pt</span></div><h2>${esc(t.title)}</h2><div class="detail-meta">${artistLine}<br>${t.year||""}${t.album?" · "+esc(t.album):""}</div></div>
     <div class="tag-row">${(t.moods||[]).map(x=>`<span class="tag">${esc(x)}</span>`).join("")}</div>
     <div class="detail-actions"><button class="hot" id="detailPlay" ${player.playable(t)||canLookup?"":"disabled"}>${player.playable(t)?"▶ 앱에서 재생":canLookup?"⌕ 영상 찾기":"영상 없음"}</button><button id="detailDive">⌁ 다이브</button>${t.type==="arrangement"?'<button class="origin-jump" id="detailOrigin"><span>↖</span><strong>원곡으로</strong></button>':""}<button id="favBtn">${fav?"♥ 보관됨":"♡ 보관하기"}</button>${source?`<a href="${escAttr(source)}" target="_blank" rel="noopener">원본 링크 ↗</a>`:'<button disabled>원본 링크 없음</button>'}</div>
     ${t.type==="arrangement"?lineageBox("이 어레인지의 원곡",origins,missing):lineageBox("이 원곡을 사용한 현재 로드 어레인지",children,[])}
-    <div class="fact-box"><label>종합 순위 기준</label><div class="detail-meta">TouhouDB rating · 즐겨찾기 · DB 조회 · 관계량 · 재생 가능 영상을 혼합한 현재 로드 풀 기준 순위입니다.</div></div>
+    <div class="fact-box"><label>종합 순위 기준</label><div class="detail-meta">TouhouDB rating · 즐겨찾기 · DB 조회 · 관계량 · 재생 가능 영상을 혼합합니다. 현재 표본의 백분위를 128,040곡 아카이브 규모에 환산한 순위이며 전수 실측 순위는 아닙니다.</div></div>
     <div class="fact-box"><label>다이브 기준</label><div class="detail-meta">${esc(relationText(t))}</div></div>
     ${!opts.skipEnrich&&!t.touhoudbId&&state.remote.available?'<div class="detail-sync">TouhouDB에서 영상·통계를 보강하는 중…</div>':""}`;
   $("#detailPanel").classList.add("is-open");$("#detailPanel").setAttribute("aria-hidden","false");syncScrim();
@@ -511,6 +525,10 @@ function nav(view){
     renderCatalog("오늘의 다이브 입구");loadRemote(true);
   }else if(view==="discover"){
     renderCatalog("전체 카탈로그");
+  }else if(view==="dive"){
+    const stage=$("#diveStage"),empty=$("#diveEmpty");
+    if(state.selected)startDive(state.selected,{fresh:true});
+    else{stage.hidden=true;empty.hidden=false;}
   }else if(view==="lineage"){
     renderLineageOverview();
   }else if(view==="iceberg"){
@@ -570,11 +588,11 @@ function startDive(t,opts={}){
   const originAction=t.type==="arrangement"?'<button class="origin-jump" data-current-origin="'+escAttr(t.id)+'">↖ 원곡</button>':"";
   const currentRank=trackRank(t);
   stage.innerHTML=originNode+
-    '<article class="dive-current"><small>CURRENT DEPTH · '+depthMeters+'m · 종합 #'+currentRank.rank+'</small><h3>'+esc(t.title)+'</h3><p>'+esc(t.type==="arrangement"?(t.circle||"Arrangement"):(t.work||t.artistString||"Original"))+'</p><div class="dive-current-actions">'+playAction+originAction+'<button data-current-open="'+escAttr(t.id)+'">상세</button></div></article>'+
+    '<article class="dive-current"><small>CURRENT DEPTH · '+depthMeters+'m · 종합 '+rankText(currentRank)+'</small><h3>'+esc(t.title)+'</h3><p>'+esc(t.type==="arrangement"?(t.circle||"Arrangement"):(t.work||t.artistString||"Original"))+'</p><div class="dive-current-actions">'+playAction+originAction+'<button data-current-open="'+escAttr(t.id)+'">상세</button></div></article>'+
     related.map((r,i)=>{
       const p=positions[i]||[50,88];
       const rank=trackRank(r.track);
-      return '<button class="dive-node" style="--x:'+p[0]+'%;--y:'+p[1]+'%" data-rel="'+escAttr(r.track.id)+'"><small>'+esc(r.reason)+' · 종합 #'+rank.rank+'</small><strong>'+esc(r.track.title)+'</strong><span>'+esc(r.track.type==="arrangement"?(r.track.circle||""):(r.track.work||r.track.artistString||""))+'</span></button>';
+      return '<button class="dive-node" style="--x:'+p[0]+'%;--y:'+p[1]+'%" data-rel="'+escAttr(r.track.id)+'"><small>'+esc(r.reason)+' · 종합 '+rankText(rank)+'</small><strong>'+esc(r.track.title)+'</strong><span>'+esc(r.track.type==="arrangement"?(r.track.circle||""):(r.track.work||r.track.artistString||""))+'</span></button>';
     }).join("")+
     '<div class="dive-depth-chip">DIVE '+(state.diveDepth+1)+' · '+depthMeters+'m · '+related.length+' SIGNALS</div>';
   stage.querySelectorAll("[data-rel]").forEach(b=>b.onclick=()=>startDive(byId(b.dataset.rel),{continue:true}));
@@ -767,11 +785,33 @@ function refreshRanks(){
   state.rankIndex=new Map(pool.map((t,i)=>[resolveId(t.id),{rank:i+1,score:overallRankScore(t)}]));
   state.rankTotal=pool.length;
 }
+function archiveRankTotal(){
+  return Math.max(Number(state.archiveSource?.arrangementTracks)||0,state.rankTotal||0);
+}
+function projectArchiveRank(sampleRank,sampleTotal,archiveTotal){
+  const r=Number(sampleRank),n=Number(sampleTotal),a=Number(archiveTotal);
+  if(!Number.isFinite(r)||r<1)return null;
+  if(!Number.isFinite(a)||a<1||a<=n||n<=1)return r;
+  return Math.max(1,Math.min(a,1+Math.round((r-1)*(a-1)/(n-1))));
+}
 function trackRank(t){
-  if(!t)return{rank:"—",score:0,total:state.rankTotal||0};
+  if(!t)return{rank:null,sampleRank:null,score:0,total:archiveRankTotal(),sampleTotal:state.rankTotal||0,estimated:false};
   if(!state.rankIndex.size||state.rankTotal!==state.known.size||!state.rankIndex.has(resolveId(t.id)))refreshRanks();
-  const row=state.rankIndex.get(resolveId(t.id))||{rank:"—",score:overallRankScore(t)};
-  return{...row,total:state.rankTotal};
+  const row=state.rankIndex.get(resolveId(t.id))||{rank:null,score:overallRankScore(t)};
+  const total=archiveRankTotal();
+  const projected=projectArchiveRank(row.rank,state.rankTotal,total);
+  return{
+    rank:projected,
+    sampleRank:row.rank,
+    score:row.score,
+    total,
+    sampleTotal:state.rankTotal,
+    estimated:total>state.rankTotal
+  };
+}
+function rankText(rank){
+  if(!rank||!rank.rank)return"—";
+  return "#"+fmt(rank.rank);
 }
 function sortList(list,sort){
   if(sort==="year-desc")return [...list].sort((a,b)=>(b.year||0)-(a.year||0));
