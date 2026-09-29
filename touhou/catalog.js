@@ -18,6 +18,17 @@ function parseNicoId(v){
   const s=clean(v);if(/^(sm|nm|so)\d+$/i.test(s))return s;
   try{const u=new URL(s);return u.pathname.match(/\/watch\/([^/?#]+)/)?.[1]||""}catch{return""}
 }
+function parseVimeoId(v){
+  const s=clean(v);if(/^\d+$/.test(s))return s;
+  try{const u=new URL(s);return u.pathname.match(/\/(?:video\/)?(\d+)/)?.[1]||""}catch{return""}
+}
+function parseBilibiliId(v){
+  const s=clean(v);if(/^\d+$/.test(s))return s;if(/^av\d+$/i.test(s))return s.slice(2);
+  try{const u=new URL(s);const m=u.pathname.match(/\/video\/(?:av)?(\d+)/i);return m?.[1]||u.searchParams.get("aid")||""}catch{return""}
+}
+function safeHttpUrl(v){
+  try{const u=new URL(clean(v));return /^https?:$/.test(u.protocol)?u.toString():""}catch{return""}
+}
 function artistNames(item){
   return arr(item?.artists).map(x=>nameValue(x?.artist||x)).filter(Boolean);
 }
@@ -56,16 +67,30 @@ function circleName(item,roles){
 }
 function mediaCandidates(item){
   const out=[],seen=new Set();
+  const add=(provider,id,url,name,mode="embed")=>{
+    id=clean(id);url=safeHttpUrl(url)||clean(url);
+    const key=provider+":"+(id||url);if(!id&&!url||seen.has(key))return;
+    seen.add(key);out.push({provider,id,url,name:clean(name),mode});
+  };
   for(const pv of arr(item?.pvs)){
-    const service=clean(pv?.service);
-    if(/youtube/i.test(service)&&(pv?.pvId||pv?.url)){
-      const id=parseYoutubeId(pv.pvId||pv.url);
-      const key="youtube:"+id;
-      if(id&&!seen.has(key)){seen.add(key);out.push({provider:"youtube",id,url:pv.url||("https://www.youtube.com/watch?v="+id),name:clean(pv?.name)})}
-    }else if(/niconico/i.test(service)&&(pv?.pvId||pv?.url)){
-      const id=parseNicoId(pv.pvId||pv.url);
-      const key="niconico:"+id;
-      if(id&&!seen.has(key)){seen.add(key);out.push({provider:"niconico",id,url:pv.url||("https://www.nicovideo.jp/watch/"+id),name:clean(pv?.name)})}
+    const service=clean(pv?.service),raw=pv?.pvId||pv?.url,url=safeHttpUrl(pv?.url);
+    if(/youtube/i.test(service)&&raw){
+      const id=parseYoutubeId(raw);if(id)add("youtube",id,url||("https://www.youtube.com/watch?v="+id),pv?.name);
+    }else if(/niconico/i.test(service)&&raw){
+      const id=parseNicoId(raw);if(id)add("niconico",id,url||("https://www.nicovideo.jp/watch/"+id),pv?.name);
+    }else if(/soundcloud/i.test(service)&&(url||raw)){
+      add("soundcloud",clean(pv?.pvId)||url,url||clean(raw),pv?.name);
+    }else if(/vimeo/i.test(service)&&raw){
+      const id=parseVimeoId(raw);if(id)add("vimeo",id,url||("https://vimeo.com/"+id),pv?.name);
+    }else if(/piapro/i.test(service)&&raw){
+      const id=clean(pv?.pvId)||clean(raw).match(/\/content\/([^/?#]+)/)?.[1]||"";
+      if(id)add("piapro",id,url||("https://piapro.jp/content/"+id),pv?.name);
+    }else if(/bilibili/i.test(service)&&raw){
+      const id=parseBilibiliId(raw);if(id)add("bilibili",id,url||("https://www.bilibili.com/video/av"+id),pv?.name);
+    }else if(/bandcamp/i.test(service)&&raw){
+      const id=clean(pv?.pvId)||"";
+      if(id)add("bandcamp",id,url||"https://bandcamp.com",pv?.name);
+      else if(url)add("bandcamp-url",url,url,pv?.name,"external");
     }
   }
   return out;
