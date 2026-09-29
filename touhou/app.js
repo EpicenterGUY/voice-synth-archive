@@ -5,7 +5,7 @@ const player=new window.TouhouMediaPlayer();
 
 const state={
   localOriginals:[],localArrangements:[],known:new Map(),aliases:new Map(),identities:new Map(),remoteItems:[],works:[],
-  mode:"all",filter:"전체",workFilter:"",sort:"recommend",selected:null,view:"home",
+  mode:"all",filter:"전체",workFilter:"",sort:"recommend",selected:null,view:"home",diveDepth:0,diveRoot:null,
   remote:{available:false,loading:false,start:0,total:0,catalogTotal:0,key:"",error:"",counts:{},seq:0},
   favorites:new Set(readJson("touhoudive:favorites",[])),
   history:readJson("touhoudive:history",[]),
@@ -62,6 +62,7 @@ function bind(){
   $("#randomBtn").onclick=randomDive;$("#heroDiveBtn").onclick=randomDive;
   $("#playableBtn").onclick=()=>{state.mode="all";state.filter="영상 있음";syncModeTabs();renderCatalog("인앱 재생 가능한 곡");loadRemote(true);};
   $("#refreshBtn").onclick=()=>loadRemote(true,true);
+  $("#icebergRefresh").onclick=()=>renderIceberg();
   $("#panelClose").onclick=closePanel;
   $("#scrim").onclick=()=>{closePanel();closeMenu();};
   $("#menuBtn").onclick=()=>{$("#sidebar").classList.toggle("is-open");syncScrim();};
