@@ -3409,84 +3409,6 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
   #icebergPanel .ice106-link-layer line{stroke-width:1.1}
 }
 </style>
-<style id="v39107IcebergFocusBridgeStyle">
-/* v39.107 · Focus Dive + Vertical Bridge */
-#icebergPanel .ice107-focusbar{
-  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;
-  padding:7px 8px;border:1px solid rgba(191,236,255,.16);border-radius:10px;
-  background:linear-gradient(135deg,rgba(8,31,48,.70),rgba(18,28,50,.66));
-  position:relative;z-index:4
-}
-#icebergPanel .ice107-focusbar small{display:block;color:#83cce7;font-size:6px;font-weight:950;letter-spacing:.09em}
-#icebergPanel .ice107-focusbar b{display:block;margin-top:2px;color:inherit;font-size:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#icebergPanel .ice107-focusbar button{
-  min-height:28px;padding:0 9px;border:1px solid rgba(255,255,255,.14);border-radius:8px;
-  background:rgba(7,24,37,.46);color:inherit;font-size:7px;font-weight:950
-}
-#icebergPanel .ice107-bridge-wrap{
-  position:relative;display:grid;gap:5px;padding:2px 0;z-index:1
-}
-#icebergPanel .ice107-bridge-wrap:before{
-  content:"";position:absolute;left:50%;top:0;bottom:0;border-left:1px dashed rgba(164,225,248,.28);
-  transform:translateX(-50%);pointer-events:none
-}
-#icebergPanel .ice107-bridge-lane{
-  display:grid;grid-template-columns:82px minmax(0,1fr);gap:6px;align-items:center;
-  min-height:36px;position:relative;z-index:2
-}
-#icebergPanel .ice107-bridge-lane.down{grid-template-columns:minmax(0,1fr) 82px}
-#icebergPanel .ice107-bridge-label{
-  display:flex;align-items:center;justify-content:center;min-height:30px;padding:0 6px;
-  border:1px solid rgba(167,225,247,.11);border-radius:9px;background:rgba(5,20,32,.30);
-  color:inherit;font-size:6px;font-weight:950;text-align:center
-}
-#icebergPanel .ice107-bridge-cards{display:flex;gap:5px;min-width:0}
-#icebergPanel .ice107-bridge-card{
-  flex:1 1 0;min-width:0;display:grid;grid-template-columns:32px minmax(0,1fr);gap:5px;align-items:center;
-  min-height:36px;padding:4px;border:1px solid rgba(255,255,255,.12);border-radius:9px;
-  background:rgba(6,24,38,.42);color:inherit;text-align:left;cursor:pointer
-}
-#icebergPanel .ice107-bridge-card img,#icebergPanel .ice107-bridge-card .ice107-noimg{
-  width:32px;height:32px;border-radius:7px;object-fit:cover;background:#0d2c3f;display:grid;place-items:center
-}
-#icebergPanel .ice107-bridge-card b{display:block;font-size:6.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#icebergPanel .ice107-bridge-card small{display:block;margin-top:2px;font-size:5.5px;opacity:.62;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#icebergPanel .ice107-bridge-empty{
-  min-height:34px;display:flex;align-items:center;justify-content:center;padding:0 8px;
-  border:1px dashed rgba(255,255,255,.10);border-radius:9px;font-size:6px;opacity:.52
-}
-#icebergPanel .ice107-focus-btn{
-  position:absolute;right:5px;top:5px;z-index:4;width:24px;height:24px;border:1px solid rgba(255,255,255,.14);
-  border-radius:999px;background:rgba(3,17,28,.66);color:#c9f3ff;font-size:10px;font-weight:950;
-  display:grid;place-items:center;opacity:.84;cursor:pointer
-}
-#icebergPanel .ice105-song-node{position:relative}
-#icebergPanel .ice105-song-node.ice107-center{
-  border-color:rgba(202,245,255,.55)!important;background:rgba(20,57,76,.64)!important;
-  box-shadow:0 0 0 1px rgba(185,235,255,.12),0 0 22px rgba(114,208,241,.18)
-}
-#icebergPanel .ice105-song-node.ice107-center:after{
-  content:"CENTER";position:absolute;left:5px;top:5px;padding:2px 4px;border-radius:999px;
-  background:rgba(6,26,39,.78);color:#d7f8ff;font-size:5px;font-weight:950;letter-spacing:.08em
-}
-#icebergPanel .ice107-focus-neighbor{animation:ice107Spread .34s ease both}
-#icebergPanel .ice107-focus-neighbor:nth-of-type(2){animation-delay:35ms}
-#icebergPanel .ice107-focus-neighbor:nth-of-type(3){animation-delay:70ms}
-#icebergPanel .ice107-focus-neighbor:nth-of-type(4){animation-delay:105ms}
-#icebergPanel .ice107-focus-neighbor:nth-of-type(5){animation-delay:140ms}
-@keyframes ice107Spread{from{opacity:.35;transform:scale(.96) translateY(5px)}to{opacity:1;transform:none}}
-@media(max-width:699px){
-  #icebergPanel .ice107-bridge-lane,#icebergPanel .ice107-bridge-lane.down{grid-template-columns:64px minmax(0,1fr)}
-  #icebergPanel .ice107-bridge-lane.down .ice107-bridge-label{order:0}
-  #icebergPanel .ice107-bridge-lane.down .ice107-bridge-cards{order:1}
-  #icebergPanel .ice107-bridge-cards .ice107-bridge-card:nth-child(n+2){display:none}
-}
-@media(max-width:480px){
-  #icebergPanel .ice107-bridge-card{grid-template-columns:28px minmax(0,1fr)}
-  #icebergPanel .ice107-bridge-card img,#icebergPanel .ice107-bridge-card .ice107-noimg{width:28px;height:28px}
-}
-@media(prefers-reduced-motion:reduce){#icebergPanel .ice107-focus-neighbor{animation:none!important}}
-</style>
 </head>
 <body>
 <div class="app">
@@ -3722,7 +3644,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.107.0 · Focus Dive 1.0 · Vertical Bridge 1.0 · Iceberg Mini Universe 1.0 · Iceberg Song Nodes 1.0 · Dive Motion 1.0 · Iceberg Explore HUD 1.0 · Iceberg Depth 3.0 · Queue Stability 1.0 · Ocean HUD 2.0 · Dive Performance 1.0 · Direct APK Update 1.0 · Search Fix · Rank Turbo 1.0 · Native Brand 0.2 · Android Shell 0.1 · App Foundation 1.0 · Cross-Genre Bridge 1.0 · Relation Trust 3.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.106.0 · Iceberg Mini Universe 1.0 · Iceberg Song Nodes 1.0 · Dive Motion 1.0 · Iceberg Explore HUD 1.0 · Iceberg Depth 3.0 · Queue Stability 1.0 · Ocean HUD 2.0 · Dive Performance 1.0 · Direct APK Update 1.0 · Search Fix · Rank Turbo 1.0 · Native Brand 0.2 · Android Shell 0.1 · App Foundation 1.0 · Cross-Genre Bridge 1.0 · Relation Trust 3.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -5423,116 +5345,6 @@ function setIcebergNodePage106(tierId,page){
   store[tierId]=Math.max(0,page|0);
   try{localStorage.setItem(ICE106_PAGE_KEY,JSON.stringify(store))}catch(_){}
 }
-let icebergFocus107=null;
-let icebergBridge107={focusId:"",loading:false,up:[],down:[]};
-let icebergBridgeSeq107=0;
-let icebergLongPressTimer107=0;
-let icebergLongPressId107="";
-
-function icebergFocusSong107(){
-  if(!icebergFocus107)return null;
-  return state.songs.find(s=>s&&s.contentId===icebergFocus107)||null;
-}
-function clearIcebergFocus107(render=true){
-  icebergFocus107=null;
-  icebergBridge107={focusId:"",loading:false,up:[],down:[]};
-  clearTimeout(icebergLongPressTimer107);icebergLongPressId107="";
-  if(render)renderIceberg();
-}
-function rankedFocusNeighbors107(center,pool,count=4){
-  return (pool||[]).filter(s=>s&&s.contentId!==center.contentId).map(function(song){
-    const rel=icebergRelationKind106(center,song);
-    return {song,rel,score:rel?rel.score:weightedTagSimilarity(center,song)}
-  }).sort(function(a,b){
-    const ar=a.rel?1:0,br=b.rel?1:0;
-    return br-ar||b.score-a.score||(+b.song.viewCounter||0)-(+a.song.viewCounter||0)
-  }).slice(0,count).map(x=>x.song);
-}
-function focusedRows107(pool){
-  const center=icebergFocusSong107();
-  if(!center)return null;
-  return [center].concat(rankedFocusNeighbors107(center,pool,4));
-}
-function bridgeCardHtml107(x){
-  if(!x||!x.song)return"";
-  const song=x.song,rel=x.rel;
-  const img=song.thumbnailUrl?'<img src="'+esc(song.thumbnailUrl)+'" loading="lazy" alt="">':'<span class="ice107-noimg">♪</span>';
-  return '<button type="button" class="ice107-bridge-card" data-v399-play="'+esc(song.contentId)+'" title="'+esc(song.title||song.contentId)+'">'+img+
-    '<span><b>'+esc(song.title||song.contentId)+'</b><small>'+esc(rel?rel.label:"유사곡")+' · 조회 '+fmt(song.viewCounter||0)+'</small></span></button>';
-}
-function bridgeLaneHtml107(direction){
-  if(!icebergFocus107)return"";
-  const idx=currentTierIndex104(),targetIdx=idx+(direction==="up"?-1:1);
-  if(targetIdx<0||targetIdx>=TIERS.length)return"";
-  const target=TIERS[targetIdx],rows=direction==="up"?icebergBridge107.up:icebergBridge107.down;
-  const label=(direction==="up"?"↑ ":"↓ ")+target.name;
-  let body="";
-  if(icebergBridge107.loading&&icebergBridge107.focusId===icebergFocus107)body='<div class="ice107-bridge-empty">인접 수심 연결 탐색 중…</div>';
-  else if(rows&&rows.length)body='<div class="ice107-bridge-cards">'+rows.map(bridgeCardHtml107).join("")+'</div>';
-  else body='<div class="ice107-bridge-empty">강한 종단 연결 없음</div>';
-  return '<div class="ice107-bridge-lane '+direction+'"><div class="ice107-bridge-label">'+esc(label)+'</div>'+body+'</div>';
-}
-function focusBarHtml107(center){
-  if(!center)return"";
-  return '<div class="ice107-focusbar"><div><small>SECOND DIVE · CENTER SONG</small><b>'+esc(center.title||center.contentId)+'</b></div>'+
-    '<button type="button" data-ice107-clear>포커스 해제 ×</button></div>';
-}
-async function loadIcebergBridges107(center){
-  const idx=currentTierIndex104();if(!center||idx<0)return;
-  const seq=++icebergBridgeSeq107;
-  icebergBridge107={focusId:center.contentId,loading:true,up:[],down:[]};renderIceberg();
-  async function one(targetIdx){
-    if(targetIdx<0||targetIdx>=TIERS.length)return[];
-    try{
-      const d=await fetchNico({tier:TIERS[targetIdx],year:state.year,sort:"-viewCounter",limit:36,offset:0,mode:"ranking",applyYear:true,applyTier:true});
-      let rows=filterAdultRows37(d.data||[],"iceberg_bridge").rows.filter(s=>s&&s.contentId!==center.contentId);
-      rows=rows.map(function(song){const rel=icebergRelationKind106(center,song);return{song,rel,score:rel?rel.score:weightedTagSimilarity(center,song)}})
-        .filter(x=>x.rel||x.score>=.16)
-        .sort((a,b)=>(b.rel?1:0)-(a.rel?1:0)||b.score-a.score)
-        .slice(0,2);
-      return rows;
-    }catch(_){return[]}
-  }
-  const [up,down]=await Promise.all([one(idx-1),one(idx+1)]);
-  if(seq!==icebergBridgeSeq107||icebergFocus107!==center.contentId)return;
-  icebergBridge107={focusId:center.contentId,loading:false,up,down};renderIceberg();
-}
-function setIcebergFocus107(id){
-  const song=state.songs.find(s=>s&&String(s.contentId)===String(id));
-  if(!song)return;
-  icebergFocus107=song.contentId;
-  icebergBridge107={focusId:song.contentId,loading:true,up:[],down:[]};
-  renderIceberg();
-  loadIcebergBridges107(song);
-}
-function bindIcebergFocus107(){
-  const panel=$("#icebergPanel");if(!panel||panel.dataset.ice107Bound)return;
-  panel.dataset.ice107Bound="1";
-  panel.addEventListener("click",function(e){
-    const clear=e.target.closest("[data-ice107-clear]");
-    if(clear){e.preventDefault();e.stopPropagation();clearIcebergFocus107(true);return}
-    const focus=e.target.closest("[data-ice107-focus]");
-    if(focus){e.preventDefault();e.stopPropagation();setIcebergFocus107(focus.dataset.ice107Focus);return}
-    const node=e.target.closest(".ice105-song-node");
-    if(node&&node.dataset.ice107Long==="1"){
-      e.preventDefault();e.stopPropagation();delete node.dataset.ice107Long;return
-    }
-  });
-  panel.addEventListener("pointerdown",function(e){
-    const node=e.target.closest(".ice105-song-node");if(!node||e.target.closest("[data-ice107-focus]"))return;
-    clearTimeout(icebergLongPressTimer107);
-    icebergLongPressId107=node.dataset.songId||"";
-    icebergLongPressTimer107=setTimeout(function(){
-      if(!icebergLongPressId107)return;
-      node.dataset.ice107Long="1";
-      setIcebergFocus107(icebergLongPressId107);
-      try{navigator.vibrate&&navigator.vibrate(18)}catch(_){}
-    },520);
-  });
-  ["pointerup","pointercancel","pointerleave"].forEach(function(type){
-    panel.addEventListener(type,function(){clearTimeout(icebergLongPressTimer107);icebergLongPressTimer107=0;icebergLongPressId107=""})
-  });
-}
 function icebergRepresentativePool106(){
   if(state.listMode!=="ranking"||state.tier==="all"||!Array.isArray(state.songs)||!state.songs.length)return[];
   const rows=[],seen=new Set();
@@ -5590,27 +5402,21 @@ function icebergSongNodesHtml105(){
   }
   const maxPage=Math.max(0,Math.ceil(pool.length/ICE106_PAGE_SIZE)-1);
   const page=Math.min(maxPage,icebergNodePage106(state.tier));
-  const focusRows=focusedRows107(pool);
-  const rows=focusRows||pool.slice(page*ICE106_PAGE_SIZE,page*ICE106_PAGE_SIZE+ICE106_PAGE_SIZE);
-  const relations=icebergFocus107&&focusRows?rows.slice(1).map(function(song,i){
-    const rel=icebergRelationKind106(rows[0],song);
-    return rel?{a:0,b:i+1,kind:rel.kind,label:rel.label,score:rel.score,raw:rel.raw}:null
-  }).filter(Boolean):icebergRelationGraph106(rows);
+  const rows=pool.slice(page*ICE106_PAGE_SIZE,page*ICE106_PAGE_SIZE+ICE106_PAGE_SIZE);
+  const relations=icebergRelationGraph106(rows);
   const cards=rows.map(function(song,i){
     const img=song.thumbnailUrl?'<img src="'+esc(song.thumbnailUrl)+'" loading="lazy" alt="" onerror="this.replaceWith(Object.assign(document.createElement(\'span\'),{className:\'ice105-noimg\',textContent:\'♪\'}))">':'<span class="ice105-noimg">♪</span>';
-    const dots=relationDots106(i,relations),center=icebergFocus107===song.contentId;
-    return '<article role="button" tabindex="0" class="ice105-song-node'+(dots?' ice106-related':'')+(center?' ice107-center':'')+(icebergFocus107&&!center?' ice107-focus-neighbor':'')+'" style="--node-i:'+i+'" data-v399-play="'+esc(song.contentId)+'" data-ice106-node="'+i+'" data-song-id="'+esc(song.contentId)+'" title="'+esc(song.title||song.contentId)+'">'+
-      img+'<span class="ice105-nodecopy"><b>'+esc(song.title||song.contentId)+'</b><small>조회 '+fmt(song.viewCounter||0)+' · #'+fmt(song.__rank||i+1)+'</small>'+dots+'</span>'+
-      '<button type="button" class="ice107-focus-btn" data-ice107-focus="'+esc(song.contentId)+'" aria-label="이 곡 중심으로 미니 다이브">◎</button></article>';
+    const dots=relationDots106(i,relations);
+    return '<button type="button" class="ice105-song-node'+(dots?' ice106-related':'')+'" style="--node-i:'+i+'" data-v399-play="'+esc(song.contentId)+'" data-ice106-node="'+i+'" data-song-id="'+esc(song.contentId)+'" title="'+esc(song.title||song.contentId)+'">'+img+
+      '<span class="ice105-nodecopy"><b>'+esc(song.title||song.contentId)+'</b><small>조회 '+fmt(song.viewCounter||0)+' · #'+fmt(song.__rank||page*ICE106_PAGE_SIZE+i+1)+'</small>'+dots+'</span></button>';
   }).join("");
-  const nav=icebergFocus107?'':('<div class="ice106-node-nav"><button type="button" data-ice106-page-dir="-1" '+(page<=0?'disabled':'')+' aria-label="이전 곡 노드">←</button><span>'+(page+1)+' / '+(maxPage+1)+'</span><button type="button" data-ice106-page-dir="1" '+(page>=maxPage?'disabled':'')+' aria-label="다음 곡 노드">→</button></div>');
-  const center=icebergFocusSong107();
   return '<div class="ice105-nodefield" data-ice106-page="'+page+'">'+
-    (center?focusBarHtml107(center):'')+
-    (center?'<div class="ice107-bridge-wrap">'+bridgeLaneHtml107("up")+'</div>':'')+
-    '<div class="ice106-node-head"><small>'+(center?'SECOND DIVE · SAME LAYER':'CURRENT LAYER · MINI UNIVERSE')+'</small>'+nav+'</div>'+
-    '<div class="ice106-node-stage"><svg class="ice106-link-layer" aria-hidden="true"></svg>'+cards+'<span class="ice106-empty-rel" '+(relations.length?'hidden':'')+'>현재 곡 사이에 강한 P·보컬·장르 연결이 없습니다.</span></div>'+
-    (center?'<div class="ice107-bridge-wrap">'+bridgeLaneHtml107("down")+'</div>':'')+
+    '<div class="ice106-node-head"><small>CURRENT LAYER · MINI UNIVERSE</small><div class="ice106-node-nav">'+
+      '<button type="button" data-ice106-page-dir="-1" '+(page<=0?'disabled':'')+' aria-label="이전 곡 노드">←</button>'+
+      '<span>'+(page+1)+' / '+(maxPage+1)+'</span>'+
+      '<button type="button" data-ice106-page-dir="1" '+(page>=maxPage?'disabled':'')+' aria-label="다음 곡 노드">→</button>'+
+    '</div></div>'+
+    '<div class="ice106-node-stage"><svg class="ice106-link-layer" aria-hidden="true"></svg>'+cards+'<span class="ice106-empty-rel" '+(relations.length?'hidden':'')+'>현재 5곡 사이에 강한 P·보컬·장르 연결이 없습니다.</span></div>'+
     '<div class="ice106-legend"><span class="producer"><i></i>같은 P</span><span class="vocal"><i></i>같은 보컬</span><span class="music"><i></i>장르·분위기</span><span class="tag"><i></i>핵심 태그</span></div>'+
   '</div>';
 }
@@ -5639,9 +5445,7 @@ function drawIcebergRelations106(){
     const visibleNodes=[...stage.querySelectorAll(".ice105-song-node")].filter(el=>getComputedStyle(el).display!=="none");
     if(!svg||visibleNodes.length<2)return;
     const rows=visibleNodes.map(el=>state.songs.find(s=>String(s.contentId)===String(el.dataset.songId))).filter(Boolean);
-    const rels=icebergFocus107&&rows[0]&&rows[0].contentId===icebergFocus107
-      ? rows.slice(1).map(function(song,i){const rel=icebergRelationKind106(rows[0],song);return rel?{a:0,b:i+1,kind:rel.kind,label:rel.label,score:rel.score,raw:rel.raw}:null}).filter(Boolean)
-      : icebergRelationGraph106(rows);
+    const rels=icebergRelationGraph106(rows);
     const stageRect=stage.getBoundingClientRect();
     const w=Math.max(1,stage.clientWidth),h=Math.max(1,stage.clientHeight);
     svg.setAttribute("viewBox","0 0 "+w+" "+h);
@@ -5659,7 +5463,6 @@ function drawIcebergRelations106(){
 }
 function scheduleIcebergRelations106(){
   bindIcebergNodePager106();
-  bindIcebergFocus107();
   drawIcebergRelations106();
 }
 window.addEventListener("resize",function(){drawIcebergRelations106()},{passive:true});
@@ -5685,8 +5488,7 @@ function requestTierLoad103(tierId){
   const toIndex=TIERS.findIndex(t=>t.id===tierId);
   state.tier=tierId;
   persistTier104(tierId);
-  if(tierId!=="all"&&toIndex!==fromIndex)setIcebergNodePage106(tierId,0);
-  if(toIndex!==fromIndex)clearIcebergFocus107(false);
+  if(tierId!=="all"&&toIndex!==fromIndex&&!Number.isFinite(icebergNodePage106(tierId)))setIcebergNodePage106(tierId,0);
   const select=$("#tierSelect");if(select)select.value=tierId;
   state.offset=0;state.pendingTierLoad=tierId;
   animateIcebergTravel105(fromIndex,toIndex);
@@ -5768,7 +5570,7 @@ function renderIceberg(loading=false){
     const n=state.counts[t.id];
     el.innerHTML=`<div class="ice-tier-left"><div class="name">${t.name}<span class="ice-depth">${g.depth}</span></div><div class="range">${t.range}</div></div><div class="ice-tier-right"><div class="count">${n==null?"…":fmt(n)}${unit}</div><div class="pct">${n==null||!total?"":pct(n,total)}</div><div class="ice-density" title="층 밀도"><i></i></div></div>${nodes}`;
     const open=()=>requestTierLoad103(t.id);
-    el.onclick=e=>{if(e.target.closest(".ice105-song-node,.ice107-bridge-card,[data-ice107-clear]"))return;open()};
+    el.onclick=e=>{if(e.target.closest(".ice105-song-node"))return;open()};
     el.onkeydown=e=>{if(e.target!==el)return;if(e.key==="Enter"||e.key===" "){e.preventDefault();open();}};
     box.appendChild(el);
   });
@@ -8651,7 +8453,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:(window.VocaDiveUpdater&&window.VocaDiveUpdater.version)||document.documentElement.dataset.vocaUi||"39.107.0",
+    version:(window.VocaDiveUpdater&&window.VocaDiveUpdater.version)||document.documentElement.dataset.vocaUi||"39.106.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -10485,7 +10287,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.107.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
+var VER="39.106.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -12335,17 +12137,17 @@ function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
   var base;
-  if(name==="detective")base=seq(["./detective-v11.js?v=39.107.0","./detective-v12.js?v=39.107.0","./detective-v13.js?v=39.107.0","./detective-v14.js?v=39.107.0","./detective-v16.js?v=39.107.0"]);
-  else if(name==="personal")base=seq(["./organizer-v22.js?v=39.107.0","./smart-v23.js?v=39.107.0","./playlist-v24.js?v=39.107.0"]);
-  else if(name==="discovery")base=load("./discovery-v20.js?v=39.107.0");
-  else if(name==="homeData")base=load("./vocalo-home-v28.js?v=39.107.0");
-  else if(name==="universe")base=load("./universe-search-v28.js?v=39.107.0");
-  else if(name==="player")base=load("./nico-player-v32.js?v=39.107.0");
-  else if(name==="deviceSync")base=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.107.0");
-  else if(name==="pwa")base=load("./pwa-v21.js?v=39.107.0");
+  if(name==="detective")base=seq(["./detective-v11.js?v=39.106.0","./detective-v12.js?v=39.106.0","./detective-v13.js?v=39.106.0","./detective-v14.js?v=39.106.0","./detective-v16.js?v=39.106.0"]);
+  else if(name==="personal")base=seq(["./organizer-v22.js?v=39.106.0","./smart-v23.js?v=39.106.0","./playlist-v24.js?v=39.106.0"]);
+  else if(name==="discovery")base=load("./discovery-v20.js?v=39.106.0");
+  else if(name==="homeData")base=load("./vocalo-home-v28.js?v=39.106.0");
+  else if(name==="universe")base=load("./universe-search-v28.js?v=39.106.0");
+  else if(name==="player")base=load("./nico-player-v32.js?v=39.106.0");
+  else if(name==="deviceSync")base=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.106.0");
+  else if(name==="pwa")base=load("./pwa-v21.js?v=39.106.0");
   else if(name==="v33")base=Promise.all([ensure("personal"),ensure("discovery")]).then(function(rows){
     if(rows.some(function(x){return x===false}))return false;
-    return seq(["./voca-app-v33.js?v=39.107.0","./voca-app-v33-1.js?v=39.107.0","./voca-app-v33-2.js?v=39.107.0","./voca-app-v33-3.js?v=39.107.0"]);
+    return seq(["./voca-app-v33.js?v=39.106.0","./voca-app-v33-1.js?v=39.106.0","./voca-app-v33-2.js?v=39.106.0","./voca-app-v33-3.js?v=39.106.0"]);
   });
   else base=Promise.resolve(false);
   var job=Promise.resolve(base).then(function(v){
@@ -12393,13 +12195,13 @@ if("requestIdleCallback" in window)requestIdleCallback(function(){ensure("pwa")}
 else setTimeout(function(){ensure("pwa")},12000);
 })();
 </script>
-<script src="./device-sync-v3938.js?v=39.107.0"></script>
-<script src="./app-platform-v3962.js?v=39.107.0"></script>
-<script src="./entitlements-v3962.js?v=39.107.0"></script>
-<script src="./account-v3962.js?v=39.107.0"></script>
-<script src="./native-shell-v3963.js?v=39.107.0"></script>
-<script src="./app-update-v3966.js?v=39.107.0"></script>
-<script src="./i18n-v3918.js?v=39.107.0"></script>\n<script src="./search-live-v3969.js?v=39.107.0"></script>
+<script src="./device-sync-v3938.js?v=39.106.0"></script>
+<script src="./app-platform-v3962.js?v=39.106.0"></script>
+<script src="./entitlements-v3962.js?v=39.106.0"></script>
+<script src="./account-v3962.js?v=39.106.0"></script>
+<script src="./native-shell-v3963.js?v=39.106.0"></script>
+<script src="./app-update-v3966.js?v=39.106.0"></script>
+<script src="./i18n-v3918.js?v=39.106.0"></script>\n<script src="./search-live-v3969.js?v=39.106.0"></script>
 
 <style id="v3946DivePathStyle">
 /* v39.46 · Dive Path 1.0 — graph-free guided discovery */
@@ -15404,5 +15206,5 @@ body.mr74-transitioning{overflow:hidden!important}
 }
 </style>
 
-<script src="./vocadive-ui-v3980.js?v=39.107.0"></script>\n</body>
+<script src="./vocadive-ui-v3980.js?v=39.106.0"></script>\n</body>
 </html>
