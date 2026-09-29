@@ -373,15 +373,41 @@ function openTrack(t){
   $("#detailContent").innerHTML=`
     <div class="detail-hero"><div class="detail-kicker">${t.type==="original"?"ORIGINAL":"ARRANGEMENT"} · ${t.remote?"TOUHOUDB LIVE":"LOCAL VERIFIED"}</div><h2>${esc(t.title)}</h2><div class="detail-meta">${artistLine}<br>${t.year||""}${t.album?" · "+esc(t.album):""}</div></div>
     <div class="tag-row">${(t.moods||[]).map(x=>`<span class="tag">${esc(x)}</span>`).join("")}</div>
-    <div class="detail-actions"><button class="hot" id="detailPlay" ${player.playable(t)?"":"disabled"}>${player.playable(t)?"▶ 앱에서 재생":"영상 준비 중"}</button><button id="detailDive">다이브</button><button id="favBtn">${fav?"♥ 보관됨":"♡ 보관하기"}</button>${source?`<a href="${escAttr(source)}" target="_blank" rel="noopener">원본 링크 ↗</a>`:'<button disabled>원본 링크 없음</button>'}</div>
+    <div class="detail-actions"><button class="hot" id="detailPlay" ${player.playable(t)?"":"disabled"}>${player.playable(t)?"▶ 앱에서 재생":"영상 준비 중"}</button><button id="detailDive">⌁ 다이브</button>${t.type==="arrangement"?'<button class="origin-jump" id="detailOrigin"><span>↖</span><strong>원곡으로</strong></button>':""}<button id="favBtn">${fav?"♥ 보관됨":"♡ 보관하기"}</button>${source?`<a href="${escAttr(source)}" target="_blank" rel="noopener">원본 링크 ↗</a>`:'<button disabled>원본 링크 없음</button>'}</div>
     ${t.type==="arrangement"?lineageBox("이 어레인지의 원곡",origins,missing):lineageBox("이 원곡을 사용한 현재 로드 어레인지",children,[])}
     <div class="fact-box"><label>다이브 기준</label><div class="detail-meta">${esc(relationText(t))}</div></div>`;
   $("#detailPanel").classList.add("is-open");$("#detailPanel").setAttribute("aria-hidden","false");syncScrim();
   const play=$("#detailPlay");if(play)play.onclick=()=>{if(player.playable(t)){playTrack(t);closePanel();}};
-  $("#detailDive").onclick=()=>{startDive(t);closePanel();};
+  $("#detailDive").onclick=()=>{startDive(t,{fresh:true});closePanel();};
+  const originBtn=$("#detailOrigin");if(originBtn)originBtn.onclick=()=>goToOriginal(t);
   $("#favBtn").onclick=()=>toggleFavorite(t);
   $("#detailContent").querySelectorAll("[data-lineage]").forEach(b=>b.onclick=()=>openTrack(byId(b.dataset.lineage)));
   $("#detailContent").querySelectorAll("[data-hydrate]").forEach(b=>b.onclick=()=>hydrateAndOpen(b.dataset.hydrate));
+}
+async function goToOriginal(t){
+  if(!t||t.type!=="arrangement")return;
+  let current=byId(t.id)||t;
+  let ids=originalIds(current);
+  if(!ids.length&&catalog&&String(current.id).startsWith("tdb-")){
+    try{
+      const hydrated=await catalog.hydrate(current.id);
+      if(hydrated){current=remember(hydrated);ids=originalIds(current)}
+    }catch(e){}
+  }
+  if(!ids.length){
+    toast("이 곡은 TouhouDB에 원곡 연결 정보가 없습니다.");
+    return;
+  }
+  let original=byId(ids[0]);
+  if(!original&&catalog&&String(ids[0]).startsWith("tdb-")){
+    try{original=remember(await catalog.hydrate(ids[0]))}catch(e){}
+  }
+  if(!original){toast("원곡 정보를 불러오지 못했습니다.");return}
+  closePanel();
+  state.mode="original";state.filter="전체";syncModeTabs();
+  setView("discover");
+  renderCatalog("원곡으로 이동");
+  openTrack(original);
 }
 function lineageBox(label,tracks,missing){
   const rows=tracks.slice(0,12).map(x=>`<button class="lineage-link" data-lineage="${x.id}"><strong>${esc(x.title)}</strong><small>${esc(x.type==="arrangement"?(x.circle||""):(x.work||x.artistString||""))}</small></button>`);
