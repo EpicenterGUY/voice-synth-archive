@@ -1,6 +1,6 @@
 {
-  "version": "39.110.0",
+  "version": "39.111.0",
   "channel": "web",
-  "publishedAt": "2026-09-29T11:38:00+09:00",
-  "notes": "Adds persistent saved expedition cards for Dive Log routes, route statistics including deepest tier, unique songs, average views and a heuristic exploration rarity score, plus replayable saved voyages that retrace tiers and center songs."
+  "publishedAt": "2026-09-29T11:48:00+09:00",
+  "notes": "Adds saved-expedition analytics reports with tag-based producer/vocal/genre distributions, rarest-route song, biggest adjacent view-count jump, and a derived exploration profile, while preserving replayable expedition cards."
 }
