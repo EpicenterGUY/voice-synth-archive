@@ -38,7 +38,7 @@ async function boot(){
     setView("home");
     renderLocalFirst();
     bind();
-    if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js?v=0.9.1").then(r=>r.update()).catch(()=>{});
+    if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js?v=0.9.3").then(r=>r.update()).catch(()=>{});
     connectFullDataset();
     await connectRemote();
   }catch(err){
@@ -136,7 +136,12 @@ async function connectFullDataset(){
     });
     state.fullItems=result.tracks.map(t=>remember(t));
     state.childCounts=new Map();
-    for(const t of state.fullItems)for(const oid of (t.originalIds||[]))state.childCounts.set(oid,(state.childCounts.get(oid)||0)+1);
+    for(const t of state.fullItems){
+      for(const oid of (t.originalIds||[])){
+        const canonical=resolveId(oid);
+        state.childCounts.set(canonical,(state.childCounts.get(canonical)||0)+1);
+      }
+    }
     state.full.loaded=true;state.full.loading=false;state.full.loadedCount=state.fullItems.length;
     state.rankIndex.clear();state.rankTotal=result.manifest.indexed;
     setDataHealth("ok","FULL INDEX · "+fmt(state.fullItems.length)+"곡");
@@ -271,9 +276,14 @@ function mergeTrack(base,incoming){
   const localBase=base.remote===false;
   const out={...base,...incoming,id:base.id};
   out.remote=localBase?false:(base.remote||incoming.remote||false);
+  out.fullIndex=!!(base.fullIndex||incoming.fullIndex);
   out.title=base.title||incoming.title;
   out.type=base.type||incoming.type;
+  out.category=base.category||incoming.category||"";
+  out.songTypeRaw=incoming.songTypeRaw||base.songTypeRaw||"";
   out.work=base.work||incoming.work||"";
+  out.workId=base.workId||incoming.workId||"";
+  out.workIds=uniq([...(base.workIds||[]),...(incoming.workIds||[])]);
   out.role=base.role||incoming.role||"";
   out.character=base.character||incoming.character||"";
   out.circle=base.circle||incoming.circle||"";
@@ -282,7 +292,7 @@ function mergeTrack(base,incoming){
   out.mediaCandidates=uniqMedia([...(base.mediaCandidates||[]),...(incoming.mediaCandidates||[]),base.media,incoming.media]);
   if(!out.media&&out.mediaCandidates.length)out.media=out.mediaCandidates[0];
   out.thumb=base.thumb||incoming.thumb||"";
-  out.source=base.source||incoming.source||null;
+  out.source=incoming.source||base.source||null;
   out.touhoudbId=incoming.touhoudbId||base.touhoudbId;
   out.aliases=uniq([...(base.aliases||[]),...(incoming.aliases||[])]);
   out.moods=uniq([...(base.moods||[]),...(incoming.moods||[])]);
@@ -292,15 +302,22 @@ function mergeTrack(base,incoming){
   out.ratingScore=Math.max(Number(base.ratingScore)||0,Number(incoming.ratingScore)||0);
   out.favoritedTimes=Math.max(Number(base.favoritedTimes)||0,Number(incoming.favoritedTimes)||0);
   out.hitCount=Math.max(Number(base.hitCount)||0,Number(incoming.hitCount)||0);
+  const minRank=(a,b)=>{a=Number(a)||0;b=Number(b)||0;return a&&b?Math.min(a,b):(a||b||null)};
+  out.globalRank=minRank(base.globalRank,incoming.globalRank);
+  out.globalScore=Math.max(Number(base.globalScore)||0,Number(incoming.globalScore)||0);
+  out.popularityRank=minRank(base.popularityRank,incoming.popularityRank);
+  out.popularityScore=Math.max(Number(base.popularityScore)||0,Number(incoming.popularityScore)||0);
+  out.influenceRank=minRank(base.influenceRank,incoming.influenceRank);
+  out.influenceScore=Math.max(Number(base.influenceScore)||0,Number(incoming.influenceScore)||0);
+  out.derivativeCount=Math.max(Number(base.derivativeCount)||0,Number(incoming.derivativeCount)||0);
+  out.derivativeCircleCount=Math.max(Number(base.derivativeCircleCount)||0,Number(incoming.derivativeCircleCount)||0);
+  out.derivativeAlbumCount=Math.max(Number(base.derivativeAlbumCount)||0,Number(incoming.derivativeAlbumCount)||0);
   out.year=base.year||incoming.year||null;
   return out;
 }
 function remember(t){
   if(!t?.id)return t;
   const direct=state.known.get(t.id);
-  if(t.fullIndex&&!direct){
-    state.known.set(t.id,t);state.aliases.set(t.id,t.id);return t;
-  }
   if(direct){
     const merged=mergeTrack(direct,t);
     state.known.set(direct.id,merged);
