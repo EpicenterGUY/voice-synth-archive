@@ -125,3 +125,15 @@
 - 화면 DOM에는 60곡씩만 표시하지만 검색/통계 데이터는 전체 메타 인덱스를 사용
 - 전체 샤드는 별도 Cache Storage에 보관하여 앱 업데이트 후에도 재다운로드를 최소화
 - 전체 데이터셋 갱신 시 샤드 캐시 자동 교체
+
+
+## v0.8.1 — Full-index media expansion / fixed archive ranking
+
+- TouhouDB 전체 189,002곡 정적 전곡 인덱스 사용
+- PV뿐 아니라 WebLinks의 허용 도메인도 재생 후보로 수집
+- 허용: YouTube / NicoNico / SoundCloud / Piapro / Bilibili / Bandcamp
+- Vimeo 및 임의 도메인 제외
+- 인앱 임베드 형식이 확실하지 않은 허용 링크는 외부 재생으로 유지
+- 순위 표시는 항상 128,040곡 중 n위
+- FULL INDEX의 189,002곡 실제 점수 백분위를 128,040곡 스케일로 변환
+- 상위 퍼센트는 동일 전수 백분위 기반
