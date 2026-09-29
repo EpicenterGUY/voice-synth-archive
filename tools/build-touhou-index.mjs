@@ -158,11 +158,42 @@ async function main(){
   };
   await Promise.all(Array.from({length:CONCURRENCY},worker));
   let tracks=results.flat().filter(x=>x?.i);
-  const byId=new Map(tracks.map(x=>[x.i,x])),relations=new Map();
-  for(const t of tracks)if(t.o)relations.set(t.o,(relations.get(t.o)||0)+1);
-  const score=t=>t.r*4+Math.log10(t.f+1)*14+Math.log10(t.h+1)*4+(relations.get(t.i)||0)*3+(t.p.length?4:0);
-  tracks.sort((a,b)=>score(b)-score(a)||b.r-a.r||a.i-b.i);
-  tracks.forEach((t,idx)=>{t.q=idx+1;t.s=Math.round(score(t)*100)/100});
+  const byId=new Map(tracks.map(x=>[x.i,x]));
+  const relations=new Map(),childCircles=new Map(),childAlbums=new Map(),childMedia=new Map();
+  for(const t of tracks){
+    if(!t.o)continue;
+    relations.set(t.o,(relations.get(t.o)||0)+1);
+    if(t.c){
+      if(!childCircles.has(t.o))childCircles.set(t.o,new Set());
+      childCircles.get(t.o).add(t.c);
+    }
+    if(t.l){
+      if(!childAlbums.has(t.o))childAlbums.set(t.o,new Set());
+      childAlbums.get(t.o).add(t.l);
+    }
+    if(t.p?.length)childMedia.set(t.o,(childMedia.get(t.o)||0)+1);
+  }
+  const popularity=t=>{
+    const rating=Math.max(0,Number(t.r)||0),fav=Math.max(0,Number(t.f)||0),hits=Math.max(0,Number(t.h)||0);
+    const providers=new Set((t.p||[]).map(x=>x?.[0]).filter(Boolean)).size;
+    return rating*5+Math.log10(fav+1)*18+Math.log10(hits+1)*6+Math.min(4,providers)*2;
+  };
+  const influence=t=>{
+    if(t.t)return 0;
+    const children=relations.get(t.i)||0,circles=childCircles.get(t.i)?.size||0,albums=childAlbums.get(t.i)?.size||0,mediaChildren=childMedia.get(t.i)||0;
+    return Math.log10(children+1)*34+Math.log10(circles+1)*22+Math.log10(albums+1)*14+Math.log10(mediaChildren+1)*6;
+  };
+  const composite=t=>popularity(t)+influence(t);
+  const byComposite=[...tracks].sort((a,b)=>composite(b)-composite(a)||popularity(b)-popularity(a)||b.r-a.r||a.i-b.i);
+  byComposite.forEach((t,idx)=>{t.q=idx+1;t.s=Math.round(composite(t)*100)/100});
+  const byPopularity=[...tracks].sort((a,b)=>popularity(b)-popularity(a)||b.r-a.r||a.i-b.i);
+  byPopularity.forEach((t,idx)=>{t.qp=idx+1;t.sp=Math.round(popularity(t)*100)/100});
+  const originals=tracks.filter(t=>!t.t).sort((a,b)=>influence(b)-influence(a)||popularity(b)-popularity(a)||a.i-b.i);
+  originals.forEach((t,idx)=>{
+    t.qi=idx+1;t.si=Math.round(influence(t)*100)/100;
+    t.dc=relations.get(t.i)||0;t.dsc=childCircles.get(t.i)?.size||0;t.da=childAlbums.get(t.i)?.size||0;
+  });
+  tracks=byComposite;
   const providers={},counts={original:0,arrangement:0,mediaCandidates:0};
   for(const t of tracks){
     t.t?counts.arrangement++:counts.original++;
@@ -179,7 +210,13 @@ async function main(){
   const manifest={
     schema:1,source:"TouhouDB",api:API,generatedAt:new Date().toISOString(),
     totalCount:total,indexed:tracks.length,shardSize:SHARD_SIZE,shardCount,files,
-    counts,providers,allowedProviders:[...ALLOWED],ranking:"full-index composite score"
+    counts,providers,allowedProviders:[...ALLOWED],
+    ranking:{
+      version:2,
+      composite:"popularity + original influence",
+      popularity:"rating*5 + log10(favorites+1)*18 + log10(hits+1)*6 + media-provider bonus",
+      influence:"original only: derivative tracks + distinct circles + distinct albums + playable derivative bonus"
+    }
   };
   await fs.writeFile(path.join(OUT,"manifest.json"),JSON.stringify(manifest,null,2)+"\n");
   console.log(JSON.stringify(manifest,null,2));
