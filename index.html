@@ -3178,6 +3178,67 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
 @media(max-width:560px){#icebergPanel .waterline{display:none!important}}
 @media(prefers-reduced-motion:reduce){#icebergPanel .tier{transition:none!important}}
 </style>
+<style id="v39104IcebergExploreStyle">
+/* v39.104 · Iceberg Explore HUD 1.0 */
+#icebergPanel .ice104-hud{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;
+  margin:10px 12px 0;padding:10px 12px;border:1px solid rgba(126,209,238,.16);border-radius:14px;
+  background:linear-gradient(135deg,rgba(11,35,52,.88),rgba(7,23,38,.94));
+  box-shadow:inset 0 1px rgba(255,255,255,.04)
+}
+#icebergPanel .ice104-location{min-width:0}
+#icebergPanel .ice104-location small{display:block;color:#6fb7d2;font-size:7px;font-weight:950;letter-spacing:.13em}
+#icebergPanel .ice104-location b{display:block;margin-top:2px;color:#e8faff;font-size:14px;line-height:1.1}
+#icebergPanel .ice104-location span{display:block;margin-top:3px;color:#7f9fb3;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#icebergPanel .ice104-actions{display:flex;gap:6px;align-items:center}
+#icebergPanel .ice104-actions button{
+  min-height:36px;padding:0 10px;border:1px solid rgba(117,203,234,.16);border-radius:10px;
+  background:#0d2a3b;color:#c9effc;font-size:9px;font-weight:900;touch-action:manipulation
+}
+#icebergPanel .ice104-actions button:hover{background:#12374d}
+#icebergPanel .ice104-actions button:disabled{opacity:.3;cursor:default}
+#icebergPanel .ice104-actions button[data-ice104="random"]{
+  background:linear-gradient(135deg,#17425a,#303c69);color:#e7f9ff
+}
+#icebergPanel .ice104-depth-rail{
+  position:absolute;top:18px;right:7px;bottom:20px;width:34px;z-index:6;pointer-events:none;
+  border-right:1px solid rgba(103,175,205,.16)
+}
+#icebergPanel .ice104-depth-mark{
+  position:absolute;right:4px;top:var(--p);transform:translateY(-50%);
+  color:#547b91;font-size:6px;font-weight:900;white-space:nowrap
+}
+#icebergPanel .ice104-depth-mark:after{
+  content:"";position:absolute;right:-5px;top:50%;width:5px;border-top:1px solid rgba(103,175,205,.3)
+}
+#icebergPanel .ice104-depth-cursor{
+  position:absolute;right:-2px;top:var(--cursor-p,4%);width:7px;height:7px;border-radius:50%;
+  transform:translate(50%,-50%);background:#bff1ff;box-shadow:0 0 12px rgba(140,225,255,.8);
+  transition:top .32s cubic-bezier(.2,.8,.2,1)
+}
+#icebergPanel.ice104-focused .tier.ice104-far{opacity:.47;filter:saturate(.72) brightness(.82)}
+#icebergPanel.ice104-focused .tier.ice104-near{opacity:.76;filter:saturate(.9) brightness(.94)}
+#icebergPanel.ice104-focused .tier.active{
+  opacity:1!important;transform:scale(1.022);z-index:4;
+  filter:drop-shadow(0 0 15px rgba(152,224,255,.38)) brightness(1.1)!important
+}
+#icebergPanel .tier:focus-visible{outline:2px solid #bdefff;outline-offset:3px}
+#icebergPanel .tier[aria-busy="true"]{cursor:progress}
+@media(max-width:699px){
+  #icebergPanel .ice104-hud{position:sticky;top:6px;z-index:16;margin:7px 7px 0;padding:8px 9px;backdrop-filter:blur(14px)}
+  #icebergPanel .ice104-location b{font-size:12px}
+  #icebergPanel .ice104-location span{font-size:8px}
+  #icebergPanel .ice104-actions{gap:4px}
+  #icebergPanel .ice104-actions button{min-height:34px;padding:0 8px;font-size:8px}
+  #icebergPanel .ice104-depth-rail{display:none}
+  #icebergPanel.ice104-focused .tier.ice104-far{opacity:.62}
+}
+@media(max-width:430px){
+  #icebergPanel .ice104-hud{grid-template-columns:1fr}
+  #icebergPanel .ice104-actions{display:grid;grid-template-columns:1fr 1fr 1fr}
+  #icebergPanel .ice104-actions button{width:100%}
+}
+</style>
 </head>
 <body>
 <div class="app">
@@ -3270,7 +3331,22 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
         <div><h2 id="icebergTitle">조회수 빙산</h2><p id="icebergSub">곡 수에 따라 폭·길이·수심이 달라지는 동적 빙산입니다. 층을 누르면 바로 탐색합니다.</p></div>
         <div class="pill" id="iceYear">전체 연도</div>
       </div>
+      <div class="ice104-hud" id="ice104Hud">
+        <div class="ice104-location"><small>DIVE DEPTH</small><b id="ice104Depth">전체 빙산</b><span id="ice104Layer">층을 선택해 탐사를 시작하세요</span></div>
+        <div class="ice104-actions">
+          <button type="button" data-ice104="up" aria-label="한 층 위로">↑ 얕게</button>
+          <button type="button" data-ice104="random">⤨ 랜덤층</button>
+          <button type="button" data-ice104="down" aria-label="한 층 아래로">↓ 깊게</button>
+        </div>
+      </div>
       <div class="iceberg-wrap">
+        <div class="ice104-depth-rail" aria-hidden="true">
+          <span class="ice104-depth-mark" style="--p:4%">0m</span>
+          <span class="ice104-depth-mark" style="--p:30%">1,000m</span>
+          <span class="ice104-depth-mark" style="--p:67%">3,000m</span>
+          <span class="ice104-depth-mark" style="--p:95%">4,500m+</span>
+          <i class="ice104-depth-cursor" id="ice104DepthCursor"></i>
+        </div>
         <div class="waterline"><span>수면선</span></div>
         <div class="iceberg" id="iceberg"></div>
       </div>
@@ -3398,7 +3474,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.103.0 · Iceberg Depth 3.0 · Queue Stability 1.0 · Ocean HUD 2.0 · Dive Performance 1.0 · Direct APK Update 1.0 · Search Fix · Rank Turbo 1.0 · Native Brand 0.2 · Android Shell 0.1 · App Foundation 1.0 · Cross-Genre Bridge 1.0 · Relation Trust 3.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.104.0 · Iceberg Explore HUD 1.0 · Iceberg Depth 3.0 · Queue Stability 1.0 · Ocean HUD 2.0 · Dive Performance 1.0 · Direct APK Update 1.0 · Search Fix · Rank Turbo 1.0 · Native Brand 0.2 · Android Shell 0.1 · App Foundation 1.0 · Cross-Genre Bridge 1.0 · Relation Trust 3.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -5066,17 +5142,83 @@ function icebergGeometry103(t,index,total,maxCount){
   return {width,height,gap,shift:shifts[index]||0,clip:clips[index%clips.length],density:Math.round(density*100),zone,bg,depth:ICEBERG_DEPTH_LABELS_103[index]||""};
 }
 
+const ICEBERG_TIER_KEY_104="vsa.iceberg.tier.v1";
+let icebergTierRetry104=0;
+
+function persistTier104(tierId){
+  try{localStorage.setItem(ICEBERG_TIER_KEY_104,tierId||"all")}catch(_){}
+}
+function currentTierIndex104(){
+  return TIERS.findIndex(t=>t.id===state.tier);
+}
+function queueTierFlush104(){
+  clearTimeout(icebergTierRetry104);
+  icebergTierRetry104=setTimeout(()=>{
+    if(!state.pendingTierLoad)return;
+    if(state.busy){queueTierFlush104();return;}
+    flushPendingTierLoad103();
+  },140);
+}
 function requestTierLoad103(tierId){
-  if(!TIERS.some(t=>t.id===tierId))return;
+  if(tierId!=="all"&&!TIERS.some(t=>t.id===tierId))return;
   state.tier=tierId;
+  persistTier104(tierId);
   const select=$("#tierSelect");if(select)select.value=tierId;
   state.offset=0;state.pendingTierLoad=tierId;
-  renderIceberg();updateSummary();flushPendingTierLoad103();
+  renderIceberg();updateSummary();flushPendingTierLoad103();queueTierFlush104();
   if(isFoldedLayout())setTimeout(()=>$("#resultsPanel")?.scrollIntoView({behavior:"smooth",block:"start"}),120);
 }
 function flushPendingTierLoad103(){
   if(state.busy||!state.pendingTierLoad)return;
   const tierId=state.pendingTierLoad;state.pendingTierLoad=null;loadSongs(true,tierId);
+}
+function stepTier104(delta){
+  let idx=currentTierIndex104();
+  if(idx<0)idx=delta>0?-1:TIERS.length;
+  idx=Math.max(0,Math.min(TIERS.length-1,idx+delta));
+  requestTierLoad103(TIERS[idx].id);
+}
+function randomTier104(){
+  const known=TIERS.map((t,i)=>({t,i,n:state.counts[t.id]})).filter(x=>x.n==null||(+x.n||0)>0);
+  const pool=known.length?known:TIERS.map((t,i)=>({t,i,n:null}));
+  const weighted=[];
+  for(const x of pool){
+    const n=x.n==null?1:Math.max(1,+x.n||0);
+    const w=Math.max(1,Math.min(7,Math.round(Math.pow(n,.16))));
+    for(let k=0;k<w;k++)weighted.push(x);
+  }
+  const pick=weighted[Math.floor(Math.random()*weighted.length)]||pool[0];
+  if(pick)requestTierLoad103(pick.t.id);
+}
+function bindIcebergHud104(){
+  const hud=$("#ice104Hud");if(!hud||hud.dataset.bound)return;
+  hud.dataset.bound="1";
+  hud.addEventListener("click",e=>{
+    const b=e.target.closest("[data-ice104]");if(!b)return;
+    const a=b.dataset.ice104;
+    if(a==="up")stepTier104(-1);
+    else if(a==="down")stepTier104(1);
+    else if(a==="random")randomTier104();
+  });
+}
+function updateIcebergHud104(){
+  bindIcebergHud104();
+  const idx=currentTierIndex104(),depth=$("#ice104Depth"),layer=$("#ice104Layer"),cursor=$("#ice104DepthCursor");
+  const up=document.querySelector('[data-ice104="up"]'),down=document.querySelector('[data-ice104="down"]');
+  const panel=$("#icebergPanel");
+  if(panel)panel.classList.toggle("ice104-focused",idx>=0);
+  if(idx<0){
+    if(depth)depth.textContent="전체 빙산";
+    if(layer)layer.textContent="층을 선택해 탐사를 시작하세요";
+    if(cursor)cursor.style.setProperty("--cursor-p","4%");
+    if(up)up.disabled=false;if(down)down.disabled=false;
+    return;
+  }
+  const t=TIERS[idx],n=state.counts[t.id],total=state.counts.total||0;
+  if(depth)depth.textContent=ICEBERG_DEPTH_LABELS_103[idx]||t.name;
+  if(layer)layer.textContent=t.name+" · "+t.range+(n==null?"":" · "+fmt(n)+currentUnit()+(total?" · "+pct(n,total):""));
+  if(cursor)cursor.style.setProperty("--cursor-p",(4+(idx/(TIERS.length-1))*91).toFixed(1)+"%");
+  if(up)up.disabled=idx<=0;if(down)down.disabled=idx>=TIERS.length-1;
 }
 function renderIceberg(loading=false){
   const box=$("#iceberg");if(!box)return;box.innerHTML="";
@@ -5087,16 +5229,23 @@ function renderIceberg(loading=false){
   const surfaceHeight=geoms.slice(0,2).reduce((sum,g)=>sum+g.height+g.gap,0)+14;
   const wrap=box.closest(".iceberg-wrap");
   if(wrap)wrap.style.setProperty("--waterline",Math.max(7,Math.min(27,surfaceHeight/fullHeight*100)).toFixed(2)+"%");
+  const activeIndex=currentTierIndex104();
   TIERS.forEach((t,index)=>{
-    const g=geoms[index],el=document.createElement("div");
-    el.className="tier"+(state.tier===t.id?" active":"")+(loading?" shimmer":"");
-    el.dataset.tier=t.id;el.dataset.zone=g.zone;
+    const g=geoms[index],el=document.createElement("div"),distance=activeIndex<0?0:Math.abs(index-activeIndex);
+    el.className="tier"+(state.tier===t.id?" active":"")+(loading?" shimmer":"")+(activeIndex>=0&&distance===1?" ice104-near":"")+(activeIndex>=0&&distance>1?" ice104-far":"");
+    el.dataset.tier=t.id;el.dataset.zone=g.zone;el.setAttribute("role","button");el.tabIndex=0;
+    el.setAttribute("aria-pressed",state.tier===t.id?"true":"false");el.setAttribute("aria-busy",loading?"true":"false");
+    el.setAttribute("aria-label",t.name+" "+t.range+" 구간 탐사");
     el.style.setProperty("--ice-width",g.width+"%");el.style.setProperty("--ice-h",g.height+"px");el.style.setProperty("--ice-gap",g.gap+"px");el.style.setProperty("--ice-shift",g.shift+"px");el.style.setProperty("--ice-clip",g.clip);el.style.setProperty("--ice-bg",g.bg);el.style.setProperty("--density",g.density+"%");
     el.style.color=index<=4?"#071523":"#edf8ff";
     const n=state.counts[t.id];
     el.innerHTML=`<div class="ice-tier-left"><div class="name">${t.name}<span class="ice-depth">${g.depth}</span></div><div class="range">${t.range}</div></div><div class="ice-tier-right"><div class="count">${n==null?"…":fmt(n)}${unit}</div><div class="pct">${n==null||!total?"":pct(n,total)}</div><div class="ice-density" title="층 밀도"><i></i></div></div>`;
-    el.onclick=()=>requestTierLoad103(t.id);box.appendChild(el);
+    const open=()=>requestTierLoad103(t.id);
+    el.onclick=open;
+    el.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();open();}};
+    box.appendChild(el);
   });
+  updateIcebergHud104();
 }
 function updateSummary(){
   const totalRaw=state.counts.total;
@@ -7974,7 +8123,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:(window.VocaDiveUpdater&&window.VocaDiveUpdater.version)||document.documentElement.dataset.vocaUi||"39.103.0",
+    version:(window.VocaDiveUpdater&&window.VocaDiveUpdater.version)||document.documentElement.dataset.vocaUi||"39.104.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -9605,6 +9754,11 @@ function setupMobileSectionNav(){
 
 function restore(){
   setupSelectors();
+  try{
+    const savedTier=localStorage.getItem(ICEBERG_TIER_KEY_104)||"all";
+    state.tier=(savedTier==="all"||TIERS.some(t=>t.id===savedTier))?savedTier:"all";
+    $("#tierSelect").value=state.tier;
+  }catch(_){state.tier="all";}
   const savedProxy=localStorage.getItem("vocaloidIcebergProxy")||"";
   $("#proxyInput").value=savedProxy;
   state.sourceMode=localStorage.getItem("vocaloidIcebergSourceMode")||"all_voice_synth_union";
@@ -9635,7 +9789,7 @@ $("#yearSelect").addEventListener("change",e=>{
     setTimeout(()=>$("#icebergPanel")?.scrollIntoView({behavior:"smooth",block:"start"}),120);
   }
 });
-$("#tierSelect").addEventListener("change",e=>{state.tier=e.target.value;state.offset=0;renderIceberg();updateSummary();});
+$("#tierSelect").addEventListener("change",e=>{requestTierLoad103(e.target.value||"all");});
 $("#sortSelect").addEventListener("change",()=>{ if(state.songs.length) (state.listMode==="free"?freeSearch(true):loadSongs(true)); });
 
 $("#sourceMode").addEventListener("change",e=>{
@@ -9803,7 +9957,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.103.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
+var VER="39.104.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -11653,17 +11807,17 @@ function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
   var base;
-  if(name==="detective")base=seq(["./detective-v11.js?v=39.103.0","./detective-v12.js?v=39.103.0","./detective-v13.js?v=39.103.0","./detective-v14.js?v=39.103.0","./detective-v16.js?v=39.103.0"]);
-  else if(name==="personal")base=seq(["./organizer-v22.js?v=39.103.0","./smart-v23.js?v=39.103.0","./playlist-v24.js?v=39.103.0"]);
-  else if(name==="discovery")base=load("./discovery-v20.js?v=39.103.0");
-  else if(name==="homeData")base=load("./vocalo-home-v28.js?v=39.103.0");
-  else if(name==="universe")base=load("./universe-search-v28.js?v=39.103.0");
-  else if(name==="player")base=load("./nico-player-v32.js?v=39.103.0");
-  else if(name==="deviceSync")base=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.103.0");
-  else if(name==="pwa")base=load("./pwa-v21.js?v=39.103.0");
+  if(name==="detective")base=seq(["./detective-v11.js?v=39.104.0","./detective-v12.js?v=39.104.0","./detective-v13.js?v=39.104.0","./detective-v14.js?v=39.104.0","./detective-v16.js?v=39.104.0"]);
+  else if(name==="personal")base=seq(["./organizer-v22.js?v=39.104.0","./smart-v23.js?v=39.104.0","./playlist-v24.js?v=39.104.0"]);
+  else if(name==="discovery")base=load("./discovery-v20.js?v=39.104.0");
+  else if(name==="homeData")base=load("./vocalo-home-v28.js?v=39.104.0");
+  else if(name==="universe")base=load("./universe-search-v28.js?v=39.104.0");
+  else if(name==="player")base=load("./nico-player-v32.js?v=39.104.0");
+  else if(name==="deviceSync")base=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.104.0");
+  else if(name==="pwa")base=load("./pwa-v21.js?v=39.104.0");
   else if(name==="v33")base=Promise.all([ensure("personal"),ensure("discovery")]).then(function(rows){
     if(rows.some(function(x){return x===false}))return false;
-    return seq(["./voca-app-v33.js?v=39.103.0","./voca-app-v33-1.js?v=39.103.0","./voca-app-v33-2.js?v=39.103.0","./voca-app-v33-3.js?v=39.103.0"]);
+    return seq(["./voca-app-v33.js?v=39.104.0","./voca-app-v33-1.js?v=39.104.0","./voca-app-v33-2.js?v=39.104.0","./voca-app-v33-3.js?v=39.104.0"]);
   });
   else base=Promise.resolve(false);
   var job=Promise.resolve(base).then(function(v){
@@ -11711,13 +11865,13 @@ if("requestIdleCallback" in window)requestIdleCallback(function(){ensure("pwa")}
 else setTimeout(function(){ensure("pwa")},12000);
 })();
 </script>
-<script src="./device-sync-v3938.js?v=39.103.0"></script>
-<script src="./app-platform-v3962.js?v=39.103.0"></script>
-<script src="./entitlements-v3962.js?v=39.103.0"></script>
-<script src="./account-v3962.js?v=39.103.0"></script>
-<script src="./native-shell-v3963.js?v=39.103.0"></script>
-<script src="./app-update-v3966.js?v=39.103.0"></script>
-<script src="./i18n-v3918.js?v=39.103.0"></script>\n<script src="./search-live-v3969.js?v=39.103.0"></script>
+<script src="./device-sync-v3938.js?v=39.104.0"></script>
+<script src="./app-platform-v3962.js?v=39.104.0"></script>
+<script src="./entitlements-v3962.js?v=39.104.0"></script>
+<script src="./account-v3962.js?v=39.104.0"></script>
+<script src="./native-shell-v3963.js?v=39.104.0"></script>
+<script src="./app-update-v3966.js?v=39.104.0"></script>
+<script src="./i18n-v3918.js?v=39.104.0"></script>\n<script src="./search-live-v3969.js?v=39.104.0"></script>
 
 <style id="v3946DivePathStyle">
 /* v39.46 · Dive Path 1.0 — graph-free guided discovery */
@@ -14722,5 +14876,5 @@ body.mr74-transitioning{overflow:hidden!important}
 }
 </style>
 
-<script src="./vocadive-ui-v3980.js?v=39.103.0"></script>\n</body>
+<script src="./vocadive-ui-v3980.js?v=39.104.0"></script>\n</body>
 </html>
