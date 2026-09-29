@@ -4,7 +4,7 @@ const catalog=window.TouhouCatalog;
 const player=new window.TouhouMediaPlayer();
 
 const state={
-  localOriginals:[],localArrangements:[],known:new Map(),aliases:new Map(),identities:new Map(),remoteItems:[],works:[],
+  localOriginals:[],localArrangements:[],known:new Map(),aliases:new Map(),identities:new Map(),remoteItems:[],works:[],archiveSource:null,
   mode:"all",filter:"전체",workFilter:"",sort:"recommend",selected:null,view:"home",diveDepth:0,diveRoot:null,icebergMode:"visibility",
   remote:{available:false,loading:false,start:0,total:0,catalogTotal:0,key:"",error:"",counts:{},seq:0},
   favorites:new Set(readJson("touhoudive:favorites",[])),
@@ -17,12 +17,14 @@ boot();
 
 async function boot(){
   try{
-    const [o,a,w]=await Promise.all([
+    const [o,a,w,archiveSource]=await Promise.all([
       fetch("./data/originals.json",{cache:"no-store"}).then(r=>r.json()),
       fetch("./data/arrangements.json",{cache:"no-store"}).then(r=>r.json()),
-      fetch("./data/works.json",{cache:"no-store"}).then(r=>r.json())
+      fetch("./data/works.json",{cache:"no-store"}).then(r=>r.json()),
+      fetch("./data/archive-sources.json",{cache:"no-store"}).then(r=>r.json()).catch(()=>null)
     ]);
     state.works=w;
+    state.archiveSource=archiveSource;
     catalog?.setWorks?.(w);
     state.localOriginals=o.map(x=>({...x,type:"original",circle:"ZUN",album:x.work,originalIds:[],remote:false}));
     state.localArrangements=a.map(x=>({...x,type:"arrangement",remote:false}));
@@ -561,7 +563,8 @@ function statValue(n){
   return v.toFixed(1);
 }
 function renderIcebergStats(pool,layerRows){
-  const total=pool.length;
+  const sampleTotal=pool.length;
+  const archiveTracks=Math.max(0,Number(state.archiveSource?.arrangementTracks)||0);
   const originals=pool.filter(t=>t.type==="original").length;
   const arrangements=pool.filter(t=>t.type==="arrangement").length;
   const circles=new Set(pool.filter(t=>t.type==="arrangement").map(t=>t.circle).filter(Boolean)).size;
@@ -571,23 +574,27 @@ function renderIcebergStats(pool,layerRows){
   const values=pool.map(t=>icebergMetricValue(t)).filter(Number.isFinite);
   const avg=values.length?values.reduce((a,b)=>a+b,0)/values.length:0;
   const max=values.length?Math.max(...values):0;
+  const coverage=archiveTracks?sampleTotal/archiveTracks*100:0;
   const meta=icebergModeMeta();
   $("#icebergModeHelp").textContent=meta.help;
   $("#icebergStats").innerHTML=[
-    ["전체 곡",total,"현재 로드/필터"],
-    ["원곡",originals,total?Math.round(originals/total*100)+"%":"0%"],
-    ["2차창작",arrangements,total?Math.round(arrangements/total*100)+"%":"0%"],
-    ["서클",circles,"중복 제외"],
-    ["작품",works,"현재 식별됨"],
-    ["영상",playable,total?Math.round(playable/total*100)+"%":"0%"],
+    ["2차창작 아카이브",archiveTracks?fmt(archiveTracks):"—",state.archiveSource?.source||"외부 전체 규모"],
+    ["현재 빙산 표본",fmt(sampleTotal),archiveTracks?"전체 규모 대비 "+(coverage<0.01?coverage.toFixed(3):coverage.toFixed(2))+"%":"현재 로드/필터"],
+    ["원곡 표본",fmt(originals),sampleTotal?Math.round(originals/sampleTotal*100)+"%":"0%"],
+    ["2차창작 표본",fmt(arrangements),sampleTotal?Math.round(arrangements/sampleTotal*100)+"%":"0%"],
+    ["서클 표본",fmt(circles),state.archiveSource?.circles?"/ 아카이브 "+fmt(state.archiveSource.circles):"중복 제외"],
+    ["작품 표본",fmt(works),"현재 식별됨"],
+    ["영상 표본",fmt(playable),sampleTotal?Math.round(playable/sampleTotal*100)+"%":"0%"],
     [meta.label+" 평균",statValue(avg),"중앙 "+statValue(median(values))],
-    [meta.label+" 최고",statValue(max),state.icebergMode==="hits"?"Hits 보유 "+hitCoverage+"곡":"현재 풀"]
+    [meta.label+" 최고",statValue(max),state.icebergMode==="hits"?"Hits 보유 "+hitCoverage+"곡":"현재 표본"],
+    ["앨범 아카이브",state.archiveSource?.albums?fmt(state.archiveSource.albums):"—",state.archiveSource?.events?fmt(state.archiveSource.events)+" 이벤트":"외부 통계"]
   ].map(x=>'<article><span>'+esc(x[0])+'</span><strong>'+esc(x[1])+'</strong><small>'+esc(x[2])+'</small></article>').join("");
-  $("#icebergRegionStats").innerHTML='<div class="region-stat-title"><strong>권역별 곡 수</strong><span>'+fmt(total)+'곡 분포</span></div>'+
+  $("#icebergRegionStats").innerHTML='<div class="region-stat-title"><strong>현재 빙산 표본 · 권역별 곡 수</strong><span>'+fmt(sampleTotal)+'곡'+(archiveTracks?" / 아카이브 "+fmt(archiveTracks):"")+'</span></div>'+
     layerRows.map(row=>{
-      const pct=total?Math.round(row.items.length/total*100):0;
+      const pct=sampleTotal?Math.round(row.items.length/sampleTotal*100):0;
       return '<div class="region-stat-row"><span>'+esc(row.layer.name)+'</span><div class="region-stat-bar"><i style="width:'+pct+'%"></i></div><strong>'+fmt(row.items.length)+'곡</strong><small>'+pct+'%</small></div>';
-    }).join("");
+    }).join("")+
+    '<div class="region-stat-foot">권역 분포는 현재 로드된 '+fmt(sampleTotal)+'곡 표본으로 계산됩니다. 12만+ 전체 아카이브를 임의 비율로 나누지 않습니다.</div>';
 }
 function renderIceberg(){
   const layers=[
