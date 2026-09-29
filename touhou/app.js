@@ -89,6 +89,15 @@ function bind(){
     if(e.key==="/"&&document.activeElement!==$("#searchInput")){e.preventDefault();$("#searchInput").focus();}
     if(e.key==="Escape"){closePanel();closeMenu();if(!player.shell.classList.contains("is-mini")&&!player.shell.hidden)player.minimize();}
   });
+  if("IntersectionObserver" in window){
+    const io=new IntersectionObserver(entries=>{
+      if(!entries.some(x=>x.isIntersecting))return;
+      if(!state.remote.available||state.remote.loading||state.remote.start>=state.remote.total)return;
+      if(!["home","discover","lineage"].includes(state.view))return;
+      loadRemote(false);
+    },{rootMargin:"700px 0px"});
+    io.observe($("#catalogFooter"));
+  }
 }
 function renderLocalFirst(){
   state.remoteItems=[];
@@ -179,7 +188,7 @@ async function warmCatalog(){
   state.remote.warming=true;
   const key=remoteKey();
   try{
-    for(let i=0;i<3;i++){
+    for(let i=0;i<6;i++){
       await new Promise(r=>setTimeout(r,220));
       if(key!==remoteKey()||state.remote.loading||state.remote.start>=state.remote.total)break;
       await loadRemote(false);
@@ -352,8 +361,13 @@ function syncCatalogFooter(){
     btn.disabled=true;btn.textContent="라이브 DB 오프라인";return;
   }
   btn.disabled=state.remote.loading||(state.remote.total>0&&state.remote.start>=state.remote.total);
-  btn.textContent=state.remote.loading?"불러오는 중…":(btn.disabled?"현재 범위 모두 로드":"더 불러오기");
-  meta.innerHTML='<span class="remote-pulse">TouhouDB</span> · '+fmt(state.remoteItems.length)+'곡 로드'+(state.remote.total?" / "+fmt(state.remote.total):"")+(state.remote.error?" · 오류 있음":"");
+  btn.textContent=state.remote.loading?"다음 페이지 불러오는 중…":(btn.disabled?"현재 API 범위 모두 로드":"다음 50곡");
+  const archiveTotal=Math.max(0,Number(state.archiveSource?.arrangementTracks)||0);
+  meta.innerHTML='<span class="remote-pulse">TouhouDB</span> · 현재 캐시 '+fmt(state.remoteItems.length)+'곡'+
+    (state.remote.total?" / API "+fmt(state.remote.total)+"곡":"")+
+    (archiveTotal?" · 아카이브 "+fmt(archiveTotal)+"곡":"")+
+    (!btn.disabled?" · 아래로 스크롤하면 계속 로드":"")+
+    (state.remote.error?" · 오류 있음":"");
 }
 function catalogTitle(q,count){
   if(q)return `전체 DB 검색 · ${count}곡 표시`;
@@ -511,6 +525,10 @@ function nav(view){
     renderCatalog("오늘의 다이브 입구");loadRemote(true);
   }else if(view==="discover"){
     renderCatalog("전체 카탈로그");
+  }else if(view==="dive"){
+    const stage=$("#diveStage"),empty=$("#diveEmpty");
+    if(state.selected)startDive(state.selected,{fresh:true});
+    else{stage.hidden=true;empty.hidden=false;}
   }else if(view==="lineage"){
     renderLineageOverview();
   }else if(view==="iceberg"){
