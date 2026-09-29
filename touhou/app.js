@@ -389,9 +389,10 @@ function renderGrid(list){
   grid.querySelectorAll("[data-dive]").forEach(b=>b.onclick=e=>{e.stopPropagation();startDive(byId(b.dataset.dive))});
   grid.querySelectorAll("[data-play]").forEach(b=>b.onclick=e=>{e.stopPropagation();playTrack(byId(b.dataset.play))});
   grid.querySelectorAll("[data-origin]").forEach(b=>b.onclick=e=>{e.stopPropagation();goToOriginal(byId(b.dataset.origin))});
+  grid.querySelectorAll("[data-external]").forEach(b=>b.onclick=e=>{e.stopPropagation();openTrustedExternal(byId(b.dataset.external))});
 }
 function card(t){
-  const playable=player.playable(t),canLookup=!playable&&state.remote.available,origins=originalNames(t);
+  const playable=player.playable(t),external=trustedExternalMedia(t),canLookup=!playable&&!external&&state.remote.available,origins=originalNames(t);
   const rank=trackRank(t);
   const by=t.type==="arrangement"
     ? [t.circle,(t.artists?.vocal||[]).join(", ")].filter(Boolean).join(" · ")
@@ -406,13 +407,15 @@ function card(t){
   return '<article class="track-card">'+
     '<button class="track-main" data-open="'+escAttr(t.id)+'">'+
       '<div class="track-thumb '+(t.thumb?"":"no-image")+'"'+thumb+'>'+
-        '<div class="track-badges"><span class="type-badge '+escAttr(t.type)+'">'+(t.type==="original"?"ORIGINAL":"ARRANGE")+'</span><span class="rank-badge">#'+rank.rank+'</span>'+(playable?'<span class="media-badge">▶ VIDEO</span>':'')+'</div>'+
+        '<div class="track-badges"><span class="type-badge '+escAttr(t.type)+'">'+(t.type==="original"?"ORIGINAL":"ARRANGE")+'</span><span class="rank-badge">'+esc(rankText(rank))+'</span><span class="percent-badge">'+esc(rankPercentText(rank))+'</span>'+(playable?'<span class="media-badge">▶ VIDEO</span>':'')+'</div>'+
       '</div>'+
       '<div class="track-copy"><h3>'+esc(t.title)+'</h3><div class="byline">'+esc(by||"정보 준비 중")+'</div><div class="origin-line">'+esc(originLine)+'</div>'+
         '<div class="tag-row">'+(t.moods||[]).slice(0,3).map(x=>'<span class="tag">'+esc(x)+'</span>').join("")+'</div>'+
       '</div>'+
     '</button>'+
-    '<div class="card-actions '+(originButton?"has-origin":"")+'"><button class="play-btn" data-play="'+escAttr(t.id)+'" '+(playable||canLookup?"":"disabled")+'>'+(playable?"▶ 재생":canLookup?"⌕ 영상 찾기":"영상 없음")+'</button>'+originButton+'<button class="dive-btn" data-dive="'+escAttr(t.id)+'">⌁ 다이브</button></div>'+
+    '<div class="card-actions '+(originButton?"has-origin":"")+'">'+
+      (playable?'<button class="play-btn" data-play="'+escAttr(t.id)+'">▶ 재생</button>':external?'<button class="play-btn external-play" data-external="'+escAttr(t.id)+'">↗ 외부 재생</button>':'<button class="play-btn" data-play="'+escAttr(t.id)+'" '+(canLookup?"":"disabled")+'>'+(canLookup?"⌕ 영상 찾기":"영상 없음")+'</button>')+
+      originButton+'<button class="dive-btn" data-dive="'+escAttr(t.id)+'">⌁ 다이브</button></div>'+
   '</article>';
 }
 function openTrack(t,opts={}){
@@ -425,20 +428,24 @@ function openTrack(t,opts={}){
   const artistLine=t.type==="arrangement"
     ? [t.circle&&"Circle "+t.circle,(t.artists?.arranger||[]).length&&"Arrange "+t.artists.arranger.join(", "),(t.artists?.vocal||[]).length&&"Vocal "+t.artists.vocal.join(", ")].filter(Boolean).join("<br>")
     : [t.work||t.artistString,t.role,t.character&&"Character "+t.character].filter(Boolean).join("<br>");
-  const source=t.media?.url||t.source?.url||"";
+  const external=trustedExternalMedia(t);
+  const source=t.media?.url||external?.url||t.source?.url||"";
   const rank=trackRank(t);
-  const canLookup=!player.playable(t)&&state.remote.available;
+  const canLookup=!player.playable(t)&&!external&&state.remote.available;
   const missing=(t.originalIds||[]).filter(id=>!byId(id));
   $("#detailContent").innerHTML=`
-    <div class="detail-hero"><div class="detail-kicker">${t.type==="original"?"ORIGINAL":"ARRANGEMENT"} · ${t.touhoudbId?(t.remote?"TOUHOUDB LIVE":"LOCAL + TOUHOUDB"):"LOCAL VERIFIED"}</div><div class="detail-rank"><strong>종합 ${rankText(rank)} / ${fmt(rank.total)}</strong><span>${rank.estimated?"아카이브 환산 · ":""}표본 #${rank.sampleRank||"—"}/${fmt(rank.sampleTotal)} · ${rank.score.toFixed(1)}pt</span></div><h2>${esc(t.title)}</h2><div class="detail-meta">${artistLine}<br>${t.year||""}${t.album?" · "+esc(t.album):""}</div></div>
+    <div class="detail-hero"><div class="detail-kicker">${t.type==="original"?"ORIGINAL":"ARRANGEMENT"} · ${t.touhoudbId?(t.remote?"TOUHOUDB LIVE":"LOCAL + TOUHOUDB"):"LOCAL VERIFIED"}</div><div class="detail-rank"><strong>${rankText(rank)}</strong><span>${rankPercentText(rank)} · ${rank.estimated?"현재는 아카이브 환산 · ":""}표본 #${rank.sampleRank||"—"}/${fmt(rank.sampleTotal)} · ${rank.score.toFixed(1)}pt</span></div><h2>${esc(t.title)}</h2><div class="detail-meta">${artistLine}<br>${t.year||""}${t.album?" · "+esc(t.album):""}</div></div>
     <div class="tag-row">${(t.moods||[]).map(x=>`<span class="tag">${esc(x)}</span>`).join("")}</div>
-    <div class="detail-actions"><button class="hot" id="detailPlay" ${player.playable(t)||canLookup?"":"disabled"}>${player.playable(t)?"▶ 앱에서 재생":canLookup?"⌕ 영상 찾기":"영상 없음"}</button><button id="detailDive">⌁ 다이브</button>${t.type==="arrangement"?'<button class="origin-jump" id="detailOrigin"><span>↖</span><strong>원곡으로</strong></button>':""}<button id="favBtn">${fav?"♥ 보관됨":"♡ 보관하기"}</button>${source?`<a href="${escAttr(source)}" target="_blank" rel="noopener">원본 링크 ↗</a>`:'<button disabled>원본 링크 없음</button>'}</div>
+    <div class="detail-actions"><button class="hot" id="detailPlay" ${player.playable(t)||external||canLookup?"":"disabled"}>${player.playable(t)?"▶ 앱에서 재생":external?"↗ 외부 재생":canLookup?"⌕ 영상 찾기":"영상 없음"}</button><button id="detailDive">⌁ 다이브</button>${t.type==="arrangement"?'<button class="origin-jump" id="detailOrigin"><span>↖</span><strong>원곡으로</strong></button>':""}<button id="favBtn">${fav?"♥ 보관됨":"♡ 보관하기"}</button>${source?`<a href="${escAttr(source)}" target="_blank" rel="noopener">원본 링크 ↗</a>`:'<button disabled>원본 링크 없음</button>'}</div>
     ${t.type==="arrangement"?lineageBox("이 어레인지의 원곡",origins,missing):lineageBox("이 원곡을 사용한 현재 로드 어레인지",children,[])}
     <div class="fact-box"><label>종합 순위 기준</label><div class="detail-meta">TouhouDB rating · 즐겨찾기 · DB 조회 · 관계량 · 재생 가능 영상을 혼합합니다. 현재 표본의 백분위를 128,040곡 아카이브 규모에 환산한 순위이며 전수 실측 순위는 아닙니다.</div></div>
     <div class="fact-box"><label>다이브 기준</label><div class="detail-meta">${esc(relationText(t))}</div></div>
     ${!opts.skipEnrich&&!t.touhoudbId&&state.remote.available?'<div class="detail-sync">TouhouDB에서 영상·통계를 보강하는 중…</div>':""}`;
   $("#detailPanel").classList.add("is-open");$("#detailPanel").setAttribute("aria-hidden","false");syncScrim();
-  const play=$("#detailPlay");if(play)play.onclick=async()=>{const ok=await playTrack(t);if(ok)closePanel();};
+  const play=$("#detailPlay");if(play)play.onclick=async()=>{
+    if(!player.playable(t)&&trustedExternalMedia(t)){openTrustedExternal(t);closePanel();return}
+    const ok=await playTrack(t);if(ok)closePanel();
+  };
   $("#detailDive").onclick=()=>{startDive(t,{fresh:true});closePanel();};
   const originBtn=$("#detailOrigin");if(originBtn)originBtn.onclick=()=>goToOriginal(t);
   $("#favBtn").onclick=()=>toggleFavorite(t);
@@ -501,6 +508,13 @@ function lineageBox(label,tracks,missing){
 async function hydrateAndOpen(id){
   if(!catalog||!String(id).startsWith("tdb-"))return;
   try{const t=await catalog.hydrate(id);if(t){remember(t);openTrack(t);renderCatalog();}}catch(e){toast("원곡 계보를 불러오지 못했습니다.");}
+}
+function trustedExternalMedia(t){
+  return (t?.mediaCandidates||[]).find(m=>m?.mode==="external"&&/^https?:\/\//.test(String(m.url||"")))||null;
+}
+function openTrustedExternal(t){
+  const media=trustedExternalMedia(t);if(!media?.url)return false;
+  try{window.open(media.url,"_blank","noopener,noreferrer");return true}catch(_){return false}
 }
 async function playTrack(t){
   if(!t)return false;
@@ -588,11 +602,11 @@ function startDive(t,opts={}){
   const originAction=t.type==="arrangement"?'<button class="origin-jump" data-current-origin="'+escAttr(t.id)+'">↖ 원곡</button>':"";
   const currentRank=trackRank(t);
   stage.innerHTML=originNode+
-    '<article class="dive-current"><small>CURRENT DEPTH · '+depthMeters+'m · 종합 '+rankText(currentRank)+'</small><h3>'+esc(t.title)+'</h3><p>'+esc(t.type==="arrangement"?(t.circle||"Arrangement"):(t.work||t.artistString||"Original"))+'</p><div class="dive-current-actions">'+playAction+originAction+'<button data-current-open="'+escAttr(t.id)+'">상세</button></div></article>'+
+    '<article class="dive-current"><small>CURRENT DEPTH · '+depthMeters+'m · '+rankText(currentRank)+' · '+rankPercentText(currentRank)+'</small><h3>'+esc(t.title)+'</h3><p>'+esc(t.type==="arrangement"?(t.circle||"Arrangement"):(t.work||t.artistString||"Original"))+'</p><div class="dive-current-actions">'+playAction+originAction+'<button data-current-open="'+escAttr(t.id)+'">상세</button></div></article>'+
     related.map((r,i)=>{
       const p=positions[i]||[50,88];
       const rank=trackRank(r.track);
-      return '<button class="dive-node" style="--x:'+p[0]+'%;--y:'+p[1]+'%" data-rel="'+escAttr(r.track.id)+'"><small>'+esc(r.reason)+' · 종합 '+rankText(rank)+'</small><strong>'+esc(r.track.title)+'</strong><span>'+esc(r.track.type==="arrangement"?(r.track.circle||""):(r.track.work||r.track.artistString||""))+'</span></button>';
+      return '<button class="dive-node" style="--x:'+p[0]+'%;--y:'+p[1]+'%" data-rel="'+escAttr(r.track.id)+'"><small>'+esc(r.reason)+' · '+rankText(rank)+' · '+rankPercentText(rank)+'</small><strong>'+esc(r.track.title)+'</strong><span>'+esc(r.track.type==="arrangement"?(r.track.circle||""):(r.track.work||r.track.artistString||""))+'</span></button>';
     }).join("")+
     '<div class="dive-depth-chip">DIVE '+(state.diveDepth+1)+' · '+depthMeters+'m · '+related.length+' SIGNALS</div>';
   stage.querySelectorAll("[data-rel]").forEach(b=>b.onclick=()=>startDive(byId(b.dataset.rel),{continue:true}));
@@ -809,9 +823,19 @@ function trackRank(t){
     estimated:total>state.rankTotal
   };
 }
+function rankPercentValue(rank){
+  if(!rank?.rank||!rank?.total)return null;
+  return rank.rank/rank.total*100;
+}
+function rankPercentText(rank){
+  const p=rankPercentValue(rank);
+  if(p===null)return"상위 —";
+  if(p<0.01)return"상위 <0.01%";
+  return "상위 "+p.toFixed(2)+"%";
+}
 function rankText(rank){
-  if(!rank||!rank.rank)return"—";
-  return "#"+fmt(rank.rank);
+  if(!rank||!rank.rank)return fmt(archiveRankTotal())+"곡 중 —위";
+  return fmt(rank.total)+"곡 중 "+fmt(rank.rank)+"위";
 }
 function sortList(list,sort){
   if(sort==="year-desc")return [...list].sort((a,b)=>(b.year||0)-(a.year||0));
