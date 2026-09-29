@@ -199,3 +199,6 @@ body[data-view="dive"] .iceberg-ui{display:none!important}
 .trusted-link-list a{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;padding:6px 8px;background:var(--panel2);color:var(--text);font-size:8px;text-decoration:none}
 .trusted-link-list a:hover{border-color:color-mix(in srgb,var(--cyan) 45%,var(--line));color:var(--cyan)}
 @media(max-width:520px){.rank-breakdown{grid-template-columns:1fr}.trusted-link-list a{font-size:7px}}
+
+.type-badge.fan-original{color:#8fe8ff;border-color:rgba(143,232,255,.22)}
+.type-badge.other{color:#c6b8ff;border-color:rgba(198,184,255,.22)}
