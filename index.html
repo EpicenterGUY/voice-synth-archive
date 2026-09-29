@@ -3133,6 +3133,51 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
   .v331-mini{left:10px!important;right:10px!important;width:auto!important;transform:none!important;bottom:calc(84px + env(safe-area-inset-bottom))!important}
 }
 </style>
+<style id="v39103IcebergDepthStyle">
+/* v39.103 · Iceberg Depth 3.0 */
+#icebergPanel .iceberg-wrap{
+  --waterline:14%;min-height:760px;overflow:hidden;isolation:isolate;
+  background:radial-gradient(ellipse at 50% 2%,rgba(226,250,255,.26),transparent 22%),radial-gradient(ellipse at 18% 16%,rgba(100,216,255,.12),transparent 28%),linear-gradient(180deg,#17334a 0 12%,#0b2539 12% 30%,#071c30 30% 54%,#061523 54% 74%,#030b15 100%)!important
+}
+#icebergPanel .iceberg-wrap:before{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;background:linear-gradient(112deg,transparent 8%,rgba(161,231,255,.08) 19%,transparent 31%),linear-gradient(78deg,transparent 52%,rgba(94,188,225,.05) 62%,transparent 73%);mix-blend-mode:screen}
+#icebergPanel .iceberg-wrap:after{content:"";position:absolute;left:0;right:0;bottom:0;height:48%;pointer-events:none;z-index:1;background:linear-gradient(180deg,transparent,rgba(1,5,12,.44) 62%,rgba(0,3,8,.82))}
+#icebergPanel .waterline{top:var(--waterline)!important;left:8px;right:8px;z-index:5;border-top:1px solid rgba(149,231,255,.72);filter:drop-shadow(0 0 8px rgba(104,211,255,.34))}
+#icebergPanel .waterline:after{content:"";position:absolute;left:0;right:0;top:-4px;height:8px;background:linear-gradient(90deg,transparent,rgba(174,240,255,.12),transparent);pointer-events:none}
+#icebergPanel .waterline span{right:8px;top:-18px;padding:2px 7px;border-radius:999px;background:rgba(7,31,45,.72);backdrop-filter:blur(7px);color:#bcefff;font-size:9px;font-weight:900;letter-spacing:.08em}
+#icebergPanel .iceberg{height:auto!important;min-height:720px;justify-content:flex-start!important;gap:0!important;padding:14px 0 28px;position:relative;z-index:3}
+#icebergPanel .tier{
+  width:var(--ice-width,80%)!important;min-height:var(--ice-h,48px)!important;height:var(--ice-h,48px);
+  margin-left:var(--ice-shift,0px);margin-bottom:var(--ice-gap,3px);padding:7px 15px;border-radius:10px;
+  clip-path:var(--ice-clip,polygon(2% 0,98% 2%,100% 88%,94% 100%,4% 97%,0 15%));
+  background:var(--ice-bg)!important;border-color:rgba(213,246,255,.18)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.20),inset 0 -12px 26px rgba(0,12,28,.16);
+  transition:width .26s ease,min-height .26s ease,filter .18s ease,margin .22s ease;touch-action:manipulation;contain:layout paint style
+}
+#icebergPanel .tier:hover{filter:brightness(1.12) saturate(1.08)!important}
+#icebergPanel .tier.active{border-color:rgba(255,255,255,.92)!important;filter:drop-shadow(0 0 13px rgba(152,224,255,.32)) brightness(1.08)}
+#icebergPanel .tier .ice-tier-left{min-width:0}
+#icebergPanel .tier .name{display:flex;gap:7px;align-items:center;font-size:12px;line-height:1.1}
+#icebergPanel .tier .ice-depth{flex:0 0 auto;padding:2px 5px;border:1px solid currentColor;border-radius:999px;font-size:7px;font-weight:950;letter-spacing:.05em;opacity:.64}
+#icebergPanel .tier .range{margin-top:3px;font-size:9px;opacity:.7}
+#icebergPanel .tier .ice-tier-right{text-align:right;min-width:80px}
+#icebergPanel .tier .count{font-size:13px}
+#icebergPanel .tier .pct{font-size:8px}
+#icebergPanel .tier .ice-density{width:70px;height:3px;margin:5px 0 0 auto;border-radius:99px;overflow:hidden;background:rgba(2,13,24,.28)}
+#icebergPanel .tier .ice-density i{display:block;height:100%;width:var(--density,35%);border-radius:inherit;background:currentColor;opacity:.55}
+#icebergPanel .tier[data-zone="abyss"]{box-shadow:inset 0 1px rgba(255,255,255,.08),inset 0 -20px 34px rgba(0,0,0,.28)}
+#icebergPanel .legend span:first-child:before{content:"△ ";color:#bcefff}
+#icebergPanel .legend span:nth-child(2):before{content:"▽ ";color:#517b9c}
+@media(max-width:699px){
+  #icebergPanel .iceberg-wrap{min-height:auto!important;padding:13px 4px 17px!important}
+  #icebergPanel .iceberg{min-height:0!important;padding:8px 0 14px!important}
+  #icebergPanel .tier{width:max(72%,var(--ice-width,86%))!important;min-height:max(48px,var(--ice-h,48px))!important;height:auto!important;padding:7px 11px!important;margin-bottom:max(3px,var(--ice-gap,3px))!important}
+  #icebergPanel .tier .ice-tier-right{min-width:70px}
+  #icebergPanel .tier .ice-density{width:58px}
+}
+@media(max-width:430px){#icebergPanel .tier{width:max(78%,var(--ice-width,88%))!important}#icebergPanel .tier .name{font-size:11px}#icebergPanel .tier .ice-depth{font-size:6px}}
+@media(max-width:560px){#icebergPanel .waterline{display:none!important}}
+@media(prefers-reduced-motion:reduce){#icebergPanel .tier{transition:none!important}}
+</style>
 </head>
 <body>
 <div class="app">
@@ -3222,7 +3267,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
   <div class="main">
     <section class="panel" id="icebergPanel">
       <div class="panel-head">
-        <div><h2 id="icebergTitle">조회수 빙산</h2><p id="icebergSub">각 층을 누르면 해당 구간으로 바로 검색합니다.</p></div>
+        <div><h2 id="icebergTitle">조회수 빙산</h2><p id="icebergSub">곡 수에 따라 폭·길이·수심이 달라지는 동적 빙산입니다. 층을 누르면 바로 탐색합니다.</p></div>
         <div class="pill" id="iceYear">전체 연도</div>
       </div>
       <div class="iceberg-wrap">
@@ -3230,8 +3275,8 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
         <div class="iceberg" id="iceberg"></div>
       </div>
       <div class="legend">
-        <span>상단 = 극소수 초대형 히트</span>
-        <span>하단 = 방대한 발굴·미발견 영역</span>
+        <span>표층 = 적고 강한 초대형 히트</span>
+        <span>심층 = 곡 수에 따라 더 길고 어두운 발굴 영역</span>
         <span>모든 등급명 한국어 표기</span><span id="sourceLegend">집계: VOCALOID + UTAU + Synthesizer V 오리지널 통합</span><span>하위 구간: 인기권→주목권→인지권→탐색권→희소권→심층권→미발견권</span>
       </div>
     </section>
@@ -3353,7 +3398,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.102.0 · Ocean HUD 2.0 · Dive Performance 1.0 · Direct APK Update 1.0 · Search Fix · Rank Turbo 1.0 · Native Brand 0.2 · Android Shell 0.1 · App Foundation 1.0 · Cross-Genre Bridge 1.0 · Relation Trust 3.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.103.0 · Iceberg Depth 3.0 · Queue Stability 1.0 · Ocean HUD 2.0 · Dive Performance 1.0 · Direct APK Update 1.0 · Search Fix · Rank Turbo 1.0 · Native Brand 0.2 · Android Shell 0.1 · App Foundation 1.0 · Cross-Genre Bridge 1.0 · Relation Trust 3.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -5002,26 +5047,56 @@ async function mapLimit(items, limit, worker){
   await Promise.all(runners); return out;
 }
 
+const ICEBERG_DEPTH_LABELS_103=["ICE CAP","SURFACE","80m","180m","320m","520m","780m","1100m","1500m","1950m","2450m","3050m","3750m","ABYSS 4500m+"];
+
+function icebergGeometry103(t,index,total,maxCount){
+  const raw=state.counts[t.id];
+  const n=raw==null?null:Math.max(0,+raw||0);
+  const base=[38,47,58,69,80,90,97,100,97,91,84,75,64,52][index]||70;
+  const density=n==null?.46:(maxCount>0?Math.log1p(n)/Math.log1p(maxCount):.35);
+  const share=n==null||!total?0:n/total;
+  const width=Math.max(34,Math.min(100,base+Math.round((density-.46)*10)));
+  const height=Math.max(42,Math.min(88,42+Math.round(density*31)+Math.min(9,Math.round(Math.sqrt(share)*34))+(index>10?(index-10)*2:0)));
+  const shifts=[0,-4,5,-7,4,-3,5,0,-5,4,-3,5,-4,2];
+  const clips=["polygon(4% 0,96% 2%,100% 83%,94% 100%,5% 96%,0 14%)","polygon(2% 5%,97% 0,100% 91%,91% 100%,4% 95%,0 20%)","polygon(5% 0,95% 4%,100% 78%,96% 100%,3% 97%,0 12%)","polygon(1% 3%,98% 0,100% 88%,93% 97%,6% 100%,0 18%)"];
+  const gap=Math.min(10,2+Math.floor(index/3));
+  const zone=index<=1?"surface":index<=6?"shelf":index<=10?"deep":"abyss";
+  const depthDark=Math.min(.38,index*.024);
+  const bg=`linear-gradient(104deg,rgba(255,255,255,${Math.max(.02,.15-index*.008)}),transparent 24%),linear-gradient(92deg,${t.c1},${t.c2}),linear-gradient(rgba(0,0,0,${depthDark}),rgba(0,0,0,${depthDark}))`;
+  return {width,height,gap,shift:shifts[index]||0,clip:clips[index%clips.length],density:Math.round(density*100),zone,bg,depth:ICEBERG_DEPTH_LABELS_103[index]||""};
+}
+
+function requestTierLoad103(tierId){
+  if(!TIERS.some(t=>t.id===tierId))return;
+  state.tier=tierId;
+  const select=$("#tierSelect");if(select)select.value=tierId;
+  state.offset=0;state.pendingTierLoad=tierId;
+  renderIceberg();updateSummary();flushPendingTierLoad103();
+  if(isFoldedLayout())setTimeout(()=>$("#resultsPanel")?.scrollIntoView({behavior:"smooth",block:"start"}),120);
+}
+function flushPendingTierLoad103(){
+  if(state.busy||!state.pendingTierLoad)return;
+  const tierId=state.pendingTierLoad;state.pendingTierLoad=null;loadSongs(true,tierId);
+}
 function renderIceberg(loading=false){
-  const box=$("#iceberg"); box.innerHTML="";
-  const total=state.counts.total||0;
-  const unit=currentUnit();
-  for(const t of TIERS){
-    const el=document.createElement("div");
+  const box=$("#iceberg");if(!box)return;box.innerHTML="";
+  const total=state.counts.total||0,unit=currentUnit();
+  const values=TIERS.map(t=>Math.max(0,+state.counts[t.id]||0)),maxCount=Math.max(1,...values);
+  const geoms=TIERS.map((t,i)=>icebergGeometry103(t,i,total,maxCount));
+  const fullHeight=geoms.reduce((sum,g)=>sum+g.height+g.gap,0)+42;
+  const surfaceHeight=geoms.slice(0,2).reduce((sum,g)=>sum+g.height+g.gap,0)+14;
+  const wrap=box.closest(".iceberg-wrap");
+  if(wrap)wrap.style.setProperty("--waterline",Math.max(7,Math.min(27,surfaceHeight/fullHeight*100)).toFixed(2)+"%");
+  TIERS.forEach((t,index)=>{
+    const g=geoms[index],el=document.createElement("div");
     el.className="tier"+(state.tier===t.id?" active":"")+(loading?" shimmer":"");
-    el.style.width=t.width+"%";
-    el.style.background=`linear-gradient(90deg,${t.c1},${t.c2})`;
-    el.style.color=t.id==="myth"||t.id==="ultra"||t.id==="legend"||t.id==="nearlegend"||t.id==="halltop"?"#071523":"#edf8ff";
+    el.dataset.tier=t.id;el.dataset.zone=g.zone;
+    el.style.setProperty("--ice-width",g.width+"%");el.style.setProperty("--ice-h",g.height+"px");el.style.setProperty("--ice-gap",g.gap+"px");el.style.setProperty("--ice-shift",g.shift+"px");el.style.setProperty("--ice-clip",g.clip);el.style.setProperty("--ice-bg",g.bg);el.style.setProperty("--density",g.density+"%");
+    el.style.color=index<=4?"#071523":"#edf8ff";
     const n=state.counts[t.id];
-    el.innerHTML=`<div><div class="name">${t.name}</div><div class="range">${t.range}</div></div>
-      <div><div class="count">${n==null?"…":fmt(n)}${unit}</div><div class="pct">${n==null||!total?"":pct(n,total)}</div></div>`;
-    el.onclick=()=>{
-      state.tier=t.id; $("#tierSelect").value=t.id; state.offset=0;
-      renderIceberg(); updateSummary(); loadSongs(true);
-      if(isFoldedLayout()) setTimeout(()=>$("#resultsPanel")?.scrollIntoView({behavior:"smooth",block:"start"}),120);
-    };
-    box.appendChild(el);
-  }
+    el.innerHTML=`<div class="ice-tier-left"><div class="name">${t.name}<span class="ice-depth">${g.depth}</span></div><div class="range">${t.range}</div></div><div class="ice-tier-right"><div class="count">${n==null?"…":fmt(n)}${unit}</div><div class="pct">${n==null||!total?"":pct(n,total)}</div><div class="ice-density" title="층 밀도"><i></i></div></div>`;
+    el.onclick=()=>requestTierLoad103(t.id);box.appendChild(el);
+  });
 }
 function updateSummary(){
   const totalRaw=state.counts.total;
@@ -5172,7 +5247,7 @@ async function refreshStats(){
     console.warn(e);
   }finally{
     renderIceberg(); updateSummary();
-    $("#refreshBtn").disabled=false; $("#songsBtn").disabled=false; state.busy=false;
+    $("#refreshBtn").disabled=false; $("#songsBtn").disabled=false; state.busy=false; flushPendingTierLoad103();
   }
 }
 function loadCacheForYear(y){
@@ -5317,39 +5392,31 @@ function setupRankObserver(){
   document.querySelectorAll(".song[data-content-id]").forEach(el=>state.rankObserver.observe(el));
 }
 
-async function loadSongs(reset=false){
-  if(state.busy)return;
-  const rankListSeq=(Number(window.__VSA_RANK_LIST_SEQ)||0)+1;
-  window.__VSA_RANK_LIST_SEQ=rankListSeq;
-  state.listMode="ranking";
-  if(reset){state.offset=0;state.songs=[];$("#titleFilter").value="";}
-  state.busy=true; $("#songsBtn").disabled=true; $("#loadMoreBtn").disabled=true;
-  const tier=TIERS.find(t=>t.id===state.tier)||null;
-  const sort=$("#sortSelect")?.value||"-viewCounter";
+async function loadSongs(reset=false,requestedTierId=null){
+  const targetTierId=requestedTierId||state.tier;
+  if(state.busy){if(reset&&requestedTierId)state.pendingTierLoad=requestedTierId;return;}
+  const rankListSeq=(Number(window.__VSA_RANK_LIST_SEQ)||0)+1;window.__VSA_RANK_LIST_SEQ=rankListSeq;
+  state.listMode="ranking";if(reset){state.offset=0;state.songs=[];$("#titleFilter").value="";}
+  state.busy=true;$("#songsBtn").disabled=true;$("#loadMoreBtn").disabled=true;
+  const tier=TIERS.find(t=>t.id===targetTierId)||null,sort=$("#sortSelect")?.value||"-viewCounter";
   $("#songList").innerHTML=state.songs.length?$("#songList").innerHTML:`<div class="empty">니코동에서 ${sourceDefinition().unit} 목록을 불러오는 중…</div>`;
   try{
     const d=await fetchNico({tier,year:state.year,sort,limit:100,offset:state.offset,mode:"ranking",applyYear:true,applyTier:true});
-    if(rankListSeq!==(Number(window.__VSA_RANK_LIST_SEQ)||0)||state.listMode!=="ranking")return;
+    if(rankListSeq!==(Number(window.__VSA_RANK_LIST_SEQ)||0)||state.listMode!=="ranking"||targetTierId!==state.tier)return;
     state.totalSongsInQuery=+d.meta.totalCount||0;
-    const safeBatch=filterAdultRows37(d.data||[],"ranking");
-    const rows=safeBatch.rows.map((x,i)=>({...x,__rank:state.offset+i+1}));
-    state.songs=reset?rows:state.songs.concat(rows);
-    state.offset=state.offset+(d.data||[]).length;
-    renderSongs();
+    const safeBatch=filterAdultRows37(d.data||[],"ranking"),rows=safeBatch.rows.map((x,i)=>({...x,__rank:state.offset+i+1}));
+    state.songs=reset?rows:state.songs.concat(rows);state.offset=state.offset+(d.data||[]).length;renderSongs();
     $("#loadMoreBtn").style.display=state.offset<state.totalSongsInQuery?"block":"none";
     $("#listTitle").textContent=sourceDefinition().label+" · "+(tier?tier.name:"전체 구간")+" 순위";
     $("#listSub").textContent=`${state.year==="all"?"전체 연도":state.year+"년"} · 총 ${fmt(state.totalSongsInQuery)}${sourceDefinition().unit} · ${sort.includes("viewCounter")?"조회수":"게시일"} 기준${adultFilterMode37()==="block"?" · 19+ 차단":""}`;
     setStatus("live","최신 스냅샷 연결");
   }catch(e){
-    if(rankListSeq!==(Number(window.__VSA_RANK_LIST_SEQ)||0)||state.listMode!=="ranking")return;
-    showApiFallback("빙산 조건 곡 목록을 불러오지 못했습니다.", TAG);
-    toast("앱 내부 API 연결 실패. 니코동 웹검색 버튼은 사용할 수 있습니다.");
-    console.warn(e);
+    if(rankListSeq!==(Number(window.__VSA_RANK_LIST_SEQ)||0)||state.listMode!=="ranking"||targetTierId!==state.tier)return;
+    showApiFallback("빙산 조건 곡 목록을 불러오지 못했습니다.", TAG);toast("앱 내부 API 연결 실패. 니코동 웹검색 버튼은 사용할 수 있습니다.");console.warn(e);
   }finally{
-    state.busy=false; $("#songsBtn").disabled=false; $("#loadMoreBtn").disabled=false;
+    state.busy=false;$("#songsBtn").disabled=false;$("#loadMoreBtn").disabled=false;flushPendingTierLoad103();
   }
 }
-
 
 
 
@@ -7907,7 +7974,7 @@ function ensureRouteError37(view){
 function statusClass37(ok,warn){return ok?"ok":warn?"warn":"bad"}
 async function collectDiagnostics37(){
   const d={
-    version:(window.VocaDiveUpdater&&window.VocaDiveUpdater.version)||document.documentElement.dataset.vocaUi||"39.102.0",
+    version:(window.VocaDiveUpdater&&window.VocaDiveUpdater.version)||document.documentElement.dataset.vocaUi||"39.103.0",
     route:window.__VSA37_CURRENT_ROUTE||"home",
     worker:localStorage.getItem("vocaloidIcebergProxy")||"",
     routeMode:(typeof state!=="undefined"&&state.route)?String(state.route):"",
@@ -9736,7 +9803,7 @@ if(!relayBase()){
 <script id="v37CriticalBoot">
 (function(){
 "use strict";
-var VER="39.102.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
+var VER="39.103.0",HK="vsa.home.v28.3960",SK="vsa.smart.v23",OK="vsa.organizer.v22",AK="vsa.home.active.v37",active=localStorage.getItem(AK)||"DAILY",busy=false,PAGE_SEED3941=(Date.now()^Math.floor(Math.random()*2147483647))>>>0;
 function E(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function F(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function L(k,f){try{return JSON.parse(localStorage.getItem(k)||"null")||f}catch(e){return f}}
@@ -11586,17 +11653,17 @@ function ensure(name){
   if(groups[name])return groups[name];
   groupState[name]="loading";
   var base;
-  if(name==="detective")base=seq(["./detective-v11.js?v=39.102.0","./detective-v12.js?v=39.102.0","./detective-v13.js?v=39.102.0","./detective-v14.js?v=39.102.0","./detective-v16.js?v=39.102.0"]);
-  else if(name==="personal")base=seq(["./organizer-v22.js?v=39.102.0","./smart-v23.js?v=39.102.0","./playlist-v24.js?v=39.102.0"]);
-  else if(name==="discovery")base=load("./discovery-v20.js?v=39.102.0");
-  else if(name==="homeData")base=load("./vocalo-home-v28.js?v=39.102.0");
-  else if(name==="universe")base=load("./universe-search-v28.js?v=39.102.0");
-  else if(name==="player")base=load("./nico-player-v32.js?v=39.102.0");
-  else if(name==="deviceSync")base=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.102.0");
-  else if(name==="pwa")base=load("./pwa-v21.js?v=39.102.0");
+  if(name==="detective")base=seq(["./detective-v11.js?v=39.103.0","./detective-v12.js?v=39.103.0","./detective-v13.js?v=39.103.0","./detective-v14.js?v=39.103.0","./detective-v16.js?v=39.103.0"]);
+  else if(name==="personal")base=seq(["./organizer-v22.js?v=39.103.0","./smart-v23.js?v=39.103.0","./playlist-v24.js?v=39.103.0"]);
+  else if(name==="discovery")base=load("./discovery-v20.js?v=39.103.0");
+  else if(name==="homeData")base=load("./vocalo-home-v28.js?v=39.103.0");
+  else if(name==="universe")base=load("./universe-search-v28.js?v=39.103.0");
+  else if(name==="player")base=load("./nico-player-v32.js?v=39.103.0");
+  else if(name==="deviceSync")base=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.103.0");
+  else if(name==="pwa")base=load("./pwa-v21.js?v=39.103.0");
   else if(name==="v33")base=Promise.all([ensure("personal"),ensure("discovery")]).then(function(rows){
     if(rows.some(function(x){return x===false}))return false;
-    return seq(["./voca-app-v33.js?v=39.102.0","./voca-app-v33-1.js?v=39.102.0","./voca-app-v33-2.js?v=39.102.0","./voca-app-v33-3.js?v=39.102.0"]);
+    return seq(["./voca-app-v33.js?v=39.103.0","./voca-app-v33-1.js?v=39.103.0","./voca-app-v33-2.js?v=39.103.0","./voca-app-v33-3.js?v=39.103.0"]);
   });
   else base=Promise.resolve(false);
   var job=Promise.resolve(base).then(function(v){
@@ -11644,13 +11711,13 @@ if("requestIdleCallback" in window)requestIdleCallback(function(){ensure("pwa")}
 else setTimeout(function(){ensure("pwa")},12000);
 })();
 </script>
-<script src="./device-sync-v3938.js?v=39.102.0"></script>
-<script src="./app-platform-v3962.js?v=39.102.0"></script>
-<script src="./entitlements-v3962.js?v=39.102.0"></script>
-<script src="./account-v3962.js?v=39.102.0"></script>
-<script src="./native-shell-v3963.js?v=39.102.0"></script>
-<script src="./app-update-v3966.js?v=39.102.0"></script>
-<script src="./i18n-v3918.js?v=39.102.0"></script>\n<script src="./search-live-v3969.js?v=39.102.0"></script>
+<script src="./device-sync-v3938.js?v=39.103.0"></script>
+<script src="./app-platform-v3962.js?v=39.103.0"></script>
+<script src="./entitlements-v3962.js?v=39.103.0"></script>
+<script src="./account-v3962.js?v=39.103.0"></script>
+<script src="./native-shell-v3963.js?v=39.103.0"></script>
+<script src="./app-update-v3966.js?v=39.103.0"></script>
+<script src="./i18n-v3918.js?v=39.103.0"></script>\n<script src="./search-live-v3969.js?v=39.103.0"></script>
 
 <style id="v3946DivePathStyle">
 /* v39.46 · Dive Path 1.0 — graph-free guided discovery */
@@ -14655,5 +14722,5 @@ body.mr74-transitioning{overflow:hidden!important}
 }
 </style>
 
-<script src="./vocadive-ui-v3980.js?v=39.102.0"></script>\n</body>
+<script src="./vocadive-ui-v3980.js?v=39.103.0"></script>\n</body>
 </html>
