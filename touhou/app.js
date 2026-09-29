@@ -56,7 +56,7 @@ function bind(){
     loadRemote(true);
     $("#searchInput").focus();
   };
-  $("#workSelect").addEventListener("change",e=>{state.workFilter=e.target.value;if(state.workFilter&&state.view==="home")setView("discover");renderCatalog();loadRemote(true);});
+  $("#workSelect").addEventListener("change",e=>{state.workFilter=e.target.value;if(state.workFilter&&state.view==="home")setView("discover");if(state.view==="iceberg")renderIceberg();else renderCatalog();loadRemote(true);});
   $("#sortSelect").addEventListener("change",e=>{state.sort=e.target.value;renderCatalog();loadRemote(true);});
   $("#loadMoreBtn").onclick=()=>loadRemote(false);
   $("#randomBtn").onclick=randomDive;$("#heroDiveBtn").onclick=randomDive;
@@ -67,8 +67,10 @@ function bind(){
   $("#scrim").onclick=()=>{closePanel();closeMenu();};
   $("#menuBtn").onclick=()=>{$("#sidebar").classList.toggle("is-open");syncScrim();};
   $("#themeBtn").onclick=toggleTheme;
-  $$("#modeTabs .mode-tab").forEach(btn=>btn.onclick=()=>{
-    state.mode=btn.dataset.mode;state.filter="전체";syncModeTabs();renderCatalog();loadRemote(true);
+  $("#modeTabs .mode-tab").forEach(btn=>btn.onclick=()=>{
+    state.mode=btn.dataset.mode;state.filter="전체";syncModeTabs();
+    if(state.view==="iceberg"){renderIceberg();loadRemote(true).then(()=>renderIceberg());}
+    else{renderCatalog();loadRemote(true);}
   });
   $$(".nav-item[data-view]").forEach(btn=>btn.onclick=()=>nav(btn.dataset.view));
   document.addEventListener("keydown",e=>{
