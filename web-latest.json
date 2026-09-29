@@ -1,6 +1,6 @@
 {
-  "version": "39.102.0",
+  "version": "39.103.0",
   "channel": "web",
-  "publishedAt": "2026-09-28T23:28:00+09:00",
-  "notes": "Cleans song descriptions, improves producer-name rescue, adds linked Piapro lyrics, forces Watch-to-mini handoff across menu changes, and opens saved-library songs in Watch."
+  "publishedAt": "2026-09-29T09:30:00+09:00",
+  "notes": "Rebuilds the iceberg as a dynamic depth map whose width and layer length react to song counts, adds depth/density cues, fixes rapid tier-switch stale results, and repairs the stale hard-refresh route."
 }
