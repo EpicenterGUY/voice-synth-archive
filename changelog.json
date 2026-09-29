@@ -1,11 +1,30 @@
 {
   "current": {
-    "version": "39.114.0",
+    "version": "39.115.0",
     "releasedAt": "2026-09-29",
-    "title": "Stability Pass · Discovery Missions",
-    "summary": "핫업데이트 시 새 CSS·이벤트가 안 붙을 수 있던 오류와 저장 탐사 8개 표시 제한을 수정하고, P 분석 보강과 Expedition Atlas Discovery Missions를 추가했습니다."
+    "title": "Discovery Passport · Personal Find Catalog",
+    "summary": "저장한 탐사 경로의 고유 발굴곡을 한곳에 모아 첫 발견층·재발견·희귀도·P/보컬/장르 힌트와 검색/필터/정렬을 제공하는 Discovery Passport를 추가했습니다."
   },
   "entries": [
+    {
+      "version": "39.115.0",
+      "date": "2026-09-29",
+      "title": "Discovery Passport · Personal Find Catalog",
+      "changes": [
+        "저장된 탐사 경로 전체에서 발견한 곡을 contentId 기준으로 합쳐 개인 발굴 도감인 DISCOVERY PASSPORT 추가",
+        "각 곡에 첫 발견층·첫 발견 시각·저장 탐사 재발견 횟수·방문 층 수·조회수를 표시",
+        "첫 발견층의 깊이와 조회수 희소성을 조합한 곡별 VocaDive 내부 희귀도 지표 추가",
+        "전체·저조회수·재발견·심해 첫 발견·1회 발견 필터 추가",
+        "희귀도순·조회수 낮은순·재발견순·최근발견순 정렬 추가",
+        "곡명·콘텐츠 ID·P·보컬·장르·태그 통합 검색 추가",
+        "도감 카드에서 기존 Watch 화면으로 바로 이동 가능",
+        "18개 단위 더 보기로 저장 발굴곡이 많아져도 모바일 화면이 과도하게 길어지지 않도록 처리",
+        "모바일 검색 중 전체 빙산 리렌더 후 키보드 포커스가 끊기는 문제를 완화하도록 검색창 포커스와 커서 위치 복원",
+        "곡별 희귀도 계산식 괄호 오류로 값이 0/100 쪽으로 몰릴 수 있던 문제를 배포 전 수정",
+        "v39.114 핫업데이트 안정화·Discovery Missions·P 분석 보강·저장 탐사 모두 보기 기능 유지",
+        "웹/PWA/서비스워커/Live Shell UI 버전과 캐시 키를 v39.115.0으로 동기화"
+      ]
+    },
     {
       "version": "39.114.0",
       "date": "2026-09-29",
