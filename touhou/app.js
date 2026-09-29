@@ -63,9 +63,9 @@ function bind(){
   $("#playableBtn").onclick=()=>{state.mode="all";state.filter="영상 있음";syncModeTabs();renderCatalog("인앱 재생 가능한 곡");loadRemote(true);};
   $("#refreshBtn").onclick=()=>loadRemote(true,true);
   $("#icebergRefresh").onclick=()=>renderIceberg();
-  $("#icebergModeTabs [data-ice-mode]").forEach(btn=>btn.onclick=()=>{
+  $$("#icebergModeTabs [data-ice-mode]").forEach(btn=>btn.onclick=()=>{
     state.icebergMode=btn.dataset.iceMode;
-    $("#icebergModeTabs [data-ice-mode]").forEach(x=>x.classList.toggle("is-active",x===btn));
+    $$("#icebergModeTabs [data-ice-mode]").forEach(x=>x.classList.toggle("is-active",x===btn));
     renderIceberg();
   });
   $("#panelClose").onclick=closePanel;
