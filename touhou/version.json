@@ -1,5 +1,5 @@
 {
-  "version": "0.6.1",
+  "version": "0.7.0",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-09-29",
@@ -53,6 +53,14 @@
     "archive-projected-ranking",
     "infinite-catalog-pagination",
     "dive-empty-height-fix",
-    "dive-resume-selected-track"
+    "dive-resume-selected-track",
+    "rank-top-percent",
+    "trusted-media-whitelist",
+    "soundcloud",
+    "piapro",
+    "bilibili",
+    "bandcamp",
+    "vimeo-excluded",
+    "trusted-external-fallback"
   ]
 }
