@@ -1,6 +1,6 @@
 {
-  "version": "39.108.0",
+  "version": "39.109.0",
   "channel": "web",
-  "publishedAt": "2026-09-29T11:18:00+09:00",
-  "notes": "Adds continuous iceberg voyage navigation: bridge songs now sail into their adjacent tier, inherit center focus after the tier finishes loading, keep a short voyage history with back navigation, and preserve Watch lookup for carried songs."
+  "publishedAt": "2026-09-29T11:28:00+09:00",
+  "notes": "Adds a vertical Dive Log depth map for the current iceberg voyage, showing visited tiers and center songs, session-persisted route history, deepest point stats, and clickable rewind-to-stop navigation."
 }
