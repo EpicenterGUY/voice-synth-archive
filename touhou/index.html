@@ -8,7 +8,7 @@
   <meta name="description" content="동방 Project 원곡과 2차창작 어레인지를 계보로 연결해 탐색하고 앱 안에서 영상을 재생하는 음악 탐색 앱.">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icon.svg">
-  <link rel="stylesheet" href="./styles.css?v=0.7.0">
+  <link rel="stylesheet" href="./styles.css?v=0.8.0">
 </head>
 <body data-view="home">
   <div class="app-shell">
@@ -32,7 +32,7 @@
       </nav>
 
       <div class="sidebar-footer">
-        <div class="build-chip"><span></span>TouhouDive v0.7.0 Alpha</div>
+        <div class="build-chip"><span></span>TouhouDive v0.8.0 Alpha</div>
         <button class="ghost-btn" id="themeBtn">◐ 테마 전환</button>
       </div>
     </aside>
@@ -85,7 +85,7 @@
       <section class="stats-row home-only" aria-label="카탈로그 상태">
         <article><span>원곡</span><strong id="statOriginal">0</strong><small id="statOriginalMeta">로컬 + 라이브</small></article>
         <article><span>2차창작</span><strong id="statArrangement">0</strong><small id="statArrangementMeta">TouhouDB 라이브</small></article>
-        <article><span>재생 가능</span><strong id="statMedia">0</strong><small id="statMediaMeta">현재 확인된 영상</small></article>
+        <article><span>재생 후보</span><strong id="statMedia">0</strong><small id="statMediaMeta">전체 인덱스 PV 후보</small></article>
         <article><span>전체 카탈로그</span><strong id="statLinks">0</strong><small id="statLinksMeta">연결 확인 중</small></article>
       </section>
 
@@ -205,8 +205,9 @@
     </div>
   </section>
 
-  <script src="./catalog.js?v=0.7.0"></script>
-  <script src="./media.js?v=0.7.0"></script>
-  <script src="./app.js?v=0.7.0" type="module"></script>
+  <script src="./catalog.js?v=0.8.0"></script>
+  <script src="./media.js?v=0.8.0"></script>
+  <script src="./full-index.js?v=0.8.0"></script>
+  <script src="./app.js?v=0.8.0" type="module"></script>
 </body>
 </html>
