@@ -115,3 +115,7 @@ repeating-linear-gradient(180deg,transparent 0 118px,rgba(255,255,255,.035) 119p
 
 .card-actions.has-origin{grid-template-columns:1fr 1fr 1fr}.card-actions.has-origin .origin-jump{min-width:0}
 @media(max-width:520px){.card-actions.has-origin{grid-template-columns:1fr 1fr 1fr}.card-actions.has-origin button{font-size:7px}}
+
+.dive-empty[hidden],.dive-stage[hidden]{display:none!important}
+body[data-view="home"] .dive-ui{display:none!important}
+body[data-view="dive"] .iceberg-ui{display:none!important}
