@@ -506,7 +506,7 @@ function openTrack(t,opts={}){
   const canLookup=!player.playable(t)&&!external&&state.remote.available;
   const missing=(t.originalIds||[]).filter(id=>!byId(id));
   $("#detailContent").innerHTML=`
-    <div class="detail-hero"><div class="detail-kicker">${t.type==="original"?"ORIGINAL":"ARRANGEMENT"} · ${t.touhoudbId?(t.remote?"TOUHOUDB LIVE":"LOCAL + TOUHOUDB"):"LOCAL VERIFIED"}</div><div class="detail-rank"><strong>${rankText(rank)}</strong><span>${rankPercentText(rank)} · ${rank.estimated?"현재는 아카이브 환산 · ":""}표본 #${rank.sampleRank||"—"}/${fmt(rank.sampleTotal)} · ${rank.score.toFixed(1)}pt</span></div><h2>${esc(t.title)}</h2><div class="detail-meta">${artistLine}<br>${t.year||""}${t.album?" · "+esc(t.album):""}</div></div>
+    <div class="detail-hero"><div class="detail-kicker">${t.type==="original"?"ORIGINAL":"ARRANGEMENT"} · ${t.touhoudbId?(t.remote?"TOUHOUDB LIVE":"LOCAL + TOUHOUDB"):"LOCAL VERIFIED"}</div><div class="detail-rank"><strong>${rankText(rank)}</strong><span>${rankPercentText(rank)} · ${rank.fullScale?"전수 189,002곡 백분위 기반 · ":rank.estimated?"현재 표본 환산 · ":""}원본순위 #${rank.sampleRank||"—"}/${fmt(rank.sampleTotal)} · ${rank.score.toFixed(1)}pt</span></div><h2>${esc(t.title)}</h2><div class="detail-meta">${artistLine}<br>${t.year||""}${t.album?" · "+esc(t.album):""}</div></div>
     <div class="tag-row">${(t.moods||[]).map(x=>`<span class="tag">${esc(x)}</span>`).join("")}</div>
     <div class="detail-actions"><button class="hot" id="detailPlay" ${player.playable(t)||external||canLookup?"":"disabled"}>${player.playable(t)?"▶ 앱에서 재생":external?"↗ 외부 재생":canLookup?"⌕ 영상 찾기":"영상 없음"}</button><button id="detailDive">⌁ 다이브</button>${t.type==="arrangement"?'<button class="origin-jump" id="detailOrigin"><span>↖</span><strong>원곡으로</strong></button>':""}<button id="favBtn">${fav?"♥ 보관됨":"♡ 보관하기"}</button>${source?`<a href="${escAttr(source)}" target="_blank" rel="noopener">원본 링크 ↗</a>`:'<button disabled>원본 링크 없음</button>'}</div>
     ${t.type==="arrangement"?lineageBox("이 어레인지의 원곡",origins,missing):lineageBox("이 원곡을 사용한 현재 로드 어레인지",children,[])}
@@ -879,7 +879,7 @@ function refreshRanks(){
   state.rankTotal=pool.length;
 }
 function archiveRankTotal(){
-  return state.full.manifest?.indexed||Math.max(Number(state.archiveSource?.arrangementTracks)||0,state.rankTotal||0);
+  return Math.max(Number(state.archiveSource?.arrangementTracks)||128040,1);
 }
 function projectArchiveRank(sampleRank,sampleTotal,archiveTotal){
   const r=Number(sampleRank),n=Number(sampleTotal),a=Number(archiveTotal);
@@ -888,15 +888,20 @@ function projectArchiveRank(sampleRank,sampleTotal,archiveTotal){
   return Math.max(1,Math.min(a,1+Math.round((r-1)*(a-1)/(n-1))));
 }
 function trackRank(t){
-  if(!t)return{rank:null,sampleRank:null,score:0,total:archiveRankTotal(),sampleTotal:state.rankTotal||0,estimated:false};
+  if(!t)return{rank:null,sampleRank:null,score:0,total:archiveRankTotal(),sampleTotal:state.rankTotal||0,estimated:false,fullScale:false};
+  const total=archiveRankTotal();
   if(t.globalRank&&state.full.manifest){
-    return{rank:t.globalRank,sampleRank:t.globalRank,score:Number(t.globalScore)||overallRankScore(t),total:state.full.manifest.indexed,sampleTotal:state.full.manifest.indexed,estimated:false};
+    const fullTotal=Number(state.full.manifest.indexed)||state.fullItems.length||1;
+    const scaled=projectArchiveRank(t.globalRank,fullTotal,total);
+    return{
+      rank:scaled,sampleRank:t.globalRank,score:Number(t.globalScore)||overallRankScore(t),
+      total,sampleTotal:fullTotal,estimated:false,fullScale:true
+    };
   }
   if(!state.rankIndex.size||!state.rankIndex.has(resolveId(t.id)))refreshRanks();
   const row=state.rankIndex.get(resolveId(t.id))||{rank:null,score:overallRankScore(t)};
-  const total=archiveRankTotal();
   const projected=projectArchiveRank(row.rank,state.rankTotal,total);
-  return{rank:projected,sampleRank:row.rank,score:row.score,total,sampleTotal:state.rankTotal,estimated:total>state.rankTotal};
+  return{rank:projected,sampleRank:row.rank,score:row.score,total,sampleTotal:state.rankTotal,estimated:total>state.rankTotal,fullScale:false};
 }
 function rankPercentValue(rank){
   if(!rank?.rank||!rank?.total)return null;
