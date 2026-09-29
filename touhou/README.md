@@ -170,3 +170,12 @@
 - U2 Akiyama / あきやまうに / NKZ / ziki_7 등 공식 참여 작곡가는 공식 작품 매칭까지 요구
 - 작품 태그만으로 공식 원곡 처리하지 않음
 - 팬 오리지널/독립 동인곡은 FAN ORIGINAL/secondary로 유지
+
+
+## v0.9.3 — Local/full-index canonical merge fix
+
+- 로컬 공식 원곡과 FULL INDEX 동일곡이 병합되지 않던 조기 반환 제거
+- 로컬 곡이 global/popularity/influence rank와 파생곡 통계를 FULL INDEX에서 승계
+- originalIds alias를 canonical ID로 집계하여 파생곡 수 누락 수정
+- 네이티브페이스 검증: TouhouDB ID 74, full-index 종합 29위 / 인기 103위 / 공식 원곡 영향력 20위
+- 파생 어레인지 1,190곡 · 846서클 · 1,013앨범 정보를 로컬 카드에도 반영
