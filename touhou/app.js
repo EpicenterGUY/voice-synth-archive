@@ -5,7 +5,7 @@ const player=new window.TouhouMediaPlayer();
 
 const state={
   localOriginals:[],localArrangements:[],known:new Map(),aliases:new Map(),identities:new Map(),remoteItems:[],works:[],archiveSource:null,
-  mode:"all",filter:"전체",workFilter:"",sort:"recommend",selected:null,view:"home",diveDepth:0,diveRoot:null,icebergMode:"visibility",
+  mode:"all",filter:"전체",workFilter:"",sort:"recommend",selected:null,view:"home",diveDepth:0,diveRoot:null,icebergMode:"visibility",rankIndex:new Map(),rankTotal:0,enriching:new Map(),
   remote:{available:false,loading:false,start:0,total:0,catalogTotal:0,key:"",error:"",counts:{},seq:0},
   favorites:new Set(readJson("touhoudive:favorites",[])),
   history:readJson("touhoudive:history",[]),
@@ -35,7 +35,7 @@ async function boot(){
     setView("home");
     renderLocalFirst();
     bind();
-    if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js?v=0.5.4").then(r=>r.update()).catch(()=>{});
+    if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js?v=0.6.0").then(r=>r.update()).catch(()=>{});
     await connectRemote();
   }catch(err){
     console.error(err);
@@ -74,6 +74,11 @@ function bind(){
   $("#scrim").onclick=()=>{closePanel();closeMenu();};
   $("#menuBtn").onclick=()=>{$("#sidebar").classList.toggle("is-open");syncScrim();};
   $("#themeBtn").onclick=toggleTheme;
+  window.addEventListener("touhoudive:media-unavailable",e=>{
+    const t=byId(e.detail?.trackId);if(t)t.mediaUnavailable=true;
+    if(state.view==="discover"||state.view==="home")renderCatalog();
+    toast("비공개·삭제·임베드 제한 영상은 자동 제외했습니다.");
+  });
   $$("#modeTabs .mode-tab").forEach(btn=>btn.onclick=()=>{
     state.mode=btn.dataset.mode;state.filter="전체";syncModeTabs();
     if(state.view==="iceberg"){renderIceberg();loadRemote(true).then(()=>renderIceberg());}
@@ -102,6 +107,7 @@ async function connectRemote(){
     updateCatalogTotal();
     loadRemoteCounts();
     await loadRemote(true);
+    warmCatalog();
   }catch(e){remoteFail(String(e?.message||e));}
 }
 async function loadRemoteCounts(){
@@ -168,6 +174,28 @@ async function loadRemote(reset=false,force=false){
     if(seq===state.remote.seq){state.remote.loading=false;syncCatalogFooter()}
   }
 }
+async function warmCatalog(){
+  if(!state.remote.available||state.remote.warming)return;
+  state.remote.warming=true;
+  const key=remoteKey();
+  try{
+    for(let i=0;i<3;i++){
+      await new Promise(r=>setTimeout(r,220));
+      if(key!==remoteKey()||state.remote.loading||state.remote.start>=state.remote.total)break;
+      await loadRemote(false);
+    }
+  }finally{state.remote.warming=false}
+}
+function uniqMedia(list){
+  const seen=new Set(),out=[];
+  for(const m of list||[]){
+    if(!m?.provider||!m?.id)continue;
+    const k=m.provider+":"+m.id;
+    if(seen.has(k))continue;
+    seen.add(k);out.push(m);
+  }
+  return out;
+}
 function identityKey(t){
   if(!t)return"";
   const title=normKey(t.title);
@@ -192,6 +220,8 @@ function mergeTrack(base,incoming){
   out.circle=base.circle||incoming.circle||"";
   out.album=(base.album&&!/^東方.+$/.test(base.album))?base.album:(incoming.album||base.album||"");
   out.media=base.media||incoming.media||null;
+  out.mediaCandidates=uniqMedia([...(base.mediaCandidates||[]),...(incoming.mediaCandidates||[]),base.media,incoming.media]);
+  if(!out.media&&out.mediaCandidates.length)out.media=out.mediaCandidates[0];
   out.thumb=base.thumb||incoming.thumb||"";
   out.source=base.source||incoming.source||null;
   out.touhoudbId=incoming.touhoudbId||base.touhoudbId;
@@ -202,6 +232,7 @@ function mergeTrack(base,incoming){
   out.artistString=base.artistString||incoming.artistString||"";
   out.ratingScore=Math.max(Number(base.ratingScore)||0,Number(incoming.ratingScore)||0);
   out.favoritedTimes=Math.max(Number(base.favoritedTimes)||0,Number(incoming.favoritedTimes)||0);
+  out.hitCount=Math.max(Number(base.hitCount)||0,Number(incoming.hitCount)||0);
   out.year=base.year||incoming.year||null;
   return out;
 }
@@ -257,6 +288,7 @@ function currentPool(){
   return pool;
 }
 function renderCatalog(title){
+  refreshRanks();
   renderFilters();
   let list=currentPool();
   if(state.filter==="영상 있음")list=list.filter(t=>player.playable(t));
@@ -345,7 +377,8 @@ function renderGrid(list){
   grid.querySelectorAll("[data-origin]").forEach(b=>b.onclick=e=>{e.stopPropagation();goToOriginal(byId(b.dataset.origin))});
 }
 function card(t){
-  const playable=player.playable(t),origins=originalNames(t);
+  const playable=player.playable(t),canLookup=!playable&&state.remote.available,origins=originalNames(t);
+  const rank=trackRank(t);
   const by=t.type==="arrangement"
     ? [t.circle,(t.artists?.vocal||[]).join(", ")].filter(Boolean).join(" · ")
     : [t.work||t.artistString,t.role,t.character].filter(Boolean).join(" · ");
@@ -359,39 +392,67 @@ function card(t){
   return '<article class="track-card">'+
     '<button class="track-main" data-open="'+escAttr(t.id)+'">'+
       '<div class="track-thumb '+(t.thumb?"":"no-image")+'"'+thumb+'>'+
-        '<div class="track-badges"><span class="type-badge '+escAttr(t.type)+'">'+(t.type==="original"?"ORIGINAL":"ARRANGE")+'</span>'+(playable?'<span class="media-badge">▶ VIDEO</span>':'')+'</div>'+
+        '<div class="track-badges"><span class="type-badge '+escAttr(t.type)+'">'+(t.type==="original"?"ORIGINAL":"ARRANGE")+'</span><span class="rank-badge">#'+rank.rank+'</span>'+(playable?'<span class="media-badge">▶ VIDEO</span>':'')+'</div>'+
       '</div>'+
       '<div class="track-copy"><h3>'+esc(t.title)+'</h3><div class="byline">'+esc(by||"정보 준비 중")+'</div><div class="origin-line">'+esc(originLine)+'</div>'+
         '<div class="tag-row">'+(t.moods||[]).slice(0,3).map(x=>'<span class="tag">'+esc(x)+'</span>').join("")+'</div>'+
       '</div>'+
     '</button>'+
-    '<div class="card-actions '+(originButton?"has-origin":"")+'"><button class="play-btn" data-play="'+escAttr(t.id)+'" '+(playable?"":"disabled")+'>'+(playable?"▶ 재생":"영상 없음")+'</button>'+originButton+'<button class="dive-btn" data-dive="'+escAttr(t.id)+'">⌁ 다이브</button></div>'+
+    '<div class="card-actions '+(originButton?"has-origin":"")+'"><button class="play-btn" data-play="'+escAttr(t.id)+'" '+(playable||canLookup?"":"disabled")+'>'+(playable?"▶ 재생":canLookup?"⌕ 영상 찾기":"영상 없음")+'</button>'+originButton+'<button class="dive-btn" data-dive="'+escAttr(t.id)+'">⌁ 다이브</button></div>'+
   '</article>';
 }
-function openTrack(t){
+function openTrack(t,opts={}){
   if(!t)return;
   t=byId(t.id)||t;
   state.selected=t;pushHistory(t.id,t);
+  refreshRanks();
   const canonicalId=resolveId(t.id);
   const fav=state.favorites.has(canonicalId),origins=originalTracks(t),children=[...state.known.values()].filter(a=>originalIds(a).includes(canonicalId));
   const artistLine=t.type==="arrangement"
     ? [t.circle&&"Circle "+t.circle,(t.artists?.arranger||[]).length&&"Arrange "+t.artists.arranger.join(", "),(t.artists?.vocal||[]).length&&"Vocal "+t.artists.vocal.join(", ")].filter(Boolean).join("<br>")
     : [t.work||t.artistString,t.role,t.character&&"Character "+t.character].filter(Boolean).join("<br>");
   const source=t.media?.url||t.source?.url||"";
+  const rank=trackRank(t);
+  const canLookup=!player.playable(t)&&state.remote.available;
   const missing=(t.originalIds||[]).filter(id=>!byId(id));
   $("#detailContent").innerHTML=`
-    <div class="detail-hero"><div class="detail-kicker">${t.type==="original"?"ORIGINAL":"ARRANGEMENT"} · ${t.remote?"TOUHOUDB LIVE":"LOCAL VERIFIED"}</div><h2>${esc(t.title)}</h2><div class="detail-meta">${artistLine}<br>${t.year||""}${t.album?" · "+esc(t.album):""}</div></div>
+    <div class="detail-hero"><div class="detail-kicker">${t.type==="original"?"ORIGINAL":"ARRANGEMENT"} · ${t.touhoudbId?(t.remote?"TOUHOUDB LIVE":"LOCAL + TOUHOUDB"):"LOCAL VERIFIED"}</div><div class="detail-rank"><strong>종합 #${rank.rank}</strong><span>현재 로드 ${rank.total}곡 기준 · ${rank.score.toFixed(1)}pt</span></div><h2>${esc(t.title)}</h2><div class="detail-meta">${artistLine}<br>${t.year||""}${t.album?" · "+esc(t.album):""}</div></div>
     <div class="tag-row">${(t.moods||[]).map(x=>`<span class="tag">${esc(x)}</span>`).join("")}</div>
-    <div class="detail-actions"><button class="hot" id="detailPlay" ${player.playable(t)?"":"disabled"}>${player.playable(t)?"▶ 앱에서 재생":"영상 준비 중"}</button><button id="detailDive">⌁ 다이브</button>${t.type==="arrangement"?'<button class="origin-jump" id="detailOrigin"><span>↖</span><strong>원곡으로</strong></button>':""}<button id="favBtn">${fav?"♥ 보관됨":"♡ 보관하기"}</button>${source?`<a href="${escAttr(source)}" target="_blank" rel="noopener">원본 링크 ↗</a>`:'<button disabled>원본 링크 없음</button>'}</div>
+    <div class="detail-actions"><button class="hot" id="detailPlay" ${player.playable(t)||canLookup?"":"disabled"}>${player.playable(t)?"▶ 앱에서 재생":canLookup?"⌕ 영상 찾기":"영상 없음"}</button><button id="detailDive">⌁ 다이브</button>${t.type==="arrangement"?'<button class="origin-jump" id="detailOrigin"><span>↖</span><strong>원곡으로</strong></button>':""}<button id="favBtn">${fav?"♥ 보관됨":"♡ 보관하기"}</button>${source?`<a href="${escAttr(source)}" target="_blank" rel="noopener">원본 링크 ↗</a>`:'<button disabled>원본 링크 없음</button>'}</div>
     ${t.type==="arrangement"?lineageBox("이 어레인지의 원곡",origins,missing):lineageBox("이 원곡을 사용한 현재 로드 어레인지",children,[])}
-    <div class="fact-box"><label>다이브 기준</label><div class="detail-meta">${esc(relationText(t))}</div></div>`;
+    <div class="fact-box"><label>종합 순위 기준</label><div class="detail-meta">TouhouDB rating · 즐겨찾기 · DB 조회 · 관계량 · 재생 가능 영상을 혼합한 현재 로드 풀 기준 순위입니다.</div></div>
+    <div class="fact-box"><label>다이브 기준</label><div class="detail-meta">${esc(relationText(t))}</div></div>
+    ${!opts.skipEnrich&&!t.touhoudbId&&state.remote.available?'<div class="detail-sync">TouhouDB에서 영상·통계를 보강하는 중…</div>':""}`;
   $("#detailPanel").classList.add("is-open");$("#detailPanel").setAttribute("aria-hidden","false");syncScrim();
-  const play=$("#detailPlay");if(play)play.onclick=()=>{if(player.playable(t)){playTrack(t);closePanel();}};
+  const play=$("#detailPlay");if(play)play.onclick=async()=>{const ok=await playTrack(t);if(ok)closePanel();};
   $("#detailDive").onclick=()=>{startDive(t,{fresh:true});closePanel();};
   const originBtn=$("#detailOrigin");if(originBtn)originBtn.onclick=()=>goToOriginal(t);
   $("#favBtn").onclick=()=>toggleFavorite(t);
   $("#detailContent").querySelectorAll("[data-lineage]").forEach(b=>b.onclick=()=>openTrack(byId(b.dataset.lineage)));
   $("#detailContent").querySelectorAll("[data-hydrate]").forEach(b=>b.onclick=()=>hydrateAndOpen(b.dataset.hydrate));
+  if(!opts.skipEnrich&&!t.touhoudbId&&state.remote.available){
+    enrichTrack(t).then(enriched=>{
+      if(enriched&&state.selected&&resolveId(state.selected.id)===resolveId(t.id)&&$("#detailPanel").classList.contains("is-open"))openTrack(enriched,{skipEnrich:true});
+    }).catch(()=>{});
+  }
+}
+async function enrichTrack(t){
+  if(!t||!catalog?.lookupByTitle)return t;
+  const id=resolveId(t.id);
+  if(t.touhoudbId)return t;
+  if(state.enriching.has(id))return state.enriching.get(id);
+  const promise=(async()=>{
+    const work=state.works.find(w=>w.id===t.workId)||state.works.find(w=>trackMatchesWork(t,w));
+    const candidate=await catalog.lookupByTitle(t.title,{mode:t.type,tagName:work?.tag||""});
+    if(!candidate)return t;
+    const exact=normKey(candidate.title)===normKey(t.title)||(candidate.aliases||[]).some(a=>normKey(a)===normKey(t.title));
+    if(!exact)return t;
+    remember(candidate);
+    refreshRanks();
+    return byId(id)||byId(candidate.id)||t;
+  })().finally(()=>state.enriching.delete(id));
+  state.enriching.set(id,promise);
+  return promise;
 }
 async function goToOriginal(t){
   if(!t||t.type!=="arrangement")return;
@@ -427,10 +488,18 @@ async function hydrateAndOpen(id){
   if(!catalog||!String(id).startsWith("tdb-"))return;
   try{const t=await catalog.hydrate(id);if(t){remember(t);openTrack(t);renderCatalog();}}catch(e){toast("원곡 계보를 불러오지 못했습니다.");}
 }
-function playTrack(t){
-  if(!t||!player.playable(t)){toast("확인된 인앱 영상이 아직 없습니다.");return;}
+async function playTrack(t){
+  if(!t)return false;
+  t=byId(t.id)||t;
+  if(!player.playable(t)&&state.remote.available){
+    toast("재생 가능한 영상을 찾는 중…");
+    try{t=await enrichTrack(t)}catch(e){}
+  }
+  if(!player.playable(t)){toast("재생 가능한 공개 영상이 없습니다.");return false}
   const queue=currentPool().filter(x=>player.playable(x));
-  player.play(t,queue);pushHistory(t.id,t);
+  const ok=player.play(t,queue);
+  if(ok)pushHistory(t.id,t);
+  return ok;
 }
 function nav(view){
   closeMenu();
@@ -486,7 +555,9 @@ function startDive(t,opts={}){
   state.selected=t;
   pushHistory(t.id,t);
   setView("dive");
-  const related=relations(t).slice(0,9);
+  refreshRanks();
+  const mobile=window.matchMedia("(max-width:860px)").matches;
+  const related=relations(t).slice(0,mobile?6:9);
   const origin=originalTracks(t)[0]||null;
   const depthMeters=state.diveDepth*180;
   const stage=$("#diveStage"),empty=$("#diveEmpty");
@@ -497,11 +568,13 @@ function startDive(t,opts={}){
     : "";
   const playAction=player.playable(t)?'<button data-current-play="'+escAttr(t.id)+'">▶ 재생</button>':"";
   const originAction=t.type==="arrangement"?'<button class="origin-jump" data-current-origin="'+escAttr(t.id)+'">↖ 원곡</button>':"";
+  const currentRank=trackRank(t);
   stage.innerHTML=originNode+
-    '<article class="dive-current"><small>CURRENT DEPTH · '+depthMeters+'m</small><h3>'+esc(t.title)+'</h3><p>'+esc(t.type==="arrangement"?(t.circle||"Arrangement"):(t.work||t.artistString||"Original"))+'</p><div class="dive-current-actions">'+playAction+originAction+'<button data-current-open="'+escAttr(t.id)+'">상세</button></div></article>'+
+    '<article class="dive-current"><small>CURRENT DEPTH · '+depthMeters+'m · 종합 #'+currentRank.rank+'</small><h3>'+esc(t.title)+'</h3><p>'+esc(t.type==="arrangement"?(t.circle||"Arrangement"):(t.work||t.artistString||"Original"))+'</p><div class="dive-current-actions">'+playAction+originAction+'<button data-current-open="'+escAttr(t.id)+'">상세</button></div></article>'+
     related.map((r,i)=>{
       const p=positions[i]||[50,88];
-      return '<button class="dive-node" style="--x:'+p[0]+'%;--y:'+p[1]+'%" data-rel="'+escAttr(r.track.id)+'"><small>'+esc(r.reason)+'</small><strong>'+esc(r.track.title)+'</strong><span>'+esc(r.track.type==="arrangement"?(r.track.circle||""):(r.track.work||r.track.artistString||""))+'</span></button>';
+      const rank=trackRank(r.track);
+      return '<button class="dive-node" style="--x:'+p[0]+'%;--y:'+p[1]+'%" data-rel="'+escAttr(r.track.id)+'"><small>'+esc(r.reason)+' · 종합 #'+rank.rank+'</small><strong>'+esc(r.track.title)+'</strong><span>'+esc(r.track.type==="arrangement"?(r.track.circle||""):(r.track.work||r.track.artistString||""))+'</span></button>';
     }).join("")+
     '<div class="dive-depth-chip">DIVE '+(state.diveDepth+1)+' · '+depthMeters+'m · '+related.length+' SIGNALS</div>';
   stage.querySelectorAll("[data-rel]").forEach(b=>b.onclick=()=>startDive(byId(b.dataset.rel),{continue:true}));
@@ -642,7 +715,7 @@ function renderIceberg(){
     return '<section class="ice-layer" style="--ice-a:'+row.layer.a+';--ice-b:'+row.layer.b+'">'+
       '<div class="ice-layer-head"><div><small>LAYER '+(i+1)+'</small><strong>'+row.layer.name+'</strong><span>'+row.layer.sub+'</span></div>'+
       '<span>'+(archiveTracks?'전체 환산 '+fmt(row.archiveCount)+'곡 · ':'')+'표본 '+fmt(row.items.length)+'곡 · '+metric.label+' '+statValue(lo)+'–'+statValue(hi)+'</span></div>'+
-      '<div class="ice-tracks">'+display.map(t=>'<button class="ice-track" data-ice-dive="'+escAttr(t.id)+'"><b>'+esc(t.title)+'</b><small>'+esc(t.type==="arrangement"?(t.circle||"Arrangement"):(t.work||"Original"))+'</small><small class="ice-metric">'+esc(metric.label)+' · '+esc(statValue(icebergMetricValue(t)))+'</small>'+(t.type==="arrangement"?'<small class="ice-origin">↖ '+esc(originalNames(t)[0]||"원곡 연결 확인")+'</small>':'')+'</button>').join("")+'</div>'+
+      '<div class="ice-tracks">'+display.map(t=>{const rank=trackRank(t);return '<button class="ice-track" data-ice-dive="'+escAttr(t.id)+'"><span class="ice-rank">종합 #'+rank.rank+'</span><b>'+esc(t.title)+'</b><small>'+esc(t.type==="arrangement"?(t.circle||"Arrangement"):(t.work||"Original"))+'</small><small class="ice-metric">'+esc(metric.label)+' · '+esc(statValue(icebergMetricValue(t)))+'</small>'+(t.type==="arrangement"?'<small class="ice-origin">↖ '+esc(originalNames(t)[0]||"원곡 연결 확인")+'</small>':'')+'</button>'}).join("")+'</div>'+
       (row.items.length>display.length?'<div class="ice-layer-more">이 권역 '+fmt(row.items.length-display.length)+'곡 더 있음</div>':"")+
     '</section>';
   }).join("");
@@ -682,16 +755,34 @@ function searchBlob(t){
   const originals=originalNames(t).join(" "),artists=t.artists?Object.values(t.artists).flat().join(" "):"";
   return [t.title,...(t.aliases||[]),t.work,t.role,t.character,t.circle,t.album,t.artistString,artists,originals,...(t.moods||[])].filter(Boolean).join(" ").toLowerCase();
 }
+function overallRankScore(t){
+  const rating=Math.max(0,Number(t.ratingScore)||0);
+  const favorites=Math.max(0,Number(t.favoritedTimes)||0);
+  const hits=Math.max(0,Number(t.hitCount)||0);
+  const relationsCount=t.type==="original"?countChildren(t.id):originalIds(t).length;
+  return rating*4+Math.log10(favorites+1)*14+Math.log10(hits+1)*4+relationsCount*3+(player.playable(t)?4:0)+(t.touhoudbId?1:0);
+}
+function refreshRanks(){
+  const pool=dedupe([...state.known.values()]).sort((a,b)=>overallRankScore(b)-overallRankScore(a)||recommendScore(b)-recommendScore(a)||a.title.localeCompare(b.title,"ja"));
+  state.rankIndex=new Map(pool.map((t,i)=>[resolveId(t.id),{rank:i+1,score:overallRankScore(t)}]));
+  state.rankTotal=pool.length;
+}
+function trackRank(t){
+  if(!t)return{rank:"—",score:0,total:state.rankTotal||0};
+  if(!state.rankIndex.size||state.rankTotal!==state.known.size||!state.rankIndex.has(resolveId(t.id)))refreshRanks();
+  const row=state.rankIndex.get(resolveId(t.id))||{rank:"—",score:overallRankScore(t)};
+  return{...row,total:state.rankTotal};
+}
 function sortList(list,sort){
   if(sort==="year-desc")return [...list].sort((a,b)=>(b.year||0)-(a.year||0));
   if(sort==="year-asc")return [...list].sort((a,b)=>(a.year||9999)-(b.year||9999));
   if(sort==="title")return [...list].sort((a,b)=>a.title.localeCompare(b.title,"ja"));
-  return [...list].sort((a,b)=>recommendScore(b)-recommendScore(a));
+  return [...list].sort((a,b)=>overallRankScore(b)-overallRankScore(a)||recommendScore(b)-recommendScore(a));
 }
 function recommendScore(t){return (Number(t.ratingScore)||0)*3+(Number(t.favoritedTimes)||0)*.08+(player.playable(t)?5:0)+(t.type==="arrangement"?2:0)+(t.originalIds?.length?3:0)+(t.moods?.length||0)*.2}
 function randomDive(){const pool=currentPool();if(pool.length)startDive(pool[Math.floor(Math.random()*pool.length)])}
 function snapshotTrack(t){
-  return{id:t.id,type:t.type,title:t.title,aliases:t.aliases||[],year:t.year||null,work:t.work||"",workId:t.workId||"",workIds:t.workIds||[],role:t.role||"",character:t.character||"",circle:t.circle||"",album:t.album||"",moods:t.moods||[],originalIds:t.originalIds||[],artists:t.artists||{},artistString:t.artistString||"",media:t.media||null,thumb:t.thumb||"",source:t.source||null,touhoudbId:t.touhoudbId||null,ratingScore:Number(t.ratingScore)||0,favoritedTimes:Number(t.favoritedTimes)||0,hitCount:Number(t.hitCount)||0,remote:!!t.remote};
+  return{id:t.id,type:t.type,title:t.title,aliases:t.aliases||[],year:t.year||null,work:t.work||"",workId:t.workId||"",workIds:t.workIds||[],role:t.role||"",character:t.character||"",circle:t.circle||"",album:t.album||"",moods:t.moods||[],originalIds:t.originalIds||[],artists:t.artists||{},artistString:t.artistString||"",media:t.media||null,mediaCandidates:t.mediaCandidates||[],mediaUnavailable:!!t.mediaUnavailable,thumb:t.thumb||"",source:t.source||null,touhoudbId:t.touhoudbId||null,ratingScore:Number(t.ratingScore)||0,favoritedTimes:Number(t.favoritedTimes)||0,hitCount:Number(t.hitCount)||0,remote:!!t.remote};
 }
 function persistSnapshot(t){
   if(!t)return;

@@ -3,6 +3,7 @@
 const NICO_ORIGIN="https://embed.nicovideo.jp";
 const PLAYER_ID="touhouDivePlayer";
 const AUTO_KEY="touhoudive:player:autoNext";
+const BAD_MEDIA_KEY="touhoudive:media:unavailable:v1";
 
 function clean(v){return String(v??"").trim()}
 function srcFor(media){
@@ -44,6 +45,7 @@ class TouhouMediaPlayer{
     this.autoBtn=document.getElementById("playerAuto");
     this.current=null;this.queue=[];this.index=-1;this.frame=null;this.yt=null;this.playing=true;
     this.autoNext=localStorage.getItem(AUTO_KEY)!=="0";
+    try{this.badMedia=new Set(JSON.parse(localStorage.getItem(BAD_MEDIA_KEY)||"[]"))}catch(_){this.badMedia=new Set()}
     document.getElementById("playerClose").onclick=()=>this.close();
     document.getElementById("playerMini").onclick=()=>this.minimize();
     document.getElementById("playerExpand").onclick=()=>this.expand();
@@ -55,9 +57,24 @@ class TouhouMediaPlayer{
     this.bindMediaSession();
     this.syncControls();
   }
-  playable(track){return !!(track&&track.media&&srcFor(track.media))}
+  mediaKey(media){return media&&media.provider&&media.id?media.provider+":"+media.id:""}
+  candidates(track){
+    const seen=new Set(),out=[];
+    for(const media of [track?.media,...(track?.mediaCandidates||[])]){
+      const key=this.mediaKey(media);
+      if(!media||!srcFor(media)||!key||seen.has(key)||this.badMedia.has(key))continue;
+      seen.add(key);out.push(media);
+    }
+    return out;
+  }
+  playable(track){return this.candidates(track).length>0}
+  selectPlayableMedia(track){
+    const media=this.candidates(track)[0]||null;
+    if(track)track.media=media;
+    return media;
+  }
   play(track,queue){
-    if(!this.playable(track))return false;
+    if(!track||!this.selectPlayableMedia(track))return false;
     const q=(queue||[]).filter(x=>this.playable(x));
     this.queue=q.length?q:[track];
     this.index=Math.max(0,this.queue.findIndex(x=>x.id===track.id));
@@ -92,12 +109,37 @@ class TouhouMediaPlayer{
               else if(e.data===YT.PlayerState.PAUSED){this.playing=false;this.syncControls();this.setPlaybackState("paused")}
               else if(e.data===YT.PlayerState.ENDED){this.playing=false;this.syncControls();this.setPlaybackState("none");if(this.autoNext)this.relative(1,true)}
             },
-            onError:()=>{this.playing=false;this.syncControls()}
+            onError:e=>this.handleMediaError(Number(e?.data)||0)
           }
         });
       }).catch(()=>this.renderIframeFallback());
     }else{
       this.renderIframeFallback();
+    }
+  }
+  persistBadMedia(){
+    try{localStorage.setItem(BAD_MEDIA_KEY,JSON.stringify([...this.badMedia].slice(-300)))}catch(_){}
+  }
+  handleMediaError(code=0){
+    this.playing=false;this.syncControls();
+    const media=this.current?.media,key=this.mediaKey(media);
+    if(key&&(code===100||code===101||code===150||code===2||code===5)){
+      this.badMedia.add(key);this.persistBadMedia();
+    }
+    if(this.current){
+      const next=this.candidates(this.current)[0]||null;
+      if(next&&this.mediaKey(next)!==key){
+        this.current.media=next;
+        this.renderCurrent(true);
+        return;
+      }
+      this.current.media=null;
+      this.current.mediaUnavailable=true;
+      window.dispatchEvent(new CustomEvent("touhoudive:media-unavailable",{detail:{trackId:this.current.id,code}}));
+      this.destroySurface();
+      this.video.innerHTML='<div class="player-unavailable"><strong>이 영상은 재생할 수 없습니다.</strong><span>비공개·삭제·임베드 제한 영상은 자동으로 제외합니다.</span></div>';
+      this.setPlaybackState("none");
+      if(this.autoNext)setTimeout(()=>this.relative(1,true),650);
     }
   }
   renderIframeFallback(){
