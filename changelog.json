@@ -1,11 +1,29 @@
 {
   "current": {
-    "version": "39.103.0",
+    "version": "39.104.0",
     "releasedAt": "2026-09-29",
-    "title": "Iceberg Depth 3.0 · Tier Queue Stability",
-    "summary": "곡 수에 따라 실제 형태와 깊이가 달라지는 동적 빙산으로 개편하고, 빠른 층 전환 시 결과가 엇갈리던 로딩 경쟁 상태와 오래된 강제 새로고침 경로를 함께 수정했습니다."
+    "title": "Iceberg Explore HUD · Persistent Depth Navigation",
+    "summary": "빙산을 단순 통계 화면에서 실제 탐사 UI로 바꾸고 현재 수심 HUD, 위·아래 이동, 랜덤층, 선택층 기억과 직접 로딩을 추가했습니다."
   },
   "entries": [
+    {
+      "version": "39.104.0",
+      "date": "2026-09-29",
+      "title": "Iceberg Explore HUD · Persistent Depth Navigation",
+      "changes": [
+        "빙산 상단에 현재 탐사 수심·층 이름·조회수 범위·곡 수·점유율을 보여주는 DIVE DEPTH HUD 추가",
+        "↑ 얕게 / ⤨ 랜덤층 / ↓ 깊게 버튼으로 빙산을 연속 탐사할 수 있게 변경",
+        "랜덤층은 곡 수를 완전히 무시하지 않되 대형층에만 쏠리지 않도록 완만한 가중 랜덤으로 선택",
+        "선택한 빙산 층을 localStorage에 저장해 새로고침·앱 재진입 후에도 현재 수심을 복원",
+        "선택 층 주변은 유지하고 멀리 떨어진 층은 살짝 어둡게 처리해 현재 위치가 즉시 보이도록 Focus Depth 효과 추가",
+        "빙산 오른쪽에 0m·1,000m·3,000m·4,500m+ 수심 레일과 현재 위치 커서 추가",
+        "모바일에서는 HUD를 빙산 상단에 sticky로 유지해 긴 심층 탐사 중에도 위·아래 이동 버튼 접근 가능",
+        "빙산 각 층에 role/button, tabindex, Enter·Space 키 조작, aria-pressed·aria-busy를 추가해 키보드 접근성 개선",
+        "빙산 구간 드롭다운을 바꾸면 시각 선택만 바뀌고 곡 목록이 갱신되지 않던 동작을 실제 층 로딩과 연결",
+        "다른 작업 때문에 busy 상태일 때 선택한 빙산 층 로딩이 유실되지 않도록 짧은 재시도 큐 추가",
+        "웹/PWA/서비스워커/Live Shell UI 버전과 캐시 키를 v39.104.0으로 동기화"
+      ]
+    },
     {
       "version": "39.103.0",
       "date": "2026-09-29",
