@@ -127,9 +127,13 @@
 - 전체 데이터셋 갱신 시 샤드 캐시 자동 교체
 
 
-## v0.8.1 — Full-index speed / truthful media total
+## v0.8.1 — Full-index media expansion / fixed archive ranking
 
-- 전수 수집 병렬도 3 → 6, 페이지 대기 100ms → 40ms
-- 전수 샤드 생성 전에는 현재 브라우저 캐시 300~400곡을 재생 가능 전체값으로 표시하지 않음
-- 전수 샤드가 없을 때는 TouhouDB 전체 PV 등록곡 수를 임시 모집단으로 표시
-- 전수 샤드가 완성되면 YouTube / NicoNico / SoundCloud / Piapro / Bilibili / Bandcamp 화이트리스트 기준 정확한 재생 후보 수로 자동 교체
+- TouhouDB 전체 189,002곡 정적 전곡 인덱스 사용
+- PV뿐 아니라 WebLinks의 허용 도메인도 재생 후보로 수집
+- 허용: YouTube / NicoNico / SoundCloud / Piapro / Bilibili / Bandcamp
+- Vimeo 및 임의 도메인 제외
+- 인앱 임베드 형식이 확실하지 않은 허용 링크는 외부 재생으로 유지
+- 순위 표시는 항상 128,040곡 중 n위
+- FULL INDEX의 189,002곡 실제 점수 백분위를 128,040곡 스케일로 변환
+- 상위 퍼센트는 동일 전수 백분위 기반
