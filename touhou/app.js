@@ -74,6 +74,11 @@ function bind(){
   $("#scrim").onclick=()=>{closePanel();closeMenu();};
   $("#menuBtn").onclick=()=>{$("#sidebar").classList.toggle("is-open");syncScrim();};
   $("#themeBtn").onclick=toggleTheme;
+  window.addEventListener("touhoudive:media-unavailable",e=>{
+    const t=byId(e.detail?.trackId);if(t)t.mediaUnavailable=true;
+    if(state.view==="discover"||state.view==="home")renderCatalog();
+    toast("비공개·삭제·임베드 제한 영상은 자동 제외했습니다.");
+  });
   $$("#modeTabs .mode-tab").forEach(btn=>btn.onclick=()=>{
     state.mode=btn.dataset.mode;state.filter="전체";syncModeTabs();
     if(state.view==="iceberg"){renderIceberg();loadRemote(true).then(()=>renderIceberg());}
@@ -371,7 +376,8 @@ function renderGrid(list){
   grid.querySelectorAll("[data-origin]").forEach(b=>b.onclick=e=>{e.stopPropagation();goToOriginal(byId(b.dataset.origin))});
 }
 function card(t){
-  const playable=player.playable(t),origins=originalNames(t);
+  const playable=player.playable(t),canLookup=!playable&&state.remote.available,origins=originalNames(t);
+  const rank=trackRank(t);
   const by=t.type==="arrangement"
     ? [t.circle,(t.artists?.vocal||[]).join(", ")].filter(Boolean).join(" · ")
     : [t.work||t.artistString,t.role,t.character].filter(Boolean).join(" · ");
@@ -385,39 +391,67 @@ function card(t){
   return '<article class="track-card">'+
     '<button class="track-main" data-open="'+escAttr(t.id)+'">'+
       '<div class="track-thumb '+(t.thumb?"":"no-image")+'"'+thumb+'>'+
-        '<div class="track-badges"><span class="type-badge '+escAttr(t.type)+'">'+(t.type==="original"?"ORIGINAL":"ARRANGE")+'</span>'+(playable?'<span class="media-badge">▶ VIDEO</span>':'')+'</div>'+
+        '<div class="track-badges"><span class="type-badge '+escAttr(t.type)+'">'+(t.type==="original"?"ORIGINAL":"ARRANGE")+'</span><span class="rank-badge">#'+rank.rank+'</span>'+(playable?'<span class="media-badge">▶ VIDEO</span>':'')+'</div>'+
       '</div>'+
       '<div class="track-copy"><h3>'+esc(t.title)+'</h3><div class="byline">'+esc(by||"정보 준비 중")+'</div><div class="origin-line">'+esc(originLine)+'</div>'+
         '<div class="tag-row">'+(t.moods||[]).slice(0,3).map(x=>'<span class="tag">'+esc(x)+'</span>').join("")+'</div>'+
       '</div>'+
     '</button>'+
-    '<div class="card-actions '+(originButton?"has-origin":"")+'"><button class="play-btn" data-play="'+escAttr(t.id)+'" '+(playable?"":"disabled")+'>'+(playable?"▶ 재생":"영상 없음")+'</button>'+originButton+'<button class="dive-btn" data-dive="'+escAttr(t.id)+'">⌁ 다이브</button></div>'+
+    '<div class="card-actions '+(originButton?"has-origin":"")+'"><button class="play-btn" data-play="'+escAttr(t.id)+'" '+(playable||canLookup?"":"disabled")+'>'+(playable?"▶ 재생":canLookup?"⌕ 영상 찾기":"영상 없음")+'</button>'+originButton+'<button class="dive-btn" data-dive="'+escAttr(t.id)+'">⌁ 다이브</button></div>'+
   '</article>';
 }
-function openTrack(t){
+function openTrack(t,opts={}){
   if(!t)return;
   t=byId(t.id)||t;
   state.selected=t;pushHistory(t.id,t);
+  refreshRanks();
   const canonicalId=resolveId(t.id);
   const fav=state.favorites.has(canonicalId),origins=originalTracks(t),children=[...state.known.values()].filter(a=>originalIds(a).includes(canonicalId));
   const artistLine=t.type==="arrangement"
     ? [t.circle&&"Circle "+t.circle,(t.artists?.arranger||[]).length&&"Arrange "+t.artists.arranger.join(", "),(t.artists?.vocal||[]).length&&"Vocal "+t.artists.vocal.join(", ")].filter(Boolean).join("<br>")
     : [t.work||t.artistString,t.role,t.character&&"Character "+t.character].filter(Boolean).join("<br>");
   const source=t.media?.url||t.source?.url||"";
+  const rank=trackRank(t);
+  const canLookup=!player.playable(t)&&state.remote.available;
   const missing=(t.originalIds||[]).filter(id=>!byId(id));
   $("#detailContent").innerHTML=`
-    <div class="detail-hero"><div class="detail-kicker">${t.type==="original"?"ORIGINAL":"ARRANGEMENT"} · ${t.remote?"TOUHOUDB LIVE":"LOCAL VERIFIED"}</div><h2>${esc(t.title)}</h2><div class="detail-meta">${artistLine}<br>${t.year||""}${t.album?" · "+esc(t.album):""}</div></div>
+    <div class="detail-hero"><div class="detail-kicker">${t.type==="original"?"ORIGINAL":"ARRANGEMENT"} · ${t.remote?"TOUHOUDB LIVE":"LOCAL VERIFIED"}</div><div class="detail-rank"><strong>종합 #${rank.rank}</strong><span>현재 로드 ${rank.total}곡 기준 · ${rank.score.toFixed(1)}pt</span></div><h2>${esc(t.title)}</h2><div class="detail-meta">${artistLine}<br>${t.year||""}${t.album?" · "+esc(t.album):""}</div></div>
     <div class="tag-row">${(t.moods||[]).map(x=>`<span class="tag">${esc(x)}</span>`).join("")}</div>
-    <div class="detail-actions"><button class="hot" id="detailPlay" ${player.playable(t)?"":"disabled"}>${player.playable(t)?"▶ 앱에서 재생":"영상 준비 중"}</button><button id="detailDive">⌁ 다이브</button>${t.type==="arrangement"?'<button class="origin-jump" id="detailOrigin"><span>↖</span><strong>원곡으로</strong></button>':""}<button id="favBtn">${fav?"♥ 보관됨":"♡ 보관하기"}</button>${source?`<a href="${escAttr(source)}" target="_blank" rel="noopener">원본 링크 ↗</a>`:'<button disabled>원본 링크 없음</button>'}</div>
+    <div class="detail-actions"><button class="hot" id="detailPlay" ${player.playable(t)||canLookup?"":"disabled"}>${player.playable(t)?"▶ 앱에서 재생":canLookup?"⌕ 영상 찾기":"영상 없음"}</button><button id="detailDive">⌁ 다이브</button>${t.type==="arrangement"?'<button class="origin-jump" id="detailOrigin"><span>↖</span><strong>원곡으로</strong></button>':""}<button id="favBtn">${fav?"♥ 보관됨":"♡ 보관하기"}</button>${source?`<a href="${escAttr(source)}" target="_blank" rel="noopener">원본 링크 ↗</a>`:'<button disabled>원본 링크 없음</button>'}</div>
     ${t.type==="arrangement"?lineageBox("이 어레인지의 원곡",origins,missing):lineageBox("이 원곡을 사용한 현재 로드 어레인지",children,[])}
-    <div class="fact-box"><label>다이브 기준</label><div class="detail-meta">${esc(relationText(t))}</div></div>`;
+    <div class="fact-box"><label>종합 순위 기준</label><div class="detail-meta">TouhouDB rating · 즐겨찾기 · DB 조회 · 관계량 · 재생 가능 영상을 혼합한 현재 로드 풀 기준 순위입니다.</div></div>
+    <div class="fact-box"><label>다이브 기준</label><div class="detail-meta">${esc(relationText(t))}</div></div>
+    ${!opts.skipEnrich&&!t.touhoudbId&&state.remote.available?'<div class="detail-sync">TouhouDB에서 영상·통계를 보강하는 중…</div>':""}`;
   $("#detailPanel").classList.add("is-open");$("#detailPanel").setAttribute("aria-hidden","false");syncScrim();
-  const play=$("#detailPlay");if(play)play.onclick=()=>{if(player.playable(t)){playTrack(t);closePanel();}};
+  const play=$("#detailPlay");if(play)play.onclick=async()=>{const ok=await playTrack(t);if(ok)closePanel();};
   $("#detailDive").onclick=()=>{startDive(t,{fresh:true});closePanel();};
   const originBtn=$("#detailOrigin");if(originBtn)originBtn.onclick=()=>goToOriginal(t);
   $("#favBtn").onclick=()=>toggleFavorite(t);
   $("#detailContent").querySelectorAll("[data-lineage]").forEach(b=>b.onclick=()=>openTrack(byId(b.dataset.lineage)));
   $("#detailContent").querySelectorAll("[data-hydrate]").forEach(b=>b.onclick=()=>hydrateAndOpen(b.dataset.hydrate));
+  if(!opts.skipEnrich&&!t.touhoudbId&&state.remote.available){
+    enrichTrack(t).then(enriched=>{
+      if(enriched&&state.selected&&resolveId(state.selected.id)===resolveId(t.id)&&$("#detailPanel").classList.contains("is-open"))openTrack(enriched,{skipEnrich:true});
+    }).catch(()=>{});
+  }
+}
+async function enrichTrack(t){
+  if(!t||!catalog?.lookupByTitle)return t;
+  const id=resolveId(t.id);
+  if(t.touhoudbId)return t;
+  if(state.enriching.has(id))return state.enriching.get(id);
+  const promise=(async()=>{
+    const work=state.works.find(w=>w.id===t.workId)||state.works.find(w=>trackMatchesWork(t,w));
+    const candidate=await catalog.lookupByTitle(t.title,{mode:t.type,tagName:work?.tag||""});
+    if(!candidate)return t;
+    const exact=normKey(candidate.title)===normKey(t.title)||(candidate.aliases||[]).some(a=>normKey(a)===normKey(t.title));
+    if(!exact)return t;
+    remember(candidate);
+    refreshRanks();
+    return byId(id)||byId(candidate.id)||t;
+  })().finally(()=>state.enriching.delete(id));
+  state.enriching.set(id,promise);
+  return promise;
 }
 async function goToOriginal(t){
   if(!t||t.type!=="arrangement")return;
@@ -453,10 +487,18 @@ async function hydrateAndOpen(id){
   if(!catalog||!String(id).startsWith("tdb-"))return;
   try{const t=await catalog.hydrate(id);if(t){remember(t);openTrack(t);renderCatalog();}}catch(e){toast("원곡 계보를 불러오지 못했습니다.");}
 }
-function playTrack(t){
-  if(!t||!player.playable(t)){toast("확인된 인앱 영상이 아직 없습니다.");return;}
+async function playTrack(t){
+  if(!t)return false;
+  t=byId(t.id)||t;
+  if(!player.playable(t)&&state.remote.available){
+    toast("재생 가능한 영상을 찾는 중…");
+    try{t=await enrichTrack(t)}catch(e){}
+  }
+  if(!player.playable(t)){toast("재생 가능한 공개 영상이 없습니다.");return false}
   const queue=currentPool().filter(x=>player.playable(x));
-  player.play(t,queue);pushHistory(t.id,t);
+  const ok=player.play(t,queue);
+  if(ok)pushHistory(t.id,t);
+  return ok;
 }
 function nav(view){
   closeMenu();
