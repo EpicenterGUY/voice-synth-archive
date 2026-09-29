@@ -1,6 +1,6 @@
 {
-  "version": "39.107.0",
+  "version": "39.108.0",
   "channel": "web",
-  "publishedAt": "2026-09-29T11:08:00+09:00",
-  "notes": "Adds second-stage iceberg focus dives: long-press or focus a song to recenter same-layer neighbors, then discover strong relation bridges into the adjacent shallower/deeper tiers. Also fixes stale per-tier node-page carryover."
+  "publishedAt": "2026-09-29T11:18:00+09:00",
+  "notes": "Adds continuous iceberg voyage navigation: bridge songs now sail into their adjacent tier, inherit center focus after the tier finishes loading, keep a short voyage history with back navigation, and preserve Watch lookup for carried songs."
 }
