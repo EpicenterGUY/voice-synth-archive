@@ -1,6 +1,6 @@
 {
-  "version": "39.113.0",
+  "version": "39.114.0",
   "channel": "web",
-  "publishedAt": "2026-09-29T12:08:00+09:00",
-  "notes": "Adds a cumulative Expedition Atlas across saved routes, with saved-route-only tier coverage, unique discoveries, rediscovery counts, tag-based P/vocal/genre discovery summaries, low-view discoveries, underexplored tier targets, and direct navigation into those tiers."
+  "publishedAt": "2026-09-29T12:18:00+09:00",
+  "notes": "Stabilizes hot updates with a clean-reload guard and versioned module style/binding IDs, adds show-all access for up to 20 saved expeditions, enriches saved producer hints from Nico/producer-family evidence, and adds six cumulative Discovery Missions to Expedition Atlas."
 }
