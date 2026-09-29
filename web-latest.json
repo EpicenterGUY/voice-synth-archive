@@ -1,6 +1,6 @@
 {
-  "version": "39.111.0",
+  "version": "39.112.0",
   "channel": "web",
-  "publishedAt": "2026-09-29T11:48:00+09:00",
-  "notes": "Adds saved-expedition analytics reports with tag-based producer/vocal/genre distributions, rarest-route song, biggest adjacent view-count jump, and a derived exploration profile, while preserving replayable expedition cards."
+  "publishedAt": "2026-09-29T11:58:00+09:00",
+  "notes": "Adds Expedition Compare for up to three saved routes, with side-by-side depth/rarity/unique-song/view/profile metrics, tag-based P/vocal/genre summaries, pairwise route overlap, all-route common songs, and clipboard-ready comparison reports."
 }
