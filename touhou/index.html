@@ -8,7 +8,7 @@
   <meta name="description" content="동방 Project 원곡과 2차창작 어레인지를 계보로 연결해 탐색하고 앱 안에서 영상을 재생하는 음악 탐색 앱.">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icon.svg">
-  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./styles.css?v=0.5.2">
 </head>
 <body data-view="home">
   <div class="app-shell">
@@ -32,7 +32,7 @@
       </nav>
 
       <div class="sidebar-footer">
-        <div class="build-chip"><span></span>TouhouDive v0.5.1 Alpha</div>
+        <div class="build-chip"><span></span>TouhouDive v0.5.2 Alpha</div>
         <button class="ghost-btn" id="themeBtn">◐ 테마 전환</button>
       </div>
     </aside>
@@ -158,8 +158,8 @@
           </div>
           <span class="iceberg-mode-help" id="icebergModeHelp">rating · favorite · 영상 · 관계량을 혼합한 가시성</span>
         </div>
-        <div class="iceberg-stats" id="icebergStats"></div>
-        <div class="iceberg-region-stats" id="icebergRegionStats"></div>
+        <div class="iceberg-stats" id="icebergStats"><div class="iceberg-loading">통계 엔진 불러오는 중…</div></div>
+        <div class="iceberg-region-stats" id="icebergRegionStats"><div class="iceberg-loading">권역 분포 계산 중…</div></div>
         <p class="iceberg-note">통계는 현재 앱에 로드된 카탈로그와 현재 필터를 기준으로 계산합니다. DB 조회(Hits)는 TouhouDB/VocaDB의 항목 조회 통계이며 YouTube·NicoNico 영상 조회수와는 다릅니다.</p>
         <div class="iceberg" id="iceberg"></div>
       </section>
@@ -205,8 +205,8 @@
     </div>
   </section>
 
-  <script src="./catalog.js"></script>
-  <script src="./media.js"></script>
-  <script src="./app.js" type="module"></script>
+  <script src="./catalog.js?v=0.5.2"></script>
+  <script src="./media.js?v=0.5.2"></script>
+  <script src="./app.js?v=0.5.2" type="module"></script>
 </body>
 </html>
