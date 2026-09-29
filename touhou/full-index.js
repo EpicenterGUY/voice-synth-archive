@@ -37,21 +37,28 @@ async function manifest(force=false){
   if(!data?.indexed||!Array.isArray(data.files))throw new Error("invalid full index manifest");
   manifestCache=data;return data;
 }
-async function fetchShard(file){
-  const res=await fetch(BASE+file,{cache:"default"});
+async function prepareCache(meta){
+  const key="touhoudive:full-index:generation";
+  const prev=localStorage.getItem(key);
+  if(prev&&prev!==meta.generatedAt&&"caches" in window){try{await caches.delete("touhoudive-full-index")}catch(_){}}
+  localStorage.setItem(key,meta.generatedAt||"");
+}
+async function fetchShard(file,generation){
+  const res=await fetch(BASE+file+"?g="+encodeURIComponent(generation||""),{cache:"default"});
   if(!res.ok)throw new Error(file+" HTTP "+res.status);
   const rows=await res.json();
   return arr(rows).map(toTrack);
 }
 async function loadAll(opts={}){
   const meta=await manifest(!!opts.force),files=meta.files.slice();
+  await prepareCache(meta);
   const chunks=new Array(files.length);
   let cursor=0,loaded=0;
   const concurrency=Math.max(1,Math.min(6,Number(opts.concurrency)||4));
   const worker=async()=>{
     while(true){
       const idx=cursor++;if(idx>=files.length)return;
-      const rows=await fetchShard(files[idx].file);
+      const rows=await fetchShard(files[idx].file,meta.generatedAt);
       chunks[idx]=rows;loaded+=rows.length;
       opts.onProgress?.({loaded,total:meta.indexed,shards:idx+1,shardCount:files.length,manifest:meta});
     }
