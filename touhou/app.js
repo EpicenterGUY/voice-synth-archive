@@ -33,7 +33,7 @@ async function boot(){
     setView("home");
     renderLocalFirst();
     bind();
-    if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
+    if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js?v=0.5.2").then(r=>r.update()).catch(()=>{});
     await connectRemote();
   }catch(err){
     console.error(err);
