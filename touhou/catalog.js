@@ -54,14 +54,23 @@ function circleName(item,roles){
   }
   return roles.arranger[0]||artistNames(item)[0]||clean(item?.artistString);
 }
-function bestMedia(item){
-  const pvs=arr(item?.pvs);
-  const yt=pvs.find(p=>/youtube/i.test(clean(p?.service))&&(p?.pvId||p?.url));
-  if(yt){const id=parseYoutubeId(yt.pvId||yt.url);if(id)return{provider:"youtube",id,url:yt.url||("https://www.youtube.com/watch?v="+id)}}
-  const nico=pvs.find(p=>/niconico/i.test(clean(p?.service))&&(p?.pvId||p?.url));
-  if(nico){const id=parseNicoId(nico.pvId||nico.url);if(id)return{provider:"niconico",id,url:nico.url||("https://www.nicovideo.jp/watch/"+id)}}
-  return null;
+function mediaCandidates(item){
+  const out=[],seen=new Set();
+  for(const pv of arr(item?.pvs)){
+    const service=clean(pv?.service);
+    if(/youtube/i.test(service)&&(pv?.pvId||pv?.url)){
+      const id=parseYoutubeId(pv.pvId||pv.url);
+      const key="youtube:"+id;
+      if(id&&!seen.has(key)){seen.add(key);out.push({provider:"youtube",id,url:pv.url||("https://www.youtube.com/watch?v="+id),name:clean(pv?.name)})}
+    }else if(/niconico/i.test(service)&&(pv?.pvId||pv?.url)){
+      const id=parseNicoId(pv.pvId||pv.url);
+      const key="niconico:"+id;
+      if(id&&!seen.has(key)){seen.add(key);out.push({provider:"niconico",id,url:pv.url||("https://www.nicovideo.jp/watch/"+id),name:clean(pv?.name)})}
+    }
+  }
+  return out;
 }
+function bestMedia(item){return mediaCandidates(item)[0]||null}
 function yearFrom(item){
   const p=clean(item?.publishDate||item?.createDate);
   const y=Number(p.slice(0,4)); if(y>1900&&y<2200)return y;
@@ -84,7 +93,8 @@ function toTrack(item){
   ]);
   const artistString=clean(item?.artistString)||artistNames(item).join(", ");
   const title=clean(item?.name||item?.defaultName||aliases[0]||("TouhouDB #"+id));
-  const media=bestMedia(item);
+  const candidates=mediaCandidates(item);
+  const media=candidates[0]||null;
   const works=inferWorks(item);
   return {
     id:"tdb-"+id,
@@ -105,6 +115,7 @@ function toTrack(item){
     artists:roles,
     artistString,
     media,
+    mediaCandidates:candidates,
     thumb:clean(item?.thumbUrl||item?.mainPicture?.urlThumb||item?.mainPicture?.urlSmallThumb||item?.mainPicture?.urlOriginal),
     source:{name:"TouhouDB",url:id?("https://touhoudb.com/S/"+id):"https://touhoudb.com"},
     songType:clean(item?.songType),
@@ -180,7 +191,14 @@ async function status(opts={}){
     return {ok:true,total:d.total};
   }catch(e){return{ok:false,error:String(e?.message||e)}}
 }
+function norm(v){return clean(v).normalize("NFKC").toLowerCase().replace(/[\s\u3000\p{P}\p{S}]+/gu,"")}
+async function lookupByTitle(title,opts={}){
+  const target=norm(title);if(!target)return null;
+  const res=await search({query:title,mode:opts.mode||"",maxResults:10,sort:"RatingScore",tagName:opts.tagName||"",force:!!opts.force});
+  const exact=res.items.find(t=>norm(t.title)===target||(t.aliases||[]).some(a=>norm(a)===target));
+  return exact||res.items[0]||null;
+}
 function clearCache(){cache.clear()}
 function setWorks(works){workRegistry=Array.isArray(works)?works:[]}
-window.TouhouCatalog={search,hydrate,status,clearCache,setWorks,toTrack,apiBase:API};
+window.TouhouCatalog={search,hydrate,lookupByTitle,status,clearCache,setWorks,toTrack,apiBase:API};
 })();
