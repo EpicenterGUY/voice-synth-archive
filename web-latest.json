@@ -1,6 +1,6 @@
 {
-  "version": "39.105.0",
+  "version": "39.106.0",
   "channel": "web",
-  "publishedAt": "2026-09-29T10:48:00+09:00",
-  "notes": "Adds in-ice song thumbnail nodes for the active layer and directional dive/rise motion between iceberg depths, using the current layer's real loaded song sample and linking nodes directly to Watch."
+  "publishedAt": "2026-09-29T10:56:00+09:00",
+  "notes": "Turns the active iceberg layer into a mini relation universe: visible song nodes are connected by same-producer, same-vocal, genre/mood, or shared-tag links, with sparse edges and in-layer paging."
 }
