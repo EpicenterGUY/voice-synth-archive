@@ -58,13 +58,47 @@ function serviceKey(service){
   if(s.includes("bandcamp"))return"bandcamp";
   return"";
 }
+function safeUrl(v){
+  try{const u=new URL(clean(v));return /^https?:$/.test(u.protocol)?u:null}catch{return null}
+}
+function providerFromUrl(v){
+  const u=safeUrl(v);if(!u)return"";
+  const h=u.hostname.toLowerCase().replace(/^www\./,"").replace(/^m\./,"");
+  if(h==="youtu.be"||h==="youtube.com"||h.endsWith(".youtube.com"))return"youtube";
+  if(h==="nicovideo.jp"||h.endsWith(".nicovideo.jp")||h==="nico.ms")return"niconico";
+  if(h==="soundcloud.com"||h.endsWith(".soundcloud.com"))return"soundcloud";
+  if(h==="piapro.jp"||h.endsWith(".piapro.jp"))return"piapro";
+  if(h==="bilibili.com"||h.endsWith(".bilibili.com")||h==="b23.tv")return"bilibili";
+  if(h==="bandcamp.com"||h.endsWith(".bandcamp.com"))return"bandcamp";
+  return"";
+}
+function idFromUrl(provider,v){
+  const u=safeUrl(v);if(!u)return"";
+  if(provider==="youtube"){
+    if(u.hostname.toLowerCase().includes("youtu.be"))return clean(u.pathname.split("/").filter(Boolean)[0]);
+    return clean(u.searchParams.get("v")||u.pathname.match(/\/(?:shorts|embed|live)\/([^/?#]+)/)?.[1]);
+  }
+  if(provider==="niconico")return clean(u.pathname.match(/\/watch\/([^/?#]+)/)?.[1]||u.pathname.split("/").filter(Boolean)[0]);
+  if(provider==="piapro")return clean(u.pathname.match(/\/content\/([^/?#]+)/)?.[1]);
+  if(provider==="bilibili")return clean(u.pathname.match(/\/video\/(BV[0-9A-Za-z]+|av\d+)/i)?.[1]||u.searchParams.get("aid"));
+  return"";
+}
 function media(item){
   const out=[],seen=new Set();
+  const add=(provider,id,url,name)=>{
+    if(!ALLOWED.has(provider))return;
+    id=clean(id);url=clean(url);
+    const key=provider+":"+(id||url);if((!id&&!url)||seen.has(key))return;
+    seen.add(key);out.push([provider,id,url,clean(name)]);
+  };
   for(const pv of arr(item?.pvs)){
-    const provider=serviceKey(pv?.service);if(!ALLOWED.has(provider))continue;
-    const id=clean(pv?.pvId),url=clean(pv?.url),key=provider+":"+(id||url);
-    if(!id&&!url||seen.has(key))continue;
-    seen.add(key);out.push([provider,id,url,clean(pv?.name)]);
+    const provider=serviceKey(pv?.service)||providerFromUrl(pv?.url);
+    add(provider,clean(pv?.pvId)||idFromUrl(provider,pv?.url),pv?.url,pv?.name);
+  }
+  for(const link of arr(item?.webLinks)){
+    const url=clean(link?.url||link?.value||link);
+    const provider=providerFromUrl(url);if(!provider)continue;
+    add(provider,idFromUrl(provider,url),url,link?.description||link?.name||"WebLink");
   }
   return out;
 }
