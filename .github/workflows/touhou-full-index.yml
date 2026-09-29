@@ -39,8 +39,8 @@ jobs:
         env:
           PAGE_SIZE: "100"
           SHARD_SIZE: "1000"
-          CONCURRENCY: "3"
-          WAIT_MS: "100"
+          CONCURRENCY: "6"
+          WAIT_MS: "40"
         run: node tools/build-touhou-index.mjs
 
       - name: Commit generated index
