@@ -7,7 +7,7 @@ const player=new window.TouhouMediaPlayer();
 const state={
   localOriginals:[],localArrangements:[],known:new Map(),aliases:new Map(),identities:new Map(),remoteItems:[],fullItems:[],works:[],archiveSource:null,
   mode:"all",filter:"전체",workFilter:"",sort:"recommend",selected:null,view:"home",diveDepth:0,diveRoot:null,icebergMode:"visibility",rankIndex:new Map(),rankTotal:0,enriching:new Map(),
-  full:{available:false,loading:false,loaded:false,manifest:null,loadedCount:0,error:""},displayLimit:60,renderKey:"",lastMatchCount:0,
+  full:{available:false,loading:false,loaded:false,manifest:null,loadedCount:0,error:""},displayLimit:60,renderKey:"",lastMatchCount:0,childCounts:new Map(),
   remote:{available:false,loading:false,start:0,total:0,catalogTotal:0,key:"",error:"",counts:{},seq:0},
   favorites:new Set(readJson("touhoudive:favorites",[])),
   history:readJson("touhoudive:history",[]),
@@ -131,6 +131,8 @@ async function connectFullDataset(){
       }
     });
     state.fullItems=result.tracks.map(t=>remember(t));
+    state.childCounts=new Map();
+    for(const t of state.fullItems)for(const oid of (t.originalIds||[]))state.childCounts.set(oid,(state.childCounts.get(oid)||0)+1);
     state.full.loaded=true;state.full.loading=false;state.full.loadedCount=state.fullItems.length;
     state.rankIndex.clear();state.rankTotal=result.manifest.indexed;
     setDataHealth("ok","FULL INDEX · "+fmt(state.fullItems.length)+"곡");
@@ -851,6 +853,7 @@ function relationText(t){
 }
 function countChildren(id){
   const target=resolveId(id);
+  if(state.full.loaded)return state.childCounts.get(target)||0;
   return [...state.known.values()].filter(a=>originalIds(a).includes(target)).length;
 }
 function searchBlob(t){
