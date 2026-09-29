@@ -16,8 +16,19 @@ const clean=v=>String(v??"").trim();
 const uniq=xs=>[...new Set(xs.filter(Boolean))];
 const nameValue=x=>clean(x?.value||x?.name||x?.defaultName);
 const norm=v=>clean(v).normalize("NFKC").toLowerCase().replace(/[\s\u3000\p{P}\p{S}]+/gu,"");
-function hasZunArtist(item){
-  return artistNames(item).some(x=>norm(x)==="zun")||norm(item?.artistString).split(/[,/]/).some(x=>x==="zun");
+const OFFICIAL_COMPOSER_ALIASES=new Set([
+  "zun","あきやまうに","秋山うに","u2","u2akiyama","uniakiyama","nkz","ziki7"
+].map(norm));
+function artistNorms(item){
+  return uniq([
+    ...artistNames(item),
+    clean(item?.artistString),
+    ...arr(item?.artists).map(x=>nameValue(x?.artist||x))
+  ]).flatMap(x=>clean(x).split(/[,/・&]/)).map(norm).filter(Boolean);
+}
+function hasZunArtist(item){return artistNorms(item).includes(norm("ZUN"))}
+function hasOfficialCollaborator(item){
+  return artistNorms(item).some(x=>OFFICIAL_COMPOSER_ALIASES.has(x)&&x!==norm("ZUN"));
 }
 function matchesOfficialWork(item){
   if(!OFFICIAL_WORKS.length)return false;
@@ -58,7 +69,11 @@ function circleName(item,roles){
 }
 function typeOf(item){
   const s=clean(item?.songType).toLowerCase();
-  const officialOriginal=s==="original"&&(hasZunArtist(item)||matchesOfficialWork(item));
+  const parent=Number(item?.originalVersionId)||Number(item?.originalVersion?.id)||Number(item?.parentSongId)||0;
+  const officialOriginal=s==="original"&&!parent&&(
+    hasZunArtist(item)||
+    (hasOfficialCollaborator(item)&&matchesOfficialWork(item))
+  );
   return officialOriginal?0:1;
 }
 function yearOf(item){
@@ -239,7 +254,7 @@ async function main(){
       influence:"official original only: derivative tracks + distinct circles + distinct albums + playable derivative bonus"
     },
     classification:{
-      original:"SongType Original AND (ZUN artist OR official 33-work registry match)",
+      original:"SongType Original AND no parent AND (ZUN artist OR official collaborator + official-work match)",
       secondary:"all other TouhouDB entries, including fan originals and derivative entries"
     }
   };
