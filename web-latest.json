@@ -1,6 +1,6 @@
 {
-  "version": "39.104.0",
+  "version": "39.105.0",
   "channel": "web",
-  "publishedAt": "2026-09-29T10:40:00+09:00",
-  "notes": "Adds an iceberg exploration HUD with persistent depth selection, shallower/deeper navigation, weighted random layer dives, keyboard accessibility, focused-layer emphasis, and direct tier-select loading."
+  "publishedAt": "2026-09-29T10:48:00+09:00",
+  "notes": "Adds in-ice song thumbnail nodes for the active layer and directional dive/rise motion between iceberg depths, using the current layer's real loaded song sample and linking nodes directly to Watch."
 }
