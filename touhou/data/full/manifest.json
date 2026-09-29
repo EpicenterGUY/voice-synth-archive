@@ -2,7 +2,7 @@
   "schema": 1,
   "source": "TouhouDB",
   "api": "https://touhoudb.com/api",
-  "generatedAt": "2026-09-29T02:55:00.332Z",
+  "generatedAt": "2026-09-29T03:00:48.774Z",
   "totalCount": 189002,
   "indexed": 189002,
   "shardSize": 1000,
