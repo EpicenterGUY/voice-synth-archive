@@ -947,7 +947,7 @@ function passportEntries115(){
   return [...map.values()].map(function(e){
     var idx=TIERS.findIndex(function(t){return t.id===e.firstTierId}),depth=idx<0?0:idx/Math.max(1,TIERS.length-1);
     var views=Math.max(0,+e.song.viewCounter||0),viewRare=1-Math.min(1,Math.log10(views+1)/7);
-    e.rarity=Math.max(0,Math.min(100,Math.round(depth*.54+viewRare*.46)*100));
+    e.rarity=Math.max(0,Math.min(100,Math.round((depth*.54+viewRare*.46)*100)));
     e.producers=producerTags111(e.song).slice(0,3);
     e.vocals=vocalTags111(e.song).slice(0,3);
     e.genres=genreTags111(e.song).slice(0,3);
@@ -1354,8 +1354,15 @@ function bind(){
   panel.addEventListener("input",function(e){
     if(e.target&&e.target.matches("[data-ice115-query]")){
       passportQuery115=e.target.value||"";
+      var caret=0;try{caret=e.target.selectionStart||passportQuery115.length}catch(_){caret=passportQuery115.length}
       clearTimeout(window.__ICE115_QUERY_TIMER);
-      window.__ICE115_QUERY_TIMER=setTimeout(function(){passportLimit115=18;renderIceberg()},120)
+      window.__ICE115_QUERY_TIMER=setTimeout(function(){
+        passportLimit115=18;renderIceberg();
+        requestAnimationFrame(function(){
+          var input=document.querySelector("#icebergPanel [data-ice115-query]");
+          if(input){try{input.focus({preventScroll:true});input.setSelectionRange(Math.min(caret,input.value.length),Math.min(caret,input.value.length))}catch(_){}}
+        })
+      },160)
     }
   });
   panel.addEventListener("change",function(e){
