@@ -5,7 +5,7 @@ const player=new window.TouhouMediaPlayer();
 
 const state={
   localOriginals:[],localArrangements:[],known:new Map(),aliases:new Map(),identities:new Map(),remoteItems:[],works:[],archiveSource:null,
-  mode:"all",filter:"전체",workFilter:"",sort:"recommend",selected:null,view:"home",diveDepth:0,diveRoot:null,icebergMode:"visibility",
+  mode:"all",filter:"전체",workFilter:"",sort:"recommend",selected:null,view:"home",diveDepth:0,diveRoot:null,icebergMode:"visibility",rankIndex:new Map(),rankTotal:0,enriching:new Map(),
   remote:{available:false,loading:false,start:0,total:0,catalogTotal:0,key:"",error:"",counts:{},seq:0},
   favorites:new Set(readJson("touhoudive:favorites",[])),
   history:readJson("touhoudive:history",[]),
@@ -102,6 +102,7 @@ async function connectRemote(){
     updateCatalogTotal();
     loadRemoteCounts();
     await loadRemote(true);
+    warmCatalog();
   }catch(e){remoteFail(String(e?.message||e));}
 }
 async function loadRemoteCounts(){
@@ -168,6 +169,28 @@ async function loadRemote(reset=false,force=false){
     if(seq===state.remote.seq){state.remote.loading=false;syncCatalogFooter()}
   }
 }
+async function warmCatalog(){
+  if(!state.remote.available||state.remote.warming)return;
+  state.remote.warming=true;
+  const key=remoteKey();
+  try{
+    for(let i=0;i<3;i++){
+      await new Promise(r=>setTimeout(r,220));
+      if(key!==remoteKey()||state.remote.loading||state.remote.start>=state.remote.total)break;
+      await loadRemote(false);
+    }
+  }finally{state.remote.warming=false}
+}
+function uniqMedia(list){
+  const seen=new Set(),out=[];
+  for(const m of list||[]){
+    if(!m?.provider||!m?.id)continue;
+    const k=m.provider+":"+m.id;
+    if(seen.has(k))continue;
+    seen.add(k);out.push(m);
+  }
+  return out;
+}
 function identityKey(t){
   if(!t)return"";
   const title=normKey(t.title);
@@ -192,6 +215,8 @@ function mergeTrack(base,incoming){
   out.circle=base.circle||incoming.circle||"";
   out.album=(base.album&&!/^東方.+$/.test(base.album))?base.album:(incoming.album||base.album||"");
   out.media=base.media||incoming.media||null;
+  out.mediaCandidates=uniqMedia([...(base.mediaCandidates||[]),...(incoming.mediaCandidates||[]),base.media,incoming.media]);
+  if(!out.media&&out.mediaCandidates.length)out.media=out.mediaCandidates[0];
   out.thumb=base.thumb||incoming.thumb||"";
   out.source=base.source||incoming.source||null;
   out.touhoudbId=incoming.touhoudbId||base.touhoudbId;
@@ -202,6 +227,7 @@ function mergeTrack(base,incoming){
   out.artistString=base.artistString||incoming.artistString||"";
   out.ratingScore=Math.max(Number(base.ratingScore)||0,Number(incoming.ratingScore)||0);
   out.favoritedTimes=Math.max(Number(base.favoritedTimes)||0,Number(incoming.favoritedTimes)||0);
+  out.hitCount=Math.max(Number(base.hitCount)||0,Number(incoming.hitCount)||0);
   out.year=base.year||incoming.year||null;
   return out;
 }
