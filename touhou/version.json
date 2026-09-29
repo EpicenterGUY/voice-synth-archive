@@ -1,5 +1,5 @@
 {
-  "version": "0.8.1",
+  "version": "0.9.0",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-09-29",
@@ -73,6 +73,11 @@
     "trusted-weblink-media",
     "full-index-weblink-candidates",
     "fixed-128040-rank-scale",
-    "full-index-percentile-ranking"
+    "full-index-percentile-ranking",
+    "ranking-v2",
+    "popularity-rank",
+    "original-influence-rank",
+    "derivative-circle-album-impact",
+    "trusted-link-list"
   ]
 }

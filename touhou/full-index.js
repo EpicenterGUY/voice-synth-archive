@@ -32,7 +32,11 @@ function toTrack(r){
     media:mediaCandidates[0]||null,mediaCandidates,
     thumb:clean(r.th),source:{name:"TouhouDB",url:"https://touhoudb.com/S/"+r.i},
     ratingScore:Number(r.r)||0,favoritedTimes:Number(r.f)||0,hitCount:Number(r.h)||0,
-    globalRank:Number(r.q)||null,globalScore:Number(r.s)||0,_search:search,remote:true,fullIndex:true
+    globalRank:Number(r.q)||null,globalScore:Number(r.s)||0,
+    popularityRank:Number(r.qp)||null,popularityScore:Number(r.sp)||0,
+    influenceRank:Number(r.qi)||null,influenceScore:Number(r.si)||0,
+    derivativeCount:Number(r.dc)||0,derivativeCircleCount:Number(r.dsc)||0,derivativeAlbumCount:Number(r.da)||0,
+    _search:search,remote:true,fullIndex:true
   };
 }
 async function manifest(force=false){

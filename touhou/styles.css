@@ -188,3 +188,14 @@ body[data-view="dive"] .iceberg-ui{display:none!important}
 .percent-badge{border:1px solid rgba(105,220,255,.18);border-radius:999px;padding:4px 7px;font-size:8px;font-weight:900;background:rgba(36,66,83,.45);color:#91e9ff;backdrop-filter:blur(10px)}
 .external-play{border-color:rgba(255,211,128,.28)!important;color:#ffd88f!important}
 @media(max-width:420px){.percent-badge{padding:3px 5px;font-size:6.5px}}
+
+/* v0.9 ranking overhaul */
+.rank-breakdown{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:8px 0 10px}
+.rank-breakdown>div{min-width:0;padding:9px 10px;border:1px solid var(--line);border-radius:11px;background:var(--panel)}
+.rank-breakdown label{display:block;color:var(--muted);font-size:7px}
+.rank-breakdown strong{display:block;margin:3px 0;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rank-breakdown small{display:block;color:var(--muted);font-size:7px;line-height:1.45}
+.trusted-link-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.trusted-link-list a{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;padding:6px 8px;background:var(--panel2);color:var(--text);font-size:8px;text-decoration:none}
+.trusted-link-list a:hover{border-color:color-mix(in srgb,var(--cyan) 45%,var(--line));color:var(--cyan)}
+@media(max-width:520px){.rank-breakdown{grid-template-columns:1fr}.trusted-link-list a{font-size:7px}}
