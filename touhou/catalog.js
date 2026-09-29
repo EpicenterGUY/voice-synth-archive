@@ -18,10 +18,6 @@ function parseNicoId(v){
   const s=clean(v);if(/^(sm|nm|so)\d+$/i.test(s))return s;
   try{const u=new URL(s);return u.pathname.match(/\/watch\/([^/?#]+)/)?.[1]||""}catch{return""}
 }
-function parseVimeoId(v){
-  const s=clean(v);if(/^\d+$/.test(s))return s;
-  try{const u=new URL(s);return u.pathname.match(/\/(?:video\/)?(\d+)/)?.[1]||""}catch{return""}
-}
 function parseBilibiliId(v){
   const s=clean(v);if(/^\d+$/.test(s))return s;if(/^av\d+$/i.test(s))return s.slice(2);
   try{const u=new URL(s);const m=u.pathname.match(/\/video\/(?:av)?(\d+)/i);return m?.[1]||u.searchParams.get("aid")||""}catch{return""}
@@ -80,8 +76,6 @@ function mediaCandidates(item){
       const id=parseNicoId(raw);if(id)add("niconico",id,url||("https://www.nicovideo.jp/watch/"+id),pv?.name);
     }else if(/soundcloud/i.test(service)&&(url||raw)){
       add("soundcloud",clean(pv?.pvId)||url,url||clean(raw),pv?.name);
-    }else if(/vimeo/i.test(service)&&raw){
-      const id=parseVimeoId(raw);if(id)add("vimeo",id,url||("https://vimeo.com/"+id),pv?.name);
     }else if(/piapro/i.test(service)&&raw){
       const id=clean(pv?.pvId)||clean(raw).match(/\/content\/([^/?#]+)/)?.[1]||"";
       if(id)add("piapro",id,url||("https://piapro.jp/content/"+id),pv?.name);
