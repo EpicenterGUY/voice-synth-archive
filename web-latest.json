@@ -1,6 +1,6 @@
 {
-  "version": "39.106.0",
+  "version": "39.107.0",
   "channel": "web",
-  "publishedAt": "2026-09-29T10:56:00+09:00",
-  "notes": "Turns the active iceberg layer into a mini relation universe: visible song nodes are connected by same-producer, same-vocal, genre/mood, or shared-tag links, with sparse edges and in-layer paging."
+  "publishedAt": "2026-09-29T11:08:00+09:00",
+  "notes": "Adds second-stage iceberg focus dives: long-press or focus a song to recenter same-layer neighbors, then discover strong relation bridges into the adjacent shallower/deeper tiers. Also fixes stale per-tier node-page carryover."
 }
