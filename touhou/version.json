@@ -1,5 +1,5 @@
 {
-  "version": "0.8.0",
+  "version": "0.8.1",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-09-29",
@@ -69,6 +69,10 @@
     "full-index-stats",
     "full-index-ranking",
     "full-index-media-candidates",
-    "persistent-full-shard-cache"
+    "persistent-full-shard-cache",
+    "trusted-weblink-media",
+    "full-index-weblink-candidates",
+    "fixed-128040-rank-scale",
+    "full-index-percentile-ranking"
   ]
 }
