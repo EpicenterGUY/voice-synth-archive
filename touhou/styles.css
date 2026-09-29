@@ -184,3 +184,7 @@ body[data-view="dive"] .iceberg-ui{display:none!important}
 .detail-rank{flex-wrap:wrap}
 .detail-rank span{line-height:1.45}
 .catalog-footer{scroll-margin-bottom:110px}
+
+.percent-badge{border:1px solid rgba(105,220,255,.18);border-radius:999px;padding:4px 7px;font-size:8px;font-weight:900;background:rgba(36,66,83,.45);color:#91e9ff;backdrop-filter:blur(10px)}
+.external-play{border-color:rgba(255,211,128,.28)!important;color:#ffd88f!important}
+@media(max-width:420px){.percent-badge{padding:3px 5px;font-size:6.5px}}
