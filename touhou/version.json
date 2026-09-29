@@ -1,5 +1,5 @@
 {
-  "version": "0.6.0",
+  "version": "0.6.1",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-09-29",
@@ -49,6 +49,10 @@
     "composite-ranking",
     "catalog-warmup",
     "multi-pv-fallback",
-    "private-video-filter"
+    "private-video-filter",
+    "archive-projected-ranking",
+    "infinite-catalog-pagination",
+    "dive-empty-height-fix",
+    "dive-resume-selected-track"
   ]
 }
