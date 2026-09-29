@@ -464,15 +464,76 @@ function renderLineageOverview(){
   $("#sectionTitle").textContent="원곡 → 2차창작 계보";
   syncCatalogFooter();
 }
-function startDive(t){
+function startDive(t,opts={}){
   if(!t)return;
   t=byId(t.id)||t;
-  state.selected=t;pushHistory(t.id,t);setView("dive");
+  const continuing=!!opts.continue;
+  if(opts.fresh||!state.diveRoot||!continuing){
+    state.diveRoot=resolveId(t.id);
+    state.diveDepth=0;
+  }else{
+    state.diveDepth=Math.min(24,state.diveDepth+1);
+  }
+  state.selected=t;
+  pushHistory(t.id,t);
+  setView("dive");
   const related=relations(t).slice(0,9);
-  $("#diveMap").classList.remove("empty-state");
-  $("#diveMap").innerHTML=`<div class="dive-origin"><div><small>START · ${t.type.toUpperCase()}</small><strong>${esc(t.title)}</strong></div><span>${esc(t.type==="arrangement"?(t.circle||""):(t.work||t.artistString||""))}</span></div><div class="relation-list">${related.map(r=>`<button class="relation-card" data-rel="${r.track.id}"><small>${esc(r.reason)}</small><strong>${esc(r.track.title)}</strong><span>${esc(r.track.type==="arrangement"?(r.track.circle||""):(r.track.work||r.track.artistString||""))}</span></button>`).join("")}</div>`;
-  $("#diveMap").querySelectorAll("[data-rel]").forEach(b=>b.onclick=()=>startDive(byId(b.dataset.rel)));
-  window.scrollTo({top:0,behavior:"smooth"});player.routeChange();
+  const origin=originalTracks(t)[0]||null;
+  const depthMeters=state.diveDepth*180;
+  const stage=$("#diveStage"),empty=$("#diveEmpty");
+  empty.hidden=true;stage.hidden=false;
+  const positions=[[18,54],[50,57],[82,54],[12,72],[38,74],[65,74],[88,72],[28,90],[72,90]];
+  const originNode=t.type==="arrangement"
+    ? '<button class="dive-origin-node" data-current-origin="'+escAttr(t.id)+'">↖ 원곡 · '+esc(origin?.title||"원곡 정보 불러오기")+'</button>'
+    : "";
+  const playAction=player.playable(t)?'<button data-current-play="'+escAttr(t.id)+'">▶ 재생</button>':"";
+  const originAction=t.type==="arrangement"?'<button class="origin-jump" data-current-origin="'+escAttr(t.id)+'">↖ 원곡</button>':"";
+  stage.innerHTML=originNode+
+    '<article class="dive-current"><small>CURRENT DEPTH · '+depthMeters+'m</small><h3>'+esc(t.title)+'</h3><p>'+esc(t.type==="arrangement"?(t.circle||"Arrangement"):(t.work||t.artistString||"Original"))+'</p><div class="dive-current-actions">'+playAction+originAction+'<button data-current-open="'+escAttr(t.id)+'">상세</button></div></article>'+
+    related.map((r,i)=>{
+      const p=positions[i]||[50,88];
+      return '<button class="dive-node" style="--x:'+p[0]+'%;--y:'+p[1]+'%" data-rel="'+escAttr(r.track.id)+'"><small>'+esc(r.reason)+'</small><strong>'+esc(r.track.title)+'</strong><span>'+esc(r.track.type==="arrangement"?(r.track.circle||""):(r.track.work||r.track.artistString||""))+'</span></button>';
+    }).join("")+
+    '<div class="dive-depth-chip">DIVE '+(state.diveDepth+1)+' · '+depthMeters+'m · '+related.length+' SIGNALS</div>';
+  stage.querySelectorAll("[data-rel]").forEach(b=>b.onclick=()=>startDive(byId(b.dataset.rel),{continue:true}));
+  stage.querySelectorAll("[data-current-origin]").forEach(b=>b.onclick=()=>goToOriginal(t));
+  const play=stage.querySelector("[data-current-play]");if(play)play.onclick=()=>playTrack(t);
+  const open=stage.querySelector("[data-current-open]");if(open)open.onclick=()=>openTrack(t);
+  window.scrollTo({top:0,behavior:"smooth"});
+  player.routeChange();
+}
+function icebergVisibilityScore(t){
+  const rating=Math.max(0,Number(t.ratingScore)||0);
+  const favorites=Math.max(0,Number(t.favoritedTimes)||0);
+  const media=player.playable(t)?6:0;
+  const links=(t.type==="original"?countChildren(t.id):originalIds(t).length)*1.5;
+  const meta=(t.album?1:0)+(t.circle?1:0)+(t.year?1:0);
+  return rating*4+Math.log10(favorites+1)*10+media+links+meta;
+}
+function renderIceberg(){
+  const layers=[
+    {name:"수면",sub:"가장 눈에 잘 띄는 곡",a:"#173a55",b:"#102c47"},
+    {name:"얕은층",sub:"익숙한 인기권",a:"#12304d",b:"#0d263f"},
+    {name:"중층",sub:"조금 더 파고들면 만나는 곡",a:"#0e2741",b:"#0a2037"},
+    {name:"심층",sub:"서클·원곡을 따라가야 보이는 곡",a:"#0b2037",b:"#08192d"},
+    {name:"해구",sub:"낮은 가시성의 숨은 곡",a:"#08182b",b:"#061321"},
+    {name:"심연",sub:"현재 로드 풀의 가장 깊은 구간",a:"#06111f",b:"#030912"}
+  ];
+  let pool=dedupe([...state.known.values()]);
+  if(state.mode==="original")pool=pool.filter(t=>t.type==="original");
+  if(state.mode==="arrangement")pool=pool.filter(t=>t.type==="arrangement");
+  const work=selectedWork();if(work)pool=pool.filter(t=>trackMatchesWork(t,work));
+  pool=pool.sort((a,b)=>icebergVisibilityScore(b)-icebergVisibilityScore(a));
+  const root=$("#iceberg");
+  if(!pool.length){root.innerHTML='<div class="iceberg-empty">빙산에 표시할 곡이 없습니다.</div>';return}
+  const chunk=Math.max(1,Math.ceil(pool.length/layers.length));
+  root.innerHTML=layers.map((layer,i)=>{
+    const start=i*chunk,end=Math.min(pool.length,(i+1)*chunk);
+    const rows=pool.slice(start,end).slice(0,10);
+    const pctStart=Math.round(start/pool.length*100),pctEnd=Math.min(100,Math.round(end/pool.length*100));
+    return '<section class="ice-layer" style="--ice-a:'+layer.a+';--ice-b:'+layer.b+'"><div class="ice-layer-head"><div><small>LAYER '+(i+1)+'</small><strong>'+layer.name+'</strong><span>'+layer.sub+'</span></div><span>가시성 '+pctStart+'–'+pctEnd+'%</span></div><div class="ice-tracks">'+rows.map(t=>'<button class="ice-track" data-ice-dive="'+escAttr(t.id)+'"><b>'+esc(t.title)+'</b><small>'+esc(t.type==="arrangement"?(t.circle||"Arrangement"):(t.work||"Original"))+'</small>'+(t.type==="arrangement"?'<small class="ice-origin">↖ '+esc(originalNames(t)[0]||"원곡 연결 확인")+'</small>':'')+'</button>').join("")+'</div></section>';
+  }).join("");
+  root.querySelectorAll("[data-ice-dive]").forEach(b=>b.onclick=()=>startDive(byId(b.dataset.iceDive),{fresh:true}));
 }
 function relations(t){
   const pool=[...state.known.values()];
