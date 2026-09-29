@@ -333,6 +333,7 @@ function renderGrid(list){
   grid.querySelectorAll("[data-open]").forEach(b=>b.onclick=e=>{e.stopPropagation();openTrack(byId(b.dataset.open))});
   grid.querySelectorAll("[data-dive]").forEach(b=>b.onclick=e=>{e.stopPropagation();startDive(byId(b.dataset.dive))});
   grid.querySelectorAll("[data-play]").forEach(b=>b.onclick=e=>{e.stopPropagation();playTrack(byId(b.dataset.play))});
+  grid.querySelectorAll("[data-origin]").forEach(b=>b.onclick=e=>{e.stopPropagation();goToOriginal(byId(b.dataset.origin))});
 }
 function card(t){
   const playable=player.playable(t),origins=originalNames(t);
@@ -341,8 +342,11 @@ function card(t){
     : [t.work||t.artistString,t.role,t.character].filter(Boolean).join(" · ");
   const thumb=t.thumb?' style="background-image:url(&quot;'+escAttr(t.thumb)+'&quot;)"':"";
   const originLine=t.type==="arrangement"
-    ? "원곡 · "+(origins.join(" / ")||(t.originalIds?.length?"계보 연결 가능":"매칭 준비 중"))
+    ? "원곡 · "+(origins.join(" / ")||(t.originalIds?.length?"계보 연결 가능":"원곡 정보 확인 가능"))
     : (t.year||"연도 미상")+" · "+countChildren(t.id)+"개 연결";
+  const originButton=t.type==="arrangement"
+    ? '<button class="origin-jump" data-origin="'+escAttr(t.id)+'"><span>↖</span><strong>원곡</strong></button>'
+    : "";
   return '<article class="track-card">'+
     '<button class="track-main" data-open="'+escAttr(t.id)+'">'+
       '<div class="track-thumb '+(t.thumb?"":"no-image")+'"'+thumb+'>'+
@@ -352,7 +356,7 @@ function card(t){
         '<div class="tag-row">'+(t.moods||[]).slice(0,3).map(x=>'<span class="tag">'+esc(x)+'</span>').join("")+'</div>'+
       '</div>'+
     '</button>'+
-    '<div class="card-actions"><button class="play-btn" data-play="'+escAttr(t.id)+'" '+(playable?"":"disabled")+'>'+(playable?"▶ 재생":"영상 없음")+'</button><button class="dive-btn" data-dive="'+escAttr(t.id)+'">⌁ 다이브</button></div>'+
+    '<div class="card-actions '+(originButton?"has-origin":"")+'"><button class="play-btn" data-play="'+escAttr(t.id)+'" '+(playable?"":"disabled")+'>'+(playable?"▶ 재생":"영상 없음")+'</button>'+originButton+'<button class="dive-btn" data-dive="'+escAttr(t.id)+'">⌁ 다이브</button></div>'+
   '</article>';
 }
 function openTrack(t){
