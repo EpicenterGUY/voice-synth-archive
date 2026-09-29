@@ -77,7 +77,7 @@ function toTrack(item){
   const id=Number(item?.id)||0;
   const roles=artistRoles(item);
   const type=trackType(item);
-  const originalVersionId=Number(item?.originalVersionId)||Number(item?.parentSongId)||0;
+  const originalVersionId=Number(item?.originalVersionId)||Number(item?.originalVersion?.id)||Number(item?.parentSongId)||0;
   const aliases=uniq([
     ...arr(item?.names).map(nameValue),
     ...clean(item?.additionalNames).split(/[,、]/).map(x=>x.trim())
