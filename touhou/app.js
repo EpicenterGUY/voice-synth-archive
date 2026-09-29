@@ -5,7 +5,7 @@ const player=new window.TouhouMediaPlayer();
 
 const state={
   localOriginals:[],localArrangements:[],known:new Map(),aliases:new Map(),identities:new Map(),remoteItems:[],works:[],
-  mode:"all",filter:"전체",workFilter:"",sort:"recommend",selected:null,view:"home",
+  mode:"all",filter:"전체",workFilter:"",sort:"recommend",selected:null,view:"home",diveDepth:0,diveRoot:null,
   remote:{available:false,loading:false,start:0,total:0,catalogTotal:0,key:"",error:"",counts:{},seq:0},
   favorites:new Set(readJson("touhoudive:favorites",[])),
   history:readJson("touhoudive:history",[]),
@@ -56,18 +56,21 @@ function bind(){
     loadRemote(true);
     $("#searchInput").focus();
   };
-  $("#workSelect").addEventListener("change",e=>{state.workFilter=e.target.value;if(state.workFilter&&state.view==="home")setView("discover");renderCatalog();loadRemote(true);});
+  $("#workSelect").addEventListener("change",e=>{state.workFilter=e.target.value;if(state.workFilter&&state.view==="home")setView("discover");if(state.view==="iceberg")renderIceberg();else renderCatalog();loadRemote(true);});
   $("#sortSelect").addEventListener("change",e=>{state.sort=e.target.value;renderCatalog();loadRemote(true);});
   $("#loadMoreBtn").onclick=()=>loadRemote(false);
   $("#randomBtn").onclick=randomDive;$("#heroDiveBtn").onclick=randomDive;
   $("#playableBtn").onclick=()=>{state.mode="all";state.filter="영상 있음";syncModeTabs();renderCatalog("인앱 재생 가능한 곡");loadRemote(true);};
   $("#refreshBtn").onclick=()=>loadRemote(true,true);
+  $("#icebergRefresh").onclick=()=>renderIceberg();
   $("#panelClose").onclick=closePanel;
   $("#scrim").onclick=()=>{closePanel();closeMenu();};
   $("#menuBtn").onclick=()=>{$("#sidebar").classList.toggle("is-open");syncScrim();};
   $("#themeBtn").onclick=toggleTheme;
   $$("#modeTabs .mode-tab").forEach(btn=>btn.onclick=()=>{
-    state.mode=btn.dataset.mode;state.filter="전체";syncModeTabs();renderCatalog();loadRemote(true);
+    state.mode=btn.dataset.mode;state.filter="전체";syncModeTabs();
+    if(state.view==="iceberg"){renderIceberg();loadRemote(true).then(()=>renderIceberg());}
+    else{renderCatalog();loadRemote(true);}
   });
   $$(".nav-item[data-view]").forEach(btn=>btn.onclick=()=>nav(btn.dataset.view));
   document.addEventListener("keydown",e=>{
@@ -332,6 +335,7 @@ function renderGrid(list){
   grid.querySelectorAll("[data-open]").forEach(b=>b.onclick=e=>{e.stopPropagation();openTrack(byId(b.dataset.open))});
   grid.querySelectorAll("[data-dive]").forEach(b=>b.onclick=e=>{e.stopPropagation();startDive(byId(b.dataset.dive))});
   grid.querySelectorAll("[data-play]").forEach(b=>b.onclick=e=>{e.stopPropagation();playTrack(byId(b.dataset.play))});
+  grid.querySelectorAll("[data-origin]").forEach(b=>b.onclick=e=>{e.stopPropagation();goToOriginal(byId(b.dataset.origin))});
 }
 function card(t){
   const playable=player.playable(t),origins=originalNames(t);
@@ -340,8 +344,11 @@ function card(t){
     : [t.work||t.artistString,t.role,t.character].filter(Boolean).join(" · ");
   const thumb=t.thumb?' style="background-image:url(&quot;'+escAttr(t.thumb)+'&quot;)"':"";
   const originLine=t.type==="arrangement"
-    ? "원곡 · "+(origins.join(" / ")||(t.originalIds?.length?"계보 연결 가능":"매칭 준비 중"))
+    ? "원곡 · "+(origins.join(" / ")||(t.originalIds?.length?"계보 연결 가능":"원곡 정보 확인 가능"))
     : (t.year||"연도 미상")+" · "+countChildren(t.id)+"개 연결";
+  const originButton=t.type==="arrangement"
+    ? '<button class="origin-jump" data-origin="'+escAttr(t.id)+'"><span>↖</span><strong>원곡</strong></button>'
+    : "";
   return '<article class="track-card">'+
     '<button class="track-main" data-open="'+escAttr(t.id)+'">'+
       '<div class="track-thumb '+(t.thumb?"":"no-image")+'"'+thumb+'>'+
@@ -351,7 +358,7 @@ function card(t){
         '<div class="tag-row">'+(t.moods||[]).slice(0,3).map(x=>'<span class="tag">'+esc(x)+'</span>').join("")+'</div>'+
       '</div>'+
     '</button>'+
-    '<div class="card-actions"><button class="play-btn" data-play="'+escAttr(t.id)+'" '+(playable?"":"disabled")+'>'+(playable?"▶ 재생":"영상 없음")+'</button><button class="dive-btn" data-dive="'+escAttr(t.id)+'">⌁ 다이브</button></div>'+
+    '<div class="card-actions '+(originButton?"has-origin":"")+'"><button class="play-btn" data-play="'+escAttr(t.id)+'" '+(playable?"":"disabled")+'>'+(playable?"▶ 재생":"영상 없음")+'</button>'+originButton+'<button class="dive-btn" data-dive="'+escAttr(t.id)+'">⌁ 다이브</button></div>'+
   '</article>';
 }
 function openTrack(t){
@@ -368,15 +375,41 @@ function openTrack(t){
   $("#detailContent").innerHTML=`
     <div class="detail-hero"><div class="detail-kicker">${t.type==="original"?"ORIGINAL":"ARRANGEMENT"} · ${t.remote?"TOUHOUDB LIVE":"LOCAL VERIFIED"}</div><h2>${esc(t.title)}</h2><div class="detail-meta">${artistLine}<br>${t.year||""}${t.album?" · "+esc(t.album):""}</div></div>
     <div class="tag-row">${(t.moods||[]).map(x=>`<span class="tag">${esc(x)}</span>`).join("")}</div>
-    <div class="detail-actions"><button class="hot" id="detailPlay" ${player.playable(t)?"":"disabled"}>${player.playable(t)?"▶ 앱에서 재생":"영상 준비 중"}</button><button id="detailDive">다이브</button><button id="favBtn">${fav?"♥ 보관됨":"♡ 보관하기"}</button>${source?`<a href="${escAttr(source)}" target="_blank" rel="noopener">원본 링크 ↗</a>`:'<button disabled>원본 링크 없음</button>'}</div>
+    <div class="detail-actions"><button class="hot" id="detailPlay" ${player.playable(t)?"":"disabled"}>${player.playable(t)?"▶ 앱에서 재생":"영상 준비 중"}</button><button id="detailDive">⌁ 다이브</button>${t.type==="arrangement"?'<button class="origin-jump" id="detailOrigin"><span>↖</span><strong>원곡으로</strong></button>':""}<button id="favBtn">${fav?"♥ 보관됨":"♡ 보관하기"}</button>${source?`<a href="${escAttr(source)}" target="_blank" rel="noopener">원본 링크 ↗</a>`:'<button disabled>원본 링크 없음</button>'}</div>
     ${t.type==="arrangement"?lineageBox("이 어레인지의 원곡",origins,missing):lineageBox("이 원곡을 사용한 현재 로드 어레인지",children,[])}
     <div class="fact-box"><label>다이브 기준</label><div class="detail-meta">${esc(relationText(t))}</div></div>`;
   $("#detailPanel").classList.add("is-open");$("#detailPanel").setAttribute("aria-hidden","false");syncScrim();
   const play=$("#detailPlay");if(play)play.onclick=()=>{if(player.playable(t)){playTrack(t);closePanel();}};
-  $("#detailDive").onclick=()=>{startDive(t);closePanel();};
+  $("#detailDive").onclick=()=>{startDive(t,{fresh:true});closePanel();};
+  const originBtn=$("#detailOrigin");if(originBtn)originBtn.onclick=()=>goToOriginal(t);
   $("#favBtn").onclick=()=>toggleFavorite(t);
   $("#detailContent").querySelectorAll("[data-lineage]").forEach(b=>b.onclick=()=>openTrack(byId(b.dataset.lineage)));
   $("#detailContent").querySelectorAll("[data-hydrate]").forEach(b=>b.onclick=()=>hydrateAndOpen(b.dataset.hydrate));
+}
+async function goToOriginal(t){
+  if(!t||t.type!=="arrangement")return;
+  let current=byId(t.id)||t;
+  let ids=originalIds(current);
+  if(!ids.length&&catalog&&String(current.id).startsWith("tdb-")){
+    try{
+      const hydrated=await catalog.hydrate(current.id);
+      if(hydrated){current=remember(hydrated);ids=originalIds(current)}
+    }catch(e){}
+  }
+  if(!ids.length){
+    toast("이 곡은 TouhouDB에 원곡 연결 정보가 없습니다.");
+    return;
+  }
+  let original=byId(ids[0]);
+  if(!original&&catalog&&String(ids[0]).startsWith("tdb-")){
+    try{original=remember(await catalog.hydrate(ids[0]))}catch(e){}
+  }
+  if(!original){toast("원곡 정보를 불러오지 못했습니다.");return}
+  closePanel();
+  state.mode="original";state.filter="전체";syncModeTabs();
+  setView("discover");
+  renderCatalog("원곡으로 이동");
+  openTrack(original);
 }
 function lineageBox(label,tracks,missing){
   const rows=tracks.slice(0,12).map(x=>`<button class="lineage-link" data-lineage="${x.id}"><strong>${esc(x.title)}</strong><small>${esc(x.type==="arrangement"?(x.circle||""):(x.work||x.artistString||""))}</small></button>`);
@@ -404,6 +437,8 @@ function nav(view){
     renderCatalog("전체 카탈로그");
   }else if(view==="lineage"){
     renderLineageOverview();
+  }else if(view==="iceberg"){
+    renderIceberg();
   }else if(view==="library"){
     renderSpecial([...state.favorites].map(byId).filter(Boolean),"보관함");
   }else if(view==="history"){
@@ -415,9 +450,9 @@ function setView(view){
   state.view=view;
   document.body.dataset.view=view;
   $$(".nav-item[data-view]").forEach(x=>x.classList.toggle("is-active",x.dataset.view===view));
-  const labels={home:"HOME",discover:"DISCOVER",lineage:"LINEAGE",library:"LIBRARY",history:"HISTORY",dive:"DIVE PATH"};
+  const labels={home:"HOME",discover:"DISCOVER",lineage:"LINEAGE",iceberg:"ICEBERG",library:"LIBRARY",history:"HISTORY",dive:"DEEP DIVE"};
   $("#sectionEyebrow").textContent=labels[view]||"DISCOVER";
-  $("#catalogTools").hidden=view==="library"||view==="history";
+  $("#catalogTools").hidden=view==="library"||view==="history"||view==="iceberg"||view==="dive";
   syncCatalogFooter();
 }
 function renderSpecial(list,title){
@@ -431,15 +466,76 @@ function renderLineageOverview(){
   $("#sectionTitle").textContent="원곡 → 2차창작 계보";
   syncCatalogFooter();
 }
-function startDive(t){
+function startDive(t,opts={}){
   if(!t)return;
   t=byId(t.id)||t;
-  state.selected=t;pushHistory(t.id,t);setView("dive");
+  const continuing=!!opts.continue;
+  if(opts.fresh||!state.diveRoot||!continuing){
+    state.diveRoot=resolveId(t.id);
+    state.diveDepth=0;
+  }else{
+    state.diveDepth=Math.min(24,state.diveDepth+1);
+  }
+  state.selected=t;
+  pushHistory(t.id,t);
+  setView("dive");
   const related=relations(t).slice(0,9);
-  $("#diveMap").classList.remove("empty-state");
-  $("#diveMap").innerHTML=`<div class="dive-origin"><div><small>START · ${t.type.toUpperCase()}</small><strong>${esc(t.title)}</strong></div><span>${esc(t.type==="arrangement"?(t.circle||""):(t.work||t.artistString||""))}</span></div><div class="relation-list">${related.map(r=>`<button class="relation-card" data-rel="${r.track.id}"><small>${esc(r.reason)}</small><strong>${esc(r.track.title)}</strong><span>${esc(r.track.type==="arrangement"?(r.track.circle||""):(r.track.work||r.track.artistString||""))}</span></button>`).join("")}</div>`;
-  $("#diveMap").querySelectorAll("[data-rel]").forEach(b=>b.onclick=()=>startDive(byId(b.dataset.rel)));
-  window.scrollTo({top:0,behavior:"smooth"});player.routeChange();
+  const origin=originalTracks(t)[0]||null;
+  const depthMeters=state.diveDepth*180;
+  const stage=$("#diveStage"),empty=$("#diveEmpty");
+  empty.hidden=true;stage.hidden=false;
+  const positions=[[18,54],[50,57],[82,54],[12,72],[38,74],[65,74],[88,72],[28,90],[72,90]];
+  const originNode=t.type==="arrangement"
+    ? '<button class="dive-origin-node" data-current-origin="'+escAttr(t.id)+'">↖ 원곡 · '+esc(origin?.title||"원곡 정보 불러오기")+'</button>'
+    : "";
+  const playAction=player.playable(t)?'<button data-current-play="'+escAttr(t.id)+'">▶ 재생</button>':"";
+  const originAction=t.type==="arrangement"?'<button class="origin-jump" data-current-origin="'+escAttr(t.id)+'">↖ 원곡</button>':"";
+  stage.innerHTML=originNode+
+    '<article class="dive-current"><small>CURRENT DEPTH · '+depthMeters+'m</small><h3>'+esc(t.title)+'</h3><p>'+esc(t.type==="arrangement"?(t.circle||"Arrangement"):(t.work||t.artistString||"Original"))+'</p><div class="dive-current-actions">'+playAction+originAction+'<button data-current-open="'+escAttr(t.id)+'">상세</button></div></article>'+
+    related.map((r,i)=>{
+      const p=positions[i]||[50,88];
+      return '<button class="dive-node" style="--x:'+p[0]+'%;--y:'+p[1]+'%" data-rel="'+escAttr(r.track.id)+'"><small>'+esc(r.reason)+'</small><strong>'+esc(r.track.title)+'</strong><span>'+esc(r.track.type==="arrangement"?(r.track.circle||""):(r.track.work||r.track.artistString||""))+'</span></button>';
+    }).join("")+
+    '<div class="dive-depth-chip">DIVE '+(state.diveDepth+1)+' · '+depthMeters+'m · '+related.length+' SIGNALS</div>';
+  stage.querySelectorAll("[data-rel]").forEach(b=>b.onclick=()=>startDive(byId(b.dataset.rel),{continue:true}));
+  stage.querySelectorAll("[data-current-origin]").forEach(b=>b.onclick=()=>goToOriginal(t));
+  const play=stage.querySelector("[data-current-play]");if(play)play.onclick=()=>playTrack(t);
+  const open=stage.querySelector("[data-current-open]");if(open)open.onclick=()=>openTrack(t);
+  window.scrollTo({top:0,behavior:"smooth"});
+  player.routeChange();
+}
+function icebergVisibilityScore(t){
+  const rating=Math.max(0,Number(t.ratingScore)||0);
+  const favorites=Math.max(0,Number(t.favoritedTimes)||0);
+  const media=player.playable(t)?6:0;
+  const links=(t.type==="original"?countChildren(t.id):originalIds(t).length)*1.5;
+  const meta=(t.album?1:0)+(t.circle?1:0)+(t.year?1:0);
+  return rating*4+Math.log10(favorites+1)*10+media+links+meta;
+}
+function renderIceberg(){
+  const layers=[
+    {name:"수면",sub:"가장 눈에 잘 띄는 곡",a:"#173a55",b:"#102c47"},
+    {name:"얕은층",sub:"익숙한 인기권",a:"#12304d",b:"#0d263f"},
+    {name:"중층",sub:"조금 더 파고들면 만나는 곡",a:"#0e2741",b:"#0a2037"},
+    {name:"심층",sub:"서클·원곡을 따라가야 보이는 곡",a:"#0b2037",b:"#08192d"},
+    {name:"해구",sub:"낮은 가시성의 숨은 곡",a:"#08182b",b:"#061321"},
+    {name:"심연",sub:"현재 로드 풀의 가장 깊은 구간",a:"#06111f",b:"#030912"}
+  ];
+  let pool=dedupe([...state.known.values()]);
+  if(state.mode==="original")pool=pool.filter(t=>t.type==="original");
+  if(state.mode==="arrangement")pool=pool.filter(t=>t.type==="arrangement");
+  const work=selectedWork();if(work)pool=pool.filter(t=>trackMatchesWork(t,work));
+  pool=pool.sort((a,b)=>icebergVisibilityScore(b)-icebergVisibilityScore(a));
+  const root=$("#iceberg");
+  if(!pool.length){root.innerHTML='<div class="iceberg-empty">빙산에 표시할 곡이 없습니다.</div>';return}
+  const chunk=Math.max(1,Math.ceil(pool.length/layers.length));
+  root.innerHTML=layers.map((layer,i)=>{
+    const start=i*chunk,end=Math.min(pool.length,(i+1)*chunk);
+    const rows=pool.slice(start,end).slice(0,10);
+    const pctStart=Math.round(start/pool.length*100),pctEnd=Math.min(100,Math.round(end/pool.length*100));
+    return '<section class="ice-layer" style="--ice-a:'+layer.a+';--ice-b:'+layer.b+'"><div class="ice-layer-head"><div><small>LAYER '+(i+1)+'</small><strong>'+layer.name+'</strong><span>'+layer.sub+'</span></div><span>가시성 '+pctStart+'–'+pctEnd+'%</span></div><div class="ice-tracks">'+rows.map(t=>'<button class="ice-track" data-ice-dive="'+escAttr(t.id)+'"><b>'+esc(t.title)+'</b><small>'+esc(t.type==="arrangement"?(t.circle||"Arrangement"):(t.work||"Original"))+'</small>'+(t.type==="arrangement"?'<small class="ice-origin">↖ '+esc(originalNames(t)[0]||"원곡 연결 확인")+'</small>':'')+'</button>').join("")+'</div></section>';
+  }).join("");
+  root.querySelectorAll("[data-ice-dive]").forEach(b=>b.onclick=()=>startDive(byId(b.dataset.iceDive),{fresh:true}));
 }
 function relations(t){
   const pool=[...state.known.values()];

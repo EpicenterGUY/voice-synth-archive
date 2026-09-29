@@ -25,13 +25,14 @@
         <button class="nav-item is-active" data-view="home"><b>⌂</b><span>홈</span></button>
         <button class="nav-item" data-view="discover"><b>✦</b><span>탐색</span></button>
         <button class="nav-item" data-view="dive"><b>⌁</b><span>다이브</span></button>
+        <button class="nav-item" data-view="iceberg"><b>▽</b><span>빙산</span></button>
         <button class="nav-item" data-view="lineage"><b>⤢</b><span>원곡 계보</span></button>
         <button class="nav-item" data-view="library"><b>♡</b><span>보관함</span></button>
         <button class="nav-item" data-view="history"><b>◷</b><span>기록</span></button>
       </nav>
 
       <div class="sidebar-footer">
-        <div class="build-chip"><span></span>TouhouDive v0.4.2 Alpha</div>
+        <div class="build-chip"><span></span>TouhouDive v0.5.0 Alpha</div>
         <button class="ghost-btn" id="themeBtn">◐ 테마 전환</button>
       </div>
     </aside>
@@ -119,16 +120,36 @@
       <section class="content-section dive-ui" id="diveSection">
         <div class="section-head">
           <div>
-            <span class="eyebrow">DIVE PATH</span>
-            <h2>다이브 흐름</h2>
+            <span class="eyebrow">DEEP DIVE</span>
+            <h2>환상향 심층 탐사</h2>
           </div>
-          <span class="hint">원곡 · 서클 · 보컬 · 태그 · 시대를 조합</span>
+          <span class="hint">곡을 누를수록 더 깊은 연결로 이동</span>
         </div>
-        <div class="dive-map empty-state" id="diveMap">
-          <div class="empty-icon">⌁</div>
-          <strong>아직 시작곡이 없습니다.</strong>
-          <span>곡 카드에서 ‘다이브’를 누르면 연결 경로가 여기에 열립니다.</span>
+        <div class="dive-ocean" id="diveMap">
+          <div class="dive-waterline"><span>SURFACE</span></div>
+          <div class="depth-scale" aria-hidden="true">
+            <span style="top:8%">0m</span><span style="top:28%">200m</span><span style="top:50%">500m</span><span style="top:72%">1000m</span><span style="top:91%">ABYSS</span>
+          </div>
+          <div class="dive-bubbles" aria-hidden="true"></div>
+          <div class="dive-empty" id="diveEmpty">
+            <div class="sonar-ring"><b>⌁</b></div>
+            <strong>잠수 시작곡을 선택하세요.</strong>
+            <span>곡 카드의 ‘다이브’ 또는 랜덤 다이브를 누르면 심층 탐사가 시작됩니다.</span>
+          </div>
+          <div class="dive-stage" id="diveStage" hidden></div>
         </div>
+      </section>
+
+      <section class="content-section iceberg-ui" id="icebergSection">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">TOUHOU MUSIC ICEBERG</span>
+            <h2>동방 음악 빙산</h2>
+          </div>
+          <button class="text-btn" id="icebergRefresh">↻ 다시 분층</button>
+        </div>
+        <p class="iceberg-note">현재 로드된 카탈로그의 rating · favorite · 영상 · 관계량을 조합한 가시성 기준입니다. 절대적인 유명도 순위는 아닙니다.</p>
+        <div class="iceberg" id="iceberg"></div>
       </section>
     </main>
 
@@ -145,6 +166,7 @@
     <button class="nav-item is-active" data-view="home"><b>⌂</b><span>홈</span></button>
     <button class="nav-item" data-view="discover"><b>✦</b><span>탐색</span></button>
     <button class="nav-item" data-view="dive"><b>⌁</b><span>다이브</span></button>
+    <button class="nav-item" data-view="iceberg"><b>▽</b><span>빙산</span></button>
     <button class="nav-item" data-view="library"><b>♡</b><span>보관함</span></button>
     <button class="nav-item" data-view="history"><b>◷</b><span>기록</span></button>
   </nav>
