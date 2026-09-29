@@ -15,6 +15,7 @@ function mediaOf(p){
 }
 function toTrack(r){
   const work=inferWork(r),mediaCandidates=arr(r.p).map(mediaOf).filter(Boolean);
+  const search=[r.n,...arr(r.x),r.c,r.a,r.l,...arr(r.g)].filter(Boolean).join(" ").normalize("NFKC").toLowerCase();
   return{
     id:"tdb-"+r.i,touhoudbId:Number(r.i)||0,type:r.t?"arrangement":"original",
     title:clean(r.n)||("TouhouDB #"+r.i),aliases:arr(r.x),year:Number(r.y)||null,
@@ -25,7 +26,7 @@ function toTrack(r){
     media:mediaCandidates[0]||null,mediaCandidates,
     thumb:clean(r.th),source:{name:"TouhouDB",url:"https://touhoudb.com/S/"+r.i},
     ratingScore:Number(r.r)||0,favoritedTimes:Number(r.f)||0,hitCount:Number(r.h)||0,
-    globalRank:Number(r.q)||null,globalScore:Number(r.s)||0,remote:true,fullIndex:true
+    globalRank:Number(r.q)||null,globalScore:Number(r.s)||0,_search:search,remote:true,fullIndex:true
   };
 }
 async function manifest(force=false){
