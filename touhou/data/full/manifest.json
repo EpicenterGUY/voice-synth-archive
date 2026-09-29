@@ -2,7 +2,7 @@
   "schema": 1,
   "source": "TouhouDB",
   "api": "https://touhoudb.com/api",
-  "generatedAt": "2026-09-29T05:04:48.827Z",
+  "generatedAt": "2026-09-29T05:17:53.831Z",
   "totalCount": 189002,
   "indexed": 189002,
   "shardSize": 1000,
@@ -960,8 +960,8 @@
     }
   ],
   "counts": {
-    "original": 15509,
-    "arrangement": 173493,
+    "original": 6693,
+    "arrangement": 182309,
     "mediaCandidates": 72842
   },
   "providers": {
@@ -984,6 +984,10 @@
     "version": 2,
     "composite": "popularity + original influence",
     "popularity": "rating*5 + log10(favorites+1)*18 + log10(hits+1)*6 + media-provider bonus",
-    "influence": "original only: derivative tracks + distinct circles + distinct albums + playable derivative bonus"
+    "influence": "official original only: derivative tracks + distinct circles + distinct albums + playable derivative bonus"
+  },
+  "classification": {
+    "original": "SongType Original AND (ZUN artist OR official 33-work registry match)",
+    "secondary": "all other TouhouDB entries, including fan originals and derivative entries"
   }
 }
