@@ -399,13 +399,13 @@ function updateStats(){
   const localOrig=state.localOriginals.length,localArr=state.localArrangements.length;
   const originalCount=meta?.counts?.original||state.remote.counts.original||loaded.filter(x=>x.type==="original").length||localOrig;
   const arrangementCount=meta?.counts?.arrangement||state.remote.counts.arrangement||loaded.filter(x=>x.type==="arrangement").length||localArr;
-  const mediaCount=meta?.counts?.mediaCandidates??loaded.filter(t=>hasMediaCandidate(t)).length;
+  const mediaCount=meta?.counts?.mediaCandidates??null;
   $("#statOriginal").textContent=fmt(originalCount);
   $("#statArrangement").textContent=fmt(arrangementCount);
-  $("#statMedia").textContent=fmt(mediaCount);
+  $("#statMedia").textContent=mediaCount===null?"집계 중":fmt(mediaCount);
   $("#statOriginalMeta").textContent=meta?"전체 인덱스":"TouhouDB 원곡 분류";
   $("#statArrangementMeta").textContent=meta?"전체 인덱스":"TouhouDB 어레인지 분류";
-  $("#statMediaMeta").textContent=meta?"전체 인덱스 재생 후보":"현재 확인된 재생 후보";
+  $("#statMediaMeta").textContent=meta?"전체 "+fmt(meta.indexed)+"곡에서 PV 후보 확인":"전수 인덱스 생성 후 확정";
   updateCatalogTotal();
 }
 function updateCatalogTotal(){
