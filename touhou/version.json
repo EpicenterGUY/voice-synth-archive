@@ -1,5 +1,5 @@
 {
-  "version": "0.4.2",
+  "version": "0.5.0",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-09-29",
@@ -26,6 +26,11 @@
     "33-game-work-registry",
     "work-selector",
     "touhoudb-tag-filter",
-    "work-inference"
+    "work-inference",
+    "arrangement-original-jump",
+    "deep-dive-ocean-ui",
+    "depth-navigation",
+    "dynamic-music-iceberg",
+    "iceberg-to-dive"
   ]
 }
