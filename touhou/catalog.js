@@ -110,6 +110,7 @@ function toTrack(item){
     songType:clean(item?.songType),
     ratingScore:Number(item?.ratingScore)||0,
     favoritedTimes:Number(item?.favoritedTimes)||0,
+    hitCount:Number(item?.hitCount)||Number(item?.hits)||0,
     publishDate:clean(item?.publishDate),
     remote:true
   };

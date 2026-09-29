@@ -5,7 +5,7 @@ const player=new window.TouhouMediaPlayer();
 
 const state={
   localOriginals:[],localArrangements:[],known:new Map(),aliases:new Map(),identities:new Map(),remoteItems:[],works:[],
-  mode:"all",filter:"전체",workFilter:"",sort:"recommend",selected:null,view:"home",diveDepth:0,diveRoot:null,
+  mode:"all",filter:"전체",workFilter:"",sort:"recommend",selected:null,view:"home",diveDepth:0,diveRoot:null,icebergMode:"visibility",
   remote:{available:false,loading:false,start:0,total:0,catalogTotal:0,key:"",error:"",counts:{},seq:0},
   favorites:new Set(readJson("touhoudive:favorites",[])),
   history:readJson("touhoudive:history",[]),
@@ -63,6 +63,11 @@ function bind(){
   $("#playableBtn").onclick=()=>{state.mode="all";state.filter="영상 있음";syncModeTabs();renderCatalog("인앱 재생 가능한 곡");loadRemote(true);};
   $("#refreshBtn").onclick=()=>loadRemote(true,true);
   $("#icebergRefresh").onclick=()=>renderIceberg();
+  $$("#icebergModeTabs [data-ice-mode]").forEach(btn=>btn.onclick=()=>{
+    state.icebergMode=btn.dataset.iceMode;
+    $$("#icebergModeTabs [data-ice-mode]").forEach(x=>x.classList.toggle("is-active",x===btn));
+    renderIceberg();
+  });
   $("#panelClose").onclick=closePanel;
   $("#scrim").onclick=()=>{closePanel();closeMenu();};
   $("#menuBtn").onclick=()=>{$("#sidebar").classList.toggle("is-open");syncScrim();};
@@ -507,33 +512,120 @@ function startDive(t,opts={}){
 function icebergVisibilityScore(t){
   const rating=Math.max(0,Number(t.ratingScore)||0);
   const favorites=Math.max(0,Number(t.favoritedTimes)||0);
+  const hits=Math.max(0,Number(t.hitCount)||0);
   const media=player.playable(t)?6:0;
   const links=(t.type==="original"?countChildren(t.id):originalIds(t).length)*1.5;
   const meta=(t.album?1:0)+(t.circle?1:0)+(t.year?1:0);
-  return rating*4+Math.log10(favorites+1)*10+media+links+meta;
+  return rating*4+Math.log10(favorites+1)*10+Math.log10(hits+1)*2+media+links+meta;
 }
-function renderIceberg(){
-  const layers=[
-    {name:"수면",sub:"가장 눈에 잘 띄는 곡",a:"#173a55",b:"#102c47"},
-    {name:"얕은층",sub:"익숙한 인기권",a:"#12304d",b:"#0d263f"},
-    {name:"중층",sub:"조금 더 파고들면 만나는 곡",a:"#0e2741",b:"#0a2037"},
-    {name:"심층",sub:"서클·원곡을 따라가야 보이는 곡",a:"#0b2037",b:"#08192d"},
-    {name:"해구",sub:"낮은 가시성의 숨은 곡",a:"#08182b",b:"#061321"},
-    {name:"심연",sub:"현재 로드 풀의 가장 깊은 구간",a:"#06111f",b:"#030912"}
-  ];
+function icebergMetricValue(t,mode=state.icebergMode){
+  if(mode==="favorites")return Math.max(0,Number(t.favoritedTimes)||0);
+  if(mode==="hits")return Math.max(0,Number(t.hitCount)||0);
+  if(mode==="relations")return t.type==="original"?countChildren(t.id):originalIds(t).length;
+  if(mode==="popularity"){
+    const rating=Math.max(0,Number(t.ratingScore)||0);
+    const favorites=Math.max(0,Number(t.favoritedTimes)||0);
+    const hits=Math.max(0,Number(t.hitCount)||0);
+    return rating*3+Math.log10(favorites+1)*12+Math.log10(hits+1)*3;
+  }
+  return icebergVisibilityScore(t);
+}
+function icebergModeMeta(){
+  const map={
+    visibility:{label:"가시성",help:"rating · favorite · DB 조회 · 영상 · 관계량을 혼합한 가시성"},
+    popularity:{label:"인기도",help:"TouhouDB rating · favorite · DB 조회를 합성한 인기도"},
+    favorites:{label:"즐겨찾기",help:"TouhouDB favoritedTimes가 많은 순서"},
+    hits:{label:"DB 조회",help:"TouhouDB/VocaDB 항목 Hits 기준 · 영상 플랫폼 조회수와 별개"},
+    relations:{label:"관계량",help:"원곡↔2차창작으로 현재 앱에서 연결된 곡 수"}
+  };
+  return map[state.icebergMode]||map.visibility;
+}
+function icebergPool(){
   let pool=dedupe([...state.known.values()]);
   if(state.mode==="original")pool=pool.filter(t=>t.type==="original");
   if(state.mode==="arrangement")pool=pool.filter(t=>t.type==="arrangement");
   const work=selectedWork();if(work)pool=pool.filter(t=>trackMatchesWork(t,work));
-  pool=pool.sort((a,b)=>icebergVisibilityScore(b)-icebergVisibilityScore(a));
+  return pool;
+}
+function median(nums){
+  const a=nums.filter(Number.isFinite).sort((x,y)=>x-y);
+  if(!a.length)return 0;
+  const m=Math.floor(a.length/2);
+  return a.length%2?a[m]:(a[m-1]+a[m])/2;
+}
+function statValue(n){
+  const v=Number(n)||0;
+  if(v>=1000000)return (v/1000000).toFixed(v>=10000000?0:1)+"M";
+  if(v>=1000)return (v/1000).toFixed(v>=10000?0:1)+"K";
+  if(Number.isInteger(v))return v.toLocaleString();
+  return v.toFixed(1);
+}
+function renderIcebergStats(pool,layerRows){
+  const total=pool.length;
+  const originals=pool.filter(t=>t.type==="original").length;
+  const arrangements=pool.filter(t=>t.type==="arrangement").length;
+  const circles=new Set(pool.filter(t=>t.type==="arrangement").map(t=>t.circle).filter(Boolean)).size;
+  const works=new Set(pool.flatMap(t=>t.workIds?.length?t.workIds:(t.work?[t.work]:[])).filter(Boolean)).size;
+  const playable=pool.filter(t=>player.playable(t)).length;
+  const hitCoverage=pool.filter(t=>Number(t.hitCount)>0).length;
+  const values=pool.map(t=>icebergMetricValue(t)).filter(Number.isFinite);
+  const avg=values.length?values.reduce((a,b)=>a+b,0)/values.length:0;
+  const max=values.length?Math.max(...values):0;
+  const meta=icebergModeMeta();
+  $("#icebergModeHelp").textContent=meta.help;
+  $("#icebergStats").innerHTML=[
+    ["전체 곡",total,"현재 로드/필터"],
+    ["원곡",originals,total?Math.round(originals/total*100)+"%":"0%"],
+    ["2차창작",arrangements,total?Math.round(arrangements/total*100)+"%":"0%"],
+    ["서클",circles,"중복 제외"],
+    ["작품",works,"현재 식별됨"],
+    ["영상",playable,total?Math.round(playable/total*100)+"%":"0%"],
+    [meta.label+" 평균",statValue(avg),"중앙 "+statValue(median(values))],
+    [meta.label+" 최고",statValue(max),state.icebergMode==="hits"?"Hits 보유 "+hitCoverage+"곡":"현재 풀"]
+  ].map(x=>'<article><span>'+esc(x[0])+'</span><strong>'+esc(x[1])+'</strong><small>'+esc(x[2])+'</small></article>').join("");
+  $("#icebergRegionStats").innerHTML='<div class="region-stat-title"><strong>권역별 곡 수</strong><span>'+fmt(total)+'곡 분포</span></div>'+
+    layerRows.map(row=>{
+      const pct=total?Math.round(row.items.length/total*100):0;
+      return '<div class="region-stat-row"><span>'+esc(row.layer.name)+'</span><div class="region-stat-bar"><i style="width:'+pct+'%"></i></div><strong>'+fmt(row.items.length)+'곡</strong><small>'+pct+'%</small></div>';
+    }).join("");
+}
+function renderIceberg(){
+  const layers=[
+    {name:"수면",sub:"상위 가시성권",a:"#173a55",b:"#102c47"},
+    {name:"얕은층",sub:"높은 인지도권",a:"#12304d",b:"#0d263f"},
+    {name:"중층",sub:"중상위 탐색권",a:"#0e2741",b:"#0a2037"},
+    {name:"심층",sub:"깊게 파고들수록 보이는 곡",a:"#0b2037",b:"#08192d"},
+    {name:"해구",sub:"낮은 가시성권",a:"#08182b",b:"#061321"},
+    {name:"심연",sub:"현재 풀의 최심부",a:"#06111f",b:"#030912"}
+  ];
+  let pool=icebergPool();
+  pool=pool.sort((a,b)=>icebergMetricValue(b)-icebergMetricValue(a)||recommendScore(b)-recommendScore(a));
   const root=$("#iceberg");
-  if(!pool.length){root.innerHTML='<div class="iceberg-empty">빙산에 표시할 곡이 없습니다.</div>';return}
-  const chunk=Math.max(1,Math.ceil(pool.length/layers.length));
-  root.innerHTML=layers.map((layer,i)=>{
-    const start=i*chunk,end=Math.min(pool.length,(i+1)*chunk);
-    const rows=pool.slice(start,end).slice(0,10);
-    const pctStart=Math.round(start/pool.length*100),pctEnd=Math.min(100,Math.round(end/pool.length*100));
-    return '<section class="ice-layer" style="--ice-a:'+layer.a+';--ice-b:'+layer.b+'"><div class="ice-layer-head"><div><small>LAYER '+(i+1)+'</small><strong>'+layer.name+'</strong><span>'+layer.sub+'</span></div><span>가시성 '+pctStart+'–'+pctEnd+'%</span></div><div class="ice-tracks">'+rows.map(t=>'<button class="ice-track" data-ice-dive="'+escAttr(t.id)+'"><b>'+esc(t.title)+'</b><small>'+esc(t.type==="arrangement"?(t.circle||"Arrangement"):(t.work||"Original"))+'</small>'+(t.type==="arrangement"?'<small class="ice-origin">↖ '+esc(originalNames(t)[0]||"원곡 연결 확인")+'</small>':'')+'</button>').join("")+'</div></section>';
+  if(!pool.length){
+    $("#icebergStats").innerHTML="";
+    $("#icebergRegionStats").innerHTML="";
+    root.innerHTML='<div class="iceberg-empty">빙산에 표시할 곡이 없습니다.</div>';
+    return;
+  }
+  // 상층은 좁고 중·심층이 넓도록 실제 빙산 같은 분포 폭을 사용.
+  const cuts=[0,.07,.20,.40,.65,.85,1];
+  const rows=layers.map((layer,i)=>{
+    const start=Math.round(pool.length*cuts[i]);
+    const end=Math.round(pool.length*cuts[i+1]);
+    return{layer,start,end,items:pool.slice(start,end)};
+  });
+  renderIcebergStats(pool,rows);
+  const metric=icebergModeMeta();
+  root.innerHTML=rows.map((row,i)=>{
+    const display=row.items.slice(0,12);
+    const values=row.items.map(t=>icebergMetricValue(t));
+    const lo=values.length?Math.min(...values):0,hi=values.length?Math.max(...values):0;
+    return '<section class="ice-layer" style="--ice-a:'+row.layer.a+';--ice-b:'+row.layer.b+'">'+
+      '<div class="ice-layer-head"><div><small>LAYER '+(i+1)+'</small><strong>'+row.layer.name+'</strong><span>'+row.layer.sub+'</span></div>'+
+      '<span>'+fmt(row.items.length)+'곡 · '+metric.label+' '+statValue(lo)+'–'+statValue(hi)+'</span></div>'+
+      '<div class="ice-tracks">'+display.map(t=>'<button class="ice-track" data-ice-dive="'+escAttr(t.id)+'"><b>'+esc(t.title)+'</b><small>'+esc(t.type==="arrangement"?(t.circle||"Arrangement"):(t.work||"Original"))+'</small><small class="ice-metric">'+esc(metric.label)+' · '+esc(statValue(icebergMetricValue(t)))+'</small>'+(t.type==="arrangement"?'<small class="ice-origin">↖ '+esc(originalNames(t)[0]||"원곡 연결 확인")+'</small>':'')+'</button>').join("")+'</div>'+
+      (row.items.length>display.length?'<div class="ice-layer-more">이 권역 '+fmt(row.items.length-display.length)+'곡 더 있음</div>':"")+
+    '</section>';
   }).join("");
   root.querySelectorAll("[data-ice-dive]").forEach(b=>b.onclick=()=>startDive(byId(b.dataset.iceDive),{fresh:true}));
 }
@@ -580,7 +672,7 @@ function sortList(list,sort){
 function recommendScore(t){return (Number(t.ratingScore)||0)*3+(Number(t.favoritedTimes)||0)*.08+(player.playable(t)?5:0)+(t.type==="arrangement"?2:0)+(t.originalIds?.length?3:0)+(t.moods?.length||0)*.2}
 function randomDive(){const pool=currentPool();if(pool.length)startDive(pool[Math.floor(Math.random()*pool.length)])}
 function snapshotTrack(t){
-  return{id:t.id,type:t.type,title:t.title,aliases:t.aliases||[],year:t.year||null,work:t.work||"",role:t.role||"",character:t.character||"",circle:t.circle||"",album:t.album||"",moods:t.moods||[],originalIds:t.originalIds||[],artists:t.artists||{},artistString:t.artistString||"",media:t.media||null,thumb:t.thumb||"",source:t.source||null,touhoudbId:t.touhoudbId||null,remote:!!t.remote};
+  return{id:t.id,type:t.type,title:t.title,aliases:t.aliases||[],year:t.year||null,work:t.work||"",workId:t.workId||"",workIds:t.workIds||[],role:t.role||"",character:t.character||"",circle:t.circle||"",album:t.album||"",moods:t.moods||[],originalIds:t.originalIds||[],artists:t.artists||{},artistString:t.artistString||"",media:t.media||null,thumb:t.thumb||"",source:t.source||null,touhoudbId:t.touhoudbId||null,ratingScore:Number(t.ratingScore)||0,favoritedTimes:Number(t.favoritedTimes)||0,hitCount:Number(t.hitCount)||0,remote:!!t.remote};
 }
 function persistSnapshot(t){
   if(!t)return;

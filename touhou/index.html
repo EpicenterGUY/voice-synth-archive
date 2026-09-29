@@ -32,7 +32,7 @@
       </nav>
 
       <div class="sidebar-footer">
-        <div class="build-chip"><span></span>TouhouDive v0.5.0 Alpha</div>
+        <div class="build-chip"><span></span>TouhouDive v0.5.1 Alpha</div>
         <button class="ghost-btn" id="themeBtn">◐ 테마 전환</button>
       </div>
     </aside>
@@ -148,7 +148,19 @@
           </div>
           <button class="text-btn" id="icebergRefresh">↻ 다시 분층</button>
         </div>
-        <p class="iceberg-note">현재 로드된 카탈로그의 rating · favorite · 영상 · 관계량을 조합한 가시성 기준입니다. 절대적인 유명도 순위는 아닙니다.</p>
+        <div class="iceberg-toolbar">
+          <div class="iceberg-mode-tabs" id="icebergModeTabs">
+            <button class="is-active" data-ice-mode="visibility">가시성</button>
+            <button data-ice-mode="popularity">인기도</button>
+            <button data-ice-mode="favorites">즐겨찾기</button>
+            <button data-ice-mode="hits">DB 조회</button>
+            <button data-ice-mode="relations">관계량</button>
+          </div>
+          <span class="iceberg-mode-help" id="icebergModeHelp">rating · favorite · 영상 · 관계량을 혼합한 가시성</span>
+        </div>
+        <div class="iceberg-stats" id="icebergStats"></div>
+        <div class="iceberg-region-stats" id="icebergRegionStats"></div>
+        <p class="iceberg-note">통계는 현재 앱에 로드된 카탈로그와 현재 필터를 기준으로 계산합니다. DB 조회(Hits)는 TouhouDB/VocaDB의 항목 조회 통계이며 YouTube·NicoNico 영상 조회수와는 다릅니다.</p>
         <div class="iceberg" id="iceberg"></div>
       </section>
     </main>
