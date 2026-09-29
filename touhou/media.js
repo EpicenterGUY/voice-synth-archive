@@ -7,9 +7,14 @@ const BAD_MEDIA_KEY="touhoudive:media:unavailable:v1";
 
 function clean(v){return String(v??"").trim()}
 function srcFor(media){
-  if(!media)return"";
+  if(!media||media.mode==="external")return"";
   if(media.provider==="youtube"&&media.id)return "youtube:"+media.id;
   if(media.provider==="niconico"&&media.id)return NICO_ORIGIN+"/watch/"+encodeURIComponent(media.id)+"?jsapi=1&playerId="+encodeURIComponent(PLAYER_ID)+"&autoplay=1";
+  if(media.provider==="soundcloud"&&media.url)return "https://w.soundcloud.com/player/?url="+encodeURIComponent(media.url)+"&auto_play=true&hide_related=true&show_comments=false&show_reposts=false";
+  if(media.provider==="vimeo"&&media.id)return "https://player.vimeo.com/video/"+encodeURIComponent(media.id)+"?autoplay=1&playsinline=1";
+  if(media.provider==="piapro"&&media.id)return "https://piapro.jp/content/"+encodeURIComponent(media.id);
+  if(media.provider==="bilibili"&&media.id)return "https://player.bilibili.com/player.html?aid="+encodeURIComponent(media.id)+"&page=1&autoplay=1";
+  if(media.provider==="bandcamp"&&media.id)return "https://bandcamp.com/EmbeddedPlayer/size=large/bgcol=111827/linkcol=ff607b/tracklist=false/artwork=small/track="+encodeURIComponent(media.id)+"/transparent=true/";
   if(media.provider==="touhoudb"&&media.songId)return "https://touhoudb.com/Ext/EmbedSong?songId="+encodeURIComponent(media.songId)+"&lang=Default";
   return clean(media.embed);
 }
@@ -216,8 +221,10 @@ class TouhouMediaPlayer{
   syncControls(){
     document.getElementById("playerPrev").disabled=!(this.index>0);
     document.getElementById("playerNext").disabled=!(this.index>=0&&this.index<this.queue.length-1);
-    this.playBtn.textContent=this.playing?"❚❚":"▶";
-    this.playBtn.title=this.playing?"일시정지":"재생";
+    const controllable=["youtube","niconico"].includes(this.current?.media?.provider);
+    this.playBtn.disabled=!!this.current&&!controllable;
+    this.playBtn.textContent=controllable?(this.playing?"❚❚":"▶"):"▶";
+    this.playBtn.title=controllable?(this.playing?"일시정지":"재생"):"이 공급자는 임베드 플레이어에서 직접 조작";
     this.autoBtn.classList.toggle("active",this.autoNext);
     this.autoBtn.textContent=this.autoNext?"A✓":"A";
     this.autoBtn.setAttribute("aria-pressed",this.autoNext?"true":"false");
