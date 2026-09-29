@@ -3,6 +3,8 @@ import path from "node:path";
 
 const API=process.env.TOUHOUDb_API||"https://touhoudb.com/api";
 const OUT=process.env.OUT_DIR||"touhou/data/full";
+const WORKS_FILE=process.env.WORKS_FILE||"touhou/data/works.json";
+let OFFICIAL_WORKS=[];
 const PAGE_SIZE=Math.max(25,Math.min(100,Number(process.env.PAGE_SIZE)||100));
 const SHARD_SIZE=Math.max(500,Math.min(2000,Number(process.env.SHARD_SIZE)||1000));
 const CONCURRENCY=Math.max(1,Math.min(6,Number(process.env.CONCURRENCY)||3));
@@ -13,6 +15,22 @@ const arr=v=>Array.isArray(v)?v:[];
 const clean=v=>String(v??"").trim();
 const uniq=xs=>[...new Set(xs.filter(Boolean))];
 const nameValue=x=>clean(x?.value||x?.name||x?.defaultName);
+const norm=v=>clean(v).normalize("NFKC").toLowerCase().replace(/[\s\u3000\p{P}\p{S}]+/gu,"");
+function hasZunArtist(item){
+  return artistNames(item).some(x=>norm(x)==="zun")||norm(item?.artistString).split(/[,/]/).some(x=>x==="zun");
+}
+function matchesOfficialWork(item){
+  if(!OFFICIAL_WORKS.length)return false;
+  const names=[
+    clean(item?.name),clean(item?.defaultName),clean(item?.additionalNames),albumName(item),
+    ...arr(item?.tags).map(x=>nameValue(x?.tag||x)),
+    ...arr(item?.names).map(nameValue)
+  ].filter(Boolean).map(norm);
+  return OFFICIAL_WORKS.some(w=>{
+    const aliases=[w.title,w.tag,...arr(w.aliases)].filter(Boolean).map(norm);
+    return aliases.some(a=>a&&names.some(n=>n.includes(a)||a.includes(n)));
+  });
+}
 
 function artistRoles(item){
   const out={arranger:[],vocal:[],lyricist:[],composer:[],other:[]};
@@ -40,7 +58,8 @@ function circleName(item,roles){
 }
 function typeOf(item){
   const s=clean(item?.songType).toLowerCase();
-  return /arrangement|remix|cover|remaster|instrumental|mashup/.test(s)?1:0;
+  const officialOriginal=s==="original"&&(hasZunArtist(item)||matchesOfficialWork(item));
+  return officialOriginal?0:1;
 }
 function yearOf(item){
   const p=clean(item?.publishDate||item?.createDate),y=Number(p.slice(0,4));
@@ -110,7 +129,7 @@ function compact(item){
   const original=Number(item?.originalVersionId)||Number(item?.originalVersion?.id)||Number(item?.parentSongId)||0;
   const tags=uniq(arr(item?.tags).map(x=>nameValue(x?.tag||x)).filter(Boolean)).slice(0,12);
   return{
-    i:id,t:type,n:title,x:aliases.slice(0,8),y:yearOf(item),o:original,
+    i:id,t:type,k:clean(item?.songType),n:title,x:aliases.slice(0,8),y:yearOf(item),o:original,
     c:type?circleName(item,roles):(artistString||"ZUN"),a:artistString,l:albumName(item),
     g:tags,ar:roles,p:media(item),
     r:Number(item?.ratingScore)||0,f:Number(item?.favoritedTimes)||0,h:Number(item?.hitCount)||Number(item?.hits)||0,
@@ -139,6 +158,8 @@ async function fetchPage(start,pageSize=PAGE_SIZE,attempt=0){
   }finally{clearTimeout(timer)}
 }
 async function main(){
+  try{OFFICIAL_WORKS=JSON.parse(await fs.readFile(WORKS_FILE,"utf8"))}catch(e){console.warn("works registry unavailable",e?.message||e);OFFICIAL_WORKS=[]}
+  console.log("official work registry",OFFICIAL_WORKS.length);
   await fs.rm(OUT,{recursive:true,force:true});await fs.mkdir(OUT,{recursive:true});
   const first=await fetchPage(0),total=Number(first?.totalCount)||0;
   if(!total)throw new Error("TouhouDB returned no totalCount");
@@ -215,7 +236,11 @@ async function main(){
       version:2,
       composite:"popularity + original influence",
       popularity:"rating*5 + log10(favorites+1)*18 + log10(hits+1)*6 + media-provider bonus",
-      influence:"original only: derivative tracks + distinct circles + distinct albums + playable derivative bonus"
+      influence:"official original only: derivative tracks + distinct circles + distinct albums + playable derivative bonus"
+    },
+    classification:{
+      original:"SongType Original AND (ZUN artist OR official 33-work registry match)",
+      secondary:"all other TouhouDB entries, including fan originals and derivative entries"
     }
   };
   await fs.writeFile(path.join(OUT,"manifest.json"),JSON.stringify(manifest,null,2)+"\n");

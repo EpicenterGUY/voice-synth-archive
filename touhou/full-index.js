@@ -22,11 +22,13 @@ function mediaOf(p){
 function toTrack(r){
   const work=inferWork(r),mediaCandidates=arr(r.p).map(mediaOf).filter(Boolean);
   const search=[r.n,...arr(r.x),r.c,r.a,r.l,...arr(r.g)].filter(Boolean).join(" ").normalize("NFKC").toLowerCase();
+  const rawType=clean(r.k),rawNorm=rawType.toLowerCase();
+  const category=!r.t?"official-original":rawNorm==="original"?"fan-original":/arrangement|rearrangement|remix|cover|remaster|instrumental|mashup|short/.test(rawNorm)?"arrangement":"other";
   return{
-    id:"tdb-"+r.i,touhoudbId:Number(r.i)||0,type:r.t?"arrangement":"original",
+    id:"tdb-"+r.i,touhoudbId:Number(r.i)||0,type:r.t?"arrangement":"original",category,songTypeRaw:rawType,
     title:clean(r.n)||("TouhouDB #"+r.i),aliases:arr(r.x),year:Number(r.y)||null,
     work:work?.title||"",workId:work?.id||"",workIds:work?[work.id]:[],
-    role:r.t?"Arrangement":"Original",character:"",
+    role:category==="official-original"?"Official Original":category==="fan-original"?"Fan Original":category==="arrangement"?"Arrangement":"Other",character:"",
     circle:clean(r.c)||(r.t?"":"ZUN"),album:clean(r.l),moods:arr(r.g),
     originalIds:r.o?["tdb-"+r.o]:[],artists:r.ar||{},artistString:clean(r.a),
     media:mediaCandidates[0]||null,mediaCandidates,
