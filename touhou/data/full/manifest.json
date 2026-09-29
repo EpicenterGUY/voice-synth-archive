@@ -2,7 +2,7 @@
   "schema": 1,
   "source": "TouhouDB",
   "api": "https://touhoudb.com/api",
-  "generatedAt": "2026-09-29T03:04:58.959Z",
+  "generatedAt": "2026-09-29T05:04:48.827Z",
   "totalCount": 189002,
   "indexed": 189002,
   "shardSize": 1000,
@@ -980,5 +980,10 @@
     "bilibili",
     "bandcamp"
   ],
-  "ranking": "full-index composite score"
+  "ranking": {
+    "version": 2,
+    "composite": "popularity + original influence",
+    "popularity": "rating*5 + log10(favorites+1)*18 + log10(hits+1)*6 + media-provider bonus",
+    "influence": "original only: derivative tracks + distinct circles + distinct albums + playable derivative bonus"
+  }
 }
