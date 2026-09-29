@@ -11,7 +11,6 @@ function srcFor(media){
   if(media.provider==="youtube"&&media.id)return "youtube:"+media.id;
   if(media.provider==="niconico"&&media.id)return NICO_ORIGIN+"/watch/"+encodeURIComponent(media.id)+"?jsapi=1&playerId="+encodeURIComponent(PLAYER_ID)+"&autoplay=1";
   if(media.provider==="soundcloud"&&media.url)return "https://w.soundcloud.com/player/?url="+encodeURIComponent(media.url)+"&auto_play=true&hide_related=true&show_comments=false&show_reposts=false";
-  if(media.provider==="vimeo"&&media.id)return "https://player.vimeo.com/video/"+encodeURIComponent(media.id)+"?autoplay=1&playsinline=1";
   if(media.provider==="piapro"&&media.id)return "https://piapro.jp/content/"+encodeURIComponent(media.id);
   if(media.provider==="bilibili"&&media.id)return "https://player.bilibili.com/player.html?aid="+encodeURIComponent(media.id)+"&page=1&autoplay=1";
   if(media.provider==="bandcamp"&&media.id)return "https://bandcamp.com/EmbeddedPlayer/size=large/bgcol=111827/linkcol=ff607b/tracklist=false/artwork=small/track="+encodeURIComponent(media.id)+"/transparent=true/";
