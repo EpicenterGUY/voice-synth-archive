@@ -1,6 +1,6 @@
 {
-  "version": "39.112.0",
+  "version": "39.113.0",
   "channel": "web",
-  "publishedAt": "2026-09-29T11:58:00+09:00",
-  "notes": "Adds Expedition Compare for up to three saved routes, with side-by-side depth/rarity/unique-song/view/profile metrics, tag-based P/vocal/genre summaries, pairwise route overlap, all-route common songs, and clipboard-ready comparison reports."
+  "publishedAt": "2026-09-29T12:08:00+09:00",
+  "notes": "Adds a cumulative Expedition Atlas across saved routes, with saved-route-only tier coverage, unique discoveries, rediscovery counts, tag-based P/vocal/genre discovery summaries, low-view discoveries, underexplored tier targets, and direct navigation into those tiers."
 }
