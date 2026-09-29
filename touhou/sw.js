@@ -1,8 +1,8 @@
-const CACHE="touhoudive-v0.5.2";
+const CACHE="touhoudive-v0.5.3";
 const CORE=[
   "./","./index.html",
-  "./styles.css?v=0.5.2","./app.js?v=0.5.2","./catalog.js?v=0.5.2","./media.js?v=0.5.2",
-  "./data/originals.json","./data/works.json","./data/arrangements.json","./data/schema.json",
+  "./styles.css?v=0.5.3","./app.js?v=0.5.3","./catalog.js?v=0.5.3","./media.js?v=0.5.3",
+  "./data/originals.json","./data/works.json","./data/archive-sources.json","./data/arrangements.json","./data/schema.json",
   "./manifest.webmanifest","./icon.svg","./version.json"
 ];
 self.addEventListener("install",e=>e.waitUntil(

@@ -1,5 +1,5 @@
 {
-  "version": "0.5.2",
+  "version": "0.5.3",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-09-29",
@@ -38,6 +38,9 @@
     "touhoudb-hit-count",
     "asset-version-cache-bust",
     "service-worker-hard-refresh",
-    "iceberg-touch-recovery"
+    "iceberg-touch-recovery",
+    "archive-scale-stats",
+    "sample-coverage",
+    "arrangement-chronicle-snapshot"
   ]
 }
