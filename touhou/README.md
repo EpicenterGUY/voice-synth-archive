@@ -150,3 +150,13 @@
 - 원곡 상세에서 파생곡/서클/앨범 수 표시
 - 허용된 외부 링크 후보를 곡 상세에 provider별 칩으로 표시
 - Vimeo 및 임의 도메인 제외 유지
+
+
+## v0.9.1 — Official original classification
+
+- TouhouDB SongType=Original 전체를 공식 원곡으로 보던 오분류 수정
+- 공식 원곡 = SongType Original + (ZUN 아티스트 또는 33개 공식 작품 레지스트리 매칭)
+- 팬/동인 오리지널은 FAN ORIGINAL로 별도 표시
+- 기타 미분류/비음악 항목은 OTHER 표시
+- 공식 원곡 통계/모드는 공식 원전곡만 집계
+- 허용 링크 후보와 v0.9 순위 개편 유지
