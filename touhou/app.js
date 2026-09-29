@@ -435,6 +435,8 @@ function nav(view){
     renderCatalog("전체 카탈로그");
   }else if(view==="lineage"){
     renderLineageOverview();
+  }else if(view==="iceberg"){
+    renderIceberg();
   }else if(view==="library"){
     renderSpecial([...state.favorites].map(byId).filter(Boolean),"보관함");
   }else if(view==="history"){
@@ -446,9 +448,9 @@ function setView(view){
   state.view=view;
   document.body.dataset.view=view;
   $$(".nav-item[data-view]").forEach(x=>x.classList.toggle("is-active",x.dataset.view===view));
-  const labels={home:"HOME",discover:"DISCOVER",lineage:"LINEAGE",library:"LIBRARY",history:"HISTORY",dive:"DIVE PATH"};
+  const labels={home:"HOME",discover:"DISCOVER",lineage:"LINEAGE",iceberg:"ICEBERG",library:"LIBRARY",history:"HISTORY",dive:"DEEP DIVE"};
   $("#sectionEyebrow").textContent=labels[view]||"DISCOVER";
-  $("#catalogTools").hidden=view==="library"||view==="history";
+  $("#catalogTools").hidden=view==="library"||view==="history"||view==="iceberg"||view==="dive";
   syncCatalogFooter();
 }
 function renderSpecial(list,title){
