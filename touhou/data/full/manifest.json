@@ -2,7 +2,7 @@
   "schema": 1,
   "source": "TouhouDB",
   "api": "https://touhoudb.com/api",
-  "generatedAt": "2026-09-29T03:00:48.774Z",
+  "generatedAt": "2026-09-29T03:04:58.959Z",
   "totalCount": 189002,
   "indexed": 189002,
   "shardSize": 1000,
@@ -962,15 +962,15 @@
   "counts": {
     "original": 15509,
     "arrangement": 173493,
-    "mediaCandidates": 72392
+    "mediaCandidates": 72842
   },
   "providers": {
-    "youtube": 64923,
-    "niconico": 9436,
-    "bandcamp": 12421,
-    "soundcloud": 3548,
-    "bilibili": 763,
-    "piapro": 6
+    "youtube": 65231,
+    "niconico": 10723,
+    "soundcloud": 4315,
+    "bandcamp": 12803,
+    "bilibili": 774,
+    "piapro": 11
   },
   "allowedProviders": [
     "youtube",
