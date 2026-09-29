@@ -407,7 +407,7 @@ function updateStats(){
   $("#statOriginal").textContent=fmt(originalCount);
   $("#statArrangement").textContent=fmt(arrangementCount);
   $("#statMedia").textContent=mediaCount===null?"집계 중":fmt(mediaCount);
-  $("#statOriginalMeta").textContent=meta?"전체 인덱스":"TouhouDB 원곡 분류";
+  $("#statOriginalMeta").textContent=meta?"공식 작품/ZUN 기준":"TouhouDB 공식 원곡 분류";
   $("#statArrangementMeta").textContent=meta?"전체 인덱스":"TouhouDB 어레인지 분류";
   $("#statMediaMeta").textContent=meta?"전체 "+fmt(meta.indexed)+"곡에서 PV 후보 확인":"전수 인덱스 생성 후 확정";
   updateCatalogTotal();
@@ -450,7 +450,7 @@ function catalogTitle(q,count){
   const work=selectedWork();
   if(work)return "TH"+work.number+" · "+work.title;
   if(state.filter!=="전체")return state.filter;
-  if(state.mode==="original")return "동방 원곡 전체 탐색";
+  if(state.mode==="original")return "동방 공식 원곡 전체 탐색";
   if(state.mode==="arrangement")return "동방 2차창작 전체 탐색";
   return state.view==="home"?"오늘의 다이브 입구":"전체 카탈로그";
 }
@@ -466,6 +466,17 @@ function renderGrid(list){
   grid.querySelectorAll("[data-play]").forEach(b=>b.onclick=e=>{e.stopPropagation();playTrack(byId(b.dataset.play))});
   grid.querySelectorAll("[data-origin]").forEach(b=>b.onclick=e=>{e.stopPropagation();goToOriginal(byId(b.dataset.origin))});
   grid.querySelectorAll("[data-external]").forEach(b=>b.onclick=e=>{e.stopPropagation();openTrustedExternal(byId(b.dataset.external))});
+}
+function typeLabel(t){
+  if(t?.category==="official-original"||t?.type==="original")return"OFFICIAL ORIGINAL";
+  if(t?.category==="fan-original")return"FAN ORIGINAL";
+  if(t?.category==="other")return"OTHER";
+  return"ARRANGE";
+}
+function typeClass(t){
+  if(t?.category==="fan-original")return"fan-original";
+  if(t?.category==="other")return"other";
+  return t?.type==="original"?"original":"arrangement";
 }
 function card(t){
   const playable=player.playable(t),external=trustedExternalMedia(t),canLookup=!playable&&!external&&state.remote.available,origins=originalNames(t);
@@ -483,7 +494,7 @@ function card(t){
   return '<article class="track-card">'+
     '<button class="track-main" data-open="'+escAttr(t.id)+'">'+
       '<div class="track-thumb '+(t.thumb?"":"no-image")+'"'+thumb+'>'+
-        '<div class="track-badges"><span class="type-badge '+escAttr(t.type)+'">'+(t.type==="original"?"ORIGINAL":"ARRANGE")+'</span><span class="rank-badge">'+esc(rankText(rank))+'</span><span class="percent-badge">'+esc(rankPercentText(rank))+'</span>'+(playable?'<span class="media-badge">▶ VIDEO</span>':'')+'</div>'+
+        '<div class="track-badges"><span class="type-badge '+escAttr(typeClass(t))+'">'+esc(typeLabel(t))+'</span><span class="rank-badge">'+esc(rankText(rank))+'</span><span class="percent-badge">'+esc(rankPercentText(rank))+'</span>'+(playable?'<span class="media-badge">▶ VIDEO</span>':'')+'</div>'+
       '</div>'+
       '<div class="track-copy"><h3>'+esc(t.title)+'</h3><div class="byline">'+esc(by||"정보 준비 중")+'</div><div class="origin-line">'+esc(originLine)+'</div>'+
         '<div class="tag-row">'+(t.moods||[]).slice(0,3).map(x=>'<span class="tag">'+esc(x)+'</span>').join("")+'</div>'+
@@ -510,7 +521,7 @@ function openTrack(t,opts={}){
   const canLookup=!player.playable(t)&&!external&&state.remote.available;
   const missing=(t.originalIds||[]).filter(id=>!byId(id));
   $("#detailContent").innerHTML=`
-    <div class="detail-hero"><div class="detail-kicker">${t.type==="original"?"ORIGINAL":"ARRANGEMENT"} · ${t.touhoudbId?(t.remote?"TOUHOUDB LIVE":"LOCAL + TOUHOUDB"):"LOCAL VERIFIED"}</div><div class="detail-rank"><strong>종합 · ${rankText(rank)}</strong><span>${rankPercentText(rank)} · ${rank.fullScale?"전수 189,002곡 백분위 기반":"현재 표본 환산"} · ${rank.score.toFixed(1)}pt</span></div>
+    <div class="detail-hero"><div class="detail-kicker">${typeLabel(t)} · ${t.touhoudbId?(t.remote?"TOUHOUDB LIVE":"LOCAL + TOUHOUDB"):"LOCAL VERIFIED"}</div><div class="detail-rank"><strong>종합 · ${rankText(rank)}</strong><span>${rankPercentText(rank)} · ${rank.fullScale?"전수 189,002곡 백분위 기반":"현재 표본 환산"} · ${rank.score.toFixed(1)}pt</span></div>
     <div class="rank-breakdown">
       <div><label>인기</label><strong>${popRank.rank?fmt(popRank.total)+"곡 중 "+fmt(popRank.rank)+"위":"집계 중"}</strong><small>${popRank.percent!==null?"상위 "+(popRank.percent<0.01?"<0.01":popRank.percent.toFixed(2))+"%":""}</small></div>
       ${infRank?'<div><label>원곡 영향력</label><strong>'+fmt(infRank.total)+'원곡 중 '+(infRank.rank?fmt(infRank.rank)+'위':"집계 중")+'</strong><small>파생 '+fmt(infRank.children)+'곡 · '+fmt(infRank.circles)+'서클 · '+fmt(infRank.albums)+'앨범</small></div>':""}
@@ -767,7 +778,7 @@ function renderIcebergStats(pool,layerRows){
   $("#icebergStats").innerHTML=[
     ["2차창작 아카이브",archiveTracks?fmt(archiveTracks):"—",state.archiveSource?.source||"외부 전체 규모"],
     ["현재 빙산 표본",fmt(sampleTotal),archiveTracks?"전체 규모 대비 "+(coverage<0.01?coverage.toFixed(3):coverage.toFixed(2))+"%":"현재 로드/필터"],
-    ["원곡 표본",fmt(originals),sampleTotal?Math.round(originals/sampleTotal*100)+"%":"0%"],
+    ["공식 원곡",fmt(originals),sampleTotal?Math.round(originals/sampleTotal*100)+"%":"0%"],
     ["2차창작 표본",fmt(arrangements),sampleTotal?Math.round(arrangements/sampleTotal*100)+"%":"0%"],
     ["서클 표본",fmt(circles),state.archiveSource?.circles?"/ 아카이브 "+fmt(state.archiveSource.circles):"중복 제외"],
     ["작품 표본",fmt(works),"현재 식별됨"],
@@ -985,7 +996,7 @@ function sortList(list,sort){
 function recommendScore(t){return (Number(t.ratingScore)||0)*3+(Number(t.favoritedTimes)||0)*.08+(player.playable(t)?5:0)+(t.type==="arrangement"?2:0)+(t.originalIds?.length?3:0)+(t.moods?.length||0)*.2}
 function randomDive(){const pool=currentPool();if(pool.length)startDive(pool[Math.floor(Math.random()*pool.length)])}
 function snapshotTrack(t){
-  return{id:t.id,type:t.type,title:t.title,aliases:t.aliases||[],year:t.year||null,work:t.work||"",workId:t.workId||"",workIds:t.workIds||[],role:t.role||"",character:t.character||"",circle:t.circle||"",album:t.album||"",moods:t.moods||[],originalIds:t.originalIds||[],artists:t.artists||{},artistString:t.artistString||"",media:t.media||null,mediaCandidates:t.mediaCandidates||[],mediaUnavailable:!!t.mediaUnavailable,thumb:t.thumb||"",source:t.source||null,touhoudbId:t.touhoudbId||null,ratingScore:Number(t.ratingScore)||0,favoritedTimes:Number(t.favoritedTimes)||0,hitCount:Number(t.hitCount)||0,globalRank:Number(t.globalRank)||null,globalScore:Number(t.globalScore)||0,popularityRank:Number(t.popularityRank)||null,popularityScore:Number(t.popularityScore)||0,influenceRank:Number(t.influenceRank)||null,influenceScore:Number(t.influenceScore)||0,derivativeCount:Number(t.derivativeCount)||0,derivativeCircleCount:Number(t.derivativeCircleCount)||0,derivativeAlbumCount:Number(t.derivativeAlbumCount)||0,remote:!!t.remote};
+  return{id:t.id,type:t.type,category:t.category||"",songTypeRaw:t.songTypeRaw||"",title:t.title,aliases:t.aliases||[],year:t.year||null,work:t.work||"",workId:t.workId||"",workIds:t.workIds||[],role:t.role||"",character:t.character||"",circle:t.circle||"",album:t.album||"",moods:t.moods||[],originalIds:t.originalIds||[],artists:t.artists||{},artistString:t.artistString||"",media:t.media||null,mediaCandidates:t.mediaCandidates||[],mediaUnavailable:!!t.mediaUnavailable,thumb:t.thumb||"",source:t.source||null,touhoudbId:t.touhoudbId||null,ratingScore:Number(t.ratingScore)||0,favoritedTimes:Number(t.favoritedTimes)||0,hitCount:Number(t.hitCount)||0,globalRank:Number(t.globalRank)||null,globalScore:Number(t.globalScore)||0,popularityRank:Number(t.popularityRank)||null,popularityScore:Number(t.popularityScore)||0,influenceRank:Number(t.influenceRank)||null,influenceScore:Number(t.influenceScore)||0,derivativeCount:Number(t.derivativeCount)||0,derivativeCircleCount:Number(t.derivativeCircleCount)||0,derivativeAlbumCount:Number(t.derivativeAlbumCount)||0,remote:!!t.remote};
 }
 function persistSnapshot(t){
   if(!t)return;
