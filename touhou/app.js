@@ -67,7 +67,7 @@ function bind(){
   $("#scrim").onclick=()=>{closePanel();closeMenu();};
   $("#menuBtn").onclick=()=>{$("#sidebar").classList.toggle("is-open");syncScrim();};
   $("#themeBtn").onclick=toggleTheme;
-  $("#modeTabs .mode-tab").forEach(btn=>btn.onclick=()=>{
+  $$("#modeTabs .mode-tab").forEach(btn=>btn.onclick=()=>{
     state.mode=btn.dataset.mode;state.filter="전체";syncModeTabs();
     if(state.view==="iceberg"){renderIceberg();loadRemote(true).then(()=>renderIceberg());}
     else{renderCatalog();loadRemote(true);}
