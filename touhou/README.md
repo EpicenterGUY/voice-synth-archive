@@ -160,3 +160,13 @@
 - 기타 미분류/비음악 항목은 OTHER 표시
 - 공식 원곡 통계/모드는 공식 원전곡만 집계
 - 허용 링크 후보와 v0.9 순위 개편 유지
+
+
+## v0.9.2 — Strict official-original provenance
+
+- 6,693곡까지 부풀었던 공식 원곡 오분류 수정
+- 공식 원곡은 SongType=Original + parent 없음 필수
+- ZUN 곡은 공식 원곡 후보
+- U2 Akiyama / あきやまうに / NKZ / ziki_7 등 공식 참여 작곡가는 공식 작품 매칭까지 요구
+- 작품 태그만으로 공식 원곡 처리하지 않음
+- 팬 오리지널/독립 동인곡은 FAN ORIGINAL/secondary로 유지
