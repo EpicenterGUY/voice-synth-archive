@@ -1,11 +1,13 @@
 const $=s=>document.querySelector(s);
 const $$=s=>[...document.querySelectorAll(s)];
 const catalog=window.TouhouCatalog;
+const fullIndex=window.TouhouFullIndex;
 const player=new window.TouhouMediaPlayer();
 
 const state={
-  localOriginals:[],localArrangements:[],known:new Map(),aliases:new Map(),identities:new Map(),remoteItems:[],works:[],archiveSource:null,
+  localOriginals:[],localArrangements:[],known:new Map(),aliases:new Map(),identities:new Map(),remoteItems:[],fullItems:[],works:[],archiveSource:null,
   mode:"all",filter:"전체",workFilter:"",sort:"recommend",selected:null,view:"home",diveDepth:0,diveRoot:null,icebergMode:"visibility",rankIndex:new Map(),rankTotal:0,enriching:new Map(),
+  full:{available:false,loading:false,loaded:false,manifest:null,loadedCount:0,error:""},displayLimit:60,renderKey:"",lastMatchCount:0,
   remote:{available:false,loading:false,start:0,total:0,catalogTotal:0,key:"",error:"",counts:{},seq:0},
   favorites:new Set(readJson("touhoudive:favorites",[])),
   history:readJson("touhoudive:history",[]),
@@ -26,6 +28,7 @@ async function boot(){
     state.works=w;
     state.archiveSource=archiveSource;
     catalog?.setWorks?.(w);
+    fullIndex?.setWorks?.(w);
     state.localOriginals=o.map(x=>({...x,type:"original",circle:"ZUN",album:x.work,originalIds:[],remote:false}));
     state.localArrangements=a.map(x=>({...x,type:"arrangement",remote:false}));
     [...state.localOriginals,...state.localArrangements].forEach(remember);
@@ -35,7 +38,8 @@ async function boot(){
     setView("home");
     renderLocalFirst();
     bind();
-    if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js?v=0.7.0").then(r=>r.update()).catch(()=>{});
+    if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js?v=0.8.0").then(r=>r.update()).catch(()=>{});
+    connectFullDataset();
     await connectRemote();
   }catch(err){
     console.error(err);
@@ -60,7 +64,7 @@ function bind(){
   };
   $("#workSelect").addEventListener("change",e=>{state.workFilter=e.target.value;if(state.workFilter&&state.view==="home")setView("discover");if(state.view==="iceberg")renderIceberg();else renderCatalog();loadRemote(true);});
   $("#sortSelect").addEventListener("change",e=>{state.sort=e.target.value;renderCatalog();loadRemote(true);});
-  $("#loadMoreBtn").onclick=()=>loadRemote(false);
+  $("#loadMoreBtn").onclick=()=>state.full.loaded?showMoreFull():loadRemote(false);
   $("#randomBtn").onclick=randomDive;$("#heroDiveBtn").onclick=randomDive;
   $("#playableBtn").onclick=()=>{state.mode="all";state.filter="영상 있음";syncModeTabs();renderCatalog("인앱 재생 가능한 곡");loadRemote(true);};
   $("#refreshBtn").onclick=()=>loadRemote(true,true);
@@ -92,8 +96,12 @@ function bind(){
   if("IntersectionObserver" in window){
     const io=new IntersectionObserver(entries=>{
       if(!entries.some(x=>x.isIntersecting))return;
-      if(!state.remote.available||state.remote.loading||state.remote.start>=state.remote.total)return;
       if(!["home","discover","lineage"].includes(state.view))return;
+      if(state.full.loaded){
+        if(state.displayLimit<state.lastMatchCount)showMoreFull();
+        return;
+      }
+      if(!state.remote.available||state.remote.loading||state.remote.start>=state.remote.total)return;
       loadRemote(false);
     },{rootMargin:"700px 0px"});
     io.observe($("#catalogFooter"));
@@ -105,6 +113,41 @@ function renderLocalFirst(){
   renderCatalog("로컬 카탈로그");
   setDataHealth("loading","로컬 "+state.known.size+"곡 · TouhouDB 연결 중");
   $("#catalogMeta").textContent="로컬 seed 표시 중 · 라이브 카탈로그 연결 확인 중";
+}
+async function connectFullDataset(){
+  if(!fullIndex)return;
+  try{
+    const meta=await fullIndex.manifest();
+    state.full.available=true;state.full.loading=true;state.full.manifest=meta;state.full.loadedCount=0;
+    setDataHealth("loading","전체 인덱스 준비 · "+fmt(meta.indexed)+"곡");
+    updateStats();
+    const result=await fullIndex.loadAll({
+      concurrency:4,
+      onProgress:p=>{
+        state.full.loadedCount=p.loaded;
+        const pct=p.total?Math.min(100,p.loaded/p.total*100):0;
+        setDataHealth("loading","전체 인덱스 "+pct.toFixed(1)+"% · "+fmt(p.loaded)+"/"+fmt(p.total));
+        $("#heroCatalogCount").textContent=fmt(p.loaded)+" / "+fmt(p.total);
+      }
+    });
+    state.fullItems=result.tracks.map(t=>remember(t));
+    state.full.loaded=true;state.full.loading=false;state.full.loadedCount=state.fullItems.length;
+    state.rankIndex.clear();state.rankTotal=result.manifest.indexed;
+    setDataHealth("ok","FULL INDEX · "+fmt(state.fullItems.length)+"곡");
+    state.displayLimit=60;state.renderKey="";
+    renderCatalog("전체 인덱스");
+    updateStats();
+    if(state.view==="iceberg")renderIceberg();
+  }catch(e){
+    state.full.loading=false;state.full.error=String(e?.message||e);
+    // Full index is optional until the first server-side build finishes.
+    if(state.remote.available)setDataHealth("ok","TouhouDB LIVE · "+fmt(state.remote.catalogTotal)+"곡");
+  }
+}
+function showMoreFull(){
+  if(!state.full.loaded)return;
+  state.displayLimit=Math.min(state.lastMatchCount||state.fullItems.length,state.displayLimit+60);
+  renderCatalog();
 }
 async function connectRemote(){
   if(!catalog){remoteFail("TouhouDB 어댑터 없음");return;}
@@ -198,8 +241,8 @@ async function warmCatalog(){
 function uniqMedia(list){
   const seen=new Set(),out=[];
   for(const m of list||[]){
-    if(!m?.provider||!m?.id)continue;
-    const k=m.provider+":"+m.id;
+    if(!m?.provider||(!m?.id&&!m?.url))continue;
+    const k=m.provider+":"+(m.id||m.url);
     if(seen.has(k))continue;
     seen.add(k);out.push(m);
   }
@@ -248,6 +291,9 @@ function mergeTrack(base,incoming){
 function remember(t){
   if(!t?.id)return t;
   const direct=state.known.get(t.id);
+  if(t.fullIndex&&!direct){
+    state.known.set(t.id,t);state.aliases.set(t.id,t.id);return t;
+  }
   if(direct){
     const merged=mergeTrack(direct,t);
     state.known.set(direct.id,merged);
