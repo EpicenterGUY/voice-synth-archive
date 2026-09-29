@@ -1,10 +1,10 @@
-/* VocaDive Unified UI v39.102.0
+/* VocaDive Unified UI v39.107.0
  * YouTube-style app shell, cards, player continuity and route recovery.
  */
 (function(){
 "use strict";
 
-var VERSION="39.102.0";
+var VERSION="39.107.0";
 var raf=0,observer=null,lastRoute="home",navSeq3985=0,workerCheckTimer3986=0;
 var workerState3986={ok:null,reason:"",endpoint:"",at:0};
 
@@ -2104,3 +2104,12 @@ function boot(){
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
 })();
+
+;(()=>{try{
+  if(document.querySelector('script[data-vsa-iceberg-39107]'))return;
+  const x=document.createElement("script");
+  x.src="./iceberg-v39107.js?v=39.107.0";
+  x.async=false;
+  x.dataset.vsaIceberg39107="1";
+  document.head.appendChild(x);
+}catch(e){console.warn("[VocaDive] iceberg v39.107 loader",e)}})();
