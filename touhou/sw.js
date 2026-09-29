@@ -1,7 +1,7 @@
-const CACHE="touhoudive-v0.5.3";
+const CACHE="touhoudive-v0.5.4";
 const CORE=[
   "./","./index.html",
-  "./styles.css?v=0.5.3","./app.js?v=0.5.3","./catalog.js?v=0.5.3","./media.js?v=0.5.3",
+  "./styles.css?v=0.5.4","./app.js?v=0.5.4","./catalog.js?v=0.5.4","./media.js?v=0.5.4",
   "./data/originals.json","./data/works.json","./data/archive-sources.json","./data/arrangements.json","./data/schema.json",
   "./manifest.webmanifest","./icon.svg","./version.json"
 ];

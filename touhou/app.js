@@ -35,7 +35,7 @@ async function boot(){
     setView("home");
     renderLocalFirst();
     bind();
-    if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js?v=0.5.2").then(r=>r.update()).catch(()=>{});
+    if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js?v=0.5.4").then(r=>r.update()).catch(()=>{});
     await connectRemote();
   }catch(err){
     console.error(err);
@@ -589,12 +589,17 @@ function renderIcebergStats(pool,layerRows){
     [meta.label+" 최고",statValue(max),state.icebergMode==="hits"?"Hits 보유 "+hitCoverage+"곡":"현재 표본"],
     ["앨범 아카이브",state.archiveSource?.albums?fmt(state.archiveSource.albums):"—",state.archiveSource?.events?fmt(state.archiveSource.events)+" 이벤트":"외부 통계"]
   ].map(x=>'<article><span>'+esc(x[0])+'</span><strong>'+esc(x[1])+'</strong><small>'+esc(x[2])+'</small></article>').join("");
-  $("#icebergRegionStats").innerHTML='<div class="region-stat-title"><strong>현재 빙산 표본 · 권역별 곡 수</strong><span>'+fmt(sampleTotal)+'곡'+(archiveTracks?" / 아카이브 "+fmt(archiveTracks):"")+'</span></div>'+
+
+  const title=archiveTracks?"전체 아카이브 환산 · 권역별 곡 수":"현재 빙산 표본 · 권역별 곡 수";
+  $("#icebergRegionStats").innerHTML='<div class="region-stat-title"><strong>'+title+'</strong><span>'+(archiveTracks?fmt(archiveTracks)+"곡 전체 규모":fmt(sampleTotal)+"곡 표본")+'</span></div>'+
     layerRows.map(row=>{
-      const pct=sampleTotal?Math.round(row.items.length/sampleTotal*100):0;
-      return '<div class="region-stat-row"><span>'+esc(row.layer.name)+'</span><div class="region-stat-bar"><i style="width:'+pct+'%"></i></div><strong>'+fmt(row.items.length)+'곡</strong><small>'+pct+'%</small></div>';
+      const pct=Math.round((row.archiveShare||0)*100);
+      const mainCount=archiveTracks?row.archiveCount:row.items.length;
+      return '<div class="region-stat-row"><span>'+esc(row.layer.name)+'</span><div class="region-stat-bar"><i style="width:'+pct+'%"></i></div><strong>'+fmt(mainCount)+'곡</strong><small>'+pct+'% · 표본 '+fmt(row.items.length)+'</small></div>';
     }).join("")+
-    '<div class="region-stat-foot">권역 분포는 현재 로드된 '+fmt(sampleTotal)+'곡 표본으로 계산됩니다. 12만+ 전체 아카이브를 임의 비율로 나누지 않습니다.</div>';
+    '<div class="region-stat-foot">'+(archiveTracks
+      ?'큰 숫자는 '+fmt(archiveTracks)+'곡 전체 규모를 현재 빙산 권역 비율로 환산한 값입니다. 실제 12.8만곡 전수 분류가 붙기 전까지 표본 실측값은 옆에 따로 표시합니다.'
+      :'현재 로드된 '+fmt(sampleTotal)+'곡 표본으로 계산됩니다.')+'</div>';
 }
 function renderIceberg(){
   const layers=[
@@ -616,10 +621,17 @@ function renderIceberg(){
   }
   // 상층은 좁고 중·심층이 넓도록 실제 빙산 같은 분포 폭을 사용.
   const cuts=[0,.07,.20,.40,.65,.85,1];
+  const archiveTracks=Math.max(0,Number(state.archiveSource?.arrangementTracks)||0);
   const rows=layers.map((layer,i)=>{
     const start=Math.round(pool.length*cuts[i]);
     const end=Math.round(pool.length*cuts[i+1]);
-    return{layer,start,end,items:pool.slice(start,end)};
+    const archiveStart=archiveTracks?Math.round(archiveTracks*cuts[i]):0;
+    const archiveEnd=archiveTracks?Math.round(archiveTracks*cuts[i+1]):0;
+    return{
+      layer,start,end,items:pool.slice(start,end),
+      archiveShare:cuts[i+1]-cuts[i],
+      archiveCount:archiveTracks?archiveEnd-archiveStart:0
+    };
   });
   renderIcebergStats(pool,rows);
   const metric=icebergModeMeta();
@@ -629,7 +641,7 @@ function renderIceberg(){
     const lo=values.length?Math.min(...values):0,hi=values.length?Math.max(...values):0;
     return '<section class="ice-layer" style="--ice-a:'+row.layer.a+';--ice-b:'+row.layer.b+'">'+
       '<div class="ice-layer-head"><div><small>LAYER '+(i+1)+'</small><strong>'+row.layer.name+'</strong><span>'+row.layer.sub+'</span></div>'+
-      '<span>'+fmt(row.items.length)+'곡 · '+metric.label+' '+statValue(lo)+'–'+statValue(hi)+'</span></div>'+
+      '<span>'+(archiveTracks?'전체 환산 '+fmt(row.archiveCount)+'곡 · ':'')+'표본 '+fmt(row.items.length)+'곡 · '+metric.label+' '+statValue(lo)+'–'+statValue(hi)+'</span></div>'+
       '<div class="ice-tracks">'+display.map(t=>'<button class="ice-track" data-ice-dive="'+escAttr(t.id)+'"><b>'+esc(t.title)+'</b><small>'+esc(t.type==="arrangement"?(t.circle||"Arrangement"):(t.work||"Original"))+'</small><small class="ice-metric">'+esc(metric.label)+' · '+esc(statValue(icebergMetricValue(t)))+'</small>'+(t.type==="arrangement"?'<small class="ice-origin">↖ '+esc(originalNames(t)[0]||"원곡 연결 확인")+'</small>':'')+'</button>').join("")+'</div>'+
       (row.items.length>display.length?'<div class="ice-layer-more">이 권역 '+fmt(row.items.length-display.length)+'곡 더 있음</div>':"")+
     '</section>';
