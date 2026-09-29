@@ -11,7 +11,13 @@ function inferWork(r){
 function mediaOf(p){
   const provider=clean(p?.[0]),id=clean(p?.[1]),url=clean(p?.[2]),name=clean(p?.[3]);
   if(!provider||(!id&&!url))return null;
-  return{provider,id,url,name,mode:provider==="bandcamp"&&!id?"external":"embed"};
+  const numeric=/^\d+$/.test(id);
+  const embeddable=
+    provider==="soundcloud"?!!url:
+    provider==="youtube"||provider==="niconico"||provider==="piapro"?!!id:
+    provider==="bilibili"?numeric:
+    provider==="bandcamp"?numeric:false;
+  return{provider,id,url,name,mode:embeddable?"embed":"external"};
 }
 function toTrack(r){
   const work=inferWork(r),mediaCandidates=arr(r.p).map(mediaOf).filter(Boolean);
