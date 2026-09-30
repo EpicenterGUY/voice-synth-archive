@@ -1,5 +1,5 @@
 {
-  "version": "0.9.20",
+  "version": "0.9.21",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-09-30",
@@ -173,6 +173,9 @@
     "view-first-popularity",
     "community-score-dampening",
     "youtube-major-popularity",
-    "overall-influence-25pct"
+    "overall-influence-25pct",
+    "youtube-premium-playback-mode",
+    "account-aware-external-youtube",
+    "playback-mode-persistence"
   ]
 }
