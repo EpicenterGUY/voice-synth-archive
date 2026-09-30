@@ -367,6 +367,23 @@ async function main(){
     t.qv=idx+1;t.sv=Math.round(viewSignal(t)*100)/100;t.vt=v.total;t.vm=v.max;t.vp=v.platforms;t.vc=v.mediaCount;
   });
   tracks=byComposite;
+  const LOOKUP_BUCKET_SIZE=1000;
+  const lookupDir=path.join(OUT,"lookup");
+  await fs.mkdir(lookupDir,{recursive:true});
+  const lookupBuckets=new Map();
+  for(const t of tracks){
+    const bucket=Math.floor((Number(t.i)||0)/LOOKUP_BUCKET_SIZE);
+    if(!lookupBuckets.has(bucket))lookupBuckets.set(bucket,[]);
+    const viewMedia=arr(t.p).filter(p=>Number.isFinite(Number(p?.[4]))).map(p=>[p[0],p[1],p[2],p[3],Number(p[4])]);
+    lookupBuckets.get(bucket).push([
+      t.i,t.q||0,t.s||0,t.qp||0,t.sp||0,t.qi||0,t.si||0,t.qv||0,t.sv||0,
+      t.vt||0,t.vm||0,t.vp||0,t.vc||0,t.dc||0,t.dsc||0,t.da||0,t.dm||0,viewMedia
+    ]);
+  }
+  for(const [bucket,rows] of lookupBuckets){
+    const name="lookup-"+String(bucket).padStart(4,"0")+".json";
+    await fs.writeFile(path.join(lookupDir,name),JSON.stringify(rows));
+  }
   const providers={},counts={original:0,arrangement:0,mediaCandidates:0};
   for(const t of tracks){
     t.t?counts.arrangement++:counts.original++;
@@ -385,6 +402,7 @@ async function main(){
     totalCount:total,indexed:tracks.length,shardSize:SHARD_SIZE,shardCount,files,
     counts,providers,allowedProviders:[...ALLOWED],
     viewCoverage:{...viewCoverage,rankedTracks:tracks.filter(t=>Number(t.qv)>0).length,supportedProviders:["youtube","niconico","bilibili"]},
+    lookup:{path:"lookup",bucketSize:LOOKUP_BUCKET_SIZE,bucketCount:lookupBuckets.size,format:"[id,q,s,qp,sp,qi,si,qv,sv,vt,vm,vp,vc,dc,dsc,da,dm,viewMedia]"},
     ranking:{
       version:3,
       composite:"popularity + original influence",
