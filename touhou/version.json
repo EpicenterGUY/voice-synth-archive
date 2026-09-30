@@ -1,5 +1,5 @@
 {
-  "version": "0.9.7",
+  "version": "0.9.8",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-09-30",
@@ -112,6 +112,15 @@
     "clickable-rank-evidence",
     "overall-score-breakdown",
     "full-index-rank-provenance",
-    "ranking-formula-panel"
+    "ranking-formula-panel",
+    "popularity-rank-evidence",
+    "influence-rank-evidence",
+    "multi-platform-view-counts",
+    "youtube-view-index",
+    "niconico-view-index",
+    "bilibili-view-index",
+    "platform-view-rank",
+    "view-rank-sort",
+    "ranking-v3"
   ]
 }
