@@ -48,6 +48,8 @@ class TouhouMediaPlayer{
     this.playBtn=document.getElementById("playerPlay");
     this.autoBtn=document.getElementById("playerAuto");
     this.rankEl=document.getElementById("playerRanks");
+    this.rankDetailEl=document.getElementById("playerRankDetail");
+    this.rankDetailKey="";
     this.relatedEl=document.getElementById("playerRelated");
     this.lyricsEl=document.getElementById("playerLyrics");
     this.relatedTab=document.getElementById("playerTabRelated");
@@ -106,7 +108,7 @@ class TouhouMediaPlayer{
     this.source.href=this.current.media?.url||this.current.source?.url||"#";
     this.source.hidden=this.source.href.endsWith("#");
     this.shell.hidden=false;
-    this.syncMeta();this.syncControls();this.syncMediaSession();this.renderRankings();this.renderPanels();
+    this.rankDetailKey="";if(this.rankDetailEl){this.rankDetailEl.hidden=true;this.rankDetailEl.innerHTML=""}this.syncMeta();this.syncControls();this.syncMediaSession();this.renderRankings();this.renderPanels();
     if(provider==="youtube"){
       const expectedTrack=this.current.id,expectedVideo=this.current.media.id;
       const mount=document.createElement("div");mount.id="tdYoutubeMount-"+Date.now();this.video.appendChild(mount);
@@ -165,13 +167,58 @@ class TouhouMediaPlayer{
     push("overall",meta.overall,false);
     push("popularity",meta.popularity,false);
     push("influence",meta.influence,false);
-    this.rankEl.innerHTML=rows.map(({row,accent})=>
-      '<div class="player-rank-card '+(accent?"is-current":"")+'">'+
+    this.rankEl.innerHTML=rows.map(({key,row,accent})=>{
+      const detail=!!row.detail;
+      return '<button type="button" class="player-rank-card '+(accent?"is-current ":"")+(detail?"has-detail":"")+'" data-rank-key="'+this.esc(key)+'" '+(detail?'aria-expanded="'+(this.rankDetailKey===key?"true":"false")+'"':"")+'>'+
         '<span>'+this.esc(row.label||"순위")+'</span>'+
         '<strong>'+this.esc(row.value)+'</strong>'+
         (row.sub?'<small>'+this.esc(row.sub)+'</small>':"")+
-      '</div>'
+        (detail?'<em>근거 보기 ▾</em>':"")+
+      '</button>';
+    }).join("");
+    this.rankEl.querySelectorAll("[data-rank-key]").forEach(btn=>{
+      const row=meta[btn.dataset.rankKey];
+      if(row?.detail)btn.onclick=()=>this.toggleRankDetail(btn.dataset.rankKey);
+    });
+    if(this.rankDetailKey)this.renderRankDetail(this.rankDetailKey);
+  }
+  toggleRankDetail(key){
+    if(!this.rankDetailEl||!this.current)return;
+    if(this.rankDetailKey===key){
+      this.rankDetailKey="";
+      this.rankDetailEl.hidden=true;
+      this.rankDetailEl.innerHTML="";
+      this.renderRankings();
+      return;
+    }
+    this.rankDetailKey=key;
+    this.renderRankDetail(key);
+    this.renderRankings();
+  }
+  renderRankDetail(key){
+    if(!this.rankDetailEl||!this.current)return;
+    const detail=this.current._playerRanks?.[key]?.detail;
+    if(!detail){
+      this.rankDetailEl.hidden=true;
+      this.rankDetailEl.innerHTML="";
+      return;
+    }
+    const components=(detail.components||[]).map(x=>
+      '<div class="rank-evidence-component"><span>'+this.esc(x.label)+'</span><strong>'+Number(x.points||0).toFixed(2)+'pt</strong><small>'+this.esc(x.description||"")+'</small></div>'
     ).join("");
+    const metrics=(detail.metrics||[]).map(x=>
+      '<div class="rank-evidence-row"><span>'+this.esc(x.label)+'</span><b>'+this.esc(x.raw||"")+'</b><small>'+this.esc(x.rule||"")+'</small><strong>+'+Number(x.points||0).toFixed(2)+'pt</strong></div>'
+    ).join("");
+    this.rankDetailEl.hidden=false;
+    this.rankDetailEl.innerHTML=
+      '<div class="rank-evidence-head"><div><span>RANK EVIDENCE</span><strong>'+this.esc(detail.title||"순위 산정 근거")+'</strong></div><button type="button" data-rank-close aria-label="닫기">×</button></div>'+
+      '<div class="rank-evidence-formula"><b>'+this.esc(detail.formula||"")+'</b><strong>'+Number(detail.score||0).toFixed(2)+'pt</strong></div>'+
+      '<div class="rank-evidence-source"><span>'+this.esc(detail.source?.label||"")+'</span><strong>'+this.esc(detail.source?.text||"")+'</strong></div>'+
+      '<div class="rank-evidence-components">'+components+'</div>'+
+      '<div class="rank-evidence-table">'+metrics+'</div>'+
+      (detail.note?'<p class="rank-evidence-note">'+this.esc(detail.note)+'</p>':"");
+    const close=this.rankDetailEl.querySelector("[data-rank-close]");
+    if(close)close.onclick=()=>this.toggleRankDetail(key);
   }
   renderPanels(){
     this.renderRelated();
