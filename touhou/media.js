@@ -98,6 +98,19 @@ class TouhouMediaPlayer{
     this.expand();
     return true;
   }
+  setQueue(queue,currentId){
+    if(!this.current)return false;
+    const current=this.current;
+    const rows=(queue||[]).filter(x=>this.playable(x));
+    let index=rows.findIndex(x=>x.id===currentId||x.id===current.id);
+    if(index<0){rows.unshift(current);index=0}
+    else rows[index]={...rows[index],...current,mediaCandidates:current.mediaCandidates||rows[index].mediaCandidates};
+    this.queue=rows.length?rows:[current];
+    this.index=index;
+    this.current=this.queue[this.index];
+    this.syncControls();this.syncMeta();this.renderRelated();
+    return true;
+  }
   renderCurrent(autoplay=true){
     if(!this.current)return;
     this.selectPlayableMedia(this.current);
