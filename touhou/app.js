@@ -38,7 +38,7 @@ async function boot(){
     setView("home");
     renderLocalFirst();
     bind();
-    if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js?v=0.9.7").then(r=>r.update()).catch(()=>{});
+    if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js?v=0.9.8").then(r=>r.update()).catch(()=>{});
     connectFullDataset();
     await connectRemote();
   }catch(err){
@@ -259,12 +259,17 @@ async function warmCatalog(){
   }finally{state.remote.warming=false}
 }
 function uniqMedia(list){
-  const seen=new Set(),out=[];
-  for(const m of list||[]){
-    if(!m?.provider||(!m?.id&&!m?.url))continue;
-    const k=m.provider+":"+(m.id||m.url);
-    if(seen.has(k))continue;
-    seen.add(k);out.push(m);
+  const index=new Map(),out=[];
+  for(const raw of list||[]){
+    if(!raw?.provider||(!raw?.id&&!raw?.url))continue;
+    const m={...raw},k=m.provider+":"+(m.id||m.url);
+    if(!index.has(k)){index.set(k,out.length);out.push(m);continue}
+    const i=index.get(k),prev=out[i]||{};
+    out[i]={
+      ...prev,...m,
+      id:prev.id||m.id,url:prev.url||m.url,name:prev.name||m.name,
+      viewCount:Math.max(Number(prev.viewCount)||0,Number(m.viewCount)||0)||null
+    };
   }
   return out;
 }
@@ -322,9 +327,16 @@ function mergeTrack(base,incoming){
   out.popularityScore=Math.max(Number(base.popularityScore)||0,Number(incoming.popularityScore)||0);
   out.influenceRank=minRank(base.influenceRank,incoming.influenceRank);
   out.influenceScore=Math.max(Number(base.influenceScore)||0,Number(incoming.influenceScore)||0);
+  out.viewRank=minRank(base.viewRank,incoming.viewRank);
+  out.viewScore=Math.max(Number(base.viewScore)||0,Number(incoming.viewScore)||0);
+  out.viewTotal=Math.max(Number(base.viewTotal)||0,Number(incoming.viewTotal)||0);
+  out.viewMax=Math.max(Number(base.viewMax)||0,Number(incoming.viewMax)||0);
+  out.viewPlatformCount=Math.max(Number(base.viewPlatformCount)||0,Number(incoming.viewPlatformCount)||0);
+  out.viewMediaCount=Math.max(Number(base.viewMediaCount)||0,Number(incoming.viewMediaCount)||0);
   out.derivativeCount=Math.max(Number(base.derivativeCount)||0,Number(incoming.derivativeCount)||0);
   out.derivativeCircleCount=Math.max(Number(base.derivativeCircleCount)||0,Number(incoming.derivativeCircleCount)||0);
   out.derivativeAlbumCount=Math.max(Number(base.derivativeAlbumCount)||0,Number(incoming.derivativeAlbumCount)||0);
+  out.derivativeMediaCount=Math.max(Number(base.derivativeMediaCount)||0,Number(incoming.derivativeMediaCount)||0);
   out.year=base.year||incoming.year||null;
   return out;
 }
@@ -392,6 +404,11 @@ function activeSortRankInfo(t){
     if(i?.rank)return{label:"영향력순",value:fmt(i.total)+"원곡 중 "+fmt(i.rank)+"위",sub:"파생 "+fmt(i.children)+"곡"};
     const originals=pool.filter(x=>x.type==="original"),r=sampleRankByScore(t,influenceScore,originals);return{label:"영향력순",value:fmt(r.total)+"원곡 중 "+fmt(r.rank)+"위",sub:"현재 로드 기준"};
   }
+  if(state.sort==="views"){
+    const v=viewRankInfo(t);
+    if(v?.rank)return{label:"조회수순",value:fmt(v.total)+"곡 중 "+fmt(v.rank)+"위",sub:"확인 "+fmt(v.views)+"회"};
+    return{label:"조회수순",value:"조회수 미집계",sub:"지원 플랫폼 데이터 없음"};
+  }
   if(state.sort==="year-desc"||state.sort==="year-asc"){
     if(!t.year)return{label:state.sort==="year-desc"?"최신순":"오래된순",value:"연도 미상",sub:""};
     let ahead=0;for(const x of pool){if(!x.year||resolveId(x.id)===resolveId(t.id))continue;if(state.sort==="year-desc"&&x.year>t.year)ahead++;if(state.sort==="year-asc"&&x.year<t.year)ahead++}
@@ -405,7 +422,7 @@ function activeSortRankInfo(t){
 }
 function playerRankMeta(t){
   refreshRanks();
-  const overall=trackRank(t),pop=popularityRankInfo(t),inf=influenceRankInfo(t);
+  const overall=trackRank(t),pop=popularityRankInfo(t),inf=influenceRankInfo(t),views=viewRankInfo(t);
   let popValue="",popSub="";
   if(pop.rank){popValue=fmt(pop.total)+"곡 중 "+fmt(pop.rank)+"위";popSub=pop.percent!==null?"상위 "+(pop.percent<0.01?"<0.01":pop.percent.toFixed(2))+"%":""}
   else{
@@ -413,8 +430,9 @@ function playerRankMeta(t){
   }
   return{
     overall:{label:"종합",value:rankText(overall),sub:rankPercentText(overall),detail:overallRankDetail(t)},
-    popularity:{label:"인기",value:popValue,sub:popSub},
-    influence:inf?{label:"원곡 영향력",value:inf.rank?fmt(inf.total)+"원곡 중 "+fmt(inf.rank)+"위":"현재 표본 계산",sub:"파생 "+fmt(inf.children)+"곡 · "+fmt(inf.circles)+"서클"}:null,
+    popularity:{label:"인기",value:popValue,sub:popSub,detail:popularityRankDetail(t)},
+    influence:inf?{label:"원곡 영향력",value:inf.rank?fmt(inf.total)+"원곡 중 "+fmt(inf.rank)+"위":"현재 표본 계산",sub:"파생 "+fmt(inf.children)+"곡 · "+fmt(inf.circles)+"서클",detail:influenceRankDetail(t)}:null,
+    views:views?{label:"플랫폼 조회수",value:views.rank?fmt(views.total)+"곡 중 "+fmt(views.rank)+"위":fmt(views.views)+"회",sub:fmt(views.platforms)+"개 플랫폼 · "+fmt(views.media)+"개 영상",detail:viewRankDetail(t)}:null,
     active:activeSortRankInfo(t)
   };
 }
@@ -997,19 +1015,46 @@ function searchBlob(t){
   const originals=originalNames(t).join(" "),artists=t.artists?Object.values(t.artists).flat().join(" "):"";
   return [t.title,...(t.aliases||[]),t.work,t.role,t.character,t.circle,t.album,t.artistString,artists,originals,...(t.moods||[])].filter(Boolean).join(" ").toLowerCase();
 }
+function mediaViewStats(t){
+  const seen=new Set(),byProvider=new Map();
+  let total=0,max=0,mediaCount=0;
+  for(const m of t?.mediaCandidates||[]){
+    const key=(m?.provider||"")+":"+(m?.id||m?.url||"");
+    if(!m?.provider||!key||seen.has(key))continue;
+    seen.add(key);
+    const views=Number(m?.viewCount);
+    if(!Number.isFinite(views)||views<0)continue;
+    mediaCount++;total+=views;max=Math.max(max,views);
+    byProvider.set(m.provider,(byProvider.get(m.provider)||0)+views);
+  }
+  if(!mediaCount&&Number(t?.viewMediaCount)>0){
+    total=Math.max(0,Number(t.viewTotal)||0);max=Math.max(0,Number(t.viewMax)||0);mediaCount=Number(t.viewMediaCount)||0;
+  }
+  const providers=[...byProvider.entries()].map(([provider,views])=>({provider,views})).sort((a,b)=>b.views-a.views);
+  return{total,max,platforms:byProvider.size||Number(t?.viewPlatformCount)||0,mediaCount,providers};
+}
+function platformLabel(p){
+  return({youtube:"YouTube",niconico:"NicoNico",bilibili:"Bilibili",soundcloud:"SoundCloud",bandcamp:"Bandcamp",piapro:"Piapro"})[p]||p;
+}
+function viewSignal(t){
+  const v=mediaViewStats(t);
+  if(!v.mediaCount)return 0;
+  return Math.log10(v.total+1)*12+Math.log10(v.max+1)*4+Math.min(3,v.platforms)*2;
+}
 function popularityScore(t){
   const rating=Math.max(0,Number(t.ratingScore)||0);
   const favorites=Math.max(0,Number(t.favoritedTimes)||0);
   const hits=Math.max(0,Number(t.hitCount)||0);
   const providers=new Set((t.mediaCandidates||[]).map(m=>m?.provider).filter(Boolean)).size;
-  return rating*5+Math.log10(favorites+1)*18+Math.log10(hits+1)*6+Math.min(4,providers)*2;
+  return rating*5+Math.log10(favorites+1)*18+Math.log10(hits+1)*6+Math.min(4,providers)*2+viewSignal(t);
 }
 function influenceScore(t){
   if(t?.type!=="original")return 0;
   const children=Math.max(0,Number(t.derivativeCount)||countChildren(t.id));
   const circles=Math.max(0,Number(t.derivativeCircleCount)||0);
   const albums=Math.max(0,Number(t.derivativeAlbumCount)||0);
-  return Math.log10(children+1)*34+Math.log10(circles+1)*22+Math.log10(albums+1)*14;
+  const mediaChildren=Math.max(0,Number(t.derivativeMediaCount)||0);
+  return Math.log10(children+1)*34+Math.log10(circles+1)*22+Math.log10(albums+1)*14+Math.log10(mediaChildren+1)*6;
 }
 function overallRankScore(t){return popularityScore(t)+influenceScore(t)}
 function popularityBreakdown(t){
@@ -1017,17 +1062,23 @@ function popularityBreakdown(t){
   const favorites=Math.max(0,Number(t?.favoritedTimes)||0);
   const hits=Math.max(0,Number(t?.hitCount)||0);
   const providers=new Set((t?.mediaCandidates||[]).map(m=>m?.provider).filter(Boolean)).size;
+  const views=mediaViewStats(t);
   const ratingPts=rating*5;
   const favoritePts=Math.log10(favorites+1)*18;
   const hitPts=Math.log10(hits+1)*6;
   const providerPts=Math.min(4,providers)*2;
+  const viewPts=viewSignal(t);
+  const platformRows=views.providers.map(x=>({label:platformLabel(x.provider)+" 조회수",raw:fmt(x.views)+"회",rule:"검증된 PV 합계",points:null}));
   return{
-    total:ratingPts+favoritePts+hitPts+providerPts,
+    total:ratingPts+favoritePts+hitPts+providerPts+viewPts,
+    views,
     metrics:[
       {label:"TouhouDB 평점",raw:rating.toFixed(1),rule:"× 5",points:ratingPts},
       {label:"즐겨찾기",raw:fmt(favorites)+"회",rule:"log10(n+1) × 18",points:favoritePts},
       {label:"DB 조회",raw:fmt(hits)+"회",rule:"log10(n+1) × 6",points:hitPts},
-      {label:"재생 소스",raw:fmt(providers)+"종",rule:"최대 4종 × 2",points:providerPts}
+      {label:"재생 소스",raw:fmt(providers)+"종",rule:"최대 4종 × 2",points:providerPts},
+      ...platformRows,
+      {label:"플랫폼 조회수 보정",raw:views.mediaCount?fmt(views.total)+"회":"미집계",rule:"합산·최고 조회수 로그 가중",points:viewPts}
     ]
   };
 }
@@ -1036,16 +1087,86 @@ function influenceBreakdown(t){
   const children=Math.max(0,Number(t.derivativeCount)||countChildren(t.id));
   const circles=Math.max(0,Number(t.derivativeCircleCount)||0);
   const albums=Math.max(0,Number(t.derivativeAlbumCount)||0);
+  const mediaChildren=Math.max(0,Number(t.derivativeMediaCount)||0);
   const childPts=Math.log10(children+1)*34;
   const circlePts=Math.log10(circles+1)*22;
   const albumPts=Math.log10(albums+1)*14;
+  const mediaPts=Math.log10(mediaChildren+1)*6;
   return{
-    total:childPts+circlePts+albumPts,
+    total:childPts+circlePts+albumPts+mediaPts,
     metrics:[
       {label:"파생 어레인지",raw:fmt(children)+"곡",rule:"log10(n+1) × 34",points:childPts},
       {label:"파생 서클",raw:fmt(circles)+"곳",rule:"log10(n+1) × 22",points:circlePts},
-      {label:"파생 앨범",raw:fmt(albums)+"장",rule:"log10(n+1) × 14",points:albumPts}
+      {label:"파생 앨범",raw:fmt(albums)+"장",rule:"log10(n+1) × 14",points:albumPts},
+      {label:"영상 연결 파생곡",raw:fmt(mediaChildren)+"곡",rule:"log10(n+1) × 6",points:mediaPts}
     ]
+  };
+}
+function popularityRankDetail(t){
+  const rank=popularityRankInfo(t),b=popularityBreakdown(t);
+  let source;
+  if(rank.rawRank&&state.full.manifest){
+    source={label:"전수 인기순위",text:fmt(state.full.manifest.indexed||0)+"곡 원순위 "+fmt(rank.rawRank)+"위 → 표시 스케일 "+fmt(rank.rank)+"위"};
+  }else{
+    source={label:"현재 로드 기준",text:"전수 인덱스의 인기순위가 없으면 현재 로드된 곡의 점수를 비교합니다."};
+  }
+  return{
+    title:"인기순위 산정 근거",
+    formula:"인기 점수 = 평점 + 즐겨찾기 + DB 조회 + 소스 다양성 + 플랫폼 조회수",
+    score:Number(rank.score)||b.total,
+    source,
+    components:[
+      {label:"기본 반응 지표",points:b.total-viewSignal(t),description:"평점 · 즐겨찾기 · DB 조회 · 재생 소스"},
+      {label:"플랫폼 조회수",points:viewSignal(t),description:b.views.mediaCount?fmt(b.views.total)+"회 · "+fmt(b.views.platforms)+"개 플랫폼":"조회수 데이터 미집계"}
+    ],
+    metrics:b.metrics,
+    note:"YouTube·NicoNico·Bilibili에서 확인 가능한 조회수만 사용합니다. 공개 조회수 API가 없는 플랫폼은 0점이 아니라 미집계로 표시합니다."
+  };
+}
+function influenceRankDetail(t){
+  const rank=influenceRankInfo(t),b=influenceBreakdown(t);
+  return{
+    title:"원곡 영향력 순위 근거",
+    formula:"영향력 점수 = 파생곡 + 서클 + 앨범 + 영상 연결 파생곡",
+    score:Number(rank?.score)||b.total,
+    source:rank?.rank
+      ?{label:"공식 원곡 전수 비교",text:fmt(rank.total)+"개 공식 원곡 중 "+fmt(rank.rank)+"위"}
+      :{label:"현재 표본 기준",text:"전수 영향력 순위가 아직 없으면 현재 연결 데이터로 계산합니다."},
+    components:[
+      {label:"파생 규모",points:b.total,description:"직접 연결된 2차창작의 폭과 다양성"},
+      {label:"원곡 여부",points:0,description:"공식 원곡에만 영향력 점수를 부여"}
+    ],
+    metrics:b.metrics,
+    note:"같은 서클이나 같은 앨범에서 파생곡이 많이 나와도 서클·앨범은 중복 제거 후 집계합니다."
+  };
+}
+function viewRankInfo(t){
+  const stats=mediaViewStats(t);
+  if(!stats.mediaCount&&!Number(t?.viewRank))return null;
+  const total=Number(state.full.manifest?.viewCoverage?.rankedTracks)||currentPool().filter(x=>mediaViewStats(x).mediaCount>0).length||1;
+  if(t?.viewRank)return{rank:Number(t.viewRank),total,score:Number(t.viewScore)||viewSignal(t),views:Number(t.viewTotal)||stats.total,platforms:Number(t.viewPlatformCount)||stats.platforms,media:Number(t.viewMediaCount)||stats.mediaCount};
+  const pool=currentPool().filter(x=>mediaViewStats(x).mediaCount>0);
+  const r=sampleRankByScore(t,viewSignal,pool);
+  return{rank:r.rank,total:r.total,score:r.score,views:stats.total,platforms:stats.platforms,media:stats.mediaCount};
+}
+function viewRankDetail(t){
+  const rank=viewRankInfo(t),v=mediaViewStats(t);
+  const metrics=v.providers.map(x=>({label:platformLabel(x.provider),raw:fmt(x.views)+"회",rule:"검증된 영상 조회수 합계",points:null}));
+  metrics.push({label:"전체 합산",raw:fmt(v.total||t.viewTotal||0)+"회",rule:"중복 영상 ID 제거 후 합산",points:null});
+  metrics.push({label:"최고 단일 영상",raw:fmt(v.max||t.viewMax||0)+"회",rule:"가장 많이 본 등록 PV",points:null});
+  return{
+    title:"플랫폼 조회수 순위 근거",
+    formula:"조회수 점수 = log10(합산+1)×12 + log10(최고+1)×4 + 플랫폼 보너스",
+    score:Number(rank?.score)||viewSignal(t),
+    source:rank?.rank
+      ?{label:"조회수 확인 곡 비교",text:fmt(rank.total)+"곡 중 "+fmt(rank.rank)+"위 · "+fmt(rank.views)+"회 확인"}
+      :{label:"조회수 미집계",text:"지원 플랫폼의 공개 조회수 데이터를 아직 확보하지 못했습니다."},
+    components:[
+      {label:"합산·최고 조회수",points:viewSignal(t),description:fmt(v.mediaCount||t.viewMediaCount||0)+"개 영상 · "+fmt(v.platforms||t.viewPlatformCount||0)+"개 플랫폼"},
+      {label:"지원 범위",points:0,description:"YouTube · NicoNico · Bilibili"}
+    ],
+    metrics,
+    note:"여러 업로드가 있는 곡은 영상 ID 중복을 제거한 뒤 합산합니다. 순위 모집단은 조회수 확인에 성공한 곡만 포함합니다."
   };
 }
 function overallRankDetail(t){
@@ -1071,11 +1192,11 @@ function overallRankDetail(t){
     score,
     source,
     components:[
-      {label:"인기 점수",points:pop.total,description:"평점 · 즐겨찾기 · DB 조회 · 재생 소스"},
-      {label:"원곡 영향력",points:inf.total,description:t?.type==="original"?"파생곡 · 파생 서클 · 파생 앨범":"2차창작에는 0점"}
+      {label:"인기 점수",points:pop.total,description:"평점 · 즐겨찾기 · DB 조회 · 플랫폼 조회수"},
+      {label:"원곡 영향력",points:inf.total,description:t?.type==="original"?"파생곡 · 서클 · 앨범 · 영상 연결":"2차창작에는 0점"}
     ],
     metrics:[...pop.metrics,...inf.metrics],
-    note:"즐겨찾기·조회·파생량은 로그 가중치를 사용해 한 지표가 점수를 과도하게 지배하지 않도록 합니다."
+    note:"조회수와 파생량은 로그 가중치를 사용해 초대형 히트곡 하나가 전체 점수를 과도하게 지배하지 않도록 합니다."
   };
 }
 function refreshRanks(){
@@ -1171,13 +1292,16 @@ function sortList(list,sort){
       return (Number(a.influenceRank)||1e12)-(Number(b.influenceRank)||1e12)||influenceScore(b)-influenceScore(a);
     });
   }
+  if(sort==="views"){
+    return [...list].sort((a,b)=>(Number(a.viewRank)||1e12)-(Number(b.viewRank)||1e12)||viewSignal(b)-viewSignal(a)||a.title.localeCompare(b.title,"ja"));
+  }
   if(state.full.loaded)return list;
   return [...list].sort((a,b)=>overallRankScore(b)-overallRankScore(a)||recommendScore(b)-recommendScore(a));
 }
 function recommendScore(t){return (Number(t.ratingScore)||0)*3+(Number(t.favoritedTimes)||0)*.08+(player.playable(t)?5:0)+(t.type==="arrangement"?2:0)+(t.originalIds?.length?3:0)+(t.moods?.length||0)*.2}
 function randomDive(){const pool=currentPool();if(pool.length)startDive(pool[Math.floor(Math.random()*pool.length)])}
 function snapshotTrack(t){
-  return{id:t.id,type:t.type,category:t.category||"",songTypeRaw:t.songTypeRaw||"",title:t.title,aliases:t.aliases||[],year:t.year||null,work:t.work||"",workId:t.workId||"",workIds:t.workIds||[],role:t.role||"",character:t.character||"",circle:t.circle||"",album:t.album||"",moods:t.moods||[],originalIds:t.originalIds||[],artists:t.artists||{},artistString:t.artistString||"",media:t.media||null,mediaCandidates:t.mediaCandidates||[],mediaUnavailable:!!t.mediaUnavailable,thumb:t.thumb||"",source:t.source||null,touhoudbId:t.touhoudbId||null,ratingScore:Number(t.ratingScore)||0,favoritedTimes:Number(t.favoritedTimes)||0,hitCount:Number(t.hitCount)||0,globalRank:Number(t.globalRank)||null,globalScore:Number(t.globalScore)||0,popularityRank:Number(t.popularityRank)||null,popularityScore:Number(t.popularityScore)||0,influenceRank:Number(t.influenceRank)||null,influenceScore:Number(t.influenceScore)||0,derivativeCount:Number(t.derivativeCount)||0,derivativeCircleCount:Number(t.derivativeCircleCount)||0,derivativeAlbumCount:Number(t.derivativeAlbumCount)||0,remote:!!t.remote};
+  return{id:t.id,type:t.type,category:t.category||"",songTypeRaw:t.songTypeRaw||"",title:t.title,aliases:t.aliases||[],year:t.year||null,work:t.work||"",workId:t.workId||"",workIds:t.workIds||[],role:t.role||"",character:t.character||"",circle:t.circle||"",album:t.album||"",moods:t.moods||[],originalIds:t.originalIds||[],artists:t.artists||{},artistString:t.artistString||"",media:t.media||null,mediaCandidates:t.mediaCandidates||[],mediaUnavailable:!!t.mediaUnavailable,thumb:t.thumb||"",source:t.source||null,touhoudbId:t.touhoudbId||null,ratingScore:Number(t.ratingScore)||0,favoritedTimes:Number(t.favoritedTimes)||0,hitCount:Number(t.hitCount)||0,globalRank:Number(t.globalRank)||null,globalScore:Number(t.globalScore)||0,popularityRank:Number(t.popularityRank)||null,popularityScore:Number(t.popularityScore)||0,influenceRank:Number(t.influenceRank)||null,influenceScore:Number(t.influenceScore)||0,viewRank:Number(t.viewRank)||null,viewScore:Number(t.viewScore)||0,viewTotal:Number(t.viewTotal)||0,viewMax:Number(t.viewMax)||0,viewPlatformCount:Number(t.viewPlatformCount)||0,viewMediaCount:Number(t.viewMediaCount)||0,derivativeCount:Number(t.derivativeCount)||0,derivativeCircleCount:Number(t.derivativeCircleCount)||0,derivativeAlbumCount:Number(t.derivativeAlbumCount)||0,derivativeMediaCount:Number(t.derivativeMediaCount)||0,remote:!!t.remote};
 }
 function persistSnapshot(t){
   if(!t)return;
