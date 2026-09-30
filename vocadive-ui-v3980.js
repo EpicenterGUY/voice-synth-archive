@@ -2117,8 +2117,8 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
 ;(()=>{try{
   if(document.querySelector('script[data-vsa-home-39116]'))return;
   const x=document.createElement("script");
-  x.src="./home-v39116.js?v=39.116.0";
+  x.src="./home-v39116.js?v=39.117.0";
   x.async=false;
   x.dataset.vsaHome39116="1";
   document.head.appendChild(x);
-}catch(e){console.warn("[VocaDive] home v39.116 loader",e)}})();
+}catch(e){console.warn("[VocaDive] home v39.117 loader",e)}})();
