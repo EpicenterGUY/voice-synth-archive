@@ -90,6 +90,18 @@ function mediaCandidates(item){
   return out;
 }
 function bestMedia(item){return mediaCandidates(item)[0]||null}
+function lyricRows(item){
+  return arr(item?.lyrics).map(row=>{
+    const text=clean(row?.value||row?.lyrics||row?.text);
+    if(!text)return null;
+    return {
+      text,
+      source:clean(row?.source||row?.sourceUrl||row?.url),
+      translationType:clean(row?.translationType),
+      cultureCodes:arr(row?.cultureCodes).map(clean).filter(Boolean)
+    };
+  }).filter(Boolean);
+}
 function yearFrom(item){
   const p=clean(item?.publishDate||item?.createDate);
   const y=Number(p.slice(0,4)); if(y>1900&&y<2200)return y;
@@ -114,8 +126,7 @@ function toTrack(item){
   const title=clean(item?.name||item?.defaultName||aliases[0]||("TouhouDB #"+id));
   const candidates=mediaCandidates(item);
   const media=candidates[0]||null;
-  const works=inferWorks(item);
-  return {
+  const works=inferWorks(item);\n  const lyrics=lyricRows(item);\n  const lyricsLoaded=Object.prototype.hasOwnProperty.call(item||{},"lyrics");\n  return {
     id:"tdb-"+id,
     touhoudbId:id,
     type,
@@ -134,8 +145,7 @@ function toTrack(item){
     artists:roles,
     artistString,
     media,
-    mediaCandidates:candidates,
-    thumb:clean(item?.thumbUrl||item?.mainPicture?.urlThumb||item?.mainPicture?.urlSmallThumb||item?.mainPicture?.urlOriginal),
+    mediaCandidates:candidates,\n    lyrics,\n    lyricsLoaded,\n    lyricsAvailable:lyrics.length>0,\n    lyricsSource:id?("https://touhoudb.com/S/"+id+"/lyrics"):"",\n    thumb:clean(item?.thumbUrl||item?.mainPicture?.urlThumb||item?.mainPicture?.urlSmallThumb||item?.mainPicture?.urlOriginal),
     source:{name:"TouhouDB",url:id?("https://touhoudb.com/S/"+id):"https://touhoudb.com"},
     songType:clean(item?.songType),
     ratingScore:Number(item?.ratingScore)||0,
@@ -201,7 +211,7 @@ async function search(opts={}){
 async function hydrate(id){
   const n=String(id||"").replace(/^tdb-/,"");
   if(!/^\d+$/.test(n))return null;
-  const d=await fetchJson(API+"/songs/"+n+"?fields=AdditionalNames,Artists,Names,PVs,Tags,ThumbUrl,Albums,MainPicture,WebLinks&lang=Japanese");
+  const d=await fetchJson(API+"/songs/"+n+"?fields=AdditionalNames,Artists,Names,PVs,Tags,ThumbUrl,Albums,MainPicture,WebLinks,Lyrics&lang=Japanese");
   return toTrack(d);
 }
 async function status(opts={}){
