@@ -1,5 +1,5 @@
 {
-  "version": "0.9.8",
+  "version": "0.9.9",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-09-30",
@@ -121,6 +121,10 @@
     "bilibili-view-index",
     "platform-view-rank",
     "view-rank-sort",
-    "ranking-v3"
+    "ranking-v3",
+    "mobile-rank-lookup",
+    "autoplay-rank-enrichment",
+    "platform-view-evidence",
+    "ranking-v3-mobile"
   ]
 }
