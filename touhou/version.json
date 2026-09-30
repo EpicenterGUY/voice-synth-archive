@@ -1,8 +1,8 @@
 {
-  "version": "0.9.3",
+  "version": "0.9.4",
   "name": "TouhouDive",
   "channel": "alpha",
-  "updated": "2026-09-29",
+  "updated": "2026-09-30",
   "dataset": "TouhouDB-full-sharded-index",
   "features": [
     "ui-rebuild",
@@ -89,6 +89,13 @@
     "local-full-index-canonical-merge",
     "ranking-field-inheritance",
     "canonical-child-counts",
-    "native-faith-rank-fix"
+    "native-faith-rank-fix",
+    "youtube-like-watch-player",
+    "related-play-queue",
+    "player-related-panel",
+    "player-lyrics-tab",
+    "touhoudb-lyrics-hydration",
+    "bad-apple-shadow-pv-pin",
+    "autoplay-toggle-ui"
   ]
 }
