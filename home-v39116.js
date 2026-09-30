@@ -1,7 +1,7 @@
 /* VocaDive Home Explorer + Watch History · v39.116.0 */
 (function(){
 "use strict";
-var VERSION="39.116.0";
+var VERSION="39.117.0";
 if(window.__VSA_HOME_39116)return;
 window.__VSA_HOME_39116=true;
 
@@ -18,6 +18,8 @@ function save(key,v){try{localStorage.setItem(key,JSON.stringify(v))}catch(_){}}
 function feed(){return load(FEED_KEY,{daily:[],taste:[],newer:[],hidden:[]})}
 function organizer(){return load(ORG_KEY,{version:1,library:{},recentViews:[],recentSearches:[],cases:[],compare:[],snapshots:{}})}
 function tags(song){var r=song&&song.tags;return Array.isArray(r)?r.map(String):String(r||"").split(/[\s,、，]+/).filter(Boolean)}
+var DERIVATIVE_RE39117=/(?:off[\s._-]*vocal|off[\s._-]*vo\b|no[\s._-]*vocal|instrumental(?:\s*(?:ver\.?|version|mix))?|\binst\.?\s*(?:ver\.?|version)?\b|オフ[\s_-]*ボ(?:ーカル)?|オフボ(?:ーカル)?|インスト(?:版|ver\.?)?|カラオケ|ニコカラ|karaoke|伴奏|歌ってみた|歌わせてみた|cover(?:ed)?|カバー曲|踊ってみた|演奏してみた|弾いてみた|MMD|MAD)/i;
+function derivative39117(song){return DERIVATIVE_RE39117.test([song&&song.title,song&&song.description].concat(tags(song)).filter(Boolean).join(" "))}
 function yearOf(song){if(!song||!song.startTime)return 0;var y=new Date(song.startTime).getFullYear();return Number.isFinite(y)?y:0}
 function viewedSet(){return new Set((organizer().recentViews||[]).map(function(x){return String(x&&x.id||"")}).filter(Boolean))}
 function markKey(mark){return mark==="DAILY"?"daily":mark==="FOR YOU"?"taste":mark==="NEW"?"newer":"hidden"}
@@ -120,6 +122,7 @@ function filteredRows(mark){
   var q=String(p.query||"").trim().toLowerCase();
   if(window.VSA37AdultFilterRows)try{rows=window.VSA37AdultFilterRows(rows,"home39116_"+mark).rows}catch(_){}
   rows=rows.filter(function(song){
+    if(derivative39117(song))return false;
     if(q&&!songHay(song,p.field).toLowerCase().includes(q))return false;
     if(!viewPass(song.viewCounter,p.views))return false;
     if(!eraPass(yearOf(song),p.era))return false;
@@ -300,6 +303,23 @@ async function directExpand39116(mark){
       var rows=uniqueSongs39116(groups.flatMap(function(g){return g&&g.data||[]})).filter(function(s){var v=+s.viewCounter||0;return v>=30&&v<=50000});
       return balanceBands39116(rows,bands,36)
     }
+    if(mark==="FOR YOU"){
+      var groups=await Promise.all([
+        fetchNico({year:"all",limit:100,offset:0,mode:"ranking",sort:"-mylistCounter",applyYear:false,applyTier:false,numericFilters:{viewCounter:{gte:100}}}),
+        fetchNico({year:"all",limit:100,offset:100,mode:"ranking",sort:"-commentCounter",applyYear:false,applyTier:false,numericFilters:{viewCounter:{gte:100}}})
+      ]);
+      var rows=uniqueSongs39116(groups.flatMap(function(g){return g&&g.data||[]})).filter(function(s){return !derivative39117(s)});
+      try{if(window.VSA37DiscoveryOriginalRows)rows=window.VSA37DiscoveryOriginalRows(rows,"home39117_taste").rows}catch(_){}
+      rows.sort(function(a,b){return scoreReaction39116(b)-scoreReaction39116(a)});
+      return rows.slice(0,36)
+    }
+    if(mark==="NEW"){
+      var d=await fetchNico({year:"all",limit:100,offset:0,mode:"ranking",sort:"-startTime",applyYear:false,applyTier:false,numericFilters:{viewCounter:{gte:0}}});
+      var rows=uniqueSongs39116(d&&d.data||[]).filter(function(s){return !derivative39117(s)});
+      try{if(window.VSA37DiscoveryOriginalRows)rows=window.VSA37DiscoveryOriginalRows(rows,"home39117_new").rows}catch(_){}
+      rows.sort(function(a,b){return new Date(b.startTime||0)-new Date(a.startTime||0)});
+      return rows.slice(0,30)
+    }
     if(mark==="DAILY"){
       var groups=await Promise.all([
         fetchNico({year:"all",limit:100,offset:0,mode:"ranking",sort:"-mylistCounter",applyYear:false,applyTier:false,numericFilters:{viewCounter:{gte:1000,lte:1500000}}}),
@@ -318,12 +338,15 @@ async function ensureExpandedPools(){
   try{
     if(window.VSAEnsureFeatures)await window.VSAEnsureFeatures("homeData");
     var f=feed(),needs=[];
-    if((f.daily||[]).length<24)needs.push("DAILY");
-    if((f.hidden||[]).length<24)needs.push("DEEP");
+    if((f.daily||[]).filter(function(s){return !derivative39117(s)}).length<24)needs.push("DAILY");
+    if((f.taste||[]).filter(function(s){return !derivative39117(s)}).length<18)needs.push("FOR YOU");
+    if((f.newer||[]).filter(function(s){return !derivative39117(s)}).length<18)needs.push("NEW");
+    if((f.hidden||[]).filter(function(s){return !derivative39117(s)}).length<24)needs.push("DEEP");
     for(var mark of needs){
       if(window.VSAHome28&&window.VSAHome28.refreshSection)await window.VSAHome28.refreshSection(mark);
       var nowFeed=feed(),key=markKey(mark);
-      if((nowFeed[key]||[]).length<24){
+      var minimum=(mark==="DAILY"||mark==="DEEP")?24:18;
+      if((nowFeed[key]||[]).filter(function(s){return !derivative39117(s)}).length<minimum){
         var extra=await directExpand39116(mark);
         if(extra.length){nowFeed[key]=extra;nowFeed.at=Date.now();save(FEED_KEY,nowFeed)}
       }
@@ -375,7 +398,7 @@ function patchHomeApi(){
 function boot(){
   addStyle();patchHomeApi();ensureHistoryPage();bind();observe();enhanceHome();cleanPersonalRecent();
   setTimeout(ensureExpandedPools,550);
-  window.VSAHomeExplorer39116={version:VERSION,enhance:enhanceHome,openHistory:openHistory,renderHistory:renderHistory,filters:function(){return JSON.parse(JSON.stringify(prefs))}}
+  window.VSAHomeExplorer39116={version:"39.117.0",enhance:enhanceHome,openHistory:openHistory,renderHistory:renderHistory,filters:function(){return JSON.parse(JSON.stringify(prefs))}}
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
 })();
