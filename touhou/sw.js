@@ -1,5 +1,5 @@
 const CACHE="touhoudive-v0.9.17";
-const FULL_CACHE="touhoudive-full-index-v4";
+const FULL_CACHE="touhoudive-full-index-v5";
 const CORE=[
   "./","./index.html",
   "./styles.css?v=0.9.17","./app.js?v=0.9.17","./catalog.js?v=0.9.17","./media.js?v=0.9.17","./full-index.js?v=0.9.17",
@@ -19,6 +19,13 @@ self.addEventListener("fetch",e=>{
   const u=new URL(e.request.url);
   if(u.origin!==location.origin)return;
   if(u.pathname.includes("/touhou/data/full/")){
+    const isManifest=u.pathname.endsWith("/manifest.json");
+    if(isManifest){
+      e.respondWith(
+        fetch(e.request,{cache:"no-store"}).catch(()=>caches.match(e.request))
+      );
+      return;
+    }
     e.respondWith(
       caches.open(FULL_CACHE).then(async cache=>{
         const hit=await cache.match(e.request);
