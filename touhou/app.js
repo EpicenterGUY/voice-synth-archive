@@ -1203,21 +1203,21 @@ function popularityRankDetail(t){
   const rank=popularityRankInfo(t),b=popularityBreakdown(t);
   let source;
   if(rank.rawRank&&state.full.manifest){
-    source={label:"전수 인기순위",text:fmt(state.full.manifest.indexed||0)+"곡 원순위 "+fmt(rank.rawRank)+"위 → 표시 스케일 "+fmt(rank.rank)+"위"};
+    source={label:"전수 인기순위",text:fmt(rank.total)+"곡 중 "+fmt(rank.rank)+"위 · 랭킹 v4 전수 인덱스"};
   }else{
     source={label:"현재 로드 기준",text:"전수 인덱스의 인기순위가 없으면 현재 로드된 곡의 점수를 비교합니다."};
   }
   return{
     title:"인기순위 산정 근거",
-    formula:"인기 점수 = 평점 + 즐겨찾기 + DB 조회 + 소스 다양성 + 플랫폼 조회수",
+    formula:"인기 점수 = 누적 추천점수 + Favorite + 소스 다양성 + (충분히 수집된 경우) 플랫폼 조회수",
     score:Number(rank.score)||b.total,
     source,
     components:[
-      {label:"기본 반응 지표",points:b.total-viewSignal(t),description:"평점 · 즐겨찾기 · DB 조회 · 재생 소스"},
-      {label:"플랫폼 조회수",points:viewSignal(t),description:b.views.mediaCount?fmt(b.views.total)+"회 · "+fmt(b.views.platforms)+"개 플랫폼":"조회수 데이터 미집계"}
+      {label:"커뮤니티 반응",points:b.baseTotal,description:"TouhouDB 누적 추천점수 · Favorite · 재생 소스"},
+      {label:"플랫폼 조회수",points:b.viewPts,description:b.eligible?(b.views.mediaCount?fmt(b.views.total)+"회 · "+fmt(b.views.platforms)+"개 플랫폼":"조회수 데이터 없음"):"현재 커버리지 부족 · 인기점수 미반영"}
     ],
     metrics:b.metrics,
-    note:"YouTube·NicoNico·Bilibili에서 확인 가능한 조회수만 사용합니다. 공개 조회수 API가 없는 플랫폼은 0점이 아니라 미집계로 표시합니다."
+    note:"TouhouDB RatingScore는 평균 평점이 아니라 누적 투표 점수입니다. YouTube·NicoNico·Bilibili 조회수는 수집 커버리지가 기준을 넘을 때만 인기점수에 반영하며, 그 전에는 별도 조회수 순위로만 표시합니다."
   };
 }
 function influenceRankDetail(t){
@@ -1256,7 +1256,7 @@ function viewRankDetail(t){
     formula:"조회수 점수 = log10(합산+1)×12 + log10(최고+1)×4 + 플랫폼 보너스",
     score:Number(rank?.score)||viewSignal(t),
     source:rank?.rank
-      ?{label:"조회수 확인 곡 비교",text:fmt(rank.total)+"곡 중 "+fmt(rank.rank)+"위 · "+fmt(rank.views)+"회 확인"}
+      ?{label:(state.full.manifest?.viewCoverage?.mode==="multi-platform"?"다중 플랫폼 조회수 비교":"부분 조회수 비교"),text:fmt(rank.total)+"곡(조회수 확인 성공 곡) 중 "+fmt(rank.rank)+"위 · "+fmt(rank.views)+"회 확인"}
       :{label:"조회수 미집계",text:"지원 플랫폼의 공개 조회수 데이터를 아직 확보하지 못했습니다."},
     components:[
       {label:"합산·최고 조회수",points:viewSignal(t),description:fmt(v.mediaCount||t.viewMediaCount||0)+"개 영상 · "+fmt(v.platforms||t.viewPlatformCount||0)+"개 플랫폼"},
@@ -1268,12 +1268,12 @@ function viewRankDetail(t){
 }
 function overallRankDetail(t){
   const rank=trackRank(t),pop=popularityBreakdown(t),inf=influenceBreakdown(t);
-  const score=Number(rank.score)||pop.total+inf.total;
+  const score=Number(rank.score)||pop.total+inf.total*0.35;
   let source;
   if(rank.fullScale){
     source={
       label:"전수 인덱스 기반",
-      text:fmt(rank.sampleTotal)+"곡 전수 원순위 "+fmt(rank.sampleRank)+"위 → "+fmt(rank.total)+"곡 표시 스케일 "+fmt(rank.rank)+"위"
+      text:fmt(rank.total)+"곡 전수에서 "+fmt(rank.rank)+"위 · 별도 스케일 환산 없음"
     };
   }else if(rank.sampleRank){
     source={
@@ -1285,15 +1285,15 @@ function overallRankDetail(t){
   }
   return{
     title:"종합순위 산정 근거",
-    formula:"종합 점수 = 인기 점수 + 원곡 영향력 점수",
+    formula:"종합 점수 = 인기 점수 + 원곡 영향력 점수 × 0.35",
     score,
     source,
     components:[
       {label:"인기 점수",points:pop.total,description:"평점 · 즐겨찾기 · DB 조회 · 플랫폼 조회수"},
-      {label:"원곡 영향력",points:inf.total,description:t?.type==="original"?"파생곡 · 서클 · 앨범 · 영상 연결":"2차창작에는 0점"}
+      {label:"원곡 영향력 기여",points:inf.total*0.35,description:t?.type==="original"?"영향력 원점수 "+inf.total.toFixed(2)+"pt의 35%만 종합에 반영":"2차창작에는 0점"}
     ],
     metrics:[...pop.metrics,...inf.metrics],
-    note:"조회수와 파생량은 로그 가중치를 사용해 초대형 히트곡 하나가 전체 점수를 과도하게 지배하지 않도록 합니다."
+    note:"전체 순위의 분모는 전수 인덱스 전체 곡 수입니다. 과거처럼 128,040곡 2차창작 아카이브 규모로 환산하지 않습니다. 원곡 영향력은 종합점수에서 35%만 반영합니다."
   };
 }
 function refreshRanks(){
