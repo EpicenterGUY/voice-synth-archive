@@ -112,7 +112,15 @@ function bind(){
     requestAnimationFrame(()=>renderCatalog());
     loadRemote(true);
   });
-  $("#loadMoreBtn").onclick=()=>state.full.loaded?showMoreFull():loadRemote(false);
+  $("#loadMoreBtn").onclick=()=>{
+    if(state.full.loaded){showMoreFull();return}
+    if(state.full.streaming&&state.displayLimit<state.lastMatchCount){
+      state.displayLimit=Math.min(state.lastMatchCount,state.displayLimit+60);
+      renderCatalog();
+      return;
+    }
+    loadRemote(false);
+  };
   $("#randomBtn").onclick=randomDive;$("#heroDiveBtn").onclick=randomDive;
   $("#playableBtn").onclick=()=>{state.mode="all";state.filter="영상 있음";syncModeTabs();renderCatalog("인앱 재생 가능한 곡");loadRemote(true);};
   $("#refreshBtn").onclick=()=>loadRemote(true,true);
@@ -504,7 +512,7 @@ function activeSortRankInfo(t){
     if(p.rank)return{label:"인기순",value:fmt(p.total)+"곡 중 "+fmt(p.rank)+"위",sub:p.percent!==null?"상위 "+(p.percent<0.01?"<0.01":p.percent.toFixed(2))+"%":""};
     if(p.stale)return{label:"인기순",value:"v4 재집계 중",sub:"이전 v3 순위 숨김"};
     const sample=pool.length>5000?pool.slice(0,1200):pool;
-    const r=sampleRankByScore(t,popularityScore,sample);return{label:"인기순",value:fmt(r.total)+"곡 중 "+fmt(r.rank)+"위",sub:"현재 로드 표본"};
+    const r=sampleRankByScore(t,popularityScore,sample);return{label:"인기순",value:fmt(p.total)+"곡 전체 · 순위 준비 중",sub:"현재 로드 표본 "+fmt(r.rank)+"/"+fmt(r.total)};
   }
   if(state.sort==="influence"&&t.type==="original"){
     const i=influenceRankInfo(t);
@@ -537,7 +545,7 @@ function playerRankMeta(t){
   else if(pop.stale){popValue="v4 재집계 중";popSub="이전 v3 순위 숨김"}
   else{
     const pool=currentPool(),sample=pool.length>5000?pool.slice(0,1200):pool;
-    const r=sampleRankByScore(t,popularityScore,sample);popValue=fmt(r.total)+"곡 중 "+fmt(r.rank)+"위";popSub="현재 로드 표본";
+    const r=sampleRankByScore(t,popularityScore,sample);popValue=fmt(pop.total)+"곡 전체 · 순위 준비 중";popSub="현재 로드 표본 "+fmt(r.rank)+"/"+fmt(r.total);
   }
   return{
     overall:{label:"종합",value:rankText(overall),sub:rankPercentText(overall),detail:overallRankDetail(t)},
@@ -583,10 +591,11 @@ function renderCatalog(title){
   const q=$("#searchInput").value.trim().toLowerCase();
   if(q)list=list.filter(t=>searchBlob(t).includes(q));
   list=sortList(list,state.sort);
-  const key=JSON.stringify({q,mode:state.mode,filter:state.filter,work:state.workFilter,sort:state.sort,full:state.full.loaded});
-  if(key!==state.renderKey){state.renderKey=key;state.displayLimit=state.full.loaded?60:Math.max(60,list.length)}
+  const pagedRender=state.full.loaded||state.full.streaming;
+  const key=JSON.stringify({q,mode:state.mode,filter:state.filter,work:state.workFilter,sort:state.sort,full:state.full.loaded,streaming:state.full.streaming});
+  if(key!==state.renderKey){state.renderKey=key;state.displayLimit=pagedRender?60:Math.max(60,list.length)}
   state.lastMatchCount=list.length;
-  const visible=state.full.loaded?list.slice(0,state.displayLimit):list;
+  const visible=pagedRender?list.slice(0,state.displayLimit):list;
   if(!q&&state.filter==="전체"&&state.sort==="recommend"&&!state.remoteItems.length&&!state.full.loaded)renderGrid(shuffle(visible).slice(0,12));
   else renderGrid(visible);
   $("#sectionTitle").textContent=title||catalogTitle(q,list.length);
@@ -632,9 +641,9 @@ function updateStats(){
   updateCatalogTotal();
 }
 function updateCatalogTotal(){
-  const n=state.full.manifest?.indexed||state.remote.catalogTotal||state.remote.total||state.known.size;
+  const n=Number(state.full.manifest?.totalCount)||Number(state.full.manifest?.indexed)||Number(state.remote.catalogTotal)||Number(state.remote.total)||state.known.size;
   $("#statLinks").textContent=fmt(n);
-  $("#statLinksMeta").textContent=state.full.manifest?"전수 샤드 인덱스":state.remote.catalogTotal?"TouhouDB 전체 등록곡":"현재 로드";
+  $("#statLinksMeta").textContent=state.full.manifest?"TouhouDB FULL INDEX 전체 등록곡":state.remote.catalogTotal?"TouhouDB 전체 등록곡":"현재 로드";
   $("#heroCatalogCount").textContent=state.full.loading?fmt(state.full.loadedCount)+" / "+fmt(n):fmt(n)+" tracks";
 }
 function syncCatalogFooter(){
@@ -655,9 +664,14 @@ function syncCatalogFooter(){
     return;
   }
   if(state.full.streaming){
-    btn.disabled=state.remote.loading||(state.remote.total>0&&state.remote.start>=state.remote.total);
-    btn.textContent=state.remote.loading?"다음 50곡 불러오는 중…":(btn.disabled?"현재 조건 모두 불러옴":"다음 50곡");
-    meta.innerHTML='<span class="remote-pulse">STREAMING INDEX</span> · 전체 '+fmt(state.full.manifest?.indexed||state.remote.catalogTotal||0)+'곡 접근 가능 · 현재 화면 캐시 '+fmt(state.remoteItems.length)+'곡';
+    const shown=Math.min(state.displayLimit,state.lastMatchCount);
+    const hiddenInCache=shown<state.lastMatchCount;
+    const remoteDone=state.remote.total>0&&state.remote.start>=state.remote.total;
+    btn.disabled=!hiddenInCache&&(state.remote.loading||remoteDone);
+    btn.textContent=hiddenInCache
+      ?"현재 캐시 60곡 더 표시"
+      :state.remote.loading?"다음 50곡 불러오는 중…":(btn.disabled?"현재 조건 모두 불러옴":"다음 50곡 불러오기");
+    meta.innerHTML='<span class="remote-pulse">STREAMING INDEX</span> · 전체 '+fmt(state.full.manifest?.totalCount||state.full.manifest?.indexed||state.remote.catalogTotal||0)+'곡 접근 가능 · 현재 캐시 '+fmt(state.remoteItems.length)+'곡 · 화면 '+fmt(shown)+'곡';
     return;
   }
   if(!state.remote.available){
@@ -746,7 +760,7 @@ function openTrack(t,opts={}){
   const canLookup=!player.playable(t)&&!external&&state.remote.available;
   const missing=(t.originalIds||[]).filter(id=>!byId(id));
   $("#detailContent").innerHTML=`
-    <div class="detail-hero"><div class="detail-kicker">${typeLabel(t)} · ${t.touhoudbId?(t.remote?"TOUHOUDB LIVE":"LOCAL + TOUHOUDB"):"LOCAL VERIFIED"}</div><div class="detail-rank"><strong>종합 · ${rankText(rank)}</strong><span>${rankPercentText(rank)} · ${rank.fullScale?"전수 189,002곡 백분위 기반":"현재 표본 환산"} · ${rank.score.toFixed(1)}pt</span></div>
+    <div class="detail-hero"><div class="detail-kicker">${typeLabel(t)} · ${t.touhoudbId?(t.remote?"TOUHOUDB LIVE":"LOCAL + TOUHOUDB"):"LOCAL VERIFIED"}</div><div class="detail-rank"><strong>종합 · ${rankText(rank)}</strong><span>${rankPercentText(rank)} · ${rank.fullScale?"전수 "+fmt(rank.total)+"곡 기준":rank.sampleRank?"현재 로드 표본 "+fmt(rank.sampleTotal)+"곡 중 "+fmt(rank.sampleRank)+"위":"전수 순위 준비 중"} · ${rank.score.toFixed(1)}pt</span></div>
     <div class="rank-breakdown">
       <div><label>인기</label><strong>${popRank.rank?fmt(popRank.total)+"곡 중 "+fmt(popRank.rank)+"위":"집계 중"}</strong><small>${popRank.percent!==null?"상위 "+(popRank.percent<0.01?"<0.01":popRank.percent.toFixed(2))+"%":""}</small></div>
       ${infRank?'<div><label>원곡 영향력</label><strong>'+fmt(infRank.total)+'원곡 중 '+(infRank.rank?fmt(infRank.rank)+'위':"집계 중")+'</strong><small>파생 '+fmt(infRank.children)+'곡 · '+fmt(infRank.circles)+'서클 · '+fmt(infRank.albums)+'앨범</small></div>':""}
@@ -754,7 +768,7 @@ function openTrack(t,opts={}){
     <div class="tag-row">${(t.moods||[]).map(x=>`<span class="tag">${esc(x)}</span>`).join("")}</div>
     <div class="detail-actions"><button class="hot" id="detailPlay" ${player.playable(t)||external||canLookup?"":"disabled"}>${player.playable(t)?"▶ 앱에서 재생":external?"↗ 외부 재생":canLookup?"⌕ 영상 찾기":"영상 없음"}</button><button id="detailDive">⌁ 다이브</button>${t.type==="arrangement"?'<button class="origin-jump" id="detailOrigin"><span>↖</span><strong>원곡으로</strong></button>':""}<button id="favBtn">${fav?"♥ 보관됨":"♡ 보관하기"}</button>${source?`<a href="${escAttr(source)}" target="_blank" rel="noopener">원본 링크 ↗</a>`:'<button disabled>원본 링크 없음</button>'}</div>
     ${t.type==="arrangement"?lineageBox("이 어레인지의 원곡",origins,missing):lineageBox("이 원곡을 사용한 현재 로드 어레인지",children,[])}
-    <div class="fact-box"><label>순위 기준</label><div class="detail-meta">종합 = 인기 + 원곡 영향력. 인기는 rating · 즐겨찾기 · DB 조회 · 재생 소스 다양성을 사용하고, 원곡 영향력은 파생 어레인지 수 · 파생 서클 수 · 파생 앨범 수를 사용합니다. 메인 표시는 전수 189,002곡 점수 백분위를 128,040곡 스케일로 변환합니다.</div></div>
+    <div class="fact-box"><label>순위 기준</label><div class="detail-meta">종합 = 인기 + 원곡 영향력. 종합·인기 순위의 분모는 FULL INDEX 전체 등록곡 ${fmt(fullRankTotal())}곡을 그대로 사용하며, 현재 로드된 표본 순위를 전수 순위처럼 환산하지 않습니다. 플랫폼 조회수 순위는 실제 조회수 확인에 성공한 곡만 별도로 집계합니다.</div></div>
     ${links.length?'<div class="fact-box trusted-links"><label>확인된 링크</label><div class="trusted-link-list">'+links.slice(0,12).map(x=>'<a href="'+escAttr(x.url)+'" target="_blank" rel="noopener noreferrer">'+esc(x.provider)+' ↗</a>').join("")+'</div></div>':""}
     <div class="fact-box"><label>다이브 기준</label><div class="detail-meta">${esc(relationText(t))}</div></div>
     ${!opts.skipEnrich&&!t.touhoudbId&&state.remote.available?'<div class="detail-sync">TouhouDB에서 영상·통계를 보강하는 중…</div>':""}`;
@@ -1370,7 +1384,11 @@ function trackRank(t){
   }
   if(!state.rankIndex.size||!state.rankIndex.has(resolveId(t.id)))refreshRanks();
   const row=state.rankIndex.get(resolveId(t.id))||{rank:null,score:overallRankScore(t)};
-  return{rank:row.rank,sampleRank:row.rank,score:row.score,total:state.rankTotal||total,sampleTotal:state.rankTotal,estimated:false,fullScale:false,stale:false};
+  const sampleTotal=state.rankTotal||0;
+  if(state.full.manifest?.indexed){
+    return{rank:null,sampleRank:row.rank,score:row.score,total,sampleTotal,estimated:false,fullScale:false,stale:false};
+  }
+  return{rank:row.rank,sampleRank:row.rank,score:row.score,total:sampleTotal||total,sampleTotal,estimated:false,fullScale:false,stale:false};
 }
 function rankPercentValue(rank){
   if(!rank?.rank||!rank?.total)return null;
@@ -1379,12 +1397,14 @@ function rankPercentValue(rank){
 function rankPercentText(rank){
   const p=rankPercentValue(rank);
   if(rank?.stale)return"v4 재집계 중";
-  if(p===null)return"상위 —";
+  if(p===null&&rank?.sampleRank&&rank?.sampleTotal)return"표본 "+fmt(rank.sampleRank)+"/"+fmt(rank.sampleTotal)+" · 전수 집계 중";
+  if(p===null)return"전수 순위 준비 중";
   if(p<0.01)return"상위 <0.01%";
   return "상위 "+p.toFixed(2)+"%";
 }
 function rankText(rank){
   const total=rank?.total||fullRankTotal();
+  if(!rank?.rank&&state.full.manifest?.indexed)return fmt(total)+"곡 전체 · 순위 준비 중";
   if(!rank?.rank)return fmt(total)+"곡 중 —위";
   return fmt(total)+"곡 중 "+fmt(rank.rank)+"위";
 }
