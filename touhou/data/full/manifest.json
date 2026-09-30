@@ -2,7 +2,7 @@
   "schema": 3,
   "source": "TouhouDB",
   "api": "https://touhoudb.com/api",
-  "generatedAt": "2026-09-30T11:50:19.558Z",
+  "generatedAt": "2026-09-30T12:34:44.726Z",
   "totalCount": 189041,
   "indexed": 189041,
   "shardSize": 1000,
@@ -962,13 +962,13 @@
   "counts": {
     "original": 593,
     "arrangement": 188448,
-    "mediaCandidates": 72847
+    "mediaCandidates": 72846
   },
   "providers": {
-    "youtube": 65236,
+    "youtube": 65235,
     "niconico": 10724,
-    "soundcloud": 4315,
     "bandcamp": 12803,
+    "soundcloud": 4315,
     "bilibili": 774,
     "piapro": 11
   },
@@ -982,26 +982,26 @@
   ],
   "viewCoverage": {
     "providers": {
-      "youtube": 63345,
-      "niconico": 892,
-      "bilibili": 43
+      "youtube": 63344,
+      "niconico": 705,
+      "bilibili": 44
     },
     "candidates": {
-      "youtube": 65052,
+      "youtube": 65051,
       "niconico": 9492,
       "bilibili": 766
     },
     "ratios": {
-      "youtube": 0.9737594539752813,
-      "niconico": 0.09397387273493468,
-      "bilibili": 0.05613577023498695
+      "youtube": 0.9737590505910747,
+      "niconico": 0.07427307206068268,
+      "bilibili": 0.057441253263707574
     },
-    "tracks": 56550,
-    "media": 64280,
+    "tracks": 56449,
+    "media": 64093,
     "youtubeKeyConfigured": true,
-    "popularityEligible": false,
-    "mode": "partial",
-    "rankedTracks": 56550,
+    "popularityEligible": true,
+    "mode": "youtube-major",
+    "rankedTracks": 56449,
     "supportedProviders": [
       "youtube",
       "niconico",
@@ -1015,14 +1015,15 @@
     "format": "[id,q,s,qp,sp,qi,si,qv,sv,vt,vm,vp,vc,dc,dsc,da,dm,viewMedia]"
   },
   "ranking": {
-    "version": 4,
-    "composite": "popularity + original influence*0.35",
-    "popularity": "log10(TouhouDB cumulative vote score+1)*24 + log10(favorites+1)*7 + media-provider bonus + optional verified multi-platform view signal*0.55",
+    "version": 5,
+    "composite": "popularity + original influence*0.25",
+    "popularity": "verified platform view signal + community correction*0.35 when views exist; otherwise community fallback*0.45",
+    "community": "log10(TouhouDB cumulative vote score+1)*8 + log10(favorites+1)*8 + log10(TouhouDB hits+1)*2 + media-provider count",
     "ratingMeaning": "TouhouDB RatingScore is a cumulative vote score: Favorite +3, Like +2, Dislike -1; it is not a 10-point average rating",
-    "views": "log10(sum verified views+1)*8 + log10(max video views+1)*2 + verified-platform bonus; ranked only among measured tracks",
-    "viewPolicy": "platform views affect popularity only when YouTube coverage >=65% and NicoNico or Bilibili coverage >=55%; otherwise views remain a separate partial ranking",
+    "views": "log10(sum verified views+1)*8 + log10(max video views+1)*2 + verified-platform bonus; same-song distinct video IDs are summed",
+    "viewPolicy": "platform views become a primary popularity signal when YouTube collection coverage is >=65%; NicoNico/Bilibili supplement totals when available",
     "influence": "official original only: log-weighted derivative tracks + distinct circles + distinct albums + playable derivative count",
-    "denominator": "overall/popularity ranks use the full indexed song count directly; no 128,040 arrangement-scale projection"
+    "denominator": "overall/popularity ranks use the full indexed song count directly; no archive-scale projection"
   },
   "classification": {
     "original": "SongType Original AND no parent AND (ZUN artist OR official collaborator + official-work match)",
