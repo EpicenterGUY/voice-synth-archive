@@ -365,3 +365,27 @@ body[data-view="dive"] .iceberg-ui{display:none!important}
 @media(max-width:860px){
   .player-ranks:has(.player-rank-card:nth-child(5)){grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+
+
+/* v0.9.10 · interaction / mobile performance stabilization */
+button,a,select,input{touch-action:manipulation}
+.hero:after,
+.track-thumb:after,
+.track-thumb.no-image:before,
+.player-auto-toggle:before,
+.player-auto-toggle:after,
+.dive-waterline,
+.sonar-ring:before,
+.sonar-ring:after,
+.dive-current:after,
+.dive-origin-node:after{pointer-events:none!important}
+button:active,.player-rank-card:active,.track-main:active{transform:scale(.985)}
+.track-card{content-visibility:auto;contain-intrinsic-size:310px}
+.player-related-item,.player-rank-card,.nav-item,.filter-chip,.card-actions button,.detail-actions button,.lineage-link,.dive-node,.ice-track{touch-action:manipulation}
+@media(max-width:860px){
+  .topbar,.toolbar-row,.bottom-nav,.sidebar,.detail-head,.player-shell.is-mini{backdrop-filter:none!important}
+  .track-card:hover{transform:none;box-shadow:none}
+  .track-badges .type-badge,.track-badges .media-badge,.rank-badge,.percent-badge{backdrop-filter:none!important}
+  .player-shell:not(.is-mini){backdrop-filter:none!important}
+  .player-rank-card,.player-tabs button,.player-related-item,.card-actions button,.detail-actions button{min-height:38px}
+}
