@@ -268,7 +268,7 @@ function clearHistory(){
 function cleanPersonalRecent(){
   var page=document.querySelector('[data-tool-view="personal395"]');if(!page)return;
   page.querySelectorAll(".v395-section").forEach(function(sec){var h=sec.querySelector("h3");if(h&&h.textContent.indexOf("최근 활동")>=0)sec.remove()});
-  page.querySelectorAll('[data-v395-open="recent"]').forEach(function(b){var title=b.querySelector("b"),small=b.querySelector("small");if(title)title.textContent="시청 기록";if(small)small.textContent="별도 시청 기록 페이지에서 다시 보기"})
+  page.querySelectorAll('[data-v395-open="recent"]').forEach(function(b){var title=b.querySelector("b"),small=b.querySelector("small");if(title&&title.textContent!=="시청 기록")title.textContent="시청 기록";if(small&&small.textContent!=="별도 시청 기록 페이지에서 다시 보기")small.textContent="별도 시청 기록 페이지에서 다시 보기"})
 }
 async function ensureExpandedPools(){
   if(refreshingPools)return;refreshingPools=true;
@@ -290,7 +290,7 @@ function bind(){
     if(e.target.closest("[data-v39116-history-home]")){e.preventDefault();e.stopPropagation();openHome();return}
     if(e.target.closest("[data-v39116-history-clear]")){e.preventDefault();e.stopPropagation();clearHistory();return}
     var rm=e.target.closest("[data-v39116-remove-history]");if(rm){e.preventDefault();e.stopPropagation();removeHistory(rm.dataset.v39116RemoveHistory);return}
-    var reset=e.target.closest("[data-v39116-reset]");if(reset){e.preventDefault();e.stopPropagation();var mark=reset.dataset.v39116Reset;prefs[mark]=defaults(mark);savePrefs();var sec=document.querySelector('.v39-shelf[data-v39116-mark="'+mark+'"]');if(sec){sec.querySelector("[data-v39116-controls]").outerHTML=toolbar(mark).split('<div class="v39116-filter-meta"')[0];enhanceHome()}return}
+    var reset=e.target.closest("[data-v39116-reset]");if(reset){e.preventDefault();e.stopPropagation();var mark=reset.dataset.v39116Reset;prefs[mark]=defaults(mark);savePrefs();if(window.VSAHome37&&window.VSAHome37.render)window.VSAHome37.render();setTimeout(enhanceHome,0);return}
     var recent=e.target.closest('[data-v395-open="recent"]');if(recent){e.preventDefault();e.stopImmediatePropagation();openHistory();return}
   },true);
   document.addEventListener("input",function(e){
