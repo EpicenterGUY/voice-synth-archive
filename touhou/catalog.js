@@ -126,7 +126,10 @@ function toTrack(item){
   const title=clean(item?.name||item?.defaultName||aliases[0]||("TouhouDB #"+id));
   const candidates=mediaCandidates(item);
   const media=candidates[0]||null;
-  const works=inferWorks(item);\n  const lyrics=lyricRows(item);\n  const lyricsLoaded=Object.prototype.hasOwnProperty.call(item||{},"lyrics");\n  return {
+  const works=inferWorks(item);
+  const lyrics=lyricRows(item);
+  const lyricsLoaded=Object.prototype.hasOwnProperty.call(item||{},"lyrics");
+  return {
     id:"tdb-"+id,
     touhoudbId:id,
     type,
@@ -145,7 +148,12 @@ function toTrack(item){
     artists:roles,
     artistString,
     media,
-    mediaCandidates:candidates,\n    lyrics,\n    lyricsLoaded,\n    lyricsAvailable:lyrics.length>0,\n    lyricsSource:id?("https://touhoudb.com/S/"+id+"/lyrics"):"",\n    thumb:clean(item?.thumbUrl||item?.mainPicture?.urlThumb||item?.mainPicture?.urlSmallThumb||item?.mainPicture?.urlOriginal),
+    mediaCandidates:candidates,
+    lyrics,
+    lyricsLoaded,
+    lyricsAvailable:lyrics.length>0,
+    lyricsSource:id?("https://touhoudb.com/S/"+id+"/lyrics"):"",
+    thumb:clean(item?.thumbUrl||item?.mainPicture?.urlThumb||item?.mainPicture?.urlSmallThumb||item?.mainPicture?.urlOriginal),
     source:{name:"TouhouDB",url:id?("https://touhoudb.com/S/"+id):"https://touhoudb.com"},
     songType:clean(item?.songType),
     ratingScore:Number(item?.ratingScore)||0,
