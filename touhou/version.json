@@ -1,5 +1,5 @@
 {
-  "version": "0.9.4",
+  "version": "0.9.5",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-09-30",
@@ -96,6 +96,14 @@
     "player-lyrics-tab",
     "touhoudb-lyrics-hydration",
     "bad-apple-shadow-pv-pin",
-    "autoplay-toggle-ui"
+    "autoplay-toggle-ui",
+    "mobile-streaming-full-catalog",
+    "mobile-cache-count-label",
+    "full-shard-cache-repair",
+    "pv-exact-song-resolution",
+    "lyrics-pv-resolution",
+    "player-rank-strip",
+    "player-active-sort-rank",
+    "player-popularity-rank"
   ]
 }
