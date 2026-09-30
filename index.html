@@ -5267,6 +5267,9 @@ async function fetchNico(opts){
   }
   try{
     const data=await fetchJsonRaw(relayUrl(opts));
+    if(data&&Array.isArray(data.data)&&typeof sourceModeRequiresOriginal37==="function"&&sourceModeRequiresOriginal37(state.sourceMode)){
+      data.data=data.data.filter(function(song){try{return !originalDerivativeInfo37(song).hit}catch(_){return true}})
+    }
     if(!(data && data.meta && typeof data.meta.totalCount!=="undefined")){
       const e=new Error("니코동 API 응답 형식이 올바르지 않습니다.");
       e.workerReachable=true;
