@@ -41,6 +41,9 @@ jobs:
           SHARD_SIZE: "1000"
           CONCURRENCY: "6"
           WAIT_MS: "40"
+          VIEW_CONCURRENCY: "6"
+          FETCH_VIEWS: "1"
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: node tools/build-touhou-index.mjs
 
       - name: Commit generated index
