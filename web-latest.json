@@ -1,6 +1,6 @@
 {
-  "version": "39.115.0",
+  "version": "39.116.0",
   "channel": "web",
-  "publishedAt": "2026-09-29T12:28:00+09:00",
-  "notes": "Adds Discovery Passport, a saved-expedition discovery catalog that deduplicates songs by contentId and tracks first-discovery tier/date, expedition rediscovery count, per-song internal rarity, tag-based P/vocal/genre hints, search, filters, sorting, pagination, and direct Watch navigation. Also fixes passport rarity scaling and preserves mobile search focus."
+  "publishedAt": "2026-09-30T20:00:00+09:00",
+  "notes": "Expands the home recommendation and hidden-song pools, adds per-shelf criteria search/filter/sort controls with configurable 12/18/24/36-card display, removes watch history from the home feed, and introduces a dedicated WATCH HISTORY page with search, date filters, sorting, replay and per-item deletion."
 }
