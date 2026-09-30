@@ -38,7 +38,7 @@ async function boot(){
     setView("home");
     renderLocalFirst();
     bind();
-    if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js?v=0.9.8").then(r=>r.update()).catch(()=>{});
+    if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js?v=0.9.9").then(r=>r.update()).catch(()=>{});
     connectFullDataset();
     await connectRemote();
   }catch(err){
@@ -86,6 +86,16 @@ function bind(){
     const t=byId(e.detail?.trackId);if(t)t.mediaUnavailable=true;
     if(state.view==="discover"||state.view==="home")renderCatalog();
     toast("비공개·삭제·임베드 제한 영상은 자동 제외했습니다.");
+  });
+  window.addEventListener("touhoudive:player-track",async e=>{
+    if(!fullIndex?.enrichTrack)return;
+    const id=e.detail?.trackId,t=byId(id);if(!t?.touhoudbId)return;
+    try{
+      const rich=await fullIndex.enrichTrack(t);
+      if(!rich)return;
+      const merged=remember(rich);
+      player.updateCurrentData?.({...merged,_playerRanks:playerRankMeta(merged)});
+    }catch(_){}
   });
   $$("#modeTabs .mode-tab").forEach(btn=>btn.onclick=()=>{
     state.mode=btn.dataset.mode;state.filter="전체";syncModeTabs();
@@ -744,6 +754,9 @@ async function playTrack(t){
     try{t=await enrichTrack(t)}catch(e){}
   }
   if(!player.playable(t)){toast("재생 가능한 공개 영상이 없습니다.");return false}
+  if(fullIndex?.enrichTrack&&t?.touhoudbId){
+    try{t=remember(await fullIndex.enrichTrack(t))}catch(_){}
+  }
   const relatedQueue=relations(t)
     .filter(r=>player.playable(r.track))
     .slice(0,24)
