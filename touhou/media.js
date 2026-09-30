@@ -46,7 +46,8 @@ class TouhouMediaPlayer{
     this.type=document.getElementById("playerType");
     this.source=document.getElementById("playerSource");
     this.playBtn=document.getElementById("playerPlay");
-    this.autoBtn=document.getElementById("playerAuto");\n    this.rankEl=document.getElementById("playerRanks");
+    this.autoBtn=document.getElementById("playerAuto");
+    this.rankEl=document.getElementById("playerRanks");
     this.relatedEl=document.getElementById("playerRelated");
     this.lyricsEl=document.getElementById("playerLyrics");
     this.relatedTab=document.getElementById("playerTabRelated");
