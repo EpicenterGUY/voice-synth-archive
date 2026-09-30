@@ -38,7 +38,7 @@ async function boot(){
     setView("home");
     renderLocalFirst();
     bind();
-    if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js?v=0.9.5").then(r=>r.update()).catch(()=>{});
+    if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js?v=0.9.6").then(r=>r.update()).catch(()=>{});
     connectFullDataset();
     await connectRemote();
   }catch(err){
@@ -174,7 +174,7 @@ async function connectRemote(){
     const status=await catalog.status();
     if(!status.ok)throw new Error(status.error||"TouhouDB unavailable");
     state.remote.available=true;state.remote.catalogTotal=status.total||0;state.remote.total=state.remote.catalogTotal;
-    setDataHealth("ok","TouhouDB LIVE · "+fmt(state.remote.catalogTotal)+"곡");
+    setDataHealth("ok",state.full.streaming?"모바일 스트리밍 · 전체 "+fmt(state.full.manifest?.indexed||state.remote.catalogTotal)+"곡":"TouhouDB LIVE · "+fmt(state.remote.catalogTotal)+"곡");
     updateCatalogTotal();
     loadRemoteCounts();
     await loadRemote(true);
@@ -218,7 +218,7 @@ async function loadRemote(reset=false,force=false){
   const seq=++state.remote.seq;
   const start=state.remote.start;
   state.remote.loading=true;
-  setDataHealth("loading","TouhouDB 불러오는 중");
+  setDataHealth("loading",state.full.streaming?"모바일 스트리밍 로딩 · 전체 "+fmt(state.full.manifest?.indexed||state.remote.catalogTotal||0)+"곡":"TouhouDB 불러오는 중");
   syncCatalogFooter();
   if(force&&catalog?.clearCache)catalog.clearCache();
   try{
