@@ -1136,14 +1136,16 @@ function platformLabel(p){
 function viewSignal(t){
   const v=mediaViewStats(t);
   if(!v.mediaCount)return 0;
-  return Math.log10(v.total+1)*12+Math.log10(v.max+1)*4+Math.min(3,v.platforms)*2;
+  return Math.log10(v.total+1)*8+Math.log10(v.max+1)*2+Math.min(3,v.platforms)*1.5;
 }
+function rankingV4Ready(){return Number(state.full.manifest?.ranking?.version)>=4}
+function platformViewsEligible(){return !!state.full.manifest?.viewCoverage?.popularityEligible}
 function popularityScore(t){
   const rating=Math.max(0,Number(t.ratingScore)||0);
   const favorites=Math.max(0,Number(t.favoritedTimes)||0);
-  const hits=Math.max(0,Number(t.hitCount)||0);
   const providers=new Set((t.mediaCandidates||[]).map(m=>m?.provider).filter(Boolean)).size;
-  return rating*5+Math.log10(favorites+1)*18+Math.log10(hits+1)*6+Math.min(4,providers)*2+viewSignal(t);
+  const community=Math.log10(rating+1)*24+Math.log10(favorites+1)*7+Math.min(4,providers)*1.5;
+  return community+(platformViewsEligible()?viewSignal(t)*0.55:0);
 }
 function influenceScore(t){
   if(t?.type!=="original")return 0;
@@ -1151,31 +1153,29 @@ function influenceScore(t){
   const circles=Math.max(0,Number(t.derivativeCircleCount)||0);
   const albums=Math.max(0,Number(t.derivativeAlbumCount)||0);
   const mediaChildren=Math.max(0,Number(t.derivativeMediaCount)||0);
-  return Math.log10(children+1)*34+Math.log10(circles+1)*22+Math.log10(albums+1)*14+Math.log10(mediaChildren+1)*6;
+  return Math.log10(children+1)*14+Math.log10(circles+1)*9+Math.log10(albums+1)*6+Math.log10(mediaChildren+1)*3;
 }
-function overallRankScore(t){return popularityScore(t)+influenceScore(t)}
+function overallRankScore(t){return popularityScore(t)+influenceScore(t)*0.35}
 function popularityBreakdown(t){
   const rating=Math.max(0,Number(t?.ratingScore)||0);
   const favorites=Math.max(0,Number(t?.favoritedTimes)||0);
-  const hits=Math.max(0,Number(t?.hitCount)||0);
   const providers=new Set((t?.mediaCandidates||[]).map(m=>m?.provider).filter(Boolean)).size;
-  const views=mediaViewStats(t);
-  const ratingPts=rating*5;
-  const favoritePts=Math.log10(favorites+1)*18;
-  const hitPts=Math.log10(hits+1)*6;
-  const providerPts=Math.min(4,providers)*2;
-  const viewPts=viewSignal(t);
-  const platformRows=views.providers.map(x=>({label:platformLabel(x.provider)+" 조회수",raw:fmt(x.views)+"회",rule:"검증된 PV 합계",points:null}));
+  const views=mediaViewStats(t),eligible=platformViewsEligible();
+  const ratingPts=Math.log10(rating+1)*24;
+  const favoritePts=Math.log10(favorites+1)*7;
+  const providerPts=Math.min(4,providers)*1.5;
+  const viewPts=eligible?viewSignal(t)*0.55:0;
+  const platformRows=views.providers.map(x=>({label:platformLabel(x.provider)+" 조회수",raw:fmt(x.views)+"회",rule:"확인된 PV 합계",points:null}));
   return{
-    total:ratingPts+favoritePts+hitPts+providerPts+viewPts,
-    views,
+    total:ratingPts+favoritePts+providerPts+viewPts,
+    baseTotal:ratingPts+favoritePts+providerPts,
+    viewPts,views,eligible,
     metrics:[
-      {label:"TouhouDB 평점",raw:rating.toFixed(1),rule:"× 5",points:ratingPts},
-      {label:"즐겨찾기",raw:fmt(favorites)+"회",rule:"log10(n+1) × 18",points:favoritePts},
-      {label:"DB 조회",raw:fmt(hits)+"회",rule:"log10(n+1) × 6",points:hitPts},
-      {label:"재생 소스",raw:fmt(providers)+"종",rule:"최대 4종 × 2",points:providerPts},
+      {label:"TouhouDB 누적 추천점수",raw:fmt(rating)+"점",rule:"Favorite +3 · Like +2 · Dislike -1 → log10(n+1) × 24",points:ratingPts},
+      {label:"Favorite 수",raw:fmt(favorites)+"회",rule:"log10(n+1) × 7",points:favoritePts},
+      {label:"재생 소스 다양성",raw:fmt(providers)+"종",rule:"최대 4종 × 1.5",points:providerPts},
       ...platformRows,
-      {label:"플랫폼 조회수 보정",raw:views.mediaCount?fmt(views.total)+"회":"미집계",rule:"합산·최고 조회수 로그 가중",points:viewPts}
+      {label:"플랫폼 조회수 보정",raw:views.mediaCount?fmt(views.total)+"회":"미집계",rule:eligible?"다중 플랫폼 커버리지 충족 · 조회수 점수 × 0.55":"커버리지 부족으로 인기점수에는 미반영",points:viewPts}
     ]
   };
 }
@@ -1185,17 +1185,17 @@ function influenceBreakdown(t){
   const circles=Math.max(0,Number(t.derivativeCircleCount)||0);
   const albums=Math.max(0,Number(t.derivativeAlbumCount)||0);
   const mediaChildren=Math.max(0,Number(t.derivativeMediaCount)||0);
-  const childPts=Math.log10(children+1)*34;
-  const circlePts=Math.log10(circles+1)*22;
-  const albumPts=Math.log10(albums+1)*14;
-  const mediaPts=Math.log10(mediaChildren+1)*6;
+  const childPts=Math.log10(children+1)*14;
+  const circlePts=Math.log10(circles+1)*9;
+  const albumPts=Math.log10(albums+1)*6;
+  const mediaPts=Math.log10(mediaChildren+1)*3;
   return{
     total:childPts+circlePts+albumPts+mediaPts,
     metrics:[
-      {label:"파생 어레인지",raw:fmt(children)+"곡",rule:"log10(n+1) × 34",points:childPts},
-      {label:"파생 서클",raw:fmt(circles)+"곳",rule:"log10(n+1) × 22",points:circlePts},
-      {label:"파생 앨범",raw:fmt(albums)+"장",rule:"log10(n+1) × 14",points:albumPts},
-      {label:"영상 연결 파생곡",raw:fmt(mediaChildren)+"곡",rule:"log10(n+1) × 6",points:mediaPts}
+      {label:"파생 어레인지",raw:fmt(children)+"곡",rule:"log10(n+1) × 14",points:childPts},
+      {label:"파생 서클",raw:fmt(circles)+"곳",rule:"log10(n+1) × 9",points:circlePts},
+      {label:"파생 앨범",raw:fmt(albums)+"장",rule:"log10(n+1) × 6",points:albumPts},
+      {label:"영상 연결 파생곡",raw:fmt(mediaChildren)+"곡",rule:"log10(n+1) × 3",points:mediaPts}
     ]
   };
 }
