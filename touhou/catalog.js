@@ -96,7 +96,7 @@ function lyricRows(item){
     if(!text)return null;
     return {
       text,
-      source:clean(row?.source||row?.sourceUrl||row?.url),
+      source:clean(row?.url||row?.URL||row?.sourceUrl||row?.source),
       translationType:clean(row?.translationType),
       cultureCodes:arr(row?.cultureCodes).map(clean).filter(Boolean)
     };
@@ -222,6 +222,29 @@ async function hydrate(id){
   const d=await fetchJson(API+"/songs/"+n+"?fields=AdditionalNames,Artists,Names,PVs,Tags,ThumbUrl,Albums,MainPicture,WebLinks,Lyrics&lang=Japanese");
   return toTrack(d);
 }
+async function lookupByMedia(track){
+  const candidates=arr(track?.mediaCandidates).length?arr(track.mediaCandidates):arr(track?.media?[track.media]:[]);
+  for(const media of candidates){
+    let service="";
+    if(media?.provider==="youtube")service="Youtube";
+    else if(media?.provider==="niconico")service="NicoNicoDouga";
+    else if(media?.provider==="soundcloud")service="SoundCloud";
+    else if(media?.provider==="piapro")service="Piapro";
+    else if(media?.provider==="bilibili")service="Bilibili";
+    if(!service||!clean(media?.id))continue;
+    try{
+      const p=new URLSearchParams({
+        pvService:service,
+        pvId:clean(media.id),
+        fields:"AdditionalNames,Artists,Names,PVs,Tags,ThumbUrl,Albums,MainPicture,WebLinks,Lyrics",
+        lang:"Japanese"
+      });
+      const d=await fetchJson(API+"/songs/byPv?"+p.toString(),true);
+      if(d?.id)return toTrack(d);
+    }catch(e){}
+  }
+  return null;
+}
 async function status(opts={}){
   try{
     const d=await search({start:0,maxResults:1,sort:"RatingScore",force:!!opts.force});
@@ -237,5 +260,5 @@ async function lookupByTitle(title,opts={}){
 }
 function clearCache(){cache.clear()}
 function setWorks(works){workRegistry=Array.isArray(works)?works:[]}
-window.TouhouCatalog={search,hydrate,lookupByTitle,status,clearCache,setWorks,toTrack,apiBase:API};
+window.TouhouCatalog={search,hydrate,lookupByMedia,lookupByTitle,status,clearCache,setWorks,toTrack,apiBase:API};
 })();
