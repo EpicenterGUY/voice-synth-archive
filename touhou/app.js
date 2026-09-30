@@ -45,7 +45,7 @@ async function boot(){
     setDataHealth("error","UI 초기화 오류 · 새로고침 필요");
   }
   if("serviceWorker" in navigator){
-    navigator.serviceWorker.register("./sw.js?v=0.9.13").then(r=>r.update()).catch(err=>console.warn("service worker",err));
+    navigator.serviceWorker.register("./sw.js?v=0.9.14").then(r=>r.update()).catch(err=>console.warn("service worker",err));
   }
 
   const [or,ar,wr,sr]=await Promise.all([
@@ -1299,7 +1299,7 @@ function viewRankDetail(t){
   metrics.push({label:"최고 단일 영상",raw:fmt(v.max||t.viewMax||0)+"회",rule:"가장 많이 본 등록 PV",points:null});
   return{
     title:"플랫폼 조회수 순위 근거",
-    formula:"조회수 점수 = log10(합산+1)×12 + log10(최고+1)×4 + 플랫폼 보너스",
+    formula:"조회수 점수 = log10(합산+1)×8 + log10(최고+1)×2 + 플랫폼 보너스",
     score:Number(rank?.score)||viewSignal(t),
     source:rank?.rank
       ?{label:(rank.partial?"부분 조회수 비교":"다중 플랫폼 조회수 비교"),text:fmt(rank.total)+"곡(조회수 확인 성공 곡) 중 "+fmt(rank.rank)+"위 · "+fmt(rank.views)+"회 확인"}
