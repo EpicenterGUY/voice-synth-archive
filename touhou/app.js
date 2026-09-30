@@ -112,6 +112,16 @@ function bind(){
     requestAnimationFrame(()=>renderCatalog());
     loadRemote(true);
   });
+  const playbackMode=$("#playbackMode");
+  if(playbackMode){
+    playbackMode.value=player.getYoutubeMode?.()||"inline";
+    playbackMode.addEventListener("change",e=>{
+      const mode=player.setYoutubeMode?.(e.target.value)||"inline";
+      toast(mode==="youtube"
+        ?"YouTube 영상은 YouTube 앱/브라우저에서 열어 로그인·Premium 상태를 사용합니다."
+        :"YouTube 영상을 TouhouDive 안에서 재생합니다.");
+    });
+  }
   $("#loadMoreBtn").onclick=()=>{
     if(state.full.loaded){showMoreFull();return}
     if(state.full.streaming&&state.displayLimit<state.lastMatchCount){
@@ -893,9 +903,14 @@ async function playTrack(t){
   }
   if(!player.playable(t)){toast("재생 가능한 공개 영상이 없습니다.");return false}
   const current={...t,_playerRanks:playerRankMeta(t)};
+  const externalYoutube=player.getYoutubeMode?.()==="youtube"&&t.media?.provider==="youtube";
   const ok=player.play(current,[current]);
   if(!ok)return false;
   pushHistory(t.id,t);
+  if(externalYoutube){
+    toast("YouTube 앱/브라우저로 열었습니다 · 로그인된 Premium 계정이 적용됩니다.");
+    return true;
+  }
   hydratePlayingTrack(t);
   buildPlayingQueue(t);
   return true;
