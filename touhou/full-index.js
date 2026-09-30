@@ -65,7 +65,7 @@ async function fetchShard(file,generation,expectedCount=0){
     try{
       if("caches" in window){
         const cache=await caches.open("touhoudive-full-index");
-        await cache.delete(url);
+        await cache.delete(new URL(url,location.href).href);
       }
     }catch(_){}
     const repair=url+"&repair="+Date.now();
