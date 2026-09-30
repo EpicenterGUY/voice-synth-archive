@@ -167,6 +167,7 @@ class TouhouMediaPlayer{
     push("overall",meta.overall,false);
     push("popularity",meta.popularity,false);
     push("influence",meta.influence,false);
+    push("views",meta.views,false);
     this.rankEl.innerHTML=rows.map(({key,row,accent})=>{
       const detail=!!row.detail;
       return '<button type="button" class="player-rank-card '+(accent?"is-current ":"")+(detail?"has-detail":"")+'" data-rank-key="'+this.esc(key)+'" '+(detail?'aria-expanded="'+(this.rankDetailKey===key?"true":"false")+'"':"")+'>'+
@@ -207,7 +208,7 @@ class TouhouMediaPlayer{
       '<div class="rank-evidence-component"><span>'+this.esc(x.label)+'</span><strong>'+Number(x.points||0).toFixed(2)+'pt</strong><small>'+this.esc(x.description||"")+'</small></div>'
     ).join("");
     const metrics=(detail.metrics||[]).map(x=>
-      '<div class="rank-evidence-row"><span>'+this.esc(x.label)+'</span><b>'+this.esc(x.raw||"")+'</b><small>'+this.esc(x.rule||"")+'</small><strong>+'+Number(x.points||0).toFixed(2)+'pt</strong></div>'
+      '<div class="rank-evidence-row"><span>'+this.esc(x.label)+'</span><b>'+this.esc(x.raw||"")+'</b><small>'+this.esc(x.rule||"")+'</small>'+(x.points==null?'<strong class="is-data">DATA</strong>':'<strong>+'+Number(x.points||0).toFixed(2)+'pt</strong>')+'</div>'
     ).join("");
     this.rankDetailEl.hidden=false;
     this.rankDetailEl.innerHTML=
