@@ -502,16 +502,20 @@ function activeSortRankInfo(t){
   if(state.sort==="popularity"){
     const p=popularityRankInfo(t);
     if(p.rank)return{label:"인기순",value:fmt(p.total)+"곡 중 "+fmt(p.rank)+"위",sub:p.percent!==null?"상위 "+(p.percent<0.01?"<0.01":p.percent.toFixed(2))+"%":""};
-    const r=sampleRankByScore(t,popularityScore,pool);return{label:"인기순",value:fmt(r.total)+"곡 중 "+fmt(r.rank)+"위",sub:"현재 로드 기준"};
+    if(p.stale)return{label:"인기순",value:"v4 재집계 중",sub:"이전 v3 순위 숨김"};
+    const sample=pool.length>5000?pool.slice(0,1200):pool;
+    const r=sampleRankByScore(t,popularityScore,sample);return{label:"인기순",value:fmt(r.total)+"곡 중 "+fmt(r.rank)+"위",sub:"현재 로드 표본"};
   }
   if(state.sort==="influence"&&t.type==="original"){
     const i=influenceRankInfo(t);
     if(i?.rank)return{label:"영향력순",value:fmt(i.total)+"원곡 중 "+fmt(i.rank)+"위",sub:"파생 "+fmt(i.children)+"곡"};
-    const originals=pool.filter(x=>x.type==="original"),r=sampleRankByScore(t,influenceScore,originals);return{label:"영향력순",value:fmt(r.total)+"원곡 중 "+fmt(r.rank)+"위",sub:"현재 로드 기준"};
+    if(i?.stale)return{label:"영향력순",value:"v4 재집계 중",sub:"현재 파생 점수만 표시"};
+    const originals=pool.filter(x=>x.type==="original").slice(0,1200),r=sampleRankByScore(t,influenceScore,originals);return{label:"영향력순",value:fmt(r.total)+"원곡 중 "+fmt(r.rank)+"위",sub:"현재 로드 표본"};
   }
   if(state.sort==="views"){
     const v=viewRankInfo(t);
     if(v?.rank)return{label:"조회수순",value:fmt(v.total)+"곡 중 "+fmt(v.rank)+"위",sub:"확인 "+fmt(v.views)+"회"};
+    if(v?.partial)return{label:"조회수순",value:"집계 중",sub:fmt(v.total)+"곡만 확인됨"};
     return{label:"조회수순",value:"조회수 미집계",sub:"지원 플랫폼 데이터 없음"};
   }
   if(state.sort==="year-desc"||state.sort==="year-asc"){
@@ -530,14 +534,16 @@ function playerRankMeta(t){
   const overall=trackRank(t),pop=popularityRankInfo(t),inf=influenceRankInfo(t),views=viewRankInfo(t);
   let popValue="",popSub="";
   if(pop.rank){popValue=fmt(pop.total)+"곡 중 "+fmt(pop.rank)+"위";popSub=pop.percent!==null?"상위 "+(pop.percent<0.01?"<0.01":pop.percent.toFixed(2))+"%":""}
+  else if(pop.stale){popValue="v4 재집계 중";popSub="이전 v3 순위 숨김"}
   else{
-    const r=sampleRankByScore(t,popularityScore,currentPool());popValue=fmt(r.total)+"곡 중 "+fmt(r.rank)+"위";popSub="현재 로드 기준";
+    const pool=currentPool(),sample=pool.length>5000?pool.slice(0,1200):pool;
+    const r=sampleRankByScore(t,popularityScore,sample);popValue=fmt(r.total)+"곡 중 "+fmt(r.rank)+"위";popSub="현재 로드 표본";
   }
   return{
     overall:{label:"종합",value:rankText(overall),sub:rankPercentText(overall),detail:overallRankDetail(t)},
     popularity:{label:"인기",value:popValue,sub:popSub,detail:popularityRankDetail(t)},
     influence:inf?{label:"원곡 영향력",value:inf.rank?fmt(inf.total)+"원곡 중 "+fmt(inf.rank)+"위":"현재 표본 계산",sub:"파생 "+fmt(inf.children)+"곡 · "+fmt(inf.circles)+"서클",detail:influenceRankDetail(t)}:null,
-    views:views?{label:"플랫폼 조회수",value:views.rank?fmt(views.total)+"곡 중 "+fmt(views.rank)+"위":fmt(views.views)+"회",sub:fmt(views.platforms)+"개 플랫폼 · "+fmt(views.media)+"개 영상",detail:viewRankDetail(t)}:null,
+    views:views?{label:"플랫폼 조회수",value:views.rank?fmt(views.total)+"곡 중 "+fmt(views.rank)+"위":views.partial?"순위 집계 중":fmt(views.views)+"회",sub:views.partial?fmt(views.total)+"곡만 확인됨":fmt(views.platforms)+"개 플랫폼 · "+fmt(views.media)+"개 영상",detail:viewRankDetail(t)}:null,
     active:activeSortRankInfo(t)
   };
 }
@@ -1275,13 +1281,16 @@ function influenceRankDetail(t){
   };
 }
 function viewRankInfo(t){
-  const stats=mediaViewStats(t);
-  if(!stats.mediaCount&&!Number(t?.viewRank))return null;
-  const total=Number(state.full.manifest?.viewCoverage?.rankedTracks)||currentPool().filter(x=>mediaViewStats(x).mediaCount>0).length||1;
-  if(t?.viewRank)return{rank:Number(t.viewRank),total,score:Number(t.viewScore)||viewSignal(t),views:Number(t.viewTotal)||stats.total,platforms:Number(t.viewPlatformCount)||stats.platforms,media:Number(t.viewMediaCount)||stats.mediaCount};
-  const pool=currentPool().filter(x=>mediaViewStats(x).mediaCount>0);
+  const stats=mediaViewStats(t),coverage=state.full.manifest?.viewCoverage||{};
+  const total=Number(coverage.rankedTracks)||0;
+  const views=Number(t?.viewTotal)||stats.total,platforms=Number(t?.viewPlatformCount)||stats.platforms,media=Number(t?.viewMediaCount)||stats.mediaCount;
+  if(!media&&!Number(t?.viewRank))return null;
+  const enough=rankingV4Ready()&&total>=1000;
+  if(!enough)return{rank:null,total,score:viewSignal(t),views,platforms,media,partial:true};
+  if(t?.viewRank)return{rank:Number(t.viewRank),total,score:Number(t.viewScore)||viewSignal(t),views,platforms,media,partial:coverage.mode!=="multi-platform"};
+  const pool=currentPool().filter(x=>mediaViewStats(x).mediaCount>0).slice(0,1200);
   const r=sampleRankByScore(t,viewSignal,pool);
-  return{rank:r.rank,total:r.total,score:r.score,views:stats.total,platforms:stats.platforms,media:stats.mediaCount};
+  return{rank:r.rank,total:r.total,score:r.score,views:stats.total,platforms:stats.platforms,media:stats.mediaCount,partial:true};
 }
 function viewRankDetail(t){
   const rank=viewRankInfo(t),v=mediaViewStats(t);
@@ -1293,8 +1302,10 @@ function viewRankDetail(t){
     formula:"조회수 점수 = log10(합산+1)×12 + log10(최고+1)×4 + 플랫폼 보너스",
     score:Number(rank?.score)||viewSignal(t),
     source:rank?.rank
-      ?{label:(state.full.manifest?.viewCoverage?.mode==="multi-platform"?"다중 플랫폼 조회수 비교":"부분 조회수 비교"),text:fmt(rank.total)+"곡(조회수 확인 성공 곡) 중 "+fmt(rank.rank)+"위 · "+fmt(rank.views)+"회 확인"}
-      :{label:"조회수 미집계",text:"지원 플랫폼의 공개 조회수 데이터를 아직 확보하지 못했습니다."},
+      ?{label:(rank.partial?"부분 조회수 비교":"다중 플랫폼 조회수 비교"),text:fmt(rank.total)+"곡(조회수 확인 성공 곡) 중 "+fmt(rank.rank)+"위 · "+fmt(rank.views)+"회 확인"}
+      :rank?.partial
+        ?{label:"조회수 순위 보류",text:fmt(rank.total)+"곡만 조회수 확인 · 최소 1,000곡 수집 전에는 순위를 확정 표시하지 않습니다."}
+        :{label:"조회수 미집계",text:"지원 플랫폼의 공개 조회수 데이터를 아직 확보하지 못했습니다."},
     components:[
       {label:"합산·최고 조회수",points:viewSignal(t),description:fmt(v.mediaCount||t.viewMediaCount||0)+"개 영상 · "+fmt(v.platforms||t.viewPlatformCount||0)+"개 플랫폼"},
       {label:"지원 범위",points:0,description:"YouTube · NicoNico · Bilibili"}
