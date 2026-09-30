@@ -354,3 +354,14 @@ body[data-view="dive"] .iceberg-ui{display:none!important}
   .rank-evidence-row small{grid-column:1;text-align:left}
   .rank-evidence-row strong{grid-column:2;grid-row:1 / span 2}
 }
+
+
+/* v0.9.8 · view rank evidence */
+.rank-evidence-row strong.is-data{color:#8aa0b8;font-size:7px;letter-spacing:.08em}
+.player-ranks:has(.player-rank-card:nth-child(5)){grid-template-columns:repeat(5,minmax(0,1fr))}
+@media(max-width:1180px){
+  .player-ranks:has(.player-rank-card:nth-child(5)){grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:860px){
+  .player-ranks:has(.player-rank-card:nth-child(5)){grid-template-columns:repeat(2,minmax(0,1fr))}
+}
