@@ -139,6 +139,7 @@ function bind(){
     if(state.view==="discover"||state.view==="home")renderCatalog();
     toast("비공개·삭제·임베드 제한 영상은 자동 제외했습니다.");
   });
+  window.addEventListener("touhoudive:pip-hint",e=>toast(e.detail?.message||"이 브라우저에서는 시스템 PiP가 제한됩니다."));
   window.addEventListener("touhoudive:player-track",async e=>{
     const id=e.detail?.trackId,t=byId(id);if(!t)return;
     try{
