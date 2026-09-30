@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "entities": {
     "track": [
       "id",
@@ -23,13 +23,16 @@
     "media": [
       "provider",
       "id",
-      "url"
+      "url",
+      "viewCount"
     ]
   },
   "notes": [
     "Original and arrangement entries stay separate.",
     "Arrangement tracks may reference multiple originalIds.",
     "The client only embeds media when a verified media object exists.",
-    "Large-scale ingestion should move arrangement search to Worker/API paging."
+    "Large-scale ingestion should move arrangement search to Worker/API paging.",
+    "Ranking v3 can include verified YouTube, NicoNico and Bilibili view-count signals when available.",
+    "Unsupported or unavailable platform view counts are treated as unmeasured rather than fabricated zero-view observations."
   ]
 }
