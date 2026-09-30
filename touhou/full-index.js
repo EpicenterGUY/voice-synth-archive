@@ -9,7 +9,7 @@ function inferWork(r){
   return works.find(w=>[w.title,w.tag,...(w.aliases||[])].some(v=>v&&hay.includes(String(v).normalize("NFKC").toLowerCase())))||null;
 }
 function mediaOf(p){
-  const provider=clean(p?.[0]),id=clean(p?.[1]),url=clean(p?.[2]),name=clean(p?.[3]);
+  const provider=clean(p?.[0]),id=clean(p?.[1]),url=clean(p?.[2]),name=clean(p?.[3]),viewCount=Number(p?.[4]);
   if(!provider||(!id&&!url))return null;
   const numeric=/^\d+$/.test(id);
   const embeddable=
@@ -17,7 +17,7 @@ function mediaOf(p){
     provider==="youtube"||provider==="niconico"||provider==="piapro"?!!id:
     provider==="bilibili"?numeric:
     provider==="bandcamp"?numeric:false;
-  return{provider,id,url,name,mode:embeddable?"embed":"external"};
+  return{provider,id,url,name,viewCount:Number.isFinite(viewCount)&&viewCount>=0?viewCount:null,mode:embeddable?"embed":"external"};
 }
 function toTrack(r){
   const work=inferWork(r),mediaCandidates=arr(r.p).map(mediaOf).filter(Boolean);
@@ -37,7 +37,8 @@ function toTrack(r){
     globalRank:Number(r.q)||null,globalScore:Number(r.s)||0,
     popularityRank:Number(r.qp)||null,popularityScore:Number(r.sp)||0,
     influenceRank:Number(r.qi)||null,influenceScore:Number(r.si)||0,
-    derivativeCount:Number(r.dc)||0,derivativeCircleCount:Number(r.dsc)||0,derivativeAlbumCount:Number(r.da)||0,
+    viewRank:Number(r.qv)||null,viewScore:Number(r.sv)||0,viewTotal:Number(r.vt)||0,viewMax:Number(r.vm)||0,viewPlatformCount:Number(r.vp)||0,viewMediaCount:Number(r.vc)||0,
+    derivativeCount:Number(r.dc)||0,derivativeCircleCount:Number(r.dsc)||0,derivativeAlbumCount:Number(r.da)||0,derivativeMediaCount:Number(r.dm)||0,
     _search:search,remote:true,fullIndex:true
   };
 }
