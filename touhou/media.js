@@ -47,7 +47,11 @@ class TouhouMediaPlayer{
     this.source=document.getElementById("playerSource");
     this.playBtn=document.getElementById("playerPlay");
     this.autoBtn=document.getElementById("playerAuto");
-    this.current=null;this.queue=[];this.index=-1;this.frame=null;this.yt=null;this.playing=true;
+    this.relatedEl=document.getElementById("playerRelated");
+    this.lyricsEl=document.getElementById("playerLyrics");
+    this.relatedTab=document.getElementById("playerTabRelated");
+    this.lyricsTab=document.getElementById("playerTabLyrics");
+    this.current=null;this.queue=[];this.index=-1;this.frame=null;this.yt=null;this.playing=true;this.activeTab="related";
     this.autoNext=localStorage.getItem(AUTO_KEY)!=="0";
     try{this.badMedia=new Set(JSON.parse(localStorage.getItem(BAD_MEDIA_KEY)||"[]"))}catch(_){this.badMedia=new Set()}
     document.getElementById("playerClose").onclick=()=>this.close();
@@ -57,10 +61,14 @@ class TouhouMediaPlayer{
     document.getElementById("playerNext").onclick=()=>this.relative(1);
     this.playBtn.onclick=()=>this.togglePlayback();
     this.autoBtn.onclick=()=>this.setAutoNext(!this.autoNext);
+    if(this.relatedTab)this.relatedTab.onclick=()=>this.setTab("related");
+    if(this.lyricsTab)this.lyricsTab.onclick=()=>this.setTab("lyrics");
     window.addEventListener("message",e=>this.onMessage(e));
     this.bindMediaSession();
     this.syncControls();
+    this.setTab("related");
   }
+  esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}
   mediaKey(media){return media&&media.provider&&media.id?media.provider+":"+media.id:""}
   candidates(track){
     const seen=new Set(),out=[];
@@ -82,21 +90,22 @@ class TouhouMediaPlayer{
     const q=(queue||[]).filter(x=>this.playable(x));
     this.queue=q.length?q:[track];
     this.index=Math.max(0,this.queue.findIndex(x=>x.id===track.id));
-    this.current=track;this.playing=true;
+    this.current=this.queue[this.index]||track;this.playing=true;
     this.renderCurrent(true);
     this.expand();
     return true;
   }
   renderCurrent(autoplay=true){
     if(!this.current)return;
+    this.selectPlayableMedia(this.current);
     this.destroySurface();
     const provider=this.current.media?.provider||"video";
     this.title.textContent=this.current.title;
-    this.type.textContent=provider.toUpperCase()+" · IN-APP PLAYER";
+    this.type.textContent=provider.toUpperCase()+" · TOUHOUDIVE WATCH";
     this.source.href=this.current.media?.url||this.current.source?.url||"#";
     this.source.hidden=this.source.href.endsWith("#");
     this.shell.hidden=false;
-    this.syncMeta();this.syncControls();this.syncMediaSession();
+    this.syncMeta();this.syncControls();this.syncMediaSession();this.renderPanels();
     if(provider==="youtube"){
       const expectedTrack=this.current.id,expectedVideo=this.current.media.id;
       const mount=document.createElement("div");mount.id="tdYoutubeMount-"+Date.now();this.video.appendChild(mount);
@@ -121,24 +130,77 @@ class TouhouMediaPlayer{
       this.renderIframeFallback();
     }
   }
+  thumbFor(track){
+    if(track?.thumb)return track.thumb;
+    const m=this.candidates(track).find(x=>x.provider==="youtube"&&x.id);
+    return m?"https://i.ytimg.com/vi/"+encodeURIComponent(m.id)+"/mqdefault.jpg":"";
+  }
+  setTab(tab){
+    this.activeTab=tab==="lyrics"?"lyrics":"related";
+    if(this.relatedEl)this.relatedEl.hidden=this.activeTab!=="related";
+    if(this.lyricsEl)this.lyricsEl.hidden=this.activeTab!=="lyrics";
+    if(this.relatedTab){this.relatedTab.classList.toggle("is-active",this.activeTab==="related");this.relatedTab.setAttribute("aria-selected",this.activeTab==="related"?"true":"false")}
+    if(this.lyricsTab){this.lyricsTab.classList.toggle("is-active",this.activeTab==="lyrics");this.lyricsTab.setAttribute("aria-selected",this.activeTab==="lyrics"?"true":"false")}
+  }
+  renderPanels(){
+    this.renderRelated();
+    this.renderLyrics();
+    this.setTab(this.activeTab);
+  }
+  renderRelated(){
+    if(!this.relatedEl)return;
+    if(!this.queue.length){this.relatedEl.innerHTML='<div class="player-panel-empty">연관곡을 불러오지 못했습니다.</div>';return}
+    const order=[];
+    for(let i=this.index+1;i<this.queue.length;i++)order.push(i);
+    for(let i=0;i<this.index;i++)order.push(i);
+    const rows=order.slice(0,24).map(i=>{
+      const t=this.queue[i],thumb=this.thumbFor(t);
+      const by=t.type==="arrangement"?(t.circle||t.artistString||"Arrangement"):(t.work||t.artistString||"Original");
+      return '<button class="player-related-item" data-player-index="'+i+'">'+
+        '<span class="player-related-thumb '+(thumb?"":"no-image")+'"'+(thumb?' style="background-image:url(&quot;'+this.esc(thumb)+'&quot;)"':"")+'><b>▶</b></span>'+
+        '<span class="player-related-copy"><strong>'+this.esc(t.title)+'</strong><small>'+this.esc(by)+'</small><em>'+(i===this.index+1?"다음 재생":"연관곡")+'</em></span>'+
+      '</button>';
+    });
+    this.relatedEl.innerHTML=rows.length?rows.join(""):'<div class="player-panel-empty">재생 가능한 연관곡이 없습니다.</div>';
+    this.relatedEl.querySelectorAll("[data-player-index]").forEach(btn=>btn.onclick=()=>this.jumpTo(Number(btn.dataset.playerIndex)));
+  }
+  renderLyrics(){
+    if(!this.lyricsEl||!this.current)return;
+    const rows=Array.isArray(this.current.lyrics)?this.current.lyrics:[];
+    const best=rows.find(x=>/original/i.test(x?.translationType||""))||rows.find(x=>(x?.cultureCodes||[]).some(c=>/^ja/i.test(c)))||rows[0]||null;
+    const sourceUrl=(best?.source&&/^https?:\/\//i.test(best.source)?best.source:"")||this.current.lyricsSource||(this.current.touhoudbId?"https://touhoudb.com/S/"+this.current.touhoudbId+"/lyrics":"");
+    if(best?.text){
+      this.lyricsEl.innerHTML='<div class="lyrics-head"><strong>가사</strong><small>TouhouDB 제공 데이터</small></div>'+
+        '<div class="lyrics-text">'+this.esc(best.text).replace(/\r?\n/g,"<br>")+'</div>'+
+        (sourceUrl?'<a class="lyrics-source" href="'+this.esc(sourceUrl)+'" target="_blank" rel="noopener noreferrer">가사 출처 열기 ↗</a>':"");
+      return;
+    }
+    if(this.current.lyricsAvailable||sourceUrl){
+      this.lyricsEl.innerHTML='<div class="player-panel-empty"><strong>가사 데이터가 있는 곡입니다.</strong><span>현재 인앱 데이터가 비어 있으면 TouhouDB 원문에서 확인할 수 있습니다.</span>'+
+        (sourceUrl?'<a class="lyrics-source" href="'+this.esc(sourceUrl)+'" target="_blank" rel="noopener noreferrer">가사 원문 열기 ↗</a>':"")+'</div>';
+      return;
+    }
+    this.lyricsEl.innerHTML='<div class="player-panel-empty"><strong>등록된 가사가 없습니다.</strong><span>가사가 있는 곡은 이 탭에 자동으로 표시됩니다.</span></div>';
+  }
+  jumpTo(index){
+    if(!Number.isInteger(index)||index<0||index>=this.queue.length||index===this.index)return false;
+    const mini=this.shell.classList.contains("is-mini");
+    this.index=index;this.current=this.queue[index];this.playing=true;
+    this.renderCurrent(true);
+    if(mini)this.minimize();else this.expand();
+    return true;
+  }
   persistBadMedia(){
     try{localStorage.setItem(BAD_MEDIA_KEY,JSON.stringify([...this.badMedia].slice(-300)))}catch(_){}
   }
   handleMediaError(code=0){
     this.playing=false;this.syncControls();
     const media=this.current?.media,key=this.mediaKey(media);
-    if(key&&(code===100||code===101||code===150||code===2||code===5)){
-      this.badMedia.add(key);this.persistBadMedia();
-    }
+    if(key&&(code===100||code===101||code===150||code===2||code===5)){this.badMedia.add(key);this.persistBadMedia()}
     if(this.current){
       const next=this.candidates(this.current)[0]||null;
-      if(next&&this.mediaKey(next)!==key){
-        this.current.media=next;
-        this.renderCurrent(true);
-        return;
-      }
-      this.current.media=null;
-      this.current.mediaUnavailable=true;
+      if(next&&this.mediaKey(next)!==key){this.current.media=next;this.renderCurrent(true);return}
+      this.current.media=null;this.current.mediaUnavailable=true;
       window.dispatchEvent(new CustomEvent("touhoudive:media-unavailable",{detail:{trackId:this.current.id,code}}));
       this.destroySurface();
       this.video.innerHTML='<div class="player-unavailable"><strong>이 영상은 재생할 수 없습니다.</strong><span>비공개·삭제·임베드 제한 영상은 자동으로 제외합니다.</span></div>';
@@ -211,7 +273,7 @@ class TouhouMediaPlayer{
     document.body.classList.add("player-open");
     document.getElementById("playerExpand").hidden=true;
     this.shell.hidden=false;
-    this.syncMeta();
+    this.syncMeta();this.renderPanels();
   }
   routeChange(){if(this.current&&!this.shell.hidden)this.minimize()}
   setAutoNext(on){
@@ -225,7 +287,7 @@ class TouhouMediaPlayer{
     this.playBtn.textContent=controllable?(this.playing?"❚❚":"▶"):"▶";
     this.playBtn.title=controllable?(this.playing?"일시정지":"재생"):"이 공급자는 임베드 플레이어에서 직접 조작";
     this.autoBtn.classList.toggle("active",this.autoNext);
-    this.autoBtn.textContent=this.autoNext?"A✓":"A";
+    this.autoBtn.textContent="자동재생";
     this.autoBtn.setAttribute("aria-pressed",this.autoNext?"true":"false");
   }
   syncMeta(){
@@ -234,7 +296,7 @@ class TouhouMediaPlayer{
       ? [this.current.circle,this.current.album,this.current.year].filter(Boolean).join(" · ")
       : [this.current.work||this.current.artistString,this.current.role,this.current.year].filter(Boolean).join(" · ");
     const q=this.queue.length>1?" · "+(this.index+1)+"/"+this.queue.length:"";
-    this.meta.textContent=base+q+" · 자동 다음곡 "+(this.autoNext?"ON":"OFF");
+    this.meta.textContent=base+q+" · 자동재생 "+(this.autoNext?"ON":"OFF");
   }
   bindMediaSession(){
     if(!("mediaSession" in navigator))return;
@@ -259,7 +321,7 @@ class TouhouMediaPlayer{
     this.destroySurface();this.current=null;this.queue=[];this.index=-1;this.playing=false;
     this.shell.hidden=true;this.shell.classList.remove("is-mini");document.body.classList.remove("player-open");this.setPlaybackState("none");
     try{if("mediaSession" in navigator)navigator.mediaSession.metadata=null}catch(_){}
-    this.syncControls();
+    this.renderPanels();this.syncControls();
   }
 }
 window.TouhouMediaPlayer=TouhouMediaPlayer;
