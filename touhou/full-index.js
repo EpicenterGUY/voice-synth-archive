@@ -56,24 +56,38 @@ async function prepareCache(meta){
   if(prev&&prev!==meta.generatedAt&&"caches" in window){try{await caches.delete("touhoudive-full-index")}catch(_){}}
   localStorage.setItem(key,meta.generatedAt||"");
 }
-async function fetchShard(file,generation){
-  const res=await fetch(BASE+file+"?g="+encodeURIComponent(generation||""),{cache:"default"});
+async function fetchShard(file,generation,expectedCount=0){
+  const url=BASE+file+"?g="+encodeURIComponent(generation||"");
+  let res=await fetch(url,{cache:"default"});
   if(!res.ok)throw new Error(file+" HTTP "+res.status);
-  const rows=await res.json();
+  let rows=await res.json();
+  if(expectedCount&&arr(rows).length!==expectedCount){
+    try{
+      if("caches" in window){
+        const cache=await caches.open("touhoudive-full-index");
+        await cache.delete(url);
+      }
+    }catch(_){}
+    const repair=url+"&repair="+Date.now();
+    res=await fetch(repair,{cache:"no-store"});
+    if(!res.ok)throw new Error(file+" repair HTTP "+res.status);
+    rows=await res.json();
+  }
+  if(expectedCount&&arr(rows).length!==expectedCount)throw new Error(file+" row mismatch "+arr(rows).length+"/"+expectedCount);
   return arr(rows).map(toTrack);
 }
 async function loadAll(opts={}){
   const meta=await manifest(!!opts.force),files=meta.files.slice();
   await prepareCache(meta);
   const chunks=new Array(files.length);
-  let cursor=0,loaded=0;
+  let cursor=0,loaded=0,completed=0;
   const concurrency=Math.max(1,Math.min(6,Number(opts.concurrency)||4));
   const worker=async()=>{
     while(true){
       const idx=cursor++;if(idx>=files.length)return;
-      const rows=await fetchShard(files[idx].file,meta.generatedAt);
-      chunks[idx]=rows;loaded+=rows.length;
-      opts.onProgress?.({loaded,total:meta.indexed,shards:idx+1,shardCount:files.length,manifest:meta});
+      const rows=await fetchShard(files[idx].file,meta.generatedAt,Number(files[idx].count)||0);
+      chunks[idx]=rows;loaded+=rows.length;completed++;
+      opts.onProgress?.({loaded,total:meta.indexed,shards:completed,shardCount:files.length,manifest:meta});
     }
   };
   await Promise.all(Array.from({length:concurrency},worker));
