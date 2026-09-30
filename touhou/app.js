@@ -291,6 +291,11 @@ function mergeTrack(base,incoming){
   out.media=base.media||incoming.media||null;
   out.mediaCandidates=uniqMedia([...(base.mediaCandidates||[]),...(incoming.mediaCandidates||[]),base.media,incoming.media]);
   if(!out.media&&out.mediaCandidates.length)out.media=out.mediaCandidates[0];
+  out.lyricsLoaded=!!(base.lyricsLoaded||incoming.lyricsLoaded);
+  out.lyrics=incoming.lyricsLoaded?(incoming.lyrics||[]):((base.lyrics&&base.lyrics.length)?base.lyrics:(incoming.lyrics||[]));
+  out.lyricsAvailable=!!(out.lyrics?.length||base.lyricsAvailable||incoming.lyricsAvailable);
+  out.lyricsSource=incoming.lyricsSource||base.lyricsSource||"";
+  out.lyricsSearchTitle=base.lyricsSearchTitle||incoming.lyricsSearchTitle||"";
   out.thumb=base.thumb||incoming.thumb||"";
   out.source=incoming.source||base.source||null;
   out.touhoudbId=incoming.touhoudbId||base.touhoudbId;
@@ -629,13 +634,29 @@ function openTrustedExternal(t){
 async function playTrack(t){
   if(!t)return false;
   t=byId(t.id)||t;
+  if(state.remote.available&&catalog){
+    try{
+      if(!t.touhoudbId)t=await enrichTrack(t);
+      if(t?.touhoudbId&&!t.lyricsLoaded){
+        const hydrated=await catalog.hydrate(t.id);
+        if(hydrated){remember(hydrated);t=byId(t.id)||remember(hydrated)}
+      }
+    }catch(e){}
+  }
   if(!player.playable(t)&&state.remote.available){
     toast("재생 가능한 영상을 찾는 중…");
     try{t=await enrichTrack(t)}catch(e){}
   }
   if(!player.playable(t)){toast("재생 가능한 공개 영상이 없습니다.");return false}
-  const queue=currentPool().filter(x=>player.playable(x));
-  const ok=player.play(t,queue);
+  const relatedQueue=relations(t)
+    .filter(r=>player.playable(r.track))
+    .slice(0,24)
+    .map(r=>({...r.track,_queueReason:r.reason}));
+  const fallback=sortList(currentPool().filter(x=>resolveId(x.id)!==resolveId(t.id)&&player.playable(x)),"recommend")
+    .slice(0,24);
+  const queue=dedupe([{...t,_queueReason:"현재 재생"},...relatedQueue,...fallback]);
+  const current=queue.find(x=>resolveId(x.id)===resolveId(t.id))||t;
+  const ok=player.play(current,queue);
   if(ok)pushHistory(t.id,t);
   return ok;
 }
