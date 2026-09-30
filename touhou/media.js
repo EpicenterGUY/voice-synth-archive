@@ -225,7 +225,7 @@ class TouhouMediaPlayer{
       return;
     }
     const components=(detail.components||[]).map(x=>
-      '<div class="rank-evidence-component"><span>'+this.esc(x.label)+'</span><strong>'+Number(x.points||0).toFixed(2)+'pt</strong><small>'+this.esc(x.description||"")+'</small></div>'
+      '<div class="rank-evidence-component"><span>'+this.esc(x.label)+'</span><strong>'+(x.value!=null?this.esc(x.value):Number(x.points||0).toFixed(2)+'pt')+'</strong><small>'+this.esc(x.description||"")+'</small></div>'
     ).join("");
     const metrics=(detail.metrics||[]).map(x=>
       '<div class="rank-evidence-row"><span>'+this.esc(x.label)+'</span><b>'+this.esc(x.raw||"")+'</b><small>'+this.esc(x.rule||"")+'</small>'+(x.points==null?'<strong class="is-data">DATA</strong>':'<strong>+'+Number(x.points||0).toFixed(2)+'pt</strong>')+'</div>'
