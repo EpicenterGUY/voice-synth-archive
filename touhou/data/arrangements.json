@@ -99,12 +99,43 @@
     },
     "media": {
       "provider": "youtube",
-      "id": "oEj8vNP_1I0",
-      "url": "https://www.youtube.com/watch?v=oEj8vNP_1I0"
+      "id": "G3C-VevI36s",
+      "url": "https://www.youtube.com/watch?v=G3C-VevI36s",
+      "name": "Bad Apple!! PV · shadow animation"
     },
     "source": {
-      "name": "Touhou arrangement reference",
-      "url": "https://www.youtube.com/watch?v=oEj8vNP_1I0"
-    }
+      "name": "Bad Apple!! PV / Alstroemeria Records reference",
+      "url": "https://www.youtube.com/watch?v=G3C-VevI36s"
+    },
+    "aliases": [
+      "Bad Apple!! feat.nomico",
+      "Bad Apple!! feat. nomico",
+      "Bad Apple!! PV",
+      "Bad Apple!! 影絵",
+      "Bad Apple!! 그림자 PV"
+    ],
+    "thumb": "https://i.ytimg.com/vi/G3C-VevI36s/hqdefault.jpg",
+    "mediaCandidates": [
+      {
+        "provider": "youtube",
+        "id": "G3C-VevI36s",
+        "url": "https://www.youtube.com/watch?v=G3C-VevI36s",
+        "name": "Bad Apple!! PV · shadow animation"
+      },
+      {
+        "provider": "youtube",
+        "id": "UXUhIxijosE",
+        "url": "https://www.youtube.com/watch?v=UXUhIxijosE",
+        "name": "Bad Apple!! PV · shadow animation alternate"
+      },
+      {
+        "provider": "youtube",
+        "id": "oEj8vNP_1I0",
+        "url": "https://www.youtube.com/watch?v=oEj8vNP_1I0",
+        "name": "Bad Apple!! feat. nomico alternate"
+      }
+    ],
+    "lyricsAvailable": true,
+    "lyricsSearchTitle": "Bad Apple!! feat. nomico"
   }
 ]
