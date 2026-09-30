@@ -45,8 +45,10 @@ function toTrack(r){
 }
 async function manifest(force=false){
   if(manifestCache&&!force)return manifestCache;
-  const url=BASE+"manifest.json"+(force?"?t="+Date.now():"");
-  const res=await fetch(url,{cache:force?"no-store":"default"});
+  // The manifest is the generation pointer. Never let a service-worker/browser
+  // cache pin the app to an older dataset after a successful index rebuild.
+  const url=BASE+"manifest.json?fresh="+Date.now();
+  const res=await fetch(url,{cache:"no-store"});
   if(!res.ok)throw new Error("full index manifest HTTP "+res.status);
   const data=await res.json();
   if(!data?.indexed||!Array.isArray(data.files))throw new Error("invalid full index manifest");
@@ -55,7 +57,13 @@ async function manifest(force=false){
 async function prepareCache(meta){
   const key="touhoudive:full-index:generation";
   const prev=localStorage.getItem(key);
-  if(prev&&prev!==meta.generatedAt&&"caches" in window){try{await caches.delete("touhoudive-full-index")}catch(_){}}
+  if(prev&&prev!==meta.generatedAt&&"caches" in window){
+    try{
+      const keys=await caches.keys();
+      await Promise.all(keys.filter(k=>k.startsWith("touhoudive-full-index")).map(k=>caches.delete(k)));
+    }catch(_){}
+    lookupCache.clear();
+  }
   localStorage.setItem(key,meta.generatedAt||"");
 }
 async function fetchShard(file,generation,expectedCount=0){
