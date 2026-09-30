@@ -1,8 +1,8 @@
-const CACHE="touhoudive-v0.9.5";
+const CACHE="touhoudive-v0.9.6";
 const FULL_CACHE="touhoudive-full-index";
 const CORE=[
   "./","./index.html",
-  "./styles.css?v=0.9.5","./app.js?v=0.9.5","./catalog.js?v=0.9.5","./media.js?v=0.9.5","./full-index.js?v=0.9.5",
+  "./styles.css?v=0.9.6","./app.js?v=0.9.6","./catalog.js?v=0.9.6","./media.js?v=0.9.6","./full-index.js?v=0.9.6",
   "./data/originals.json","./data/works.json","./data/archive-sources.json","./data/arrangements.json","./data/schema.json",
   "./manifest.webmanifest","./icon.svg","./version.json"
 ];
