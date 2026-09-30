@@ -1,5 +1,5 @@
 {
-  "version": "0.9.6",
+  "version": "0.9.7",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-09-30",
@@ -108,6 +108,10 @@
     "mobile-streaming-status-fix",
     "player-ranks-mobile",
     "lyrics-pv-exact-retry",
-    "cache-bust-096"
+    "cache-bust-096",
+    "clickable-rank-evidence",
+    "overall-score-breakdown",
+    "full-index-rank-provenance",
+    "ranking-formula-panel"
   ]
 }
