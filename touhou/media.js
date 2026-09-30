@@ -214,7 +214,6 @@ class TouhouMediaPlayer{
       return;
     }
     this.rankDetailKey=key;
-    this.renderRankDetail(key);
     this.renderRankings();
   }
   renderRankDetail(key){
