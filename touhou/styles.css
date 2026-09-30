@@ -291,3 +291,10 @@ body[data-view="dive"] .iceberg-ui{display:none!important}
   .player-related-thumb{width:116px}
   .lyrics-text{font-size:12px;line-height:1.9}
 }
+
+
+/* player tab visibility hotfix */
+.player-related[hidden],
+.player-lyrics[hidden]{
+  display:none!important;
+}
