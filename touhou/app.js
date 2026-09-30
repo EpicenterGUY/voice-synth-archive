@@ -107,7 +107,7 @@ function bind(){
       player.updateCurrentData?.({...merged,_playerRanks:playerRankMeta(merged)});
     }catch(_){}
   });
-  $$("#modeTabs .mode-tab").forEach(btn=>btn.onclick=()=>{
+  $$$("#modeTabs .mode-tab").forEach(btn=>btn.onclick=()=>{
     state.mode=btn.dataset.mode;state.filter="전체";syncModeTabs();
     requestAnimationFrame(()=>state.view==="iceberg"?renderIceberg():renderCatalog());
     loadRemote(true);
@@ -571,7 +571,7 @@ function renderFilters(){
   }
   if(!out.includes(state.filter))state.filter="전체";
   $("#quickFilters").innerHTML=out.map(x=>'<button class="filter-chip '+(x===state.filter?"is-active":"")+'" data-filter="'+escAttr(x)+'">'+esc(x)+'</button>').join("");
-  $$("#quickFilters .filter-chip").forEach(b=>b.onclick=()=>{state.filter=b.dataset.filter;requestAnimationFrame(()=>renderCatalog());loadRemote(true);});
+  $$$("#quickFilters .filter-chip").forEach(b=>b.onclick=()=>{state.filter=b.dataset.filter;requestAnimationFrame(()=>renderCatalog());loadRemote(true);});
 }
 function updateStats(){
   const meta=state.full.manifest;
@@ -1437,7 +1437,7 @@ function normalizePersistentIds(){
   writeJson("touhoudive:favorites",[...state.favorites]);
   writeJson("touhoudive:history",state.history);
 }
-function syncModeTabs(){$("#modeTabs .mode-tab").forEach(x=>x.classList.toggle("is-active",x.dataset.mode===state.mode))}
+function syncModeTabs(){$$("#modeTabs .mode-tab").forEach(x=>x.classList.toggle("is-active",x.dataset.mode===state.mode))}
 function setDataHealth(kind,text){
   const el=$("#dataHealth");
   el.classList.toggle("is-loading",kind==="loading");
