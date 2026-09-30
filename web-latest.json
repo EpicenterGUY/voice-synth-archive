@@ -1,6 +1,6 @@
 {
-  "version": "39.116.0",
+  "version": "39.117.0",
   "channel": "web",
-  "publishedAt": "2026-09-30T20:00:00+09:00",
-  "notes": "Expands the home recommendation and hidden-song pools, adds per-shelf criteria search/filter/sort controls with configurable 12/18/24/36-card display, removes watch history from the home feed, and introduces a dedicated WATCH HISTORY page with search, date filters, sorting, replay and per-item deletion."
+  "publishedAt": "2026-09-30T21:30:00+09:00",
+  "notes": "Fixes sparse home recommendations so saved-library size no longer caps the feed, automatically refills undersized recommendation shelves, and strengthens original-song filtering to exclude Off Vocal, instrumental, karaoke, cover and other derivative uploads even when they retain original-song tags."
 }
