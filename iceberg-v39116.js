@@ -1,0 +1,1429 @@
+/* VocaDive Discovery Passport · v39.116.0
+ * Second-stage same-layer focus + adjacent-tier vertical relation bridges.
+ * Loaded by vocadive-ui-v3980.js to keep the ~1MB index stable.
+ */
+(function(){
+"use strict";
+var VERSION="39.116.0";
+try{
+  var oldModuleKey=Object.keys(window).find(function(k){return /^VSAIceberg\d+$/.test(k)&&window[k]&&window[k].version&&window[k].version!==VERSION});
+  if(oldModuleKey&&document.readyState!=="loading"){
+    var cleanKey="vsa.iceberg.cleanReload."+VERSION;
+    if(!sessionStorage.getItem(cleanKey)){
+      sessionStorage.setItem(cleanKey,"1");
+      location.reload();
+      return;
+    }
+  }
+  sessionStorage.removeItem("vsa.iceberg.cleanReload."+VERSION);
+}catch(_){}
+if(window.__VSA_ICEBERG_39116)return;
+window.__VSA_ICEBERG_39116=true;
+
+var focusId="";
+var bridgeState={focusId:"",loading:false,up:[],down:[]};
+var bridgeSeq=0;
+var longTimer=0;
+var longReady=false;
+var longId="";
+var suppressClickUntil=0;
+var voyageHistory108=[];
+var pendingSail108=null;
+var voyageSeq108=0;
+var voyageSongCache108=new Map();
+var diveLogOpen109=false;
+var DIVE_LOG_KEY109="vsa.iceberg.diveLog.v1";
+var SAVED_EXPEDITIONS_KEY110="vsa.iceberg.savedExpeditions.v1";
+var savedExpeditions110=[];
+var expeditionReportOpen111=new Set();
+var compareSelection112=new Set();
+var compareOpen112=false;
+var expeditionAtlasOpen113=false;
+var savedListExpanded114=false;
+var discoveryPassportOpen115=false;
+var passportQuery115="";
+var passportFilter115="all";
+var passportSort115="rare";
+var passportLimit115=18;
+var replayState110={active:false,id:"",index:0,timer:0};
+var originalRequestTier=typeof requestTierLoad103==="function"?requestTierLoad103:null;
+var originalGetAnySong39=typeof getAnySong39==="function"?getAnySong39:null;
+
+function addStyle(){
+  if(document.getElementById("v39116IcebergModuleStyle"))return;
+  var legacy=document.getElementById("v39107IcebergFocusBridgeStyle");
+  if(legacy)try{legacy.remove()}catch(_){}
+  var el=document.createElement("style");
+  el.id="v39116IcebergModuleStyle";
+  el.textContent=`
+#icebergPanel .ice107-focusbar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;padding:7px 8px;border:1px solid rgba(191,236,255,.16);border-radius:10px;background:linear-gradient(135deg,rgba(8,31,48,.70),rgba(18,28,50,.66));position:relative;z-index:4}
+#icebergPanel .ice107-focusbar small{display:block;color:#83cce7;font-size:6px;font-weight:950;letter-spacing:.09em}
+#icebergPanel .ice107-focusbar b{display:block;margin-top:2px;color:inherit;font-size:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#icebergPanel .ice107-focusbar button{min-height:28px;padding:0 9px;border:1px solid rgba(255,255,255,.14);border-radius:8px;background:rgba(7,24,37,.46);color:inherit;font-size:7px;font-weight:950}
+#icebergPanel .ice107-bridge-wrap{position:relative;display:grid;gap:5px;padding:2px 0;z-index:1}
+#icebergPanel .ice107-bridge-wrap:before{content:"";position:absolute;left:50%;top:0;bottom:0;border-left:1px dashed rgba(164,225,248,.28);transform:translateX(-50%);pointer-events:none}
+#icebergPanel .ice107-bridge-lane{display:grid;grid-template-columns:82px minmax(0,1fr);gap:6px;align-items:center;min-height:36px;position:relative;z-index:2}
+#icebergPanel .ice107-bridge-lane.down{grid-template-columns:minmax(0,1fr) 82px}
+#icebergPanel .ice107-bridge-lane.down .ice107-bridge-label{order:2}
+#icebergPanel .ice107-bridge-lane.down .ice107-bridge-cards,#icebergPanel .ice107-bridge-lane.down .ice107-bridge-empty{order:1}
+#icebergPanel .ice107-bridge-label{display:flex;align-items:center;justify-content:center;min-height:30px;padding:0 6px;border:1px solid rgba(167,225,247,.11);border-radius:9px;background:rgba(5,20,32,.30);color:inherit;font-size:6px;font-weight:950;text-align:center}
+#icebergPanel .ice107-bridge-cards{display:flex;gap:5px;min-width:0}
+#icebergPanel .ice107-bridge-card{flex:1 1 0;min-width:0;display:grid;grid-template-columns:32px minmax(0,1fr);gap:5px;align-items:center;min-height:36px;padding:4px;border:1px solid rgba(255,255,255,.12);border-radius:9px;background:rgba(6,24,38,.42);color:inherit;text-align:left;cursor:pointer}
+#icebergPanel .ice107-bridge-card:hover{border-color:rgba(188,235,252,.30);background:rgba(10,37,55,.58)}
+#icebergPanel .ice107-bridge-card img,#icebergPanel .ice107-bridge-card .ice107-noimg{width:32px;height:32px;border-radius:7px;object-fit:cover;background:#0d2c3f;display:grid;place-items:center}
+#icebergPanel .ice107-bridge-card b{display:block;font-size:6.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#icebergPanel .ice107-bridge-card small{display:block;margin-top:2px;font-size:5.5px;opacity:.62;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#icebergPanel .ice107-bridge-empty{min-height:34px;display:flex;align-items:center;justify-content:center;padding:0 8px;border:1px dashed rgba(255,255,255,.10);border-radius:9px;font-size:6px;opacity:.52}
+#icebergPanel .ice107-focus-btn{position:absolute;right:5px;top:5px;z-index:4;width:24px;height:24px;border:1px solid rgba(255,255,255,.14);border-radius:999px;background:rgba(3,17,28,.66);color:#c9f3ff;font-size:10px;font-weight:950;display:grid;place-items:center;opacity:.84;cursor:pointer}
+#icebergPanel .ice107-focus-btn:hover{opacity:1;background:#153e53}
+#icebergPanel .ice105-song-node{position:relative}
+#icebergPanel .ice105-song-node.ice107-center{border-color:rgba(202,245,255,.55)!important;background:rgba(20,57,76,.64)!important;box-shadow:0 0 0 1px rgba(185,235,255,.12),0 0 22px rgba(114,208,241,.18)}
+#icebergPanel .ice105-song-node.ice107-center:after{content:"CENTER";position:absolute;left:5px;top:5px;padding:2px 4px;border-radius:999px;background:rgba(6,26,39,.78);color:#d7f8ff;font-size:5px;font-weight:950;letter-spacing:.08em}
+#icebergPanel .ice107-focus-neighbor{animation:ice107Spread .34s ease both}
+#icebergPanel .ice107-focus-neighbor:nth-of-type(2){animation-delay:35ms}
+#icebergPanel .ice107-focus-neighbor:nth-of-type(3){animation-delay:70ms}
+#icebergPanel .ice107-focus-neighbor:nth-of-type(4){animation-delay:105ms}
+#icebergPanel .ice107-focus-neighbor:nth-of-type(5){animation-delay:140ms}
+#icebergPanel .ice107-bridge-card[data-kind="producer"]{border-color:rgba(243,181,255,.28)}
+#icebergPanel .ice107-bridge-card[data-kind="vocal"]{border-color:rgba(145,230,255,.28)}
+#icebergPanel .ice107-bridge-card[data-kind="music"]{border-color:rgba(149,240,201,.28)}
+#icebergPanel .ice107-bridge-card[data-kind="tag"]{border-color:rgba(255,217,149,.28)}
+@keyframes ice107Spread{from{opacity:.35;transform:scale(.96) translateY(5px)}to{opacity:1;transform:none}}
+@media(max-width:699px){
+ #icebergPanel .ice107-bridge-lane,#icebergPanel .ice107-bridge-lane.down{grid-template-columns:64px minmax(0,1fr)}
+ #icebergPanel .ice107-bridge-lane.down .ice107-bridge-label{order:0}
+ #icebergPanel .ice107-bridge-lane.down .ice107-bridge-cards,#icebergPanel .ice107-bridge-lane.down .ice107-bridge-empty{order:1}
+ #icebergPanel .ice107-bridge-cards .ice107-bridge-card:nth-child(n+2){display:none}
+}
+@media(max-width:480px){
+ #icebergPanel .ice107-bridge-card{grid-template-columns:28px minmax(0,1fr)}
+ #icebergPanel .ice107-bridge-card img,#icebergPanel .ice107-bridge-card .ice107-noimg{width:28px;height:28px}
+}
+#icebergPanel .ice108-voyage-meta{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-top:4px}
+#icebergPanel .ice108-voyage-chip{display:inline-flex;align-items:center;min-height:18px;padding:0 6px;border:1px solid rgba(149,225,250,.14);border-radius:999px;background:rgba(5,22,35,.34);color:#9edaf0;font-size:5.5px;font-weight:900}
+#icebergPanel .ice108-back{border-color:rgba(166,225,247,.24)!important;background:rgba(14,48,67,.52)!important}
+#icebergPanel .ice107-bridge-card:after{content:"↕";position:absolute;right:5px;bottom:3px;color:#9bdcf2;font-size:7px;font-weight:950;opacity:.72}
+#icebergPanel .ice107-bridge-card{position:relative}
+#icebergPanel .ice107-bridge-card.ice108-sailing{pointer-events:none;opacity:.6}
+#icebergPanel .ice107-bridge-card.ice108-sailing:after{content:"…";animation:ice108Pulse .7s infinite alternate}
+#icebergPanel .ice108-trail{display:flex;gap:4px;overflow-x:auto;padding:2px 0 1px;scrollbar-width:none}
+#icebergPanel .ice108-trail::-webkit-scrollbar{display:none}
+#icebergPanel .ice108-trail span{flex:0 0 auto;max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:18px;display:inline-flex;align-items:center;padding:0 6px;border-radius:999px;background:rgba(7,27,42,.36);color:inherit;opacity:.58;font-size:5.5px}
+@keyframes ice108Pulse{from{opacity:.35}to{opacity:1}}
+#icebergPanel .ice109-log-btn{border-color:rgba(131,213,242,.28)!important;background:linear-gradient(135deg,rgba(13,52,72,.68),rgba(31,39,78,.62))!important}
+#icebergPanel .ice109-log{
+  display:grid;grid-template-columns:minmax(0,1fr) 72px;gap:10px;
+  padding:10px;border:1px solid rgba(137,213,239,.18);border-radius:14px;
+  background:linear-gradient(180deg,rgba(8,32,48,.82),rgba(3,13,24,.90));
+  position:relative;z-index:5;overflow:hidden
+}
+#icebergPanel .ice109-log:before{content:"";position:absolute;left:22px;top:44px;bottom:13px;border-left:1px dashed rgba(138,216,244,.22);pointer-events:none}
+#icebergPanel .ice109-log-head{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:8px}
+#icebergPanel .ice109-log-head small{display:block;color:#7dc8e3;font-size:6px;font-weight:950;letter-spacing:.11em}
+#icebergPanel .ice109-log-head b{display:block;margin-top:2px;color:inherit;font-size:9px}
+#icebergPanel .ice109-log-head div:last-child{display:flex;gap:4px}
+#icebergPanel .ice109-log-head button{min-height:27px;padding:0 8px;border:1px solid rgba(255,255,255,.12);border-radius:8px;background:rgba(8,27,42,.5);color:inherit;font-size:6px;font-weight:900}
+#icebergPanel .ice109-route{display:flex;flex-direction:column;gap:6px;min-width:0}
+#icebergPanel .ice109-stop{
+  display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:7px;align-items:center;
+  width:100%;min-height:44px;padding:5px 7px 5px 4px;border:1px solid rgba(255,255,255,.10);
+  border-radius:11px;background:rgba(6,24,37,.42);color:inherit;text-align:left;position:relative;cursor:pointer
+}
+#icebergPanel .ice109-stop:hover{border-color:rgba(174,230,250,.28);background:rgba(10,38,56,.58)}
+#icebergPanel .ice109-stop.current{border-color:rgba(188,239,255,.42);background:rgba(16,55,73,.64)}
+#icebergPanel .ice109-stop:before{
+  content:"";position:absolute;left:13px;top:50%;width:7px;height:7px;border-radius:50%;
+  transform:translate(-50%,-50%);background:#8bdaf5;box-shadow:0 0 10px rgba(126,218,250,.48);z-index:2
+}
+#icebergPanel .ice109-stop img,#icebergPanel .ice109-stop .ice109-noimg{
+  width:34px;height:34px;border-radius:8px;object-fit:cover;background:#0c2c3f;display:grid;place-items:center;
+  margin-left:15px
+}
+#icebergPanel .ice109-stop-copy{min-width:0}
+#icebergPanel .ice109-stop-copy b{display:block;font-size:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#icebergPanel .ice109-stop-copy small{display:block;margin-top:2px;font-size:5.5px;opacity:.62;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#icebergPanel .ice109-stop em{font-style:normal;font-size:5.5px;opacity:.52;white-space:nowrap}
+#icebergPanel .ice109-depth-axis{
+  position:relative;min-height:100%;border-left:1px solid rgba(120,198,226,.16);margin-left:13px
+}
+#icebergPanel .ice109-depth-axis span{
+  position:absolute;left:8px;top:var(--p);transform:translateY(-50%);font-size:5.5px;opacity:.48;white-space:nowrap
+}
+#icebergPanel .ice109-depth-axis span:before{content:"";position:absolute;left:-10px;top:50%;width:7px;border-top:1px solid rgba(120,198,226,.24)}
+#icebergPanel .ice109-summary{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
+#icebergPanel .ice109-summary span{min-height:18px;display:inline-flex;align-items:center;padding:0 6px;border-radius:999px;background:rgba(7,27,42,.4);font-size:5.5px;opacity:.7}
+@media(max-width:560px){
+ #icebergPanel .ice109-log{grid-template-columns:minmax(0,1fr) 54px;padding:8px;gap:7px}
+ #icebergPanel .ice109-stop{grid-template-columns:30px minmax(0,1fr);padding-right:5px}
+ #icebergPanel .ice109-stop em{display:none}
+ #icebergPanel .ice109-stop img,#icebergPanel .ice109-stop .ice109-noimg{width:30px;height:30px;margin-left:12px}
+ #icebergPanel .ice109-log:before{left:19px}
+}
+#icebergPanel .ice110-actions{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
+#icebergPanel .ice110-actions button{min-height:28px;padding:0 8px;border:1px solid rgba(255,255,255,.12);border-radius:8px;background:rgba(8,28,43,.52);color:inherit;font-size:6px;font-weight:900}
+#icebergPanel .ice110-save{border-color:rgba(124,223,205,.28)!important;background:linear-gradient(135deg,rgba(18,65,65,.7),rgba(28,54,81,.66))!important}
+#icebergPanel .ice110-saved{grid-column:1/-1;display:grid;gap:6px;margin-top:5px}
+#icebergPanel .ice110-saved-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+#icebergPanel .ice110-saved-head small{font-size:6px;font-weight:950;letter-spacing:.1em;color:#75c7df}
+#icebergPanel .ice110-saved-head span{font-size:5.5px;opacity:.55}
+#icebergPanel .ice110-card{
+  display:grid;grid-template-columns:46px minmax(0,1fr) auto;gap:8px;align-items:center;
+  min-height:58px;padding:7px;border:1px solid rgba(255,255,255,.1);border-radius:12px;
+  background:linear-gradient(135deg,rgba(7,28,42,.58),rgba(10,24,40,.54))
+}
+#icebergPanel .ice110-card-cover{width:46px;height:46px;border-radius:10px;overflow:hidden;background:#0d2c3f;position:relative}
+#icebergPanel .ice110-card-cover img{width:100%;height:100%;object-fit:cover}
+#icebergPanel .ice110-card-cover span{position:absolute;left:4px;bottom:4px;padding:2px 4px;border-radius:999px;background:rgba(3,17,27,.75);font-size:5px;font-weight:950;color:#ccefff}
+#icebergPanel .ice110-card-main{min-width:0}
+#icebergPanel .ice110-card-main b{display:block;font-size:7.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#icebergPanel .ice110-card-main small{display:block;margin-top:2px;font-size:5.5px;opacity:.55;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#icebergPanel .ice110-statline{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
+#icebergPanel .ice110-statline span{min-height:17px;display:inline-flex;align-items:center;padding:0 5px;border-radius:999px;background:rgba(255,255,255,.045);font-size:5.2px;opacity:.72}
+#icebergPanel .ice110-card-actions{display:flex;gap:4px;flex-direction:column}
+#icebergPanel .ice110-card-actions button{min-height:28px;padding:0 8px;border:1px solid rgba(255,255,255,.12);border-radius:8px;background:rgba(7,26,40,.52);color:inherit;font-size:5.7px;font-weight:900}
+#icebergPanel .ice110-card-actions .replay{border-color:rgba(112,206,241,.28);background:rgba(16,54,74,.62)}
+#icebergPanel .ice110-card-actions .delete{opacity:.58}
+#icebergPanel .ice110-replaybar{
+  grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:8px;
+  min-height:34px;padding:6px 8px;border:1px solid rgba(124,211,243,.2);border-radius:10px;
+  background:linear-gradient(90deg,rgba(10,39,57,.74),rgba(24,33,68,.66))
+}
+#icebergPanel .ice110-replaybar b{font-size:6.5px}
+#icebergPanel .ice110-replaybar small{display:block;margin-top:2px;font-size:5.3px;opacity:.6}
+#icebergPanel .ice110-replaybar button{min-height:26px;padding:0 8px;border:1px solid rgba(255,255,255,.13);border-radius:8px;background:rgba(8,24,38,.55);color:inherit;font-size:5.7px;font-weight:900}
+#icebergPanel .ice110-rarity{color:#9eead4!important}
+@media(max-width:560px){
+ #icebergPanel .ice110-card{grid-template-columns:40px minmax(0,1fr);gap:7px}
+ #icebergPanel .ice110-card-cover{width:40px;height:40px}
+ #icebergPanel .ice110-card-actions{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr}
+ #icebergPanel .ice110-card-actions button{width:100%}
+}
+#icebergPanel .ice111-report{
+  grid-column:1/-1;display:grid;gap:8px;margin-top:2px;padding:9px;
+  border:1px solid rgba(133,213,240,.15);border-radius:11px;
+  background:linear-gradient(180deg,rgba(5,23,36,.64),rgba(4,17,28,.72))
+}
+#icebergPanel .ice111-report-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+#icebergPanel .ice111-report-head small{font-size:5.5px;font-weight:950;letter-spacing:.1em;color:#76cbe6}
+#icebergPanel .ice111-report-head span{font-size:5.2px;opacity:.48}
+#icebergPanel .ice111-report-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+#icebergPanel .ice111-panel{min-width:0;padding:7px;border:1px solid rgba(255,255,255,.08);border-radius:9px;background:rgba(255,255,255,.025)}
+#icebergPanel .ice111-panel>small{display:block;color:#7cbdd3;font-size:5.3px;font-weight:950;letter-spacing:.07em}
+#icebergPanel .ice111-panel>b{display:block;margin-top:3px;font-size:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#icebergPanel .ice111-panel p{margin:3px 0 0;font-size:5.4px;line-height:1.45;opacity:.58}
+#icebergPanel .ice111-bars{display:grid;gap:4px;margin-top:5px}
+#icebergPanel .ice111-bar{display:grid;grid-template-columns:minmax(0,62px) 1fr 24px;gap:4px;align-items:center}
+#icebergPanel .ice111-bar label{font-size:5.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#icebergPanel .ice111-bar i{display:block;height:5px;border-radius:999px;background:rgba(255,255,255,.07);overflow:hidden}
+#icebergPanel .ice111-bar i:before{content:"";display:block;width:var(--w);height:100%;border-radius:inherit;background:linear-gradient(90deg,#68d6cf,#7790ee)}
+#icebergPanel .ice111-bar em{font-style:normal;text-align:right;font-size:5.1px;opacity:.5}
+#icebergPanel .ice111-highlight{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+#icebergPanel .ice111-highlight .ice111-panel{background:linear-gradient(135deg,rgba(10,37,51,.56),rgba(20,26,50,.48))}
+#icebergPanel .ice111-profile{grid-column:1/-1;padding:8px;border-radius:10px;border:1px solid rgba(126,220,199,.16);background:linear-gradient(135deg,rgba(11,46,45,.45),rgba(12,31,52,.48))}
+#icebergPanel .ice111-profile small{display:block;font-size:5.3px;color:#8edbcc;font-weight:950;letter-spacing:.08em}
+#icebergPanel .ice111-profile b{display:block;margin-top:3px;font-size:8px}
+#icebergPanel .ice111-profile p{margin:3px 0 0;font-size:5.5px;line-height:1.45;opacity:.62}
+#icebergPanel .ice111-analysis-btn{border-color:rgba(135,211,240,.22)!important}
+@media(max-width:780px){#icebergPanel .ice111-report-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){
+ #icebergPanel .ice111-report-grid,#icebergPanel .ice111-highlight{grid-template-columns:1fr}
+ #icebergPanel .ice111-bar{grid-template-columns:minmax(0,54px) 1fr 22px}
+}
+#icebergPanel .ice112-compare-btn.selected{
+  border-color:rgba(119,223,206,.42)!important;background:rgba(17,69,66,.66)!important;color:#d8fff8!important
+}
+#icebergPanel .ice112-compare{
+  grid-column:1/-1;display:grid;gap:8px;padding:9px;border:1px solid rgba(129,220,211,.18);
+  border-radius:12px;background:linear-gradient(180deg,rgba(7,33,43,.72),rgba(5,20,33,.78))
+}
+#icebergPanel .ice112-compare-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+#icebergPanel .ice112-compare-head small{font-size:5.5px;font-weight:950;letter-spacing:.1em;color:#87ddcf}
+#icebergPanel .ice112-compare-head b{display:block;margin-top:2px;font-size:8px}
+#icebergPanel .ice112-compare-head div:last-child{display:flex;gap:4px;flex-wrap:wrap}
+#icebergPanel .ice112-compare-head button{
+  min-height:27px;padding:0 8px;border:1px solid rgba(255,255,255,.12);border-radius:8px;
+  background:rgba(7,27,39,.54);color:inherit;font-size:5.8px;font-weight:900
+}
+#icebergPanel .ice112-columns{display:grid;grid-template-columns:repeat(var(--n,2),minmax(0,1fr));gap:6px}
+#icebergPanel .ice112-col{
+  min-width:0;padding:8px;border:1px solid rgba(255,255,255,.08);border-radius:10px;
+  background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.012))
+}
+#icebergPanel .ice112-col>small{display:block;font-size:5.2px;color:#78c5d9;font-weight:950;letter-spacing:.08em}
+#icebergPanel .ice112-col>h4{margin:3px 0 0;font-size:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#icebergPanel .ice112-metrics{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:6px}
+#icebergPanel .ice112-metric{padding:5px;border-radius:8px;background:rgba(255,255,255,.035)}
+#icebergPanel .ice112-metric small{display:block;font-size:4.8px;opacity:.48}
+#icebergPanel .ice112-metric b{display:block;margin-top:2px;font-size:6.6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#icebergPanel .ice112-tags{display:grid;gap:4px;margin-top:6px}
+#icebergPanel .ice112-tags div{display:grid;grid-template-columns:38px minmax(0,1fr);gap:4px;align-items:start}
+#icebergPanel .ice112-tags label{font-size:4.8px;opacity:.48}
+#icebergPanel .ice112-tags span{font-size:5.2px;line-height:1.4;opacity:.76}
+#icebergPanel .ice112-overlap{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px
+}
+#icebergPanel .ice112-overlap-card{
+  padding:7px;border:1px solid rgba(255,255,255,.08);border-radius:9px;background:rgba(255,255,255,.025)
+}
+#icebergPanel .ice112-overlap-card small{display:block;font-size:4.8px;opacity:.46}
+#icebergPanel .ice112-overlap-card b{display:block;margin-top:3px;font-size:7px}
+#icebergPanel .ice112-overlap-card p{margin:3px 0 0;font-size:5.1px;line-height:1.4;opacity:.57}
+#icebergPanel .ice112-common{padding:7px;border-radius:9px;border:1px solid rgba(126,210,231,.10);background:rgba(7,27,42,.38)}
+#icebergPanel .ice112-common small{display:block;font-size:5px;color:#75bfd5;font-weight:950;letter-spacing:.07em}
+#icebergPanel .ice112-common div{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
+#icebergPanel .ice112-common span{max-width:150px;padding:3px 6px;border-radius:999px;background:rgba(255,255,255,.045);font-size:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:760px){
+ #icebergPanel .ice112-columns{grid-template-columns:1fr}
+ #icebergPanel .ice112-overlap{grid-template-columns:1fr}
+}
+#icebergPanel .ice113-atlas-btn{
+  min-height:26px;padding:0 8px;border:1px solid rgba(115,219,203,.25);border-radius:8px;
+  background:linear-gradient(135deg,rgba(16,61,60,.62),rgba(23,44,72,.58));color:inherit;font-size:5.8px;font-weight:950
+}
+#icebergPanel .ice113-atlas{
+  display:grid;gap:8px;padding:9px;border:1px solid rgba(112,219,205,.17);border-radius:12px;
+  background:linear-gradient(180deg,rgba(6,31,38,.74),rgba(5,18,31,.82))
+}
+#icebergPanel .ice113-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+#icebergPanel .ice113-head small{display:block;font-size:5.4px;font-weight:950;letter-spacing:.11em;color:#7ed9ca}
+#icebergPanel .ice113-head b{display:block;margin-top:2px;font-size:8px}
+#icebergPanel .ice113-head button{min-height:26px;padding:0 8px;border:1px solid rgba(255,255,255,.11);border-radius:8px;background:rgba(7,26,37,.52);color:inherit;font-size:5.7px;font-weight:900}
+#icebergPanel .ice113-kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+#icebergPanel .ice113-kpi{padding:7px;border:1px solid rgba(255,255,255,.075);border-radius:9px;background:rgba(255,255,255,.025)}
+#icebergPanel .ice113-kpi small{display:block;font-size:4.8px;opacity:.48}
+#icebergPanel .ice113-kpi b{display:block;margin-top:3px;font-size:7.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#icebergPanel .ice113-coverage{display:grid;gap:4px}
+#icebergPanel .ice113-tier-row{display:grid;grid-template-columns:72px minmax(0,1fr) 48px;gap:5px;align-items:center}
+#icebergPanel .ice113-tier-row label{font-size:5.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#icebergPanel .ice113-tier-row i{height:6px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden}
+#icebergPanel .ice113-tier-row i:before{content:"";display:block;width:var(--w);height:100%;border-radius:inherit;background:linear-gradient(90deg,#62d6c8,#728ee9)}
+#icebergPanel .ice113-tier-row em{font-style:normal;text-align:right;font-size:5px;opacity:.52}
+#icebergPanel .ice113-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+#icebergPanel .ice113-panel{padding:7px;border:1px solid rgba(255,255,255,.075);border-radius:9px;background:rgba(255,255,255,.022);min-width:0}
+#icebergPanel .ice113-panel>small{display:block;font-size:5px;font-weight:950;letter-spacing:.08em;color:#72bfd1}
+#icebergPanel .ice113-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
+#icebergPanel .ice113-tags span{max-width:140px;padding:3px 6px;border-radius:999px;background:rgba(255,255,255,.045);font-size:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#icebergPanel .ice113-rare{display:grid;gap:4px;margin-top:5px}
+#icebergPanel .ice113-rare div{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;align-items:center;font-size:5.2px}
+#icebergPanel .ice113-rare b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:5.4px}
+#icebergPanel .ice113-rare span{opacity:.54;white-space:nowrap}
+#icebergPanel .ice113-targets{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
+#icebergPanel .ice113-targets button{min-height:28px;padding:0 8px;border:1px solid rgba(121,214,240,.16);border-radius:8px;background:rgba(7,29,43,.52);color:inherit;font-size:5.5px;font-weight:900}
+#icebergPanel .ice113-profile{padding:8px;border:1px solid rgba(121,220,201,.13);border-radius:10px;background:linear-gradient(135deg,rgba(10,48,44,.42),rgba(14,28,52,.42))}
+#icebergPanel .ice113-profile small{display:block;font-size:5px;color:#83d8c7;font-weight:950;letter-spacing:.08em}
+#icebergPanel .ice113-profile b{display:block;margin-top:3px;font-size:7.5px}
+#icebergPanel .ice113-profile p{margin:3px 0 0;font-size:5.3px;line-height:1.45;opacity:.58}
+@media(max-width:760px){
+ #icebergPanel .ice113-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #icebergPanel .ice113-grid{grid-template-columns:1fr}
+}
+@media(max-width:430px){
+ #icebergPanel .ice113-tier-row{grid-template-columns:58px minmax(0,1fr) 42px}
+}
+#icebergPanel .ice114-list-toggle{
+  min-height:25px;padding:0 7px;border:1px solid rgba(255,255,255,.1);border-radius:8px;
+  background:rgba(7,25,38,.46);color:inherit;font-size:5.5px;font-weight:900
+}
+#icebergPanel .ice114-missions{display:grid;gap:6px}
+#icebergPanel .ice114-missions-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+#icebergPanel .ice114-missions-head small{font-size:5px;color:#82dbc9;font-weight:950;letter-spacing:.09em}
+#icebergPanel .ice114-missions-head span{font-size:5px;opacity:.52}
+#icebergPanel .ice114-mission-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+#icebergPanel .ice114-mission{
+  min-width:0;padding:7px;border:1px solid rgba(255,255,255,.075);border-radius:9px;background:rgba(255,255,255,.022)
+}
+#icebergPanel .ice114-mission.done{border-color:rgba(116,219,190,.2);background:rgba(20,68,57,.28)}
+#icebergPanel .ice114-mission-top{display:flex;justify-content:space-between;align-items:center;gap:5px}
+#icebergPanel .ice114-mission b{font-size:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#icebergPanel .ice114-mission em{font-style:normal;font-size:5px;opacity:.55}
+#icebergPanel .ice114-mission i{display:block;height:5px;margin-top:5px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden}
+#icebergPanel .ice114-mission i:before{content:"";display:block;width:var(--w);height:100%;border-radius:inherit;background:linear-gradient(90deg,#65d8c4,#7e8df0)}
+#icebergPanel .ice114-mission p{margin:4px 0 0;font-size:5px;line-height:1.4;opacity:.55}
+#icebergPanel .ice114-mission button{
+  width:100%;min-height:25px;margin-top:5px;border:1px solid rgba(120,207,235,.13);border-radius:7px;
+  background:rgba(8,29,43,.5);color:inherit;font-size:5.2px;font-weight:900
+}
+#icebergPanel .ice114-mission.done button{display:none}
+#icebergPanel .ice114-hotfix-note{
+  padding:6px 8px;border-radius:8px;border:1px solid rgba(130,214,198,.11);background:rgba(8,35,38,.34);
+  font-size:5px;line-height:1.45;opacity:.58
+}
+@media(max-width:760px){#icebergPanel .ice114-mission-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:430px){#icebergPanel .ice114-mission-grid{grid-template-columns:1fr}}
+#icebergPanel .ice115-passport-btn{
+  min-height:26px;padding:0 8px;border:1px solid rgba(125,203,246,.24);border-radius:8px;
+  background:linear-gradient(135deg,rgba(15,48,72,.66),rgba(39,39,78,.6));color:inherit;font-size:5.8px;font-weight:950
+}
+#icebergPanel .ice115-passport{
+  display:grid;gap:8px;padding:9px;border:1px solid rgba(125,203,246,.16);border-radius:12px;
+  background:linear-gradient(180deg,rgba(7,28,45,.76),rgba(6,17,31,.84))
+}
+#icebergPanel .ice115-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+#icebergPanel .ice115-head small{display:block;font-size:5.4px;font-weight:950;letter-spacing:.1em;color:#86caee}
+#icebergPanel .ice115-head b{display:block;margin-top:2px;font-size:8px}
+#icebergPanel .ice115-head p{margin:3px 0 0;font-size:5.1px;line-height:1.45;opacity:.55}
+#icebergPanel .ice115-head button{min-height:26px;padding:0 8px;border:1px solid rgba(255,255,255,.11);border-radius:8px;background:rgba(7,25,40,.5);color:inherit;font-size:5.7px;font-weight:900}
+#icebergPanel .ice115-toolbar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;align-items:center}
+#icebergPanel .ice115-toolbar input,#icebergPanel .ice115-toolbar select{
+  min-height:32px;border:1px solid rgba(255,255,255,.1);border-radius:9px;background:rgba(5,21,34,.62);
+  color:inherit;padding:0 9px;font-size:6px;outline:none
+}
+#icebergPanel .ice115-filters{display:flex;gap:4px;flex-wrap:wrap}
+#icebergPanel .ice115-filters button{
+  min-height:26px;padding:0 7px;border:1px solid rgba(255,255,255,.09);border-radius:999px;
+  background:rgba(255,255,255,.025);color:inherit;font-size:5.4px;font-weight:900
+}
+#icebergPanel .ice115-filters button.active{border-color:rgba(121,207,246,.34);background:rgba(20,62,84,.62);color:#d8f5ff}
+#icebergPanel .ice115-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+#icebergPanel .ice115-kpi{padding:7px;border:1px solid rgba(255,255,255,.07);border-radius:9px;background:rgba(255,255,255,.022)}
+#icebergPanel .ice115-kpi small{display:block;font-size:4.8px;opacity:.47}
+#icebergPanel .ice115-kpi b{display:block;margin-top:3px;font-size:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#icebergPanel .ice115-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+#icebergPanel .ice115-card{
+  min-width:0;display:grid;grid-template-columns:54px minmax(0,1fr);gap:7px;align-items:start;
+  padding:7px;border:1px solid rgba(255,255,255,.08);border-radius:11px;background:rgba(255,255,255,.024);
+  position:relative
+}
+#icebergPanel .ice115-card:hover{border-color:rgba(143,211,244,.2);background:rgba(15,42,59,.42)}
+#icebergPanel .ice115-thumb{width:54px;height:54px;border-radius:10px;overflow:hidden;background:#0c2a3c;display:grid;place-items:center}
+#icebergPanel .ice115-thumb img{width:100%;height:100%;object-fit:cover}
+#icebergPanel .ice115-thumb span{font-size:14px;color:#91d7ef}
+#icebergPanel .ice115-copy{min-width:0}
+#icebergPanel .ice115-copy b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:6.8px;line-height:1.35}
+#icebergPanel .ice115-copy small{display:block;margin-top:3px;font-size:5.2px;opacity:.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#icebergPanel .ice115-badges{display:flex;gap:3px;flex-wrap:wrap;margin-top:5px}
+#icebergPanel .ice115-badges span{max-width:100%;padding:2px 5px;border-radius:999px;background:rgba(255,255,255,.045);font-size:4.9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#icebergPanel .ice115-badges .rare{color:#9ee9d3;border:1px solid rgba(124,225,197,.12)}
+#icebergPanel .ice115-watch{
+  grid-column:1/-1;min-height:27px;border:1px solid rgba(121,202,242,.14);border-radius:8px;
+  background:rgba(8,30,45,.52);color:inherit;font-size:5.5px;font-weight:900
+}
+#icebergPanel .ice115-empty{padding:18px;border:1px dashed rgba(255,255,255,.1);border-radius:10px;text-align:center;font-size:5.8px;opacity:.55}
+#icebergPanel .ice115-more{
+  min-height:30px;border:1px solid rgba(255,255,255,.1);border-radius:9px;background:rgba(8,29,43,.5);
+  color:inherit;font-size:5.8px;font-weight:900
+}
+@media(max-width:900px){#icebergPanel .ice115-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){
+ #icebergPanel .ice115-toolbar{grid-template-columns:1fr}
+ #icebergPanel .ice115-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #icebergPanel .ice115-grid{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){#icebergPanel .ice107-focus-neighbor{animation:none!important}#icebergPanel .ice107-bridge-card.ice108-sailing:after{animation:none!important}}
+`;
+  document.head.appendChild(el);
+}
+function esc107(v){
+  if(typeof esc==="function")return esc(v);
+  return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})
+}
+function fmt107(v){try{return typeof fmt==="function"?fmt(v):(Number(v)||0).toLocaleString("ko-KR")}catch(_){return String(v||0)}}
+function focusSong(){
+  if(!focusId||!window.state&&typeof state==="undefined")return null;
+  return (state.songs||[]).find(function(s){return s&&String(s.contentId)===String(focusId)})||null
+}
+function clearFocus(doRender){
+  focusId="";
+  bridgeState={focusId:"",loading:false,up:[],down:[]};
+  bridgeSeq++;
+  if(doRender!==false&&typeof renderIceberg==="function")renderIceberg()
+}
+function relation(center,song){
+  try{
+    if(typeof icebergRelationKind106==="function")return icebergRelationKind106(center,song)
+  }catch(_){}
+  try{
+    var d=similarityBreakdown50(center,song);
+    if(d.producer)return{kind:"producer",label:"같은 P",score:d.score+1,raw:d};
+    if(d.vocal)return{kind:"vocal",label:"같은 보컬",score:d.score+.72,raw:d};
+    if(d.music>0)return{kind:"music",label:"장르·분위기",score:d.score+.46+d.music*.18,raw:d};
+    if(d.tag>=.12)return{kind:"tag",label:"핵심 태그",score:d.score+d.tag*.22,raw:d}
+  }catch(_){}
+  return null
+}
+function rankedNeighbors(center,pool,count){
+  count=count||4;
+  return (pool||[]).filter(function(s){return s&&s.contentId!==center.contentId}).map(function(song){
+    var rel=relation(center,song),score=0;
+    try{score=rel?rel.score:weightedTagSimilarity(center,song)}catch(_){}
+    return{song:song,rel:rel,score:score}
+  }).sort(function(a,b){
+    return (b.rel?1:0)-(a.rel?1:0)||b.score-a.score||(+b.song.viewCounter||0)-(+a.song.viewCounter||0)
+  }).slice(0,count).map(function(x){return x.song})
+}
+function focusRows(pool){
+  var center=focusSong();if(!center)return null;
+  return [center].concat(rankedNeighbors(center,pool,4))
+}
+function focusRelations(rows){
+  if(!focusId||!rows||!rows[0]||String(rows[0].contentId)!==String(focusId))return null;
+  return rows.slice(1).map(function(song,i){
+    var rel=relation(rows[0],song);
+    return rel?{a:0,b:i+1,kind:rel.kind,label:rel.label,score:rel.score,raw:rel.raw}:null
+  }).filter(Boolean)
+}
+function producerHints114(song){
+  var out=[];
+  function add(v){
+    var name=String(v&&v.name!=null?v.name:v||"").trim();
+    if(!name)return;
+    try{if(typeof canonicalProducerName37==="function")name=canonicalProducerName37(name)}catch(_){}
+    if(name&&!out.some(function(x){return String(x).toLowerCase()===name.toLowerCase()}))out.push(name)
+  }
+  try{(song&&Array.isArray(song.producerHints)?song.producerHints:[]).forEach(add)}catch(_){}
+  try{if(typeof inferNicoProducerCredits37==="function")(inferNicoProducerCredits37(song)||[]).forEach(add)}catch(_){}
+  try{if(typeof cachedProducerFamily37==="function")(cachedProducerFamily37(song)||[]).forEach(add)}catch(_){}
+  return out.slice(0,4)
+}
+function compactVoyageSong108(song){
+  if(!song)return null;
+  return {contentId:song.contentId,title:song.title||song.contentId,thumbnailUrl:song.thumbnailUrl||"",viewCounter:+song.viewCounter||0,mylistCounter:+song.mylistCounter||0,commentCounter:+song.commentCounter||0,likeCounter:+song.likeCounter||0,startTime:song.startTime||"",tags:song.tags||[],description:song.description||"",producerHints:producerHints114(song)}
+}
+function saveDiveLog109(){
+  try{sessionStorage.setItem(DIVE_LOG_KEY109,JSON.stringify(voyageHistory108.slice(-16)))}catch(_){}
+}
+function loadDiveLog109(){
+  try{
+    var rows=JSON.parse(sessionStorage.getItem(DIVE_LOG_KEY109)||"[]");
+    if(Array.isArray(rows))voyageHistory108=rows.filter(function(x){return x&&x.tierId&&x.song&&x.song.contentId}).slice(-16)
+  }catch(_){}
+  voyageHistory108.forEach(function(x){if(x&&x.song)voyageSongCache108.set(String(x.song.contentId),x.song)})
+}
+function diveLogEntries109(){
+  var rows=voyageHistory108.slice();
+  var center=focusSong();
+  if(center&&state.tier!=="all"){
+    var tier=TIERS.find(function(t){return t.id===state.tier});
+    var current={tierId:state.tier,tierName:tier?tier.name:state.tier,song:compactVoyageSong108(center),at:Date.now(),current:true};
+    var last=rows[rows.length-1];
+    if(!last||last.tierId!==current.tierId||!last.song||last.song.contentId!==current.song.contentId)rows.push(current);
+    else rows[rows.length-1]=Object.assign({},last,{current:true})
+  }
+  return rows.slice(-17)
+}
+function tierDepthPct109(tierId){
+  var idx=TIERS.findIndex(function(t){return t.id===tierId});
+  if(idx<0)return 0;
+  return Math.round((idx/Math.max(1,TIERS.length-1))*100)
+}
+function diveLogStats109(rows){
+  if(!rows.length)return{deepest:null,delta:0,unique:0};
+  var unique=new Set(),deepest=rows[0],min=99,max=-1;
+  rows.forEach(function(x){
+    if(x.song&&x.song.contentId)unique.add(x.song.contentId);
+    var i=TIERS.findIndex(function(t){return t.id===x.tierId});
+    if(i>=0){if(i>max){max=i;deepest=x}if(i<min)min=i}
+  });
+  return{deepest:deepest,delta:max>=0&&min<99?max-min:0,unique:unique.size}
+}
+function loadSavedExpeditions110(){
+  try{
+    var rows=JSON.parse(localStorage.getItem(SAVED_EXPEDITIONS_KEY110)||"[]");
+    if(Array.isArray(rows))savedExpeditions110=rows.filter(function(x){return x&&x.id&&Array.isArray(x.route)&&x.route.length}).slice(0,20)
+  }catch(_){savedExpeditions110=[]}
+  var changed=false;
+  savedExpeditions110.forEach(function(card){
+    (card.route||[]).forEach(function(x){
+      if(!x||!x.song)return;
+      voyageSongCache108.set(String(x.song.contentId),x.song);
+      if(!Array.isArray(x.song.producerHints)||!x.song.producerHints.length){
+        var hints=producerHints114(x.song);
+        if(hints.length){x.song.producerHints=hints;changed=true}
+      }
+    })
+  });
+  if(changed)persistSavedExpeditions110()
+}
+function persistSavedExpeditions110(){
+  try{localStorage.setItem(SAVED_EXPEDITIONS_KEY110,JSON.stringify(savedExpeditions110.slice(0,20)))}catch(_){}
+}
+function routeSignature110(rows){
+  return (rows||[]).map(function(x){return String(x.tierId||"")+"@"+String(x.song&&x.song.contentId||"")}).join(">")
+}
+function routeStats110(rows){
+  var unique=new Map(),sumViews=0,maxIdx=-1,depthSum=0,validDepth=0,deepest=null;
+  (rows||[]).forEach(function(x){
+    var song=x.song||{},id=String(song.contentId||"");
+    if(id&&!unique.has(id))unique.set(id,song);
+    var idx=TIERS.findIndex(function(t){return t.id===x.tierId});
+    if(idx>=0){depthSum+=idx/Math.max(1,TIERS.length-1);validDepth++;if(idx>maxIdx){maxIdx=idx;deepest=x}}
+  });
+  unique.forEach(function(song){sumViews+=Math.max(0,+song.viewCounter||0)});
+  var avgViews=unique.size?sumViews/unique.size:0;
+  var depthFactor=validDepth?depthSum/validDepth:0;
+  var viewRarity=1-Math.min(1,Math.log10(avgViews+1)/7);
+  var rarity=Math.max(0,Math.min(100,Math.round((depthFactor*.58+viewRarity*.42)*100)));
+  return{
+    unique:unique.size,
+    avgViews:Math.round(avgViews),
+    rarity:rarity,
+    deepest:deepest,
+    deepestIndex:maxIdx,
+    steps:rows?rows.length:0
+  }
+}
+function expeditionTitle110(rows,stats){
+  var last=rows&&rows[rows.length-1],deep=stats&&stats.deepest;
+  var tier=deep?(deep.tierName||deep.tierId):"빙산";
+  var song=last&&last.song&&(last.song.title||last.song.contentId)||"탐사";
+  if(song.length>20)song=song.slice(0,20)+"…";
+  return tier+" 항해 · "+song
+}
+function saveCurrentExpedition110(){
+  var rows=diveLogEntries109().map(function(x){return{tierId:x.tierId,tierName:x.tierName,song:compactVoyageSong108(x.song),at:+x.at||Date.now()}});
+  if(!rows.length){try{toast("저장할 항해 기록이 없습니다.")}catch(_){}return}
+  var sig=routeSignature110(rows),dup=savedExpeditions110.find(function(x){return x.signature===sig});
+  if(dup){try{toast("같은 경로가 이미 저장되어 있습니다.")}catch(_){}return}
+  var stats=routeStats110(rows),card={
+    id:"exp_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,7),
+    title:expeditionTitle110(rows,stats),
+    createdAt:Date.now(),
+    signature:sig,
+    sourceMode:state.sourceMode||"",
+    year:state.year||"all",
+    route:rows,
+    stats:stats
+  };
+  savedExpeditions110.unshift(card);if(savedExpeditions110.length>20)savedExpeditions110.length=20;
+  persistSavedExpeditions110();
+  try{toast("탐사 기록 카드를 저장했습니다.")}catch(_){}
+  renderIceberg()
+}
+function deleteExpedition110(id){
+  expeditionReportOpen111.delete(id);
+  compareSelection112.delete(id);if(compareSelection112.size<2)compareOpen112=false;
+  savedExpeditions110=savedExpeditions110.filter(function(x){return x.id!==id});
+  if(!savedExpeditions110.length){expeditionAtlasOpen113=false;discoveryPassportOpen115=false}
+  persistSavedExpeditions110();
+  if(replayState110.id===id)stopReplay110();
+  renderIceberg()
+}
+function countMapTop111(map,limit){
+  return [...map.entries()].sort(function(a,b){return b[1]-a[1]||String(a[0]).localeCompare(String(b[0]))}).slice(0,limit||5)
+}
+function vocalTags111(song){
+  var raw=[];
+  try{raw=typeof parseTags==="function"?parseTags(song&&song.tags):Array.isArray(song&&song.tags)?song.tags:[]}catch(_){raw=[]}
+  var names=["初音ミク","鏡音リン","鏡音レン","巡音ルカ","MEIKO","KAITO","GUMI","Megpoid","IA","flower","v flower","音街ウナ","結月ゆかり","重音テト","波音リツ","可不","星界","裏命","知声","小春六花","夏色花梨","花隈千冬","宮舞モカ","Synthesizer V","UTAU"];
+  var out=[];
+  raw.forEach(function(tag){names.forEach(function(n){if(String(tag).toLowerCase().includes(String(n).toLowerCase()))out.push(n)})});
+  return [...new Set(out)]
+}
+function producerTags111(song){
+  var out=[];
+  function add(v){
+    var tag=String(v&&v.name!=null?v.name:v||"").trim();
+    if(!tag||tag.length>52)return;
+    try{if(typeof canonicalProducerName37==="function")tag=canonicalProducerName37(tag)}catch(_){}
+    if(tag&&!out.some(function(x){return x.toLowerCase()===tag.toLowerCase()}))out.push(tag)
+  }
+  try{(Array.isArray(song&&song.producerHints)?song.producerHints:[]).forEach(add)}catch(_){}
+  var raw=[];
+  try{raw=typeof parseTags==="function"?parseTags(song&&song.tags):Array.isArray(song&&song.tags)?song.tags:[]}catch(_){raw=[]}
+  raw.forEach(function(tag){
+    tag=String(tag||"").trim();
+    if(!tag||tag.length>32)return;
+    if(/^(VOCALOID|UTAU|Synthesizer|初音ミク|鏡音リン|鏡音レン|巡音ルカ|GUMI|IA|flower|KAITO|MEIKO)$/i.test(tag))return;
+    if(/(?:^|[^A-Za-z0-9])[A-Za-z0-9ぁ-んァ-ヶ一-龠々ー・_.-]{1,24}P$/i.test(tag)||/P名|プロデューサー/i.test(tag))add(tag)
+  });
+  return out
+}
+function genreTags111(song){
+  var raw=[];
+  try{raw=typeof parseTags==="function"?parseTags(song&&song.tags):Array.isArray(song&&song.tags)?song.tags:[]}catch(_){raw=[]}
+  var keys=(typeof MUSIC_TAG_HINTS!=="undefined"&&Array.isArray(MUSIC_TAG_HINTS))?MUSIC_TAG_HINTS:[
+    "ロック","ROCK","VOCAROCK","エレクトロ","テクノ","トランス","EDM","ハウス","ポップ","バラード","ジャズ","メタル","ピアノ","和風","民族調","オーケストラ","シューゲイザー","ドラムンベース","DnB","ダブステップ","チップチューン","ファンク","ラップ","ヒップホップ","ダーク","幻想","疾走感","かわいい","可愛い"
+  ];
+  var out=[];
+  raw.forEach(function(tag){
+    var low=String(tag).toLowerCase();
+    keys.forEach(function(k){if(low.includes(String(k).toLowerCase()))out.push(String(k))})
+  });
+  return [...new Set(out)]
+}
+function distribution111(rows,extractor){
+  var m=new Map();
+  (rows||[]).forEach(function(x){(extractor(x.song||{})||[]).forEach(function(k){m.set(k,(m.get(k)||0)+1)})});
+  return countMapTop111(m,5)
+}
+function rarestSong111(rows){
+  var best=null;
+  (rows||[]).forEach(function(x){
+    var v=+((x.song||{}).viewCounter)||0;
+    if(v<=0)return;
+    if(!best||v<best.views)best={song:x.song,views:v,tierName:x.tierName||x.tierId}
+  });
+  return best
+}
+function biggestViewJump111(rows){
+  var best=null;
+  for(var i=1;i<(rows||[]).length;i++){
+    var a=rows[i-1]&&rows[i-1].song||{},b=rows[i]&&rows[i].song||{};
+    var va=Math.max(1,+a.viewCounter||0),vb=Math.max(1,+b.viewCounter||0);
+    var ratio=Math.max(va,vb)/Math.min(va,vb),score=Math.abs(Math.log10(vb)-Math.log10(va));
+    if(!best||score>best.score)best={from:a,to:b,fromTier:rows[i-1].tierName||rows[i-1].tierId,toTier:rows[i].tierName||rows[i].tierId,ratio:ratio,score:score,direction:vb<va?"down":"up"}
+  }
+  return best
+}
+function expeditionProfile111(rows,stats){
+  var avgDepth=0,n=0,deepMoves=0,upMoves=0;
+  (rows||[]).forEach(function(x,i){
+    var idx=TIERS.findIndex(function(t){return t.id===x.tierId});
+    if(idx>=0){avgDepth+=idx/Math.max(1,TIERS.length-1);n++}
+    if(i){var prev=TIERS.findIndex(function(t){return t.id===rows[i-1].tierId});if(prev>=0&&idx>=0){if(idx>prev)deepMoves++;if(idx<prev)upMoves++}}
+  });
+  avgDepth=n?avgDepth/n:0;
+  var label="균형 탐사형",desc="표층과 심층을 비교적 고르게 오가며 관계곡을 따라간 경로입니다.";
+  if(avgDepth>.68&&stats.rarity>=60){label="심해 발굴형";desc="깊은 층과 낮은 조회수 곡 비중이 높아 발굴 성향이 강한 항해입니다."}
+  else if(avgDepth>.62){label="심층 추적형";desc="심층권 체류가 길고 아래 방향 브리지를 꾸준히 따라간 경로입니다."}
+  else if(avgDepth<.28){label="표층 순회형";desc="상위 조회수 층 중심으로 유명곡 관계망을 넓게 훑은 경로입니다."}
+  else if(deepMoves>=upMoves+2){label="하강 탐사형";desc="상승보다 하강 이동이 많아 점점 더 깊은 곡으로 파고든 경로입니다."}
+  else if(upMoves>=deepMoves+2){label="역상승 추적형";desc="깊은 곳에서 출발해 관계를 따라 더 알려진 상위층으로 거슬러 올라간 경로입니다."}
+  return{label:label,desc:desc,avgDepth:avgDepth,deepMoves:deepMoves,upMoves:upMoves}
+}
+function expeditionAnalysis111(rows){
+  var stats=routeStats110(rows),producer=distribution111(rows,producerTags111),vocal=distribution111(rows,vocalTags111),genre=distribution111(rows,genreTags111);
+  return{stats:stats,producer:producer,vocal:vocal,genre:genre,rarest:rarestSong111(rows),jump:biggestViewJump111(rows),profile:expeditionProfile111(rows,stats)}
+}
+function barsHtml111(title,rows){
+  if(!rows||!rows.length)return '<div class="ice111-panel"><small>'+esc107(title)+'</small><b>확인 가능한 태그 없음</b><p>저장된 곡 태그에서 식별되는 항목만 집계합니다.</p></div>';
+  var max=Math.max.apply(null,rows.map(function(x){return x[1]}))||1;
+  return '<div class="ice111-panel"><small>'+esc107(title)+'</small><div class="ice111-bars">'+rows.map(function(x){
+    return '<div class="ice111-bar"><label title="'+esc107(x[0])+'">'+esc107(x[0])+'</label><i style="--w:'+Math.round(x[1]/max*100)+'%"></i><em>'+x[1]+'</em></div>'
+  }).join("")+'</div></div>'
+}
+function expeditionReportHtml111(card){
+  if(!expeditionReportOpen111.has(card.id))return"";
+  var a=expeditionAnalysis111(card.route||[]),rare=a.rarest,jump=a.jump;
+  var rareTitle=rare&&rare.song?(rare.song.title||rare.song.contentId):"조회수 정보 없음";
+  var rareMeta=rare?"조회 "+fmt107(rare.views)+" · "+(rare.tierName||""):"유효한 조회수 데이터를 찾지 못했습니다.";
+  var jumpTitle=jump?(jump.from.title||jump.from.contentId)+" → "+(jump.to.title||jump.to.contentId):"급변 구간 없음";
+  var jumpMeta=jump?(jump.direction==="down"?"조회수 하락 ":"조회수 상승 ")+jump.ratio.toFixed(jump.ratio>=10?0:1)+"배 · "+(jump.fromTier||"")+" → "+(jump.toTier||""):"경로가 2지점 미만입니다.";
+  return '<div class="ice111-report"><div class="ice111-report-head"><small>EXPEDITION ANALYSIS · 태그 기반</small><span>P/보컬/장르는 저장 곡 태그에서 확인 가능한 항목만 집계</span></div>'+
+    '<div class="ice111-report-grid">'+
+      barsHtml111("P / 프로듀서 태그",a.producer)+
+      barsHtml111("보컬 분포",a.vocal)+
+      barsHtml111("장르·분위기 분포",a.genre)+
+    '</div>'+
+    '<div class="ice111-highlight">'+
+      '<div class="ice111-panel"><small>가장 희귀했던 곡</small><b>'+esc107(rareTitle)+'</b><p>'+esc107(rareMeta)+'</p></div>'+
+      '<div class="ice111-panel"><small>조회수 급변 구간</small><b>'+esc107(jumpTitle)+'</b><p>'+esc107(jumpMeta)+'</p></div>'+
+    '</div>'+
+    '<div class="ice111-profile"><small>EXPLORATION PROFILE</small><b>'+esc107(a.profile.label)+'</b><p>'+esc107(a.profile.desc)+' · 하강 '+a.profile.deepMoves+'회 / 상승 '+a.profile.upMoves+'회</p></div>'+
+  '</div>'
+}
+function selectedExpeditions112(){
+  return [...compareSelection112].map(function(id){return savedExpeditions110.find(function(x){return x.id===id})}).filter(Boolean).slice(0,3)
+}
+function songSet112(card){
+  return new Set((card.route||[]).map(function(x){return String(x.song&&x.song.contentId||"")}).filter(Boolean))
+}
+function overlap112(a,b){
+  var A=songSet112(a),B=songSet112(b),inter=[],union=new Set(A);
+  B.forEach(function(x){union.add(x);if(A.has(x))inter.push(x)});
+  return{count:inter.length,union:union.size,pct:union.size?Math.round(inter.length/union.size*100):0,ids:inter}
+}
+function allCommonSongs112(cards){
+  if(!cards.length)return[];
+  var sets=cards.map(songSet112),first=[...sets[0]];
+  var ids=first.filter(function(id){return sets.slice(1).every(function(set){return set.has(id)})});
+  var names=[];
+  ids.forEach(function(id){
+    for(var card of cards){
+      var hit=(card.route||[]).find(function(x){return x.song&&String(x.song.contentId)===id});
+      if(hit){names.push(hit.song.title||hit.song.contentId);break}
+    }
+  });
+  return names
+}
+function topNames112(rows){
+  return rows&&rows.length?rows.slice(0,3).map(function(x){return x[0]+" "+x[1]}).join(" · "):"확인 없음"
+}
+function compareColumnHtml112(card,index){
+  var a=expeditionAnalysis111(card.route||[]),stats=a.stats||routeStats110(card.route||[]);
+  var deep=stats.deepest?(stats.deepest.tierName||stats.deepest.tierId):"-";
+  return '<div class="ice112-col"><small>EXPEDITION '+(index+1)+'</small><h4 title="'+esc107(card.title||"저장 탐사")+'">'+esc107(card.title||"저장 탐사")+'</h4>'+
+    '<div class="ice112-metrics">'+
+      '<div class="ice112-metric"><small>탐사 단계</small><b>'+stats.steps+'</b></div>'+
+      '<div class="ice112-metric"><small>고유 곡</small><b>'+stats.unique+'곡</b></div>'+
+      '<div class="ice112-metric"><small>최심층</small><b>'+esc107(deep)+'</b></div>'+
+      '<div class="ice112-metric"><small>탐사 희귀도</small><b>'+stats.rarity+'</b></div>'+
+      '<div class="ice112-metric"><small>평균 조회수</small><b>'+fmt107(stats.avgViews)+'회</b></div>'+
+      '<div class="ice112-metric"><small>탐사 성향</small><b>'+esc107(a.profile.label)+'</b></div>'+
+    '</div>'+
+    '<div class="ice112-tags">'+
+      '<div><label>P</label><span>'+esc107(topNames112(a.producer))+'</span></div>'+
+      '<div><label>보컬</label><span>'+esc107(topNames112(a.vocal))+'</span></div>'+
+      '<div><label>장르</label><span>'+esc107(topNames112(a.genre))+'</span></div>'+
+    '</div></div>'
+}
+function compareSummaryText112(cards){
+  var lines=["VocaDive Expedition Compare"];
+  cards.forEach(function(card,i){
+    var a=expeditionAnalysis111(card.route||[]),s=a.stats,deep=s.deepest?(s.deepest.tierName||s.deepest.tierId):"-";
+    lines.push("");
+    lines.push((i+1)+". "+(card.title||"저장 탐사"));
+    lines.push("단계 "+s.steps+" · 고유곡 "+s.unique+" · 최심 "+deep+" · 희귀도 "+s.rarity+" · 평균 조회 "+fmt107(s.avgViews));
+    lines.push("성향: "+a.profile.label);
+    lines.push("P: "+topNames112(a.producer));
+    lines.push("보컬: "+topNames112(a.vocal));
+    lines.push("장르: "+topNames112(a.genre))
+  });
+  if(cards.length>=2){
+    lines.push("");
+    lines.push("경로 겹침");
+    for(var i=0;i<cards.length;i++)for(var j=i+1;j<cards.length;j++){
+      var o=overlap112(cards[i],cards[j]);
+      lines.push((i+1)+"↔"+(j+1)+": 공통 "+o.count+"곡 / 합집합 "+o.union+"곡 · "+o.pct+"%")
+    }
+    var common=allCommonSongs112(cards);
+    lines.push("전체 공통곡: "+(common.length?common.join(", "):"없음"))
+  }
+  return lines.join("\n")
+}
+async function copyCompareReport112(){
+  var cards=selectedExpeditions112();if(cards.length<2)return;
+  var text=compareSummaryText112(cards),ok=false;
+  try{if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(text);ok=true}}catch(_){}
+  if(!ok){
+    try{
+      var ta=document.createElement("textarea");ta.value=text;ta.style.position="fixed";ta.style.opacity="0";
+      document.body.appendChild(ta);ta.select();ok=document.execCommand("copy");ta.remove()
+    }catch(_){}
+  }
+  try{toast(ok?"비교 리포트를 복사했습니다.":"복사에 실패했습니다.")}catch(_){}
+}
+function comparePanelHtml112(){
+  var cards=selectedExpeditions112();
+  if(!compareOpen112||cards.length<2)return"";
+  var pairs=[];
+  for(var i=0;i<cards.length;i++)for(var j=i+1;j<cards.length;j++){
+    var o=overlap112(cards[i],cards[j]);
+    pairs.push('<div class="ice112-overlap-card"><small>EXP '+(i+1)+' ↔ EXP '+(j+1)+'</small><b>공통 '+o.count+'곡 · '+o.pct+'%</b><p>두 경로의 고유 곡 합집합 '+o.union+'곡 기준</p></div>')
+  }
+  var common=allCommonSongs112(cards);
+  return '<div class="ice112-compare"><div class="ice112-compare-head"><div><small>EXPEDITION COMPARE</small><b>'+cards.length+'개 탐사 경로 비교</b></div>'+
+    '<div><button type="button" data-ice112-copy>비교 리포트 복사</button><button type="button" data-ice112-clear>비교 해제</button></div></div>'+
+    '<div class="ice112-columns" style="--n:'+cards.length+'">'+cards.map(compareColumnHtml112).join("")+'</div>'+
+    '<div class="ice112-overlap">'+pairs.join("")+'</div>'+
+    '<div class="ice112-common"><small>ALL-ROUTE COMMON SONGS</small><div>'+(common.length?common.map(function(x){return '<span title="'+esc107(x)+'">'+esc107(x)+'</span>'}).join(""):'<span>전체 경로에 공통으로 등장한 곡 없음</span>')+'</div></div></div>'
+}
+function toggleCompare112(id){
+  if(compareSelection112.has(id)){compareSelection112.delete(id)}
+  else{
+    if(compareSelection112.size>=3){try{toast("탐사 비교는 최대 3개까지 선택할 수 있습니다.")}catch(_){};return}
+    compareSelection112.add(id)
+  }
+  compareOpen112=compareSelection112.size>=2;
+  renderIceberg()
+}
+function clearCompare112(){
+  compareSelection112.clear();compareOpen112=false;renderIceberg()
+}
+function atlasRows113(){
+  var rows=[];
+  savedExpeditions110.forEach(function(card){(card.route||[]).forEach(function(x){if(x&&x.song&&x.song.contentId)rows.push(x)})});
+  return rows
+}
+function atlasStats113(){
+  var rows=atlasRows113(),songMap=new Map(),songHits=new Map(),tierMap=new Map();
+  TIERS.forEach(function(t){tierMap.set(t.id,{tier:t,visits:0,songs:new Set()})});
+  rows.forEach(function(x){
+    var id=String(x.song.contentId),entry=tierMap.get(x.tierId);
+    if(!songMap.has(id))songMap.set(id,x.song);
+    songHits.set(id,(songHits.get(id)||0)+1);
+    if(entry){entry.visits++;entry.songs.add(id)}
+  });
+  var totalSteps=rows.length,unique=songMap.size,revisits=Math.max(0,totalSteps-unique);
+  var visited=[...tierMap.values()].filter(function(x){return x.visits>0}).length;
+  var coverage=TIERS.length?Math.round(visited/TIERS.length*100):0;
+  var avgViews=0;songMap.forEach(function(song){avgViews+=Math.max(0,+song.viewCounter||0)});avgViews=unique?Math.round(avgViews/unique):0;
+  var allUniqueRows=[...songMap.entries()].map(function(pair){
+    var song=pair[1],found=rows.find(function(x){return String(x.song.contentId)===pair[0]});
+    return{song:song,tierId:found&&found.tierId,tierName:found&&found.tierName}
+  });
+  var rare=allUniqueRows.filter(function(x){return +x.song.viewCounter>0}).sort(function(a,b){return (+a.song.viewCounter||0)-(+b.song.viewCounter||0)}).slice(0,5);
+  var producers=distribution111(allUniqueRows,producerTags111),vocals=distribution111(allUniqueRows,vocalTags111),genres=distribution111(allUniqueRows,genreTags111);
+  var under=[...tierMap.values()].sort(function(a,b){
+    if(a.visits!==b.visits)return a.visits-b.visits;
+    var ai=TIERS.findIndex(function(t){return t.id===a.tier.id}),bi=TIERS.findIndex(function(t){return t.id===b.tier.id});
+    return bi-ai
+  }).slice(0,4);
+  var combined=expeditionProfile111(rows,routeStats110(rows));
+  return{rows:rows,songMap:songMap,songHits:songHits,tierMap:tierMap,totalSteps:totalSteps,unique:unique,revisits:revisits,visited:visited,coverage:coverage,avgViews:avgViews,rare:rare,producers:producers,vocals:vocals,genres:genres,under:under,profile:combined}
+}
+function atlasTagHtml113(rows){
+  return rows&&rows.length?rows.slice(0,6).map(function(x){return '<span title="'+esc107(x[0])+'">'+esc107(x[0])+' · '+x[1]+'</span>'}).join(""):'<span>확인 가능한 태그 없음</span>'
+}
+function atlasMissions114(a){
+  var deepest=-1,lowView=0;
+  [...a.tierMap.values()].forEach(function(x){if(x.visits){var i=TIERS.findIndex(function(t){return t.id===x.tier.id});if(i>deepest)deepest=i}});
+  a.songMap.forEach(function(song){var v=+song.viewCounter||0;if(v>0&&v<=10000)lowView++});
+  var labels=typeof ICEBERG_DEPTH_LABELS_103!=="undefined"?ICEBERG_DEPTH_LABELS_103:[];
+  var deepTarget=labels.findIndex(function(x){return /3050|3750|ABYSS/i.test(String(x))});
+  if(deepTarget<0)deepTarget=Math.max(0,Math.floor((TIERS.length-1)*.72));
+  function m(id,title,value,target,desc,targetTier){
+    return{id:id,title:title,value:value,target:target,done:value>=target,desc:desc,targetTier:targetTier||""}
+  }
+  var under=a.under&&a.under[0]&&a.under[0].tier?a.under[0].tier.id:"";
+  return[
+    m("save","첫 탐사 기록",savedExpeditions110.length,1,"Dive Log 경로를 탐사 카드로 저장",under),
+    m("layers","5개 층 탐사",a.visited,5,"서로 다른 빙산 층 5곳 이상 방문",under),
+    m("deep","3,000m권 진입",Math.max(0,deepest),deepTarget,"저장 경로에서 심해권까지 도달",TIERS[deepTarget]&&TIERS[deepTarget].id),
+    m("songs","25곡 발굴",a.unique,25,"저장 경로 기준 고유곡 25곡 발견",under),
+    m("rare","저조회수 3곡 발굴",lowView,3,"조회수 1만 이하 곡을 3곡 이상 저장 경로에 포함",under),
+    m("all","전층 탐사",a.visited,TIERS.length,"모든 빙산 층을 저장 탐사 경로에 남기기",under)
+  ]
+}
+function atlasMissionsHtml114(a){
+  var rows=atlasMissions114(a),done=rows.filter(function(x){return x.done}).length;
+  return '<div class="ice114-missions"><div class="ice114-missions-head"><small>DISCOVERY MISSIONS</small><span>'+done+' / '+rows.length+' 완료</span></div>'+
+    '<div class="ice114-mission-grid">'+rows.map(function(x){
+      var pct=Math.max(0,Math.min(100,Math.round(x.value/Math.max(1,x.target)*100)));
+      return '<div class="ice114-mission'+(x.done?' done':'')+'"><div class="ice114-mission-top"><b>'+esc107(x.done?'✓ '+x.title:x.title)+'</b><em>'+Math.min(x.value,x.target)+' / '+x.target+'</em></div>'+
+        '<i style="--w:'+pct+'%"></i><p>'+esc107(x.desc)+'</p>'+
+        (!x.done&&x.targetTier?'<button type="button" data-ice114-mission-target="'+esc107(x.targetTier)+'">이 층에서 이어서 탐사</button>':'')+'</div>'
+    }).join("")+'</div></div>'
+}
+function expeditionAtlasHtml113(){
+  if(!expeditionAtlasOpen113)return"";
+  var a=atlasStats113();
+  if(!savedExpeditions110.length)return '<div class="ice113-atlas"><div class="ice113-head"><div><small>EXPEDITION ATLAS</small><b>저장된 탐사가 아직 없습니다.</b></div><button type="button" data-ice113-close>닫기</button></div></div>';
+  var maxVisits=Math.max(1,...[...a.tierMap.values()].map(function(x){return x.visits}));
+  var coverage=[...a.tierMap.values()].map(function(x){
+    var width=x.visits?Math.max(7,Math.round(x.visits/maxVisits*100)):0;
+    return '<div class="ice113-tier-row"><label title="'+esc107(x.tier.name)+'">'+esc107(x.tier.name)+'</label><i style="--w:'+width+'%"></i><em>'+x.visits+'회 · '+x.songs.size+'곡</em></div>'
+  }).join("");
+  var rare=a.rare.length?a.rare.map(function(x){
+    return '<div><b title="'+esc107(x.song.title||x.song.contentId)+'">'+esc107(x.song.title||x.song.contentId)+'</b><span>'+fmt107(x.song.viewCounter||0)+'회 · '+esc107(x.tierName||x.tierId||"")+'</span></div>'
+  }).join(""):'<div><b>조회수 정보가 있는 발굴곡 없음</b><span>-</span></div>';
+  var targets=a.under.map(function(x){
+    return '<button type="button" data-ice113-target="'+esc107(x.tier.id)+'">'+esc107(x.tier.name)+' · '+(x.visits?x.visits+'회 탐사':'미탐사')+'</button>'
+  }).join("");
+  return '<div class="ice113-atlas"><div class="ice113-head"><div><small>EXPEDITION ATLAS · SAVED ROUTES ONLY</small><b>저장 탐사 누적 발굴 지도</b></div><button type="button" data-ice113-close>닫기</button></div>'+
+    '<div class="ice113-kpis">'+
+      '<div class="ice113-kpi"><small>저장 탐사</small><b>'+savedExpeditions110.length+'개</b></div>'+
+      '<div class="ice113-kpi"><small>누적 고유곡</small><b>'+a.unique+'곡</b></div>'+
+      '<div class="ice113-kpi"><small>재발견</small><b>'+a.revisits+'회</b></div>'+
+      '<div class="ice113-kpi"><small>빙산 층 커버리지</small><b>'+a.visited+'/'+TIERS.length+' · '+a.coverage+'%</b></div>'+
+      '<div class="ice113-kpi"><small>고유곡 평균 조회</small><b>'+fmt107(a.avgViews)+'회</b></div>'+
+    '</div>'+
+    atlasMissionsHtml114(a)+
+    '<div class="ice114-hotfix-note">Atlas 수치는 저장된 탐사 기록 기준입니다. 업데이트 직후 버튼이 반응하지 않는 구버전 핫로드 상태는 v39.114부터 자동으로 한 번 새로고침해 정리합니다.</div>'+
+    '<div class="ice113-panel"><small>TIER COVERAGE · 저장 경로 방문 횟수</small><div class="ice113-coverage">'+coverage+'</div></div>'+
+    '<div class="ice113-grid">'+
+      '<div class="ice113-panel"><small>발견 P / 프로듀서 태그</small><div class="ice113-tags">'+atlasTagHtml113(a.producers)+'</div></div>'+
+      '<div class="ice113-panel"><small>발견 보컬</small><div class="ice113-tags">'+atlasTagHtml113(a.vocals)+'</div></div>'+
+      '<div class="ice113-panel"><small>발견 장르·분위기</small><div class="ice113-tags">'+atlasTagHtml113(a.genres)+'</div></div>'+
+    '</div>'+
+    '<div class="ice113-grid">'+
+      '<div class="ice113-panel"><small>저조회수 발굴곡</small><div class="ice113-rare">'+rare+'</div></div>'+
+      '<div class="ice113-panel"><small>다음 탐사 후보 · 덜 탐사한 층</small><div class="ice113-targets">'+targets+'</div></div>'+
+      '<div class="ice113-profile"><small>CUMULATIVE EXPLORATION PROFILE</small><b>'+esc107(a.profile.label)+'</b><p>'+esc107(a.profile.desc)+' · 저장 경로 전체 기준 하강 '+a.profile.deepMoves+'회 / 상승 '+a.profile.upMoves+'회</p></div>'+
+    '</div></div>'
+}
+function openAtlasTarget113(tierId){
+  if(!tierId||!TIERS.some(function(t){return t.id===tierId}))return;
+  expeditionAtlasOpen113=false;compareOpen112=false;compareSelection112.clear();
+  try{requestTierLoad103(tierId)}catch(_){}
+}
+function passportEntries115(){
+  var map=new Map();
+  var cards=savedExpeditions110.slice().sort(function(a,b){return (+a.createdAt||0)-(+b.createdAt||0)});
+  cards.forEach(function(card){
+    var seenCard=new Set();
+    (card.route||[]).forEach(function(x,routeIndex){
+      if(!x||!x.song||!x.song.contentId)return;
+      var id=String(x.song.contentId),e=map.get(id);
+      if(!e){
+        e={id:id,song:x.song,firstTierId:x.tierId,firstTierName:x.tierName||x.tierId,firstAt:+x.at||+card.createdAt||0,lastAt:+x.at||+card.createdAt||0,routeHits:0,expeditionHits:0,tiers:new Set(),cards:new Set()};
+        map.set(id,e)
+      }
+      e.routeHits++;e.lastAt=Math.max(e.lastAt,+x.at||+card.createdAt||0);e.tiers.add(x.tierId);e.cards.add(card.id);
+      if(!seenCard.has(id)){e.expeditionHits++;seenCard.add(id)}
+      if((+x.at||+card.createdAt||0)<e.firstAt){e.firstAt=+x.at||+card.createdAt||0;e.firstTierId=x.tierId;e.firstTierName=x.tierName||x.tierId}
+    })
+  });
+  return [...map.values()].map(function(e){
+    var idx=TIERS.findIndex(function(t){return t.id===e.firstTierId}),depth=idx<0?0:idx/Math.max(1,TIERS.length-1);
+    var views=Math.max(0,+e.song.viewCounter||0),viewRare=1-Math.min(1,Math.log10(views+1)/7);
+    e.rarity=Math.max(0,Math.min(100,Math.round((depth*.54+viewRare*.46)*100)));
+    e.producers=producerTags111(e.song).slice(0,3);
+    e.vocals=vocalTags111(e.song).slice(0,3);
+    e.genres=genreTags111(e.song).slice(0,3);
+    return e
+  })
+}
+function passportFiltered115(){
+  var rows=passportEntries115(),q=passportQuery115.trim().toLowerCase();
+  if(q)rows=rows.filter(function(e){
+    var hay=[e.song.title,e.song.contentId,e.firstTierName].concat(e.producers,e.vocals,e.genres,typeof parseTags==="function"?parseTags(e.song.tags):[]).join(" ").toLowerCase();
+    return hay.includes(q)
+  });
+  rows=rows.filter(function(e){
+    var views=+e.song.viewCounter||0,idx=TIERS.findIndex(function(t){return t.id===e.firstTierId});
+    if(passportFilter115==="low")return views>0&&views<=10000;
+    if(passportFilter115==="rediscovered")return e.expeditionHits>=2;
+    if(passportFilter115==="deep")return idx>=Math.floor(TIERS.length*.6);
+    if(passportFilter115==="once")return e.expeditionHits===1;
+    return true
+  });
+  rows.sort(function(a,b){
+    if(passportSort115==="views")return (+a.song.viewCounter||0)-(+b.song.viewCounter||0)||b.rarity-a.rarity;
+    if(passportSort115==="hits")return b.expeditionHits-a.expeditionHits||b.routeHits-a.routeHits||b.rarity-a.rarity;
+    if(passportSort115==="recent")return b.lastAt-a.lastAt||b.rarity-a.rarity;
+    return b.rarity-a.rarity||(+a.song.viewCounter||0)-(+b.song.viewCounter||0)
+  });
+  return rows
+}
+function passportSummary115(){
+  var rows=passportEntries115(),low=0,redis=0,deep=0;
+  rows.forEach(function(e){
+    if((+e.song.viewCounter||0)>0&&(+e.song.viewCounter||0)<=10000)low++;
+    if(e.expeditionHits>=2)redis++;
+    var idx=TIERS.findIndex(function(t){return t.id===e.firstTierId});if(idx>=Math.floor(TIERS.length*.6))deep++
+  });
+  return{total:rows.length,low:low,rediscovered:redis,deep:deep}
+}
+function passportCardHtml115(e){
+  var song=e.song||{},img=song.thumbnailUrl?'<img src="'+esc107(song.thumbnailUrl)+'" loading="lazy" alt="">':'<span>♪</span>';
+  var meta=[];
+  if(e.producers.length)meta.push("P "+e.producers[0]);
+  if(e.vocals.length)meta.push(e.vocals[0]);
+  if(e.genres.length)meta.push(e.genres[0]);
+  var date="";try{date=e.firstAt?new Date(e.firstAt).toLocaleDateString("ko-KR",{month:"numeric",day:"numeric"}):""}catch(_){}
+  return '<div class="ice115-card"><div class="ice115-thumb">'+img+'</div><div class="ice115-copy"><b>'+esc107(song.title||song.contentId)+'</b>'+
+    '<small>첫 발견 '+esc107(e.firstTierName||e.firstTierId||"-")+(date?' · '+esc107(date):'')+'</small>'+
+    '<div class="ice115-badges"><span class="rare">희귀도 '+e.rarity+'</span><span>'+fmt107(song.viewCounter||0)+'회</span><span>'+e.expeditionHits+'개 탐사</span>'+(e.tiers.size>1?'<span>'+e.tiers.size+'개 층</span>':'')+
+      meta.slice(0,2).map(function(x){return '<span title="'+esc107(x)+'">'+esc107(x)+'</span>'}).join("")+'</div></div>'+
+    '<button type="button" class="ice115-watch" data-v399-play="'+esc107(song.contentId)+'">Watch에서 보기</button></div>'
+}
+function discoveryPassportHtml115(){
+  if(!discoveryPassportOpen115)return"";
+  var summary=passportSummary115(),rows=passportFiltered115(),shown=rows.slice(0,passportLimit115);
+  var filters=[["all","전체"],["low","저조회수"],["rediscovered","재발견"],["deep","심해"],["once","1회 발견"]];
+  return '<div class="ice115-passport"><div class="ice115-head"><div><small>DISCOVERY PASSPORT · SAVED EXPEDITIONS</small><b>발굴 도감</b><p>저장한 탐사 경로에서 발견한 고유 곡을 contentId 기준으로 합친 개인 발굴 기록입니다.</p></div><button type="button" data-ice115-close>닫기</button></div>'+
+    '<div class="ice115-kpis"><div class="ice115-kpi"><small>고유 발굴곡</small><b>'+summary.total+'곡</b></div><div class="ice115-kpi"><small>저조회수 발굴</small><b>'+summary.low+'곡</b></div><div class="ice115-kpi"><small>재발견</small><b>'+summary.rediscovered+'곡</b></div><div class="ice115-kpi"><small>심해 첫 발견</small><b>'+summary.deep+'곡</b></div></div>'+
+    '<div class="ice115-toolbar"><input type="search" data-ice115-query value="'+esc107(passportQuery115)+'" placeholder="곡명 · sm번호 · P · 보컬 · 장르 검색">'+
+      '<select data-ice115-sort><option value="rare" '+(passportSort115==="rare"?"selected":"")+'>희귀도순</option><option value="views" '+(passportSort115==="views"?"selected":"")+'>조회수 낮은순</option><option value="hits" '+(passportSort115==="hits"?"selected":"")+'>재발견순</option><option value="recent" '+(passportSort115==="recent"?"selected":"")+'>최근발견순</option></select></div>'+
+    '<div class="ice115-filters">'+filters.map(function(x){return '<button type="button" class="'+(passportFilter115===x[0]?"active":"")+'" data-ice115-filter="'+x[0]+'">'+x[1]+'</button>'}).join("")+'</div>'+
+    (shown.length?'<div class="ice115-grid">'+shown.map(passportCardHtml115).join("")+'</div>':'<div class="ice115-empty">조건에 맞는 발굴곡이 없습니다.</div>')+
+    (rows.length>shown.length?'<button type="button" class="ice115-more" data-ice115-more>더 보기 · '+shown.length+' / '+rows.length+'</button>':'')+
+  '</div>'
+}
+function expeditionCardHtml110(card){
+  var rows=card.route||[],stats=card.stats||routeStats110(rows);
+  var last=rows[rows.length-1]||{},song=last.song||{},cover=song.thumbnailUrl?'<img src="'+esc107(song.thumbnailUrl)+'" loading="lazy" alt="">':'';
+  var deepest=stats.deepest?(stats.deepest.tierName||stats.deepest.tierId):"-";
+  var date="";
+  try{date=new Date(card.createdAt||Date.now()).toLocaleString("ko-KR",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"})}catch(_){}
+  var open=expeditionReportOpen111.has(card.id),selected=compareSelection112.has(card.id);
+  return '<div class="ice110-card"><div class="ice110-card-cover">'+cover+'<span>'+esc107(deepest)+'</span></div>'+
+    '<div class="ice110-card-main"><b>'+esc107(card.title||"저장된 탐사")+'</b><small>'+esc107(date)+' · '+stats.steps+'단계</small>'+
+    '<div class="ice110-statline"><span>'+stats.unique+'곡</span><span>평균 '+fmt107(stats.avgViews)+'회</span><span>최심 '+esc107(deepest)+'</span><span class="ice110-rarity">희귀도 '+stats.rarity+'</span></div></div>'+
+    '<div class="ice110-card-actions"><button type="button" class="ice112-compare-btn'+(selected?' selected':'')+'" data-ice112-select="'+esc107(card.id)+'">'+(selected?'✓ 비교 선택됨':'＋ 비교 선택')+'</button><button type="button" class="ice111-analysis-btn" data-ice111-analysis="'+esc107(card.id)+'">'+(open?'분석 닫기':'탐사 분석')+'</button><button type="button" class="replay" data-ice110-replay="'+esc107(card.id)+'">▶ 경로 재생</button><button type="button" class="delete" data-ice110-delete="'+esc107(card.id)+'">삭제</button></div>'+
+    expeditionReportHtml111(card)+'</div>'
+}
+function savedExpeditionsHtml110(){
+  if(!savedExpeditions110.length)return '<div class="ice110-saved"><div class="ice110-saved-head"><small>SAVED EXPEDITIONS</small><span>저장된 탐사 없음</span></div></div>';
+  var compareHint=compareSelection112.size?(' · 비교 '+compareSelection112.size+'/3'):'';
+  var shown=savedListExpanded114?savedExpeditions110:savedExpeditions110.slice(0,8);
+  var listToggle=savedExpeditions110.length>8?'<button type="button" class="ice114-list-toggle" data-ice114-list-toggle>'+(savedListExpanded114?'접기':'모두 보기 '+savedExpeditions110.length+'개')+'</button>':'';
+  return '<div class="ice110-saved"><div class="ice110-saved-head"><small>SAVED EXPEDITIONS</small><span><button type="button" class="ice115-passport-btn" data-ice115-passport>▣ DISCOVERY PASSPORT</button> <button type="button" class="ice113-atlas-btn" data-ice113-atlas>⌁ EXPEDITION ATLAS</button> '+listToggle+' · '+savedExpeditions110.length+'개 저장'+compareHint+'</span></div>'+
+    discoveryPassportHtml115()+expeditionAtlasHtml113()+comparePanelHtml112()+shown.map(expeditionCardHtml110).join("")+'</div>'
+}
+function replayBarHtml110(){
+  if(!replayState110.active)return"";
+  var card=savedExpeditions110.find(function(x){return x.id===replayState110.id});
+  var total=card&&card.route?card.route.length:0;
+  return '<div class="ice110-replaybar"><div><b>REPLAY VOYAGE · '+esc107(card&&card.title||"저장 경로")+'</b><small>'+(replayState110.index+1)+' / '+total+' 지점 재생 중</small></div><button type="button" data-ice110-stop>중지</button></div>'
+}
+function stopReplay110(){
+  replayState110.active=false;replayState110.id="";replayState110.index=0;
+  clearTimeout(replayState110.timer);replayState110.timer=0
+}
+function handoffReplayStop110(item,callback){
+  var ticket={seq:++voyageSeq108,tierId:item.tierId,direction:"replay",song:item.song};
+  pendingSail108=ticket;focusId="";bridgeState={focusId:"",loading:false,up:[],down:[]};
+  requestTierLoad103(item.tierId);
+  var tries=0;
+  (function poll(){
+    if(!replayState110.active||!pendingSail108||pendingSail108.seq!==ticket.seq)return;
+    if(state.tier!==ticket.tierId||state.busy){
+      if(tries++<70){setTimeout(poll,120);return}
+      pendingSail108=null;stopReplay110();try{toast("저장 경로 재생이 중단되었습니다.")}catch(_){};renderIceberg();return
+    }
+    pendingSail108=null;
+    voyageSongCache108.set(String(item.song.contentId),item.song);
+    var exists=(state.songs||[]).some(function(x){return x&&String(x.contentId)===String(item.song.contentId)});
+    if(!exists&&Array.isArray(state.songs))state.songs.unshift(item.song);
+    focusId=item.song.contentId;bridgeState={focusId:focusId,loading:true,up:[],down:[]};
+    try{renderIceberg()}catch(_){}
+    loadBridges(item.song);
+    callback()
+  })()
+}
+function replaySavedRoute110(id){
+  var card=savedExpeditions110.find(function(x){return x.id===id});
+  if(!card||!card.route||!card.route.length||pendingSail108)return;
+  stopReplay110();
+  replayState110={active:true,id:id,index:0,timer:0};
+  voyageHistory108=[];saveDiveLog109();diveLogOpen109=true;
+  function step(){
+    if(!replayState110.active)return;
+    var route=card.route||[],i=replayState110.index,item=route[i];
+    if(!item){stopReplay110();try{toast("저장 경로 재생을 완료했습니다.")}catch(_){};renderIceberg();return}
+    handoffReplayStop110(item,function(){
+      voyageHistory108=route.slice(0,i).map(function(x){return{tierId:x.tierId,tierName:x.tierName,song:x.song,at:x.at||Date.now()}});
+      saveDiveLog109();
+      renderIceberg();
+      replayState110.index=i+1;
+      replayState110.timer=setTimeout(step,900)
+    })
+  }
+  step()
+}
+function diveLogHtml109(){
+  if(!diveLogOpen109)return"";
+  var rows=diveLogEntries109(),stats=diveLogStats109(rows);
+  if(!rows.length)return '<div class="ice109-log"><div class="ice109-log-head"><div><small>DIVE LOG · DEPTH MAP</small><b>아직 현재 항해 기록이 없습니다.</b></div><div><button type="button" data-ice109-close>닫기</button></div></div>'+replayBarHtml110()+savedExpeditionsHtml110()+'</div>';
+  var stops=rows.map(function(x,i){
+    var song=x.song||{},img=song.thumbnailUrl?'<img src="'+esc107(song.thumbnailUrl)+'" loading="lazy" alt="">':'<span class="ice109-noimg">♪</span>';
+    var depth=(typeof ICEBERG_DEPTH_LABELS_103!=="undefined"&&ICEBERG_DEPTH_LABELS_103[TIERS.findIndex(function(t){return t.id===x.tierId})])||x.tierName||x.tierId;
+    return '<button type="button" class="ice109-stop'+(x.current?' current':'')+'" data-ice109-jump="'+i+'" '+(x.current?'disabled':'')+'>'+img+
+      '<span class="ice109-stop-copy"><b>'+esc107(song.title||song.contentId||"탐사")+'</b><small>'+esc107(x.tierName||x.tierId)+' · '+esc107(depth)+'</small></span><em>'+tierDepthPct109(x.tierId)+'%</em></button>'
+  }).join("");
+  var deepest=stats.deepest?(stats.deepest.tierName||stats.deepest.tierId):"-";
+  var richStats=routeStats110(rows);
+  return '<div class="ice109-log"><div class="ice109-log-head"><div><small>DIVE LOG · DEPTH MAP</small><b>이번 항해의 수심 경로</b><div class="ice109-summary"><span>'+rows.length+' 지점</span><span>'+stats.unique+'곡</span><span>최심 '+esc107(deepest)+'</span><span>평균 '+fmt107(richStats.avgViews)+'회</span><span class="ice110-rarity">희귀도 '+richStats.rarity+'</span></div></div>'+
+    '<div><button type="button" class="ice110-save" data-ice110-save>＋ 탐사 카드 저장</button><button type="button" data-ice109-clearlog>기록 초기화</button><button type="button" data-ice109-close>닫기</button></div></div>'+
+    replayBarHtml110()+
+    '<div class="ice109-route">'+stops+'</div>'+
+    '<div class="ice109-depth-axis"><span style="--p:0%">SURFACE</span><span style="--p:33%">1,500m</span><span style="--p:66%">3,000m</span><span style="--p:100%">ABYSS</span></div>'+
+    savedExpeditionsHtml110()+'</div>'
+}
+function jumpDiveLog109(index){
+  var rows=diveLogEntries109(),item=rows[index];
+  if(!item||!item.song||pendingSail108)return;
+  if(item.current){diveLogOpen109=false;renderIceberg();return}
+  voyageHistory108=rows.slice(0,index).filter(function(x){return !x.current});
+  saveDiveLog109();
+  var ticket={seq:++voyageSeq108,tierId:item.tierId,direction:"log",song:item.song};
+  pendingSail108=ticket;focusId="";bridgeState={focusId:"",loading:false,up:[],down:[]};
+  requestTierLoad103(item.tierId);
+  setTimeout(function(){waitForSail108(ticket,0)},80)
+}
+function clearDiveLog109(){
+  voyageHistory108=[];saveDiveLog109();diveLogOpen109=false;
+  try{renderIceberg()}catch(_){}
+}
+function voyageTrailHtml108(){
+  if(!voyageHistory108.length)return"";
+  var rows=voyageHistory108.slice(-5);
+  return '<div class="ice108-trail">'+rows.map(function(x){return '<span>'+esc107((x.tierName||x.tierId||"층")+" · "+(x.song&&x.song.title||"탐사"))+'</span>'}).join("")+'</div>'
+}
+function bridgeCard(x,targetTier,direction){
+  if(!x||!x.song)return"";
+  var song=x.song,rel=x.rel;
+  voyageSongCache108.set(String(song.contentId),song);
+  var img=song.thumbnailUrl?'<img src="'+esc107(song.thumbnailUrl)+'" loading="lazy" alt="">':'<span class="ice107-noimg">♪</span>';
+  return '<button type="button" class="ice107-bridge-card" data-kind="'+esc107(rel&&rel.kind||"tag")+'" data-ice108-sail="'+esc107(song.contentId)+'" data-ice108-tier="'+esc107(targetTier.id)+'" data-ice108-direction="'+esc107(direction)+'" title="'+esc107(song.title||song.contentId)+' · '+esc107(targetTier.name)+'로 항해">'+img+
+    '<span><b>'+esc107(song.title||song.contentId)+'</b><small>'+esc107(rel?rel.label:"유사곡")+' · '+esc107(targetTier.name)+'로 이동</small></span></button>'
+}
+function bridgeLane(direction){
+  if(!focusId)return"";
+  var idx=typeof currentTierIndex104==="function"?currentTierIndex104():-1;
+  var targetIdx=idx+(direction==="up"?-1:1);
+  if(idx<0||targetIdx<0||targetIdx>=TIERS.length)return"";
+  var target=TIERS[targetIdx],rows=direction==="up"?bridgeState.up:bridgeState.down;
+  var label=(direction==="up"?"↑ ":"↓ ")+target.name;
+  var body="";
+  if(bridgeState.loading&&bridgeState.focusId===focusId)body='<div class="ice107-bridge-empty">인접 수심 연결 탐색 중…</div>';
+  else if(rows&&rows.length)body='<div class="ice107-bridge-cards">'+rows.map(function(x){return bridgeCard(x,target,direction)}).join("")+'</div>';
+  else body='<div class="ice107-bridge-empty">강한 종단 연결 없음</div>';
+  return '<div class="ice107-bridge-lane '+direction+'"><div class="ice107-bridge-label">'+esc107(label)+'</div>'+body+'</div>'
+}
+function focusBar(center){
+  if(!center)return"";
+  var idx=typeof currentTierIndex104==="function"?currentTierIndex104():-1,tier=idx>=0?TIERS[idx]:null;
+  return '<div class="ice107-focusbar"><div><small>CONTINUOUS DIVE · CENTER SONG</small><b>'+esc107(center.title||center.contentId)+'</b>'+
+    '<div class="ice108-voyage-meta"><span class="ice108-voyage-chip">'+esc107(tier?tier.name:"현재 층")+'</span><span class="ice108-voyage-chip">항해 '+voyageHistory108.length+'단계</span></div>'+voyageTrailHtml108()+'</div>'+
+    '<div><button type="button" class="ice109-log-btn" data-ice109-log>⌁ DIVE LOG</button> <button type="button" class="ice108-back" data-ice108-back '+(voyageHistory108.length?'':'disabled')+'>← 항해 뒤로</button> <button type="button" data-ice107-clear>포커스 해제 ×</button></div></div>'
+}
+function findBridgeSong108(id){
+  id=String(id||"");
+  if(voyageSongCache108.has(id))return voyageSongCache108.get(id);
+  var groups=[bridgeState.up||[],bridgeState.down||[]];
+  for(var g of groups){for(var x of g){if(x&&x.song&&String(x.song.contentId)===id)return x.song}}
+  return null
+}
+function pushVoyage108(){
+  var center=focusSong();if(!center||state.tier==="all")return;
+  var tier=TIERS.find(function(t){return t.id===state.tier});
+  var item={tierId:state.tier,tierName:tier?tier.name:state.tier,song:compactVoyageSong108(center),at:Date.now()};
+  var last=voyageHistory108[voyageHistory108.length-1];
+  if(last&&last.tierId===item.tierId&&last.song&&item.song&&last.song.contentId===item.song.contentId)return;
+  voyageHistory108.push(item);if(voyageHistory108.length>16)voyageHistory108.shift();saveDiveLog109()
+}
+function waitForSail108(ticket,tries){
+  tries=tries||0;
+  if(!pendingSail108||pendingSail108.seq!==ticket.seq)return;
+  if(state.tier!==ticket.tierId||state.busy){
+    if(tries<60)setTimeout(function(){waitForSail108(ticket,tries+1)},120);
+    else{pendingSail108=null;try{toast("층 이동은 완료했지만 중심곡 승계가 지연되었습니다.")}catch(_){}}
+    return
+  }
+  pendingSail108=null;
+  var song=ticket.song;
+  voyageSongCache108.set(String(song.contentId),song);
+  var exists=(state.songs||[]).some(function(x){return x&&String(x.contentId)===String(song.contentId)});
+  if(!exists&&Array.isArray(state.songs))state.songs.unshift(song);
+  focusId=song.contentId;
+  bridgeState={focusId:song.contentId,loading:true,up:[],down:[]};
+  try{if(typeof renderSongs==="function"&&!exists)renderSongs()}catch(_){}
+  try{renderIceberg()}catch(_){}
+  loadBridges(song);
+  try{toast((ticket.direction==="down"?"더 깊은 ":"더 얕은 ")+(TIERS.find(function(t){return t.id===ticket.tierId})||{}).name+"으로 항해했습니다.")}catch(_){}
+}
+function sailBridge108(id,tierId,direction){
+  var song=findBridgeSong108(id);if(!song||!tierId)return;
+  if(pendingSail108)return;
+  pushVoyage108();
+  var ticket={seq:++voyageSeq108,tierId:tierId,direction:direction||"",song:song};
+  pendingSail108=ticket;
+  var card=document.querySelector('[data-ice108-sail="'+CSS.escape(String(id))+'"]');if(card)card.classList.add("ice108-sailing");
+  focusId="";bridgeState={focusId:"",loading:false,up:[],down:[]};
+  try{requestTierLoad103(tierId)}catch(e){pendingSail108=null;throw e}
+  setTimeout(function(){waitForSail108(ticket,0)},80)
+}
+function voyageBack108(){
+  if(!voyageHistory108.length||pendingSail108)return;
+  var item=voyageHistory108.pop();if(!item||!item.song)return;saveDiveLog109();
+  var ticket={seq:++voyageSeq108,tierId:item.tierId,direction:"back",song:item.song};
+  pendingSail108=ticket;focusId="";bridgeState={focusId:"",loading:false,up:[],down:[]};
+  requestTierLoad103(item.tierId);
+  setTimeout(function(){waitForSail108(ticket,0)},80)
+}
+async function loadBridges(center){
+  var idx=typeof currentTierIndex104==="function"?currentTierIndex104():-1;
+  if(!center||idx<0)return;
+  var seq=++bridgeSeq;
+  bridgeState={focusId:center.contentId,loading:true,up:[],down:[]};
+  async function one(targetIdx){
+    if(targetIdx<0||targetIdx>=TIERS.length)return[];
+    try{
+      var d=await fetchNico({tier:TIERS[targetIdx],year:state.year,sort:"-viewCounter",limit:36,offset:0,mode:"ranking",applyYear:true,applyTier:true});
+      var rows=(d.data||[]);
+      try{rows=filterAdultRows37(rows,"iceberg_bridge").rows}catch(_){}
+      return rows.filter(function(s){return s&&s.contentId!==center.contentId}).map(function(song){
+        var rel=relation(center,song),score=0;
+        try{score=rel?rel.score:weightedTagSimilarity(center,song)}catch(_){}
+        return{song:song,rel:rel,score:score}
+      }).filter(function(x){return x.rel||x.score>=.16}).sort(function(a,b){
+        return (b.rel?1:0)-(a.rel?1:0)||b.score-a.score
+      }).slice(0,2)
+    }catch(_){return[]}
+  }
+  var both=await Promise.all([one(idx-1),one(idx+1)]);
+  if(seq!==bridgeSeq||String(focusId)!==String(center.contentId))return;
+  bridgeState={focusId:center.contentId,loading:false,up:both[0],down:both[1]};
+  if(typeof renderIceberg==="function")renderIceberg()
+}
+function setFocus(id){
+  var song=(state.songs||[]).find(function(s){return s&&String(s.contentId)===String(id)})||voyageSongCache108.get(String(id));
+  if(!song)return;
+  voyageSongCache108.set(String(song.contentId),song);
+  focusId=song.contentId;
+  bridgeState={focusId:song.contentId,loading:true,up:[],down:[]};
+  if(typeof renderIceberg==="function")renderIceberg();
+  loadBridges(song)
+}
+function relationDots107(index,relations){
+  try{return typeof relationDots106==="function"?relationDots106(index,relations):""}catch(_){return""}
+}
+function nodeHtml(){
+  var pool=typeof icebergRepresentativePool106==="function"?icebergRepresentativePool106():[];
+  if(!pool.length){
+    return state.busy?'<div class="ice105-nodefield"><div class="ice105-node-loading">이 수심의 대표곡을 찾는 중…</div></div>':""
+  }
+  var maxPage=Math.max(0,Math.ceil(pool.length/ICE106_PAGE_SIZE)-1);
+  var page=Math.min(maxPage,icebergNodePage106(state.tier));
+  var centered=focusRows(pool);
+  var rows=centered||pool.slice(page*ICE106_PAGE_SIZE,page*ICE106_PAGE_SIZE+ICE106_PAGE_SIZE);
+  var relations=centered?focusRelations(rows):icebergRelationGraph106(rows);
+  var cards=rows.map(function(song,i){
+    var img=song.thumbnailUrl?'<img src="'+esc107(song.thumbnailUrl)+'" loading="lazy" alt="" onerror="this.replaceWith(Object.assign(document.createElement(\'span\'),{className:\'ice105-noimg\',textContent:\'♪\'}))">':'<span class="ice105-noimg">♪</span>';
+    var dots=relationDots107(i,relations),center=String(focusId)===String(song.contentId);
+    return '<article role="button" tabindex="0" class="ice105-song-node'+(dots?' ice106-related':'')+(center?' ice107-center':'')+(focusId&&!center?' ice107-focus-neighbor':'')+'" style="--node-i:'+i+'" data-v399-play="'+esc107(song.contentId)+'" data-ice106-node="'+i+'" data-song-id="'+esc107(song.contentId)+'" title="'+esc107(song.title||song.contentId)+'">'+
+      img+'<span class="ice105-nodecopy"><b>'+esc107(song.title||song.contentId)+'</b><small>조회 '+fmt107(song.viewCounter||0)+' · #'+fmt107(song.__rank||i+1)+'</small>'+dots+'</span>'+
+      '<button type="button" class="ice107-focus-btn" data-ice107-focus="'+esc107(song.contentId)+'" aria-label="이 곡 중심으로 미니 다이브">◎</button></article>'
+  }).join("");
+  var nav=focusId?'':('<div class="ice106-node-nav"><button type="button" data-ice106-page-dir="-1" '+(page<=0?'disabled':'')+' aria-label="이전 곡 노드">←</button><span>'+(page+1)+' / '+(maxPage+1)+'</span><button type="button" data-ice106-page-dir="1" '+(page>=maxPage?'disabled':'')+' aria-label="다음 곡 노드">→</button></div>');
+  var center=focusSong();
+  return '<div class="ice105-nodefield" data-ice106-page="'+page+'">'+
+    (center?focusBar(center):'')+
+    (center?diveLogHtml109():'')+
+    (center?'<div class="ice107-bridge-wrap">'+bridgeLane("up")+'</div>':'')+
+    '<div class="ice106-node-head"><small>'+(center?'SECOND DIVE · SAME LAYER':'CURRENT LAYER · MINI UNIVERSE')+'</small>'+nav+'</div>'+
+    '<div class="ice106-node-stage"><svg class="ice106-link-layer" aria-hidden="true"></svg>'+cards+'<span class="ice106-empty-rel" '+(relations.length?'hidden':'')+'>현재 곡 사이에 강한 P·보컬·장르 연결이 없습니다.</span></div>'+
+    (center?'<div class="ice107-bridge-wrap">'+bridgeLane("down")+'</div>':'')+
+    '<div class="ice106-legend"><span class="producer"><i></i>같은 P</span><span class="vocal"><i></i>같은 보컬</span><span class="music"><i></i>장르·분위기</span><span class="tag"><i></i>핵심 태그</span></div>'+
+  '</div>'
+}
+function drawRelations(){
+  cancelAnimationFrame(window.__ICE107_RAF||0);
+  window.__ICE107_RAF=requestAnimationFrame(function(){
+    var stage=document.querySelector("#icebergPanel .tier.active .ice106-node-stage");if(!stage)return;
+    var svg=stage.querySelector(".ice106-link-layer");
+    var nodes=[].slice.call(stage.querySelectorAll(".ice105-song-node")).filter(function(el){return getComputedStyle(el).display!=="none"});
+    if(!svg||nodes.length<2)return;
+    var rows=nodes.map(function(el){return (state.songs||[]).find(function(s){return String(s.contentId)===String(el.dataset.songId)})}).filter(Boolean);
+    var rels=focusRelations(rows)||icebergRelationGraph106(rows);
+    var sr=stage.getBoundingClientRect(),w=Math.max(1,stage.clientWidth),h=Math.max(1,stage.clientHeight);
+    svg.setAttribute("viewBox","0 0 "+w+" "+h);svg.setAttribute("width",w);svg.setAttribute("height",h);
+    svg.innerHTML=rels.map(function(rel){
+      var A=nodes[rel.a],B=nodes[rel.b];if(!A||!B)return"";
+      var ar=A.getBoundingClientRect(),br=B.getBoundingClientRect();
+      var x1=ar.left-sr.left+ar.width/2,y1=ar.top-sr.top+ar.height/2,x2=br.left-sr.left+br.width/2,y2=br.top-sr.top+br.height/2;
+      var strong=rel.score>1.2||rel.raw&&rel.raw.score>.4?"strong":"normal";
+      return '<line x1="'+x1.toFixed(1)+'" y1="'+y1.toFixed(1)+'" x2="'+x2.toFixed(1)+'" y2="'+y2.toFixed(1)+'" data-kind="'+esc107(rel.kind)+'" data-strength="'+strong+'"><title>'+esc107(rel.label)+'</title></line>'
+    }).join("");
+    var empty=stage.querySelector(".ice106-empty-rel");if(empty)empty.hidden=!!rels.length
+  })
+}
+function bind(){
+  var panel=document.getElementById("icebergPanel");if(!panel||panel.dataset.icebergBound116===VERSION)return;
+  panel.dataset.icebergBound116=VERSION;
+  panel.addEventListener("click",function(e){
+    var passport=e.target.closest("[data-ice115-passport]");
+    if(passport){e.preventDefault();e.stopPropagation();discoveryPassportOpen115=!discoveryPassportOpen115;passportLimit115=18;renderIceberg();return}
+    var passportClose=e.target.closest("[data-ice115-close]");
+    if(passportClose){e.preventDefault();e.stopPropagation();discoveryPassportOpen115=false;renderIceberg();return}
+    var passportFilter=e.target.closest("[data-ice115-filter]");
+    if(passportFilter){e.preventDefault();e.stopPropagation();passportFilter115=passportFilter.dataset.ice115Filter||"all";passportLimit115=18;renderIceberg();return}
+    var passportMore=e.target.closest("[data-ice115-more]");
+    if(passportMore){e.preventDefault();e.stopPropagation();passportLimit115+=18;renderIceberg();return}
+    var listToggle=e.target.closest("[data-ice114-list-toggle]");
+    if(listToggle){e.preventDefault();e.stopPropagation();savedListExpanded114=!savedListExpanded114;renderIceberg();return}
+    var missionTarget=e.target.closest("[data-ice114-mission-target]");
+    if(missionTarget){e.preventDefault();e.stopPropagation();openAtlasTarget113(missionTarget.dataset.ice114MissionTarget);return}
+    var atlas=e.target.closest("[data-ice113-atlas]");
+    if(atlas){e.preventDefault();e.stopPropagation();expeditionAtlasOpen113=!expeditionAtlasOpen113;renderIceberg();return}
+    var closeAtlas=e.target.closest("[data-ice113-close]");
+    if(closeAtlas){e.preventDefault();e.stopPropagation();expeditionAtlasOpen113=false;renderIceberg();return}
+    var atlasTarget=e.target.closest("[data-ice113-target]");
+    if(atlasTarget){e.preventDefault();e.stopPropagation();openAtlasTarget113(atlasTarget.dataset.ice113Target);return}
+    var compare=e.target.closest("[data-ice112-select]");
+    if(compare){e.preventDefault();e.stopPropagation();toggleCompare112(compare.dataset.ice112Select);return}
+    var copyCompare=e.target.closest("[data-ice112-copy]");
+    if(copyCompare){e.preventDefault();e.stopPropagation();copyCompareReport112();return}
+    var clearCompare=e.target.closest("[data-ice112-clear]");
+    if(clearCompare){e.preventDefault();e.stopPropagation();clearCompare112();return}
+    var analysis=e.target.closest("[data-ice111-analysis]");
+    if(analysis){
+      e.preventDefault();e.stopPropagation();
+      var id=analysis.dataset.ice111Analysis;
+      if(expeditionReportOpen111.has(id))expeditionReportOpen111.delete(id);else expeditionReportOpen111.add(id);
+      renderIceberg();return
+    }
+    var saveExp=e.target.closest("[data-ice110-save]");
+    if(saveExp){e.preventDefault();e.stopPropagation();saveCurrentExpedition110();return}
+    var replay=e.target.closest("[data-ice110-replay]");
+    if(replay){e.preventDefault();e.stopPropagation();replaySavedRoute110(replay.dataset.ice110Replay);return}
+    var del=e.target.closest("[data-ice110-delete]");
+    if(del){e.preventDefault();e.stopPropagation();deleteExpedition110(del.dataset.ice110Delete);return}
+    var stop=e.target.closest("[data-ice110-stop]");
+    if(stop){e.preventDefault();e.stopPropagation();stopReplay110();renderIceberg();return}
+    var log=e.target.closest("[data-ice109-log]");
+    if(log){e.preventDefault();e.stopPropagation();diveLogOpen109=!diveLogOpen109;renderIceberg();return}
+    var closeLog=e.target.closest("[data-ice109-close]");
+    if(closeLog){e.preventDefault();e.stopPropagation();diveLogOpen109=false;renderIceberg();return}
+    var clearLog=e.target.closest("[data-ice109-clearlog]");
+    if(clearLog){e.preventDefault();e.stopPropagation();clearDiveLog109();return}
+    var jump=e.target.closest("[data-ice109-jump]");
+    if(jump&&!jump.disabled){e.preventDefault();e.stopPropagation();jumpDiveLog109(+jump.dataset.ice109Jump);return}
+    var sail=e.target.closest("[data-ice108-sail]");
+    if(sail){e.preventDefault();e.stopPropagation();sailBridge108(sail.dataset.ice108Sail,sail.dataset.ice108Tier,sail.dataset.ice108Direction);return}
+    var back=e.target.closest("[data-ice108-back]");
+    if(back&&!back.disabled){e.preventDefault();e.stopPropagation();voyageBack108();return}
+    var clear=e.target.closest("[data-ice107-clear]");
+    if(clear){e.preventDefault();e.stopPropagation();clearFocus(true);return}
+    var focus=e.target.closest("[data-ice107-focus]");
+    if(focus){e.preventDefault();e.stopPropagation();setFocus(focus.dataset.ice107Focus);return}
+  });
+  panel.addEventListener("input",function(e){
+    if(e.target&&e.target.matches("[data-ice115-query]")){
+      passportQuery115=e.target.value||"";
+      var caret=0;try{caret=e.target.selectionStart||passportQuery115.length}catch(_){caret=passportQuery115.length}
+      clearTimeout(window.__ICE115_QUERY_TIMER);
+      window.__ICE115_QUERY_TIMER=setTimeout(function(){
+        passportLimit115=18;renderIceberg();
+        requestAnimationFrame(function(){
+          var input=document.querySelector("#icebergPanel [data-ice115-query]");
+          if(input){try{input.focus({preventScroll:true});input.setSelectionRange(Math.min(caret,input.value.length),Math.min(caret,input.value.length))}catch(_){}}
+        })
+      },160)
+    }
+  });
+  panel.addEventListener("change",function(e){
+    if(e.target&&e.target.matches("[data-ice115-sort]")){
+      passportSort115=e.target.value||"rare";passportLimit115=18;renderIceberg()
+    }
+  });
+  panel.addEventListener("keydown",function(e){
+    var node=e.target.closest(".ice105-song-node");if(!node)return;
+    if(e.key==="Enter"||e.key===" "){e.preventDefault();node.click()}
+    if((e.key==="f"||e.key==="F")&&node.dataset.songId){e.preventDefault();setFocus(node.dataset.songId)}
+  });
+  panel.addEventListener("pointerdown",function(e){
+    var node=e.target.closest(".ice105-song-node");if(!node||e.target.closest("[data-ice107-focus]"))return;
+    clearTimeout(longTimer);longReady=false;longId=node.dataset.songId||"";
+    longTimer=setTimeout(function(){longReady=true;try{navigator.vibrate&&navigator.vibrate(18)}catch(_){}},520)
+  });
+  panel.addEventListener("pointerup",function(e){
+    clearTimeout(longTimer);longTimer=0;
+    if(longReady&&longId){
+      e.preventDefault();e.stopPropagation();
+      suppressClickUntil=Date.now()+420;
+      var id=longId;longReady=false;longId="";setFocus(id)
+    }else{longReady=false;longId=""}
+  });
+  ["pointercancel","pointerleave"].forEach(function(type){panel.addEventListener(type,function(){clearTimeout(longTimer);longTimer=0;longReady=false;longId=""})});
+  document.addEventListener("click",function(e){
+    if(Date.now()<suppressClickUntil&&e.target.closest&&e.target.closest("#icebergPanel")){e.preventDefault();e.stopImmediatePropagation()}
+  },true)
+}
+function patch(){
+  addStyle();
+  loadDiveLog109();
+  loadSavedExpeditions110();
+  if(typeof icebergSongNodesHtml105==="function")icebergSongNodesHtml105=nodeHtml;
+  if(typeof drawIcebergRelations106==="function")drawIcebergRelations106=drawRelations;
+  if(typeof scheduleIcebergRelations106==="function"){
+    scheduleIcebergRelations106=function(){
+      try{bindIcebergNodePager106()}catch(_){}
+      bind();drawRelations()
+    }
+  }
+  if(originalRequestTier){
+    requestTierLoad103=function(tierId){
+      var from=typeof currentTierIndex104==="function"?currentTierIndex104():-1;
+      var to=tierId==="all"?-1:TIERS.findIndex(function(t){return t.id===tierId});
+      if(tierId!=="all"&&to!==from)try{setIcebergNodePage106(tierId,0)}catch(_){}
+      if(to!==from)clearFocus(false);
+      if(to!==from&&!pendingSail108){stopReplay110();voyageHistory108=[];diveLogOpen109=false;saveDiveLog109()}
+      return originalRequestTier(tierId)
+    }
+  }
+  if(originalGetAnySong39){
+    getAnySong39=function(id){return voyageSongCache108.get(String(id))||originalGetAnySong39(id)}
+  }
+  document.documentElement.dataset.vocaUi=VERSION;
+  var footer=document.querySelector(".footer");
+  if(footer)footer.textContent=footer.textContent.replace(/^v\d+\.\d+\.\d+/, "v"+VERSION);
+  window.VSAIceberg116={version:VERSION,setFocus:setFocus,clearFocus:function(){clearFocus(true)},getFocus:function(){return focusId},bridge:function(){return bridgeState},sail:sailBridge108,back:voyageBack108,history:function(){return voyageHistory108.slice()},openLog:function(){diveLogOpen109=true;renderIceberg()},clearLog:clearDiveLog109,saved:function(){return savedExpeditions110.slice()},save:saveCurrentExpedition110,replay:replaySavedRoute110,stopReplay:stopReplay110,analyze:function(id){var c=savedExpeditions110.find(function(x){return x.id===id});return c?expeditionAnalysis111(c.route||[]):null},compare:function(ids){compareSelection112=new Set((ids||[]).slice(0,3));compareOpen112=compareSelection112.size>=2;renderIceberg()},compareText:function(){return compareSummaryText112(selectedExpeditions112())},atlas:function(){return atlasStats113()},missions:function(){return atlasMissions114(atlasStats113())},passport:function(){return passportEntries115()},openPassport:function(){discoveryPassportOpen115=true;diveLogOpen109=true;renderIceberg()},openAtlas:function(){expeditionAtlasOpen113=true;diveLogOpen109=true;renderIceberg()}};
+  bind();
+  try{renderIceberg()}catch(_){}
+}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",patch,{once:true});else patch();
+})();
