@@ -1,5 +1,5 @@
 {
-  "version": "0.9.18",
+  "version": "0.9.19",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-09-30",
@@ -163,6 +163,11 @@
     "fresh-full-index-manifest",
     "full-index-cache-v5",
     "manifest-network-first",
-    "dataset-generation-cache-purge"
+    "dataset-generation-cache-purge",
+    "system-pip-control",
+    "document-pip-fallback",
+    "background-media-session",
+    "visibility-playback-preserve",
+    "youtube-pip-permission"
   ]
 }
