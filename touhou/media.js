@@ -3,6 +3,7 @@
 const NICO_ORIGIN="https://embed.nicovideo.jp";
 const PLAYER_ID="touhouDivePlayer";
 const AUTO_KEY="touhoudive:player:autoNext";
+const PLAYBACK_MODE_KEY="touhoudive:player:youtubeMode";
 const BAD_MEDIA_KEY="touhoudive:media:unavailable:v1";
 
 function clean(v){return String(v??"").trim()}
@@ -58,6 +59,7 @@ class TouhouMediaPlayer{
     this.current=null;this.queue=[];this.index=-1;this.frame=null;this.yt=null;this.playing=true;this.activeTab="related";
     this.pipWindow=null;this.pipHome=null;this.backgroundActive=false;
     this.autoNext=localStorage.getItem(AUTO_KEY)!=="0";
+    this.youtubeMode=localStorage.getItem(PLAYBACK_MODE_KEY)==="youtube"?"youtube":"inline";
     try{this.badMedia=new Set(JSON.parse(localStorage.getItem(BAD_MEDIA_KEY)||"[]"))}catch(_){this.badMedia=new Set()}
     document.getElementById("playerClose").onclick=()=>this.close();
     if(this.pipBtn)this.pipBtn.onclick=()=>this.requestPip();
@@ -95,12 +97,31 @@ class TouhouMediaPlayer{
   }
   play(track,queue){
     if(!track||!this.selectPlayableMedia(track))return false;
+    if(this.youtubeMode==="youtube"&&track.media?.provider==="youtube"){
+      return this.openYoutubePremium(track);
+    }
     const q=(queue||[]).filter(x=>this.playable(x));
     this.queue=q.length?q:[track];
     this.index=Math.max(0,this.queue.findIndex(x=>x.id===track.id));
     this.current=this.queue[this.index]||track;this.playing=true;
     this.renderCurrent(true);
     this.expand();
+    return true;
+  }
+  setYoutubeMode(mode){
+    this.youtubeMode=mode==="youtube"?"youtube":"inline";
+    try{localStorage.setItem(PLAYBACK_MODE_KEY,this.youtubeMode)}catch(_){}
+    return this.youtubeMode;
+  }
+  getYoutubeMode(){return this.youtubeMode}
+  openYoutubePremium(track){
+    const media=track?.media?.provider==="youtube"?track.media:this.candidates(track).find(x=>x.provider==="youtube"&&x.id);
+    if(!media?.id)return false;
+    const url="https://www.youtube.com/watch?v="+encodeURIComponent(media.id);
+    try{
+      const w=window.open(url,"_blank","noopener,noreferrer");
+      if(!w)window.location.href=url;
+    }catch(_){window.location.href=url}
     return true;
   }
   setQueue(queue,currentId){
