@@ -39,7 +39,7 @@ async function boot(){
     setView("home");
     renderLocalFirst();
     bind();
-    if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js?v=0.9.10").then(r=>r.update()).catch(()=>{});
+    if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js?v=0.9.11").then(r=>r.update()).catch(()=>{});
     connectFullDataset();
     await connectRemote();
   }catch(err){
@@ -64,11 +64,17 @@ function bind(){
     loadRemote(true);
     $("#searchInput").focus();
   };
-  $("#workSelect").addEventListener("change",e=>{state.workFilter=e.target.value;if(state.workFilter&&state.view==="home")setView("discover");if(state.view==="iceberg")renderIceberg();else renderCatalog();loadRemote(true);});
+  $("#workSelect").addEventListener("change",e=>{
+    state.workFilter=e.target.value;
+    if(state.workFilter&&state.view==="home")setView("discover");
+    requestAnimationFrame(()=>state.view==="iceberg"?renderIceberg():renderCatalog());
+    loadRemote(true);
+  });
   $("#sortSelect").addEventListener("change",e=>{
     state.sort=e.target.value;
     if(state.sort==="influence"){state.mode="original";state.filter="전체";syncModeTabs();}
-    renderCatalog();loadRemote(true);
+    requestAnimationFrame(()=>renderCatalog());
+    loadRemote(true);
   });
   $("#loadMoreBtn").onclick=()=>state.full.loaded?showMoreFull():loadRemote(false);
   $("#randomBtn").onclick=randomDive;$("#heroDiveBtn").onclick=randomDive;
@@ -90,19 +96,21 @@ function bind(){
     toast("비공개·삭제·임베드 제한 영상은 자동 제외했습니다.");
   });
   window.addEventListener("touhoudive:player-track",async e=>{
-    if(!fullIndex?.enrichTrack)return;
-    const id=e.detail?.trackId,t=byId(id);if(!t?.touhoudbId)return;
+    const id=e.detail?.trackId,t=byId(id);if(!t)return;
     try{
-      const rich=await fullIndex.enrichTrack(t);
-      if(!rich)return;
-      const merged=remember(rich);
+      let merged=t;
+      const alreadyRanked=!!(t.globalRank||t.popularityRank||t.influenceRank||t.viewRank);
+      if(!alreadyRanked&&fullIndex?.enrichTrack&&t.touhoudbId){
+        const rich=await fullIndex.enrichTrack(t);
+        if(rich)merged=remember(rich);
+      }
       player.updateCurrentData?.({...merged,_playerRanks:playerRankMeta(merged)});
     }catch(_){}
   });
-  $$("#modeTabs .mode-tab").forEach(btn=>btn.onclick=()=>{
+  $("#modeTabs .mode-tab").forEach(btn=>btn.onclick=()=>{
     state.mode=btn.dataset.mode;state.filter="전체";syncModeTabs();
-    if(state.view==="iceberg"){renderIceberg();loadRemote(true).then(()=>renderIceberg());}
-    else{renderCatalog();loadRemote(true);}
+    requestAnimationFrame(()=>state.view==="iceberg"?renderIceberg():renderCatalog());
+    loadRemote(true);
   });
   $$(".nav-item[data-view]").forEach(btn=>btn.onclick=()=>nav(btn.dataset.view));
   document.addEventListener("keydown",e=>{
@@ -563,7 +571,7 @@ function renderFilters(){
   }
   if(!out.includes(state.filter))state.filter="전체";
   $("#quickFilters").innerHTML=out.map(x=>'<button class="filter-chip '+(x===state.filter?"is-active":"")+'" data-filter="'+escAttr(x)+'">'+esc(x)+'</button>').join("");
-  $$("#quickFilters .filter-chip").forEach(b=>b.onclick=()=>{state.filter=b.dataset.filter;renderCatalog();loadRemote(true);});
+  $("#quickFilters .filter-chip").forEach(b=>b.onclick=()=>{state.filter=b.dataset.filter;requestAnimationFrame(()=>renderCatalog());loadRemote(true);});
 }
 function updateStats(){
   const meta=state.full.manifest;
@@ -849,9 +857,10 @@ function nav(view){
     if(state.selected)startDive(state.selected,{fresh:true});
     else{stage.hidden=true;empty.hidden=false;}
   }else if(view==="lineage"){
-    renderLineageOverview();
+    requestAnimationFrame(()=>renderLineageOverview());
   }else if(view==="iceberg"){
-    renderIceberg();
+    $("#icebergStats").innerHTML='<div class="iceberg-loading">분포 계산 중…</div>';
+    requestAnimationFrame(()=>renderIceberg());
   }else if(view==="library"){
     renderSpecial([...state.favorites].map(byId).filter(Boolean),"보관함");
   }else if(view==="history"){
@@ -1367,11 +1376,26 @@ function trustedLinks(t){
   }
   return out;
 }
+function orderByStoredRank(list,field,totalHint=0){
+  const max=Math.max(Number(totalHint)||0,list.length);
+  if(max>500000)return [...list].sort((a,b)=>(Number(a?.[field])||1e12)-(Number(b?.[field])||1e12));
+  const ranked=new Array(max),unranked=[];
+  for(const t of list){
+    const r=Number(t?.[field])||0;
+    if(r>0&&r<=max&&!ranked[r-1])ranked[r-1]=t;
+    else unranked.push(t);
+  }
+  const out=[];
+  for(const t of ranked)if(t)out.push(t);
+  if(unranked.length)out.push(...unranked);
+  return out;
+}
 function sortList(list,sort){
   if(sort==="year-desc")return [...list].sort((a,b)=>(b.year||0)-(a.year||0));
   if(sort==="year-asc")return [...list].sort((a,b)=>(a.year||9999)-(b.year||9999));
   if(sort==="title")return [...list].sort((a,b)=>a.title.localeCompare(b.title,"ja"));
   if(sort==="popularity"){
+    if(state.full.loaded)return orderByStoredRank(list,"popularityRank",state.full.manifest?.indexed);
     return [...list].sort((a,b)=>(Number(a.popularityRank)||1e12)-(Number(b.popularityRank)||1e12)||popularityScore(b)-popularityScore(a));
   }
   if(sort==="influence"){
@@ -1381,6 +1405,7 @@ function sortList(list,sort){
     });
   }
   if(sort==="views"){
+    if(state.full.loaded)return orderByStoredRank(list,"viewRank",state.full.manifest?.viewCoverage?.rankedTracks||state.full.manifest?.indexed);
     return [...list].sort((a,b)=>(Number(a.viewRank)||1e12)-(Number(b.viewRank)||1e12)||viewSignal(b)-viewSignal(a)||a.title.localeCompare(b.title,"ja"));
   }
   if(state.full.loaded)return list;
