@@ -1305,30 +1305,24 @@ function refreshRanks(){
   state.rankIndex=new Map(pool.map((t,i)=>[resolveId(t.id),{rank:i+1,score:overallRankScore(t)}]));
   state.rankTotal=pool.length;
 }
-function archiveRankTotal(){
-  return Math.max(Number(state.archiveSource?.arrangementTracks)||128040,1);
-}
-function projectArchiveRank(sampleRank,sampleTotal,archiveTotal){
-  const r=Number(sampleRank),n=Number(sampleTotal),a=Number(archiveTotal);
-  if(!Number.isFinite(r)||r<1)return null;
-  if(!Number.isFinite(a)||a<1||a<=n||n<=1)return r;
-  return Math.max(1,Math.min(a,1+Math.round((r-1)*(a-1)/(n-1))));
+function fullRankTotal(){
+  return Math.max(Number(state.full.manifest?.indexed)||Number(state.remote.catalogTotal)||state.rankTotal||state.known.size||1,1);
 }
 function trackRank(t){
-  if(!t)return{rank:null,sampleRank:null,score:0,total:archiveRankTotal(),sampleTotal:state.rankTotal||0,estimated:false,fullScale:false};
-  const total=archiveRankTotal();
-  if(t.globalRank&&state.full.manifest){
-    const fullTotal=Number(state.full.manifest.indexed)||state.fullItems.length||1;
-    const scaled=projectArchiveRank(t.globalRank,fullTotal,total);
+  const total=fullRankTotal();
+  if(!t)return{rank:null,sampleRank:null,score:0,total,sampleTotal:state.rankTotal||0,estimated:false,fullScale:false,stale:!rankingV4Ready()};
+  if(rankingV4Ready()&&t.globalRank&&state.full.manifest){
     return{
-      rank:scaled,sampleRank:t.globalRank,score:Number(t.globalScore)||overallRankScore(t),
-      total,sampleTotal:fullTotal,estimated:false,fullScale:true
+      rank:Number(t.globalRank),sampleRank:Number(t.globalRank),score:Number(t.globalScore)||overallRankScore(t),
+      total,sampleTotal:total,estimated:false,fullScale:true,stale:false
     };
+  }
+  if(state.full.loaded&&!rankingV4Ready()){
+    return{rank:null,sampleRank:null,score:overallRankScore(t),total,sampleTotal:total,estimated:false,fullScale:false,stale:true};
   }
   if(!state.rankIndex.size||!state.rankIndex.has(resolveId(t.id)))refreshRanks();
   const row=state.rankIndex.get(resolveId(t.id))||{rank:null,score:overallRankScore(t)};
-  const projected=projectArchiveRank(row.rank,state.rankTotal,total);
-  return{rank:projected,sampleRank:row.rank,score:row.score,total,sampleTotal:state.rankTotal,estimated:total>state.rankTotal,fullScale:false};
+  return{rank:row.rank,sampleRank:row.rank,score:row.score,total:state.rankTotal||total,sampleTotal:state.rankTotal,estimated:false,fullScale:false,stale:false};
 }
 function rankPercentValue(rank){
   if(!rank?.rank||!rank?.total)return null;
@@ -1336,33 +1330,34 @@ function rankPercentValue(rank){
 }
 function rankPercentText(rank){
   const p=rankPercentValue(rank);
+  if(rank?.stale)return"v4 재집계 중";
   if(p===null)return"상위 —";
   if(p<0.01)return"상위 <0.01%";
   return "상위 "+p.toFixed(2)+"%";
 }
 function rankText(rank){
-  if(!rank||!rank.rank)return fmt(archiveRankTotal())+"곡 중 —위";
-  return fmt(rank.total)+"곡 중 "+fmt(rank.rank)+"위";
-}
-function scaleFullRank(rawRank,rawTotal=state.full.manifest?.indexed||state.fullItems.length||1){
-  return projectArchiveRank(Number(rawRank)||0,Number(rawTotal)||1,archiveRankTotal());
+  const total=rank?.total||fullRankTotal();
+  if(!rank?.rank)return fmt(total)+"곡 중 —위";
+  return fmt(total)+"곡 중 "+fmt(rank.rank)+"위";
 }
 function popularityRankInfo(t){
-  const total=archiveRankTotal();
-  if(t?.popularityRank&&state.full.manifest){
-    const rank=scaleFullRank(t.popularityRank);
-    return{rank,total,percent:rank/total*100,score:Number(t.popularityScore)||popularityScore(t),rawRank:t.popularityRank};
+  const total=fullRankTotal();
+  if(rankingV4Ready()&&t?.popularityRank&&state.full.manifest){
+    const rank=Number(t.popularityRank);
+    return{rank,total,percent:rank/total*100,score:Number(t.popularityScore)||popularityScore(t),rawRank:rank,stale:false};
   }
-  return{rank:null,total,percent:null,score:popularityScore(t),rawRank:null};
+  return{rank:null,total,percent:null,score:popularityScore(t),rawRank:null,stale:state.full.loaded&&!rankingV4Ready()};
 }
 function influenceRankInfo(t){
   const originals=Number(state.full.manifest?.counts?.original)||state.fullItems.filter(x=>x.type==="original").length||1;
   if(t?.type!=="original")return null;
+  const ready=rankingV4Ready();
   return{
-    rank:Number(t.influenceRank)||null,total:originals,score:Number(t.influenceScore)||influenceScore(t),
+    rank:ready?(Number(t.influenceRank)||null):null,total:originals,score:ready?(Number(t.influenceScore)||influenceScore(t)):influenceScore(t),
     children:Number(t.derivativeCount)||countChildren(t.id),
     circles:Number(t.derivativeCircleCount)||0,
-    albums:Number(t.derivativeAlbumCount)||0
+    albums:Number(t.derivativeAlbumCount)||0,
+    stale:state.full.loaded&&!ready
   };
 }
 function trustedLinks(t){
