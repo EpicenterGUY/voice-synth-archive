@@ -14,41 +14,77 @@ const state={
   history:readJson("touhoudive:history",[]),
   snapshots:readJson("touhoudive:snapshots",{})
 };
-let searchTimer=0,localSearchTimer=0;
+let searchTimer=0,localSearchTimer=0,uiBound=false;
 
 boot();
 
+async function loadLocalJson(path,fallback){
+  const url=new URL(path,document.baseURI).href;
+  let lastError=null;
+  for(const cacheMode of ["no-store","reload"]){
+    try{
+      const r=await fetch(url,{cache:cacheMode});
+      if(!r.ok)throw new Error(path+" HTTP "+r.status);
+      return{ok:true,data:await r.json(),source:cacheMode,error:null};
+    }catch(e){lastError=e}
+  }
+  try{
+    if("caches" in window){
+      const cached=await caches.match(url,{ignoreSearch:true});
+      if(cached)return{ok:true,data:await cached.json(),source:"cache-fallback",error:null};
+    }
+  }catch(e){lastError=e}
+  console.warn("local data unavailable",path,lastError);
+  return{ok:false,data:fallback,source:"fallback",error:String(lastError?.message||lastError||"unknown")};
+}
 async function boot(){
   try{
-    const [o,a,w,archiveSource]=await Promise.all([
-      fetch("./data/originals.json",{cache:"no-store"}).then(r=>r.json()),
-      fetch("./data/arrangements.json",{cache:"no-store"}).then(r=>r.json()),
-      fetch("./data/works.json",{cache:"no-store"}).then(r=>r.json()),
-      fetch("./data/archive-sources.json",{cache:"no-store"}).then(r=>r.json()).catch(()=>null)
-    ]);
-    state.works=w;
-    state.archiveSource=archiveSource;
-    catalog?.setWorks?.(w);
-    fullIndex?.setWorks?.(w);
-    state.localOriginals=o.map(x=>({...x,type:"original",circle:"ZUN",album:x.work,originalIds:[],remote:false}));
-    state.localArrangements=a.map(x=>({...x,type:"arrangement",remote:false}));
-    [...state.localOriginals,...state.localArrangements].forEach(remember);
-    Object.values(state.snapshots||{}).forEach(x=>x&&remember({...x,snapshot:true}));
-    normalizePersistentIds();
+    bind();
+  }catch(err){
+    console.error("UI binding failed",err);
+    setDataHealth("error","UI 초기화 오류 · 새로고침 필요");
+  }
+  if("serviceWorker" in navigator){
+    navigator.serviceWorker.register("./sw.js?v=0.9.13").then(r=>r.update()).catch(err=>console.warn("service worker",err));
+  }
+
+  const [or,ar,wr,sr]=await Promise.all([
+    loadLocalJson("./data/originals.json",[]),
+    loadLocalJson("./data/arrangements.json",[]),
+    loadLocalJson("./data/works.json",[]),
+    loadLocalJson("./data/archive-sources.json",null)
+  ]);
+
+  state.works=Array.isArray(wr.data)?wr.data:[];
+  state.archiveSource=sr.data&&typeof sr.data==="object"?sr.data:null;
+  catalog?.setWorks?.(state.works);
+  fullIndex?.setWorks?.(state.works);
+  state.localOriginals=(Array.isArray(or.data)?or.data:[]).map(x=>({...x,type:"original",circle:"ZUN",album:x.work,originalIds:[],remote:false}));
+  state.localArrangements=(Array.isArray(ar.data)?ar.data:[]).map(x=>({...x,type:"arrangement",remote:false}));
+  [...state.localOriginals,...state.localArrangements].forEach(remember);
+  Object.values(state.snapshots||{}).forEach(x=>x&&remember({...x,snapshot:true}));
+  normalizePersistentIds();
+
+  try{
     renderWorkSelect();
     setView("home");
     renderLocalFirst();
-    bind();
-    if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js?v=0.9.11").then(r=>r.update()).catch(()=>{});
-    connectFullDataset();
-    await connectRemote();
   }catch(err){
-    console.error(err);
-    setDataHealth("error","로컬 데이터 로드 실패");
-    $("#trackGrid").innerHTML='<div class="empty-state" style="grid-column:1/-1;min-height:220px"><strong>데이터를 불러오지 못했습니다.</strong><span>새로고침 후 다시 시도해 주세요.</span></div>';
+    console.error("initial render failed",err);
+    $("#trackGrid").innerHTML='<div class="empty-state" style="grid-column:1/-1;min-height:220px"><strong>초기 화면 구성 중 오류가 발생했습니다.</strong><span>라이브 DB 연결은 계속 시도합니다.</span></div>';
   }
+
+  const criticalFailed=!or.ok||!ar.ok||!wr.ok;
+  if(criticalFailed){
+    const failed=[!or.ok&&"원곡",!ar.ok&&"2차창작",!wr.ok&&"작품"].filter(Boolean).join(" · ");
+    setDataHealth("loading","로컬 일부 재시도 필요("+failed+") · 라이브 DB 연결 중");
+  }
+
+  connectFullDataset();
+  connectRemote().catch(err=>remoteFail(String(err?.message||err)));
 }
 function bind(){
+  if(uiBound)return;
   $("#searchInput").addEventListener("input",()=>{
     $("#searchClear").hidden=!$("#searchInput").value;
     if($("#searchInput").value&&state.view!=="discover")setView("discover");
@@ -130,6 +166,7 @@ function bind(){
     },{rootMargin:"700px 0px"});
     io.observe($("#catalogFooter"));
   }
+  uiBound=true;
 }
 function renderLocalFirst(){
   state.remoteItems=[];
