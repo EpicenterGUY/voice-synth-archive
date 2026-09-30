@@ -1,8 +1,8 @@
 {
-  "schema": 2,
+  "schema": 3,
   "source": "TouhouDB",
   "api": "https://touhoudb.com/api",
-  "generatedAt": "2026-09-30T10:39:51.658Z",
+  "generatedAt": "2026-09-30T11:01:53.172Z",
   "totalCount": 189051,
   "indexed": 189051,
   "shardSize": 1000,
@@ -982,24 +982,46 @@
   ],
   "viewCoverage": {
     "providers": {
-      "bilibili": 45
+      "niconico": 881,
+      "bilibili": 56
     },
-    "tracks": 45,
-    "media": 45,
+    "candidates": {
+      "youtube": 65052,
+      "niconico": 9492,
+      "bilibili": 766
+    },
+    "ratios": {
+      "youtube": 0,
+      "niconico": 0.09281500210703751,
+      "bilibili": 0.0731070496083551
+    },
+    "tracks": 927,
+    "media": 937,
     "youtubeKeyConfigured": false,
-    "rankedTracks": 45,
+    "popularityEligible": false,
+    "mode": "partial",
+    "rankedTracks": 927,
     "supportedProviders": [
       "youtube",
       "niconico",
       "bilibili"
     ]
   },
+  "lookup": {
+    "path": "lookup",
+    "bucketSize": 1000,
+    "bucketCount": 199,
+    "format": "[id,q,s,qp,sp,qi,si,qv,sv,vt,vm,vp,vc,dc,dsc,da,dm,viewMedia]"
+  },
   "ranking": {
-    "version": 3,
-    "composite": "popularity + original influence",
-    "popularity": "rating*5 + log10(favorites+1)*18 + log10(hits+1)*6 + media-provider bonus + verified platform view signal",
-    "views": "log10(sum verified views+1)*12 + log10(max video views+1)*4 + verified-platform bonus",
-    "influence": "official original only: derivative tracks + distinct circles + distinct albums + playable derivative bonus"
+    "version": 4,
+    "composite": "popularity + original influence*0.35",
+    "popularity": "log10(TouhouDB cumulative vote score+1)*24 + log10(favorites+1)*7 + media-provider bonus + optional verified multi-platform view signal*0.55",
+    "ratingMeaning": "TouhouDB RatingScore is a cumulative vote score: Favorite +3, Like +2, Dislike -1; it is not a 10-point average rating",
+    "views": "log10(sum verified views+1)*8 + log10(max video views+1)*2 + verified-platform bonus; ranked only among measured tracks",
+    "viewPolicy": "platform views affect popularity only when YouTube coverage >=65% and NicoNico or Bilibili coverage >=55%; otherwise views remain a separate partial ranking",
+    "influence": "official original only: log-weighted derivative tracks + distinct circles + distinct albums + playable derivative count",
+    "denominator": "overall/popularity ranks use the full indexed song count directly; no 128,040 arrangement-scale projection"
   },
   "classification": {
     "original": "SongType Original AND no parent AND (ZUN artist OR official collaborator + official-work match)",
