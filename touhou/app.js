@@ -7,7 +7,7 @@ const player=new window.TouhouMediaPlayer();
 const state={
   localOriginals:[],localArrangements:[],known:new Map(),aliases:new Map(),identities:new Map(),remoteItems:[],fullItems:[],works:[],archiveSource:null,
   mode:"all",filter:"전체",workFilter:"",sort:"recommend",selected:null,view:"home",diveDepth:0,diveRoot:null,icebergMode:"visibility",rankIndex:new Map(),rankTotal:0,enriching:new Map(),
-  full:{available:false,loading:false,loaded:false,manifest:null,loadedCount:0,error:""},displayLimit:60,renderKey:"",lastMatchCount:0,childCounts:new Map(),
+  full:{available:false,loading:false,loaded:false,streaming:false,manifest:null,loadedCount:0,error:""},displayLimit:60,renderKey:"",lastMatchCount:0,childCounts:new Map(),
   remote:{available:false,loading:false,start:0,total:0,catalogTotal:0,key:"",error:"",counts:{},seq:0},
   favorites:new Set(readJson("touhoudive:favorites",[])),
   history:readJson("touhoudive:history",[]),
@@ -122,7 +122,16 @@ async function connectFullDataset(){
   if(!fullIndex)return;
   try{
     const meta=await fullIndex.manifest();
-    state.full.available=true;state.full.loading=true;state.full.manifest=meta;state.full.loadedCount=0;
+    const mobile=window.matchMedia("(max-width:860px)").matches||((navigator.deviceMemory||8)<=4);
+    state.full.available=true;state.full.manifest=meta;state.full.loadedCount=0;
+    if(mobile){
+      state.full.streaming=true;state.full.loading=false;state.full.loaded=false;
+      setDataHealth("ok","모바일 스트리밍 · 전체 "+fmt(meta.indexed)+"곡");
+      $("#heroCatalogCount").textContent=fmt(meta.indexed)+" tracks";
+      updateStats();syncCatalogFooter();
+      return;
+    }
+    state.full.streaming=false;state.full.loading=true;
     setDataHealth("loading","전체 인덱스 준비 · "+fmt(meta.indexed)+"곡");
     updateStats();
     const result=await fullIndex.loadAll({
@@ -151,8 +160,7 @@ async function connectFullDataset(){
     if(state.view==="iceberg")renderIceberg();
   }catch(e){
     state.full.loading=false;state.full.error=String(e?.message||e);
-    // Full index is optional until the first server-side build finishes.
-    if(state.remote.available)setDataHealth("ok","TouhouDB LIVE · "+fmt(state.remote.catalogTotal)+"곡");
+    if(state.remote.available)setDataHealth("ok",state.full.streaming?"모바일 스트리밍 · 전체 "+fmt(state.full.manifest?.indexed||state.remote.catalogTotal)+"곡":"TouhouDB LIVE · "+fmt(state.remote.catalogTotal)+"곡");
   }
 }
 function showMoreFull(){
@@ -228,7 +236,7 @@ async function loadRemote(reset=false,force=false){
     state.remote.total=Number(res.total)||state.remote.total;
     state.remote.error="";
     renderCatalog(force?"새 추천":undefined);
-    setDataHealth("ok","TouhouDB LIVE · "+fmt(state.remoteItems.length)+"곡 로드");
+    setDataHealth("ok",state.full.streaming?"모바일 스트리밍 · 전체 "+fmt(state.full.manifest?.indexed||state.remote.catalogTotal)+"곡 · 현재 "+fmt(state.remoteItems.length)+"곡 캐시":"TouhouDB LIVE · "+fmt(state.remoteItems.length)+"곡 로드");
     updateCatalogTotal();
   }catch(e){
     if(seq!==state.remote.seq)return;
@@ -350,6 +358,66 @@ function resolveId(id){
   return cur;
 }
 function byId(id){return state.known.get(resolveId(id))||null}
+function mergeRemoteIntoTrack(base,incoming){
+  if(!base||!incoming)return base||incoming;
+  const canonical=resolveId(base.id)||base.id;
+  const merged=mergeTrack({...base,id:canonical},incoming);
+  merged.id=canonical;
+  state.known.set(canonical,merged);
+  if(incoming.id)state.aliases.set(incoming.id,canonical);
+  const key=identityKey(merged);if(key)state.identities.set(key,canonical);
+  return merged;
+}
+function sampleRankByScore(t,scoreFn,pool=currentPool()){
+  const score=scoreFn(t);let ahead=0,tiedBefore=0;
+  const title=String(t?.title||"");
+  for(const x of pool){
+    if(resolveId(x.id)===resolveId(t.id))continue;
+    const s=scoreFn(x);
+    if(s>score)ahead++;
+    else if(s===score&&String(x.title||"").localeCompare(title,"ja")<0)tiedBefore++;
+  }
+  return{rank:ahead+tiedBefore+1,total:pool.length,score};
+}
+function activeSortRankInfo(t){
+  const pool=currentPool();
+  if(!t||!pool.length)return null;
+  if(state.sort==="popularity"){
+    const p=popularityRankInfo(t);
+    if(p.rank)return{label:"인기순",value:fmt(p.total)+"곡 중 "+fmt(p.rank)+"위",sub:p.percent!==null?"상위 "+(p.percent<0.01?"<0.01":p.percent.toFixed(2))+"%":""};
+    const r=sampleRankByScore(t,popularityScore,pool);return{label:"인기순",value:fmt(r.total)+"곡 중 "+fmt(r.rank)+"위",sub:"현재 로드 기준"};
+  }
+  if(state.sort==="influence"&&t.type==="original"){
+    const i=influenceRankInfo(t);
+    if(i?.rank)return{label:"영향력순",value:fmt(i.total)+"원곡 중 "+fmt(i.rank)+"위",sub:"파생 "+fmt(i.children)+"곡"};
+    const originals=pool.filter(x=>x.type==="original"),r=sampleRankByScore(t,influenceScore,originals);return{label:"영향력순",value:fmt(r.total)+"원곡 중 "+fmt(r.rank)+"위",sub:"현재 로드 기준"};
+  }
+  if(state.sort==="year-desc"||state.sort==="year-asc"){
+    if(!t.year)return{label:state.sort==="year-desc"?"최신순":"오래된순",value:"연도 미상",sub:""};
+    let ahead=0;for(const x of pool){if(!x.year||resolveId(x.id)===resolveId(t.id))continue;if(state.sort==="year-desc"&&x.year>t.year)ahead++;if(state.sort==="year-asc"&&x.year<t.year)ahead++}
+    return{label:state.sort==="year-desc"?"최신순":"오래된순",value:fmt(pool.length)+"곡 중 약 "+fmt(ahead+1)+"위",sub:String(t.year)};
+  }
+  if(state.sort==="title"){
+    let ahead=0;for(const x of pool){if(resolveId(x.id)!==resolveId(t.id)&&String(x.title||"").localeCompare(String(t.title||""),"ja")<0)ahead++}
+    return{label:"제목순",value:fmt(pool.length)+"곡 중 "+fmt(ahead+1)+"위",sub:"가나다/문자 정렬"};
+  }
+  const r=trackRank(t);return{label:"종합순",value:rankText(r),sub:rankPercentText(r)};
+}
+function playerRankMeta(t){
+  refreshRanks();
+  const overall=trackRank(t),pop=popularityRankInfo(t),inf=influenceRankInfo(t);
+  let popValue="",popSub="";
+  if(pop.rank){popValue=fmt(pop.total)+"곡 중 "+fmt(pop.rank)+"위";popSub=pop.percent!==null?"상위 "+(pop.percent<0.01?"<0.01":pop.percent.toFixed(2))+"%":""}
+  else{
+    const r=sampleRankByScore(t,popularityScore,currentPool());popValue=fmt(r.total)+"곡 중 "+fmt(r.rank)+"위";popSub="현재 로드 기준";
+  }
+  return{
+    overall:{label:"종합",value:rankText(overall),sub:rankPercentText(overall)},
+    popularity:{label:"인기",value:popValue,sub:popSub},
+    influence:inf?{label:"원곡 영향력",value:inf.rank?fmt(inf.total)+"원곡 중 "+fmt(inf.rank)+"위":"현재 표본 계산",sub:"파생 "+fmt(inf.children)+"곡 · "+fmt(inf.circles)+"서클"}:null,
+    active:activeSortRankInfo(t)
+  };
+}
 function originalIds(t){return uniq((t?.originalIds||[]).map(resolveId))}
 function originalTracks(t){return originalIds(t).map(byId).filter(Boolean)}
 function originalNames(t){return originalTracks(t).map(x=>x.title)}
@@ -455,6 +523,12 @@ function syncCatalogFooter(){
   if(state.full.loading){
     btn.disabled=true;btn.textContent="전체 인덱스 받는 중…";
     meta.innerHTML='<span class="remote-pulse">FULL INDEX</span> · '+fmt(state.full.loadedCount)+' / '+fmt(state.full.manifest?.indexed||0)+'곡 다운로드 중';
+    return;
+  }
+  if(state.full.streaming){
+    btn.disabled=state.remote.loading||(state.remote.total>0&&state.remote.start>=state.remote.total);
+    btn.textContent=state.remote.loading?"다음 50곡 불러오는 중…":(btn.disabled?"현재 조건 모두 불러옴":"다음 50곡");
+    meta.innerHTML='<span class="remote-pulse">STREAMING INDEX</span> · 전체 '+fmt(state.full.manifest?.indexed||state.remote.catalogTotal||0)+'곡 접근 가능 · 현재 화면 캐시 '+fmt(state.remoteItems.length)+'곡';
     return;
   }
   if(!state.remote.available){
@@ -636,10 +710,14 @@ async function playTrack(t){
   t=byId(t.id)||t;
   if(state.remote.available&&catalog){
     try{
-      if(!t.touhoudbId)t=await enrichTrack(t);
-      if(t?.touhoudbId&&!t.lyricsLoaded){
-        const hydrated=await catalog.hydrate("tdb-"+t.touhoudbId);
-        if(hydrated){remember(hydrated);t=byId(t.id)||remember(hydrated)}
+      let candidate=null;
+      if(!t.touhoudbId&&catalog.lookupByMedia)candidate=await catalog.lookupByMedia(t);
+      if(!candidate&&!t.touhoudbId)candidate=await catalog.lookupByTitle(t.lyricsSearchTitle||t.title,{mode:t.type});
+      if(candidate)t=mergeRemoteIntoTrack(t,candidate);
+      const remoteId=t.touhoudbId?("tdb-"+t.touhoudbId):(candidate?.id||"");
+      if(remoteId&&!t.lyricsLoaded){
+        const hydrated=await catalog.hydrate(remoteId);
+        if(hydrated)t=mergeRemoteIntoTrack(t,hydrated);
       }
     }catch(e){}
   }
@@ -652,10 +730,9 @@ async function playTrack(t){
     .filter(r=>player.playable(r.track))
     .slice(0,24)
     .map(r=>({...r.track,_queueReason:r.reason}));
-  const fallback=sortList(currentPool().filter(x=>resolveId(x.id)!==resolveId(t.id)&&player.playable(x)),"recommend")
-    .slice(0,24);
-  const queue=dedupe([{...t,_queueReason:"현재 재생"},...relatedQueue,...fallback]);
-  const current=queue.find(x=>resolveId(x.id)===resolveId(t.id))||t;
+  const fallback=sortList(currentPool().filter(x=>resolveId(x.id)!==resolveId(t.id)&&player.playable(x)),"recommend").slice(0,24);
+  const queue=dedupe([{...t,_queueReason:"현재 재생"},...relatedQueue,...fallback]).map(x=>({...x,_playerRanks:playerRankMeta(x)}));
+  const current=queue.find(x=>resolveId(x.id)===resolveId(t.id))||({...t,_playerRanks:playerRankMeta(t)});
   const ok=player.play(current,queue);
   if(ok)pushHistory(t.id,t);
   return ok;
