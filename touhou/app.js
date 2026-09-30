@@ -511,14 +511,14 @@ function activeSortRankInfo(t){
   if(state.sort==="popularity"){
     const p=popularityRankInfo(t);
     if(p.rank)return{label:"인기순",value:fmt(p.total)+"곡 중 "+fmt(p.rank)+"위",sub:p.percent!==null?"상위 "+(p.percent<0.01?"<0.01":p.percent.toFixed(2))+"%":""};
-    if(p.stale)return{label:"인기순",value:"v4 재집계 중",sub:"이전 v3 순위 숨김"};
+    if(p.stale)return{label:"인기순",value:"v5 재집계 중",sub:"이전 랭킹 숨김"};
     const sample=pool.length>5000?pool.slice(0,1200):pool;
     const r=sampleRankByScore(t,popularityScore,sample);return{label:"인기순",value:fmt(p.total)+"곡 전체 · 순위 준비 중",sub:"현재 로드 표본 "+fmt(r.rank)+"/"+fmt(r.total)};
   }
   if(state.sort==="influence"&&t.type==="original"){
     const i=influenceRankInfo(t);
     if(i?.rank)return{label:"영향력순",value:fmt(i.total)+"원곡 중 "+fmt(i.rank)+"위",sub:"파생 "+fmt(i.children)+"곡"};
-    if(i?.stale)return{label:"영향력순",value:"v4 재집계 중",sub:"현재 파생 점수만 표시"};
+    if(i?.stale)return{label:"영향력순",value:"v5 재집계 중",sub:"현재 파생 점수만 표시"};
     const originals=pool.filter(x=>x.type==="original").slice(0,1200),r=sampleRankByScore(t,influenceScore,originals);return{label:"영향력순",value:fmt(r.total)+"원곡 중 "+fmt(r.rank)+"위",sub:"현재 로드 표본"};
   }
   if(state.sort==="views"){
@@ -543,7 +543,7 @@ function playerRankMeta(t){
   const overall=trackRank(t),pop=popularityRankInfo(t),inf=influenceRankInfo(t),views=viewRankInfo(t);
   let popValue="",popSub="";
   if(pop.rank){popValue=fmt(pop.total)+"곡 중 "+fmt(pop.rank)+"위";popSub=pop.percent!==null?"상위 "+(pop.percent<0.01?"<0.01":pop.percent.toFixed(2))+"%":""}
-  else if(pop.stale){popValue="v4 재집계 중";popSub="이전 v3 순위 숨김"}
+  else if(pop.stale){popValue="v5 재집계 중";popSub="이전 랭킹 숨김"}
   else{
     const pool=currentPool(),sample=pool.length>5000?pool.slice(0,1200):pool;
     const r=sampleRankByScore(t,popularityScore,sample);popValue=fmt(pop.total)+"곡 전체 · 순위 준비 중";popSub="현재 로드 표본 "+fmt(r.rank)+"/"+fmt(r.total);
@@ -1200,14 +1200,19 @@ function viewSignal(t){
   if(!v.mediaCount)return 0;
   return Math.log10(v.total+1)*8+Math.log10(v.max+1)*2+Math.min(3,v.platforms)*1.5;
 }
-function rankingV4Ready(){return Number(state.full.manifest?.ranking?.version)>=4}
+function rankingV5Ready(){return Number(state.full.manifest?.ranking?.version)>=5}
 function platformViewsEligible(){return !!state.full.manifest?.viewCoverage?.popularityEligible}
+function communitySignal(t){
+  const rating=Math.max(0,Number(t?.ratingScore)||0);
+  const favorites=Math.max(0,Number(t?.favoritedTimes)||0);
+  const hits=Math.max(0,Number(t?.hitCount)||0);
+  const providers=new Set((t?.mediaCandidates||[]).map(m=>m?.provider).filter(Boolean)).size;
+  return Math.log10(rating+1)*8+Math.log10(favorites+1)*8+Math.log10(hits+1)*2+Math.min(4,providers);
+}
 function popularityScore(t){
-  const rating=Math.max(0,Number(t.ratingScore)||0);
-  const favorites=Math.max(0,Number(t.favoritedTimes)||0);
-  const providers=new Set((t.mediaCandidates||[]).map(m=>m?.provider).filter(Boolean)).size;
-  const community=Math.log10(rating+1)*24+Math.log10(favorites+1)*7+Math.min(4,providers)*1.5;
-  return community+(platformViewsEligible()?viewSignal(t)*0.55:0);
+  const community=communitySignal(t),views=mediaViewStats(t);
+  if(platformViewsEligible()&&views.mediaCount)return viewSignal(t)+community*0.35;
+  return community*0.45;
 }
 function influenceScore(t){
   if(t?.type!=="original")return 0;
@@ -1217,27 +1222,33 @@ function influenceScore(t){
   const mediaChildren=Math.max(0,Number(t.derivativeMediaCount)||0);
   return Math.log10(children+1)*14+Math.log10(circles+1)*9+Math.log10(albums+1)*6+Math.log10(mediaChildren+1)*3;
 }
-function overallRankScore(t){return popularityScore(t)+influenceScore(t)*0.35}
+function overallRankScore(t){return popularityScore(t)+influenceScore(t)*0.25}
 function popularityBreakdown(t){
   const rating=Math.max(0,Number(t?.ratingScore)||0);
   const favorites=Math.max(0,Number(t?.favoritedTimes)||0);
+  const hits=Math.max(0,Number(t?.hitCount)||0);
   const providers=new Set((t?.mediaCandidates||[]).map(m=>m?.provider).filter(Boolean)).size;
   const views=mediaViewStats(t),eligible=platformViewsEligible();
-  const ratingPts=Math.log10(rating+1)*24;
-  const favoritePts=Math.log10(favorites+1)*7;
-  const providerPts=Math.min(4,providers)*1.5;
-  const viewPts=eligible?viewSignal(t)*0.55:0;
-  const platformRows=views.providers.map(x=>({label:platformLabel(x.provider)+" 조회수",raw:fmt(x.views)+"회",rule:"확인된 PV 합계",points:null}));
+  const ratingPts=Math.log10(rating+1)*8;
+  const favoritePts=Math.log10(favorites+1)*8;
+  const hitPts=Math.log10(hits+1)*2;
+  const providerPts=Math.min(4,providers);
+  const communityRaw=ratingPts+favoritePts+hitPts+providerPts;
+  const communityWeight=eligible&&views.mediaCount?0.35:0.45;
+  const communityPts=communityRaw*communityWeight;
+  const viewPts=eligible&&views.mediaCount?viewSignal(t):0;
+  const platformRows=views.providers.map(x=>({label:platformLabel(x.provider)+" 조회수",raw:fmt(x.views)+"회",rule:"서로 다른 영상 ID의 확인 조회수를 합산",points:null}));
   return{
-    total:ratingPts+favoritePts+providerPts+viewPts,
-    baseTotal:ratingPts+favoritePts+providerPts,
-    viewPts,views,eligible,
+    total:viewPts+communityPts,
+    baseTotal:communityPts,
+    communityRaw,communityWeight,viewPts,views,eligible,
     metrics:[
-      {label:"TouhouDB 누적 추천점수",raw:fmt(rating)+"점",rule:"Favorite +3 · Like +2 · Dislike -1 → log10(n+1) × 24",points:ratingPts},
-      {label:"Favorite 수",raw:fmt(favorites)+"회",rule:"log10(n+1) × 7",points:favoritePts},
-      {label:"재생 소스 다양성",raw:fmt(providers)+"종",rule:"최대 4종 × 1.5",points:providerPts},
+      {label:"TouhouDB 누적 추천점수",raw:fmt(rating)+"점",rule:"log10(n+1) × 8",points:ratingPts*communityWeight},
+      {label:"Favorite 수",raw:fmt(favorites)+"회",rule:"log10(n+1) × 8",points:favoritePts*communityWeight},
+      {label:"TouhouDB 조회",raw:fmt(hits)+"회",rule:"log10(n+1) × 2",points:hitPts*communityWeight},
+      {label:"재생 소스 다양성",raw:fmt(providers)+"종",rule:"최대 4점",points:providerPts*communityWeight},
       ...platformRows,
-      {label:"플랫폼 조회수 보정",raw:views.mediaCount?fmt(views.total)+"회":"미집계",rule:eligible?"다중 플랫폼 커버리지 충족 · 조회수 점수 × 0.55":"커버리지 부족으로 인기점수에는 미반영",points:viewPts}
+      {label:"플랫폼 조회수",raw:views.mediaCount?fmt(views.total)+"회":"미집계",rule:eligible&&views.mediaCount?"조회수 점수를 인기의 주 신호로 직접 반영":"조회수 미확인 · 커뮤니티 지표만 45%로 보수 반영",points:viewPts}
     ]
   };
 }
@@ -1265,21 +1276,21 @@ function popularityRankDetail(t){
   const rank=popularityRankInfo(t),b=popularityBreakdown(t);
   let source;
   if(rank.rawRank&&state.full.manifest){
-    source={label:"전수 인기순위",text:fmt(rank.total)+"곡 중 "+fmt(rank.rank)+"위 · 랭킹 v4 전수 인덱스"};
+    source={label:"전수 인기순위",text:fmt(rank.total)+"곡 중 "+fmt(rank.rank)+"위 · 랭킹 v5 전수 인덱스"};
   }else{
-    source={label:"현재 로드 기준",text:"전수 인덱스의 인기순위가 없으면 현재 로드된 곡의 점수를 비교합니다."};
+    source={label:"현재 로드 기준",text:"랭킹 v5 재빌드가 끝나기 전에는 현재 로드 점수만 임시 표시합니다."};
   }
   return{
     title:"인기순위 산정 근거",
-    formula:"인기 점수 = 누적 추천점수 + Favorite + 소스 다양성 + (충분히 수집된 경우) 플랫폼 조회수",
+    formula:"인기 점수 = 검증 조회수 점수 + 커뮤니티 지표의 보정 기여",
     score:Number(rank.score)||b.total,
     source,
     components:[
-      {label:"커뮤니티 반응",points:b.baseTotal,description:"TouhouDB 누적 추천점수 · Favorite · 재생 소스"},
-      {label:"플랫폼 조회수",points:b.viewPts,description:b.eligible?(b.views.mediaCount?fmt(b.views.total)+"회 · "+fmt(b.views.platforms)+"개 플랫폼":"조회수 데이터 없음"):"현재 커버리지 부족 · 인기점수 미반영"}
+      {label:"플랫폼 조회수",points:b.viewPts,description:b.views.mediaCount?fmt(b.views.total)+"회 · "+fmt(b.views.mediaCount)+"개 영상":"조회수 미확인"},
+      {label:"커뮤니티 보정",points:b.baseTotal,description:"TouhouDB 추천 · Favorite · DB조회 · 소스 다양성 × "+Math.round(b.communityWeight*100)+"%"}
     ],
     metrics:b.metrics,
-    note:"TouhouDB RatingScore는 평균 평점이 아니라 누적 투표 점수입니다. YouTube·NicoNico·Bilibili 조회수는 수집 커버리지가 기준을 넘을 때만 인기점수에 반영하며, 그 전에는 별도 조회수 순위로만 표시합니다."
+    note:"v5에서는 조회수가 확인된 곡은 플랫폼 조회수를 주 신호로 사용합니다. TouhouDB의 소수 투표만으로 상위권에 오르는 현상을 막기 위해 커뮤니티 지표는 보정치로만 반영합니다. 같은 곡의 서로 다른 영상은 합산하고 동일 영상 ID는 중복 제거합니다."
   };
 }
 function influenceRankDetail(t){
@@ -1306,7 +1317,7 @@ function viewRankInfo(t){
   const platforms=Math.max(Number(t?.viewPlatformCount)||0,stats.platforms);
   const media=Math.max(Number(t?.viewMediaCount)||0,stats.mediaCount);
   const storedRank=Number(t?.viewRank)||0;
-  const validStoredRank=rankingV4Ready()&&total>0&&media>0&&storedRank>=1&&storedRank<=total;
+  const validStoredRank=rankingV5Ready()&&total>0&&media>0&&storedRank>=1&&storedRank<=total;
   if(validStoredRank){
     return{rank:storedRank,total,score:Number(t.viewScore)||viewSignal(t),views,platforms,media,partial:coverage.mode!=="multi-platform",coverage};
   }
@@ -1371,15 +1382,15 @@ function overallRankDetail(t){
   }
   return{
     title:"종합순위 산정 근거",
-    formula:"종합 점수 = 인기 점수 + 원곡 영향력 점수 × 0.35",
+    formula:"종합 점수 = 인기 점수 + 원곡 영향력 점수 × 0.25",
     score,
     source,
     components:[
       {label:"인기 점수",points:pop.total,description:"평점 · 즐겨찾기 · DB 조회 · 플랫폼 조회수"},
-      {label:"원곡 영향력 기여",points:inf.total*0.35,description:t?.type==="original"?"영향력 원점수 "+inf.total.toFixed(2)+"pt의 35%만 종합에 반영":"2차창작에는 0점"}
+      {label:"원곡 영향력 기여",points:inf.total*0.25,description:t?.type==="original"?"영향력 원점수 "+inf.total.toFixed(2)+"pt의 25%만 종합에 반영":"2차창작에는 0점"}
     ],
     metrics:[...pop.metrics,...inf.metrics],
-    note:"전체 순위의 분모는 전수 인덱스 전체 곡 수입니다. 과거처럼 128,040곡 2차창작 아카이브 규모로 환산하지 않습니다. 원곡 영향력은 종합점수에서 35%만 반영합니다."
+    note:"랭킹 v5는 조회수 기반 인기를 중심으로 계산하고, TouhouDB의 소수 투표는 보정치로만 사용합니다. 원곡 영향력은 공식 원곡에 한해 종합점수의 25% 가중치로 반영합니다."
   };
 }
 function refreshRanks(){
@@ -1396,14 +1407,14 @@ function fullRankTotal(){
 }
 function trackRank(t){
   const total=fullRankTotal();
-  if(!t)return{rank:null,sampleRank:null,score:0,total,sampleTotal:state.rankTotal||0,estimated:false,fullScale:false,stale:!rankingV4Ready()};
-  if(rankingV4Ready()&&t.globalRank&&state.full.manifest){
+  if(!t)return{rank:null,sampleRank:null,score:0,total,sampleTotal:state.rankTotal||0,estimated:false,fullScale:false,stale:!rankingV5Ready()};
+  if(rankingV5Ready()&&t.globalRank&&state.full.manifest){
     return{
       rank:Number(t.globalRank),sampleRank:Number(t.globalRank),score:Number(t.globalScore)||overallRankScore(t),
       total,sampleTotal:total,estimated:false,fullScale:true,stale:false
     };
   }
-  if(state.full.loaded&&!rankingV4Ready()){
+  if(state.full.loaded&&!rankingV5Ready()){
     return{rank:null,sampleRank:null,score:overallRankScore(t),total,sampleTotal:total,estimated:false,fullScale:false,stale:true};
   }
   if(!state.rankIndex.size||!state.rankIndex.has(resolveId(t.id)))refreshRanks();
@@ -1420,7 +1431,7 @@ function rankPercentValue(rank){
 }
 function rankPercentText(rank){
   const p=rankPercentValue(rank);
-  if(rank?.stale)return"v4 재집계 중";
+  if(rank?.stale)return"v5 재집계 중";
   if(p===null&&rank?.sampleRank&&rank?.sampleTotal)return"표본 "+fmt(rank.sampleRank)+"/"+fmt(rank.sampleTotal)+" · 전수 집계 중";
   if(p===null)return"전수 순위 준비 중";
   if(p<0.01)return"상위 <0.01%";
@@ -1434,16 +1445,16 @@ function rankText(rank){
 }
 function popularityRankInfo(t){
   const total=fullRankTotal();
-  if(rankingV4Ready()&&t?.popularityRank&&state.full.manifest){
+  if(rankingV5Ready()&&t?.popularityRank&&state.full.manifest){
     const rank=Number(t.popularityRank);
     return{rank,total,percent:rank/total*100,score:Number(t.popularityScore)||popularityScore(t),rawRank:rank,stale:false};
   }
-  return{rank:null,total,percent:null,score:popularityScore(t),rawRank:null,stale:state.full.loaded&&!rankingV4Ready()};
+  return{rank:null,total,percent:null,score:popularityScore(t),rawRank:null,stale:state.full.loaded&&!rankingV5Ready()};
 }
 function influenceRankInfo(t){
   const originals=Number(state.full.manifest?.counts?.original)||state.fullItems.filter(x=>x.type==="original").length||1;
   if(t?.type!=="original")return null;
-  const ready=rankingV4Ready();
+  const ready=rankingV5Ready();
   return{
     rank:ready?(Number(t.influenceRank)||null):null,total:originals,score:ready?(Number(t.influenceScore)||influenceScore(t)):influenceScore(t),
     children:Number(t.derivativeCount)||countChildren(t.id),
