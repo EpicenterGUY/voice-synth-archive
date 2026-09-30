@@ -254,8 +254,10 @@ async function enrichPlatformViews(tracks){
   }
   const majorReady=coverage.youtubeKeyConfigured&&coverage.ratios.youtube>=0.65;
   const supplementalReady=(coverage.ratios.niconico>=0.55||coverage.ratios.bilibili>=0.55);
-  coverage.popularityEligible=!!(majorReady&&supplementalReady);
-  coverage.mode=coverage.popularityEligible?"multi-platform":"partial";
+  // v5: YouTube alone is already broad enough to be a primary popularity signal.
+  // Nico/Bilibili improve the total when present, but no longer block view usage.
+  coverage.popularityEligible=!!majorReady;
+  coverage.mode=majorReady?(supplementalReady?"multi-platform":"youtube-major"):"partial";
   return coverage;
 }
 function platformViewStats(t){
@@ -275,6 +277,13 @@ function viewSignal(t){
   const v=platformViewStats(t);
   if(!v.mediaCount)return 0;
   return Math.log10(v.total+1)*8+Math.log10(v.max+1)*2+Math.min(3,v.platforms)*1.5;
+}
+function communitySignal(t){
+  const rating=Math.max(0,Number(t.r)||0);
+  const fav=Math.max(0,Number(t.f)||0);
+  const hits=Math.max(0,Number(t.h)||0);
+  const providers=new Set((t.p||[]).map(x=>x?.[0]).filter(Boolean)).size;
+  return Math.log10(rating+1)*8+Math.log10(fav+1)*8+Math.log10(hits+1)*2+Math.min(4,providers);
 }
 function compact(item){
   const id=Number(item?.id)||0,roles=artistRoles(item),type=typeOf(item);
@@ -352,18 +361,19 @@ async function main(){
     if(t.p?.length)childMedia.set(t.o,(childMedia.get(t.o)||0)+1);
   }
   const popularity=t=>{
-    const rating=Math.max(0,Number(t.r)||0),fav=Math.max(0,Number(t.f)||0);
-    const providers=new Set((t.p||[]).map(x=>x?.[0]).filter(Boolean)).size;
-    const community=Math.log10(rating+1)*24+Math.log10(fav+1)*7+Math.min(4,providers)*1.5;
-    const views=viewCoverage.popularityEligible?viewSignal(t)*0.55:0;
-    return community+views;
+    const community=communitySignal(t);
+    const v=platformViewStats(t);
+    // v5: if verified platform views exist, they are the primary fame signal.
+    // TouhouDB votes/favorites/hits are a small correction instead of dominating sparse entries.
+    if(viewCoverage.popularityEligible&&v.mediaCount)return viewSignal(t)+community*0.35;
+    return community*0.45;
   };
   const influence=t=>{
     if(t.t)return 0;
     const children=relations.get(t.i)||0,circles=childCircles.get(t.i)?.size||0,albums=childAlbums.get(t.i)?.size||0,mediaChildren=childMedia.get(t.i)||0;
     return Math.log10(children+1)*14+Math.log10(circles+1)*9+Math.log10(albums+1)*6+Math.log10(mediaChildren+1)*3;
   };
-  const composite=t=>popularity(t)+influence(t)*0.35;
+  const composite=t=>popularity(t)+influence(t)*0.25;
   const byComposite=[...tracks].sort((a,b)=>composite(b)-composite(a)||popularity(b)-popularity(a)||b.r-a.r||a.i-b.i);
   byComposite.forEach((t,idx)=>{t.q=idx+1;t.s=Math.round(composite(t)*100)/100});
   const byPopularity=[...tracks].sort((a,b)=>popularity(b)-popularity(a)||b.r-a.r||a.i-b.i);
@@ -416,14 +426,15 @@ async function main(){
     viewCoverage:{...viewCoverage,rankedTracks:tracks.filter(t=>Number(t.qv)>0).length,supportedProviders:["youtube","niconico","bilibili"]},
     lookup:{path:"lookup",bucketSize:LOOKUP_BUCKET_SIZE,bucketCount:lookupBuckets.size,format:"[id,q,s,qp,sp,qi,si,qv,sv,vt,vm,vp,vc,dc,dsc,da,dm,viewMedia]"},
     ranking:{
-      version:4,
-      composite:"popularity + original influence*0.35",
-      popularity:"log10(TouhouDB cumulative vote score+1)*24 + log10(favorites+1)*7 + media-provider bonus + optional verified multi-platform view signal*0.55",
+      version:5,
+      composite:"popularity + original influence*0.25",
+      popularity:"verified platform view signal + community correction*0.35 when views exist; otherwise community fallback*0.45",
+      community:"log10(TouhouDB cumulative vote score+1)*8 + log10(favorites+1)*8 + log10(TouhouDB hits+1)*2 + media-provider count",
       ratingMeaning:"TouhouDB RatingScore is a cumulative vote score: Favorite +3, Like +2, Dislike -1; it is not a 10-point average rating",
-      views:"log10(sum verified views+1)*8 + log10(max video views+1)*2 + verified-platform bonus; ranked only among measured tracks",
-      viewPolicy:"platform views affect popularity only when YouTube coverage >=65% and NicoNico or Bilibili coverage >=55%; otherwise views remain a separate partial ranking",
+      views:"log10(sum verified views+1)*8 + log10(max video views+1)*2 + verified-platform bonus; same-song distinct video IDs are summed",
+      viewPolicy:"platform views become a primary popularity signal when YouTube collection coverage is >=65%; NicoNico/Bilibili supplement totals when available",
       influence:"official original only: log-weighted derivative tracks + distinct circles + distinct albums + playable derivative count",
-      denominator:"overall/popularity ranks use the full indexed song count directly; no 128,040 arrangement-scale projection"
+      denominator:"overall/popularity ranks use the full indexed song count directly; no archive-scale projection"
     },
     classification:{
       original:"SongType Original AND no parent AND (ZUN artist OR official collaborator + official-work match)",
