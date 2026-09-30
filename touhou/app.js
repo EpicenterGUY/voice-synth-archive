@@ -523,7 +523,7 @@ function activeSortRankInfo(t){
   if(state.sort==="views"){
     const v=viewRankInfo(t);
     if(v?.rank)return{label:"조회수순",value:fmt(v.total)+"확인곡 중 "+fmt(v.rank)+"위",sub:"부분표본 · "+fmt(v.views)+"회"};
-    if(v?.partial)return{label:"조회수순",value:"전수 순위 미확정",sub:fmt(v.total)+"곡만 조회수 확인"};
+    if(v?.partial)return{label:"조회수순",value:"부분 집계 "+fmt(v.total)+"곡",sub:"앱에서 기다리는 로딩 아님"};
     return{label:"조회수순",value:"조회수 미집계",sub:"실제 조회수 값 없음"};
   }
   if(state.sort==="year-desc"||state.sort==="year-asc"){
@@ -551,7 +551,7 @@ function playerRankMeta(t){
     overall:{label:"종합",value:rankText(overall),sub:rankPercentText(overall),detail:overallRankDetail(t)},
     popularity:{label:"인기",value:popValue,sub:popSub,detail:popularityRankDetail(t)},
     influence:inf?{label:"원곡 영향력",value:inf.rank?fmt(inf.total)+"원곡 중 "+fmt(inf.rank)+"위":"현재 표본 계산",sub:"파생 "+fmt(inf.children)+"곡 · "+fmt(inf.circles)+"서클",detail:influenceRankDetail(t)}:null,
-    views:views?{label:"플랫폼 조회수",value:views.rank?fmt(views.total)+"확인곡 중 "+fmt(views.rank)+"위":views.partial?"전수 순위 미확정":fmt(views.views)+"회",sub:views.partial?fmt(views.total)+"곡만 조회수 확인":fmt(views.platforms)+"개 플랫폼 · "+fmt(views.media)+"개 영상",detail:viewRankDetail(t)}:null,
+    views:views?{label:"플랫폼 조회수",value:views.rank?fmt(views.total)+"확인곡 중 "+fmt(views.rank)+"위":views.partial?"부분 집계 "+fmt(views.total)+"곡":fmt(views.views)+"회",sub:views.partial?"FULL INDEX 재빌드 때 갱신":fmt(views.platforms)+"개 플랫폼 · "+fmt(views.media)+"개 영상",detail:viewRankDetail(t)}:null,
     active:activeSortRankInfo(t)
   };
 }
@@ -1318,13 +1318,22 @@ function viewRankDetail(t){
   const maxViews=Math.max(v.max,Number(t?.viewMax)||0);
   const media=rank?.media??Math.max(v.mediaCount,Number(t?.viewMediaCount)||0);
   const platforms=rank?.platforms??Math.max(v.platforms,Number(t?.viewPlatformCount)||0);
-  const metrics=v.providers.map(x=>({label:platformLabel(x.provider),raw:fmt(x.views)+"회",rule:"실제 조회수 확인 영상만 합산",points:null}));
+  const providerCoverage=coverage.providers||{},candidates=coverage.candidates||{};
+  const actual=new Map(v.providers.map(x=>[x.provider,x.views]));
+  const metrics=["youtube","niconico","bilibili"].map(p=>{
+    if(actual.has(p))return{label:platformLabel(p),raw:fmt(actual.get(p))+"회",rule:"실제 조회수 확인 영상만 합산",points:null};
+    if(p==="youtube"&&coverage.youtubeKeyConfigured===false)return{label:"YouTube",raw:"미수집",rule:"YouTube API 키 미설정 · 후보 "+fmt(Number(candidates.youtube)||0)+"개",points:null};
+    if(Number(candidates[p])>0)return{label:platformLabel(p),raw:"미확인",rule:"후보 "+fmt(Number(candidates[p])||0)+"개 중 조회수 확인 실패/미수집",points:null};
+    return{label:platformLabel(p),raw:"후보 없음",rule:"이 곡에 연결된 조회수 대상 영상 없음",points:null};
+  });
   metrics.push({label:"전체 합산",raw:fmt(views)+"회",rule:"조회수 값이 확인된 영상만 · 중복 영상 ID 제거",points:null});
   metrics.push({label:"최고 단일 영상",raw:fmt(maxViews)+"회",rule:"조회수 확인 성공 PV 중 최댓값",points:null});
-  const providerCoverage=coverage.providers||{};
   const coverageText=["youtube","niconico","bilibili"].map(p=>platformLabel(p)+" "+fmt(Number(providerCoverage[p])||0)+"곡").join(" · ");
   const indexed=Number(state.full.manifest?.indexed)||fullRankTotal();
   const coverageRatio=indexed?((Number(coverage.rankedTracks)||0)/indexed*100):0;
+  const youtubeNote=coverage.youtubeKeyConfigured===false
+    ?"YouTube 조회수가 0으로 보이는 이유는 현재 FULL INDEX 빌드에 YouTube Data API 키가 설정되지 않아 후보 "+fmt(Number(candidates.youtube)||0)+"개를 조회하지 못했기 때문입니다. "
+    :"";
   return{
     title:"플랫폼 조회수 순위 근거",
     formula:"조회수 점수 = log10(합산+1)×8 + log10(최고+1)×2 + 확인 플랫폼 수×1.5",
@@ -1332,14 +1341,14 @@ function viewRankDetail(t){
     source:rank?.rank
       ?{label:"부분 조회수 표본 순위",text:fmt(rank.total)+"곡(조회수 확인 성공 곡) 중 "+fmt(rank.rank)+"위 · 합산 "+fmt(views)+"회"}
       :rank?.partial
-        ?{label:"조회수 순위 미확정",text:"전체 "+fmt(indexed)+"곡 중 "+fmt(rank.total)+"곡("+coverageRatio.toFixed(2)+"%)만 조회수 확인 · 전수 순위처럼 표시하지 않습니다."}
+        ?{label:"부분 조회수 집계",text:"전체 "+fmt(indexed)+"곡 중 "+fmt(rank.total)+"곡("+coverageRatio.toFixed(2)+"%)만 조회수 확인 · 이 화면을 켜둔다고 추가 집계되지는 않습니다."}
         :{label:"조회수 미집계",text:"이 곡은 지원 플랫폼의 공개 조회수 값을 아직 확보하지 못했습니다."},
     components:[
       {label:"실제 확인 조회수",points:viewSignal(t),description:fmt(media)+"개 영상 · "+fmt(platforms)+"개 플랫폼"},
-      {label:"현재 수집 커버리지",points:0,description:coverageText}
+      {label:"수집 커버리지",value:fmt(Number(coverage.rankedTracks)||0)+" / "+fmt(indexed),description:coverageText}
     ],
     metrics,
-    note:(rank?.invalidStoredRank?"이전 캐시에 남아 있던 유효하지 않은 조회수 순위 값은 무시했습니다. ":"")+"조회수 값이 없는 영상은 0회로 간주하지 않습니다. 여러 업로드는 영상 ID 중복을 제거한 뒤 합산하며, 조회수 순위의 모집단은 실제 조회수 확인에 성공한 곡만 포함합니다."
+    note:(rank?.invalidStoredRank?"이전 캐시에 남아 있던 유효하지 않은 조회수 순위 값은 무시했습니다. ":"")+youtubeNote+"순위 데이터는 FULL INDEX 재빌드 때 갱신됩니다. 조회수 값이 없는 영상은 0회로 간주하지 않습니다."
   };
 }
 function overallRankDetail(t){
