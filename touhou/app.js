@@ -638,7 +638,7 @@ async function playTrack(t){
     try{
       if(!t.touhoudbId)t=await enrichTrack(t);
       if(t?.touhoudbId&&!t.lyricsLoaded){
-        const hydrated=await catalog.hydrate(t.id);
+        const hydrated=await catalog.hydrate("tdb-"+t.touhoudbId);
         if(hydrated){remember(hydrated);t=byId(t.id)||remember(hydrated)}
       }
     }catch(e){}
