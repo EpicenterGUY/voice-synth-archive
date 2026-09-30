@@ -202,3 +202,92 @@ body[data-view="dive"] .iceberg-ui{display:none!important}
 
 .type-badge.fan-original{color:#8fe8ff;border-color:rgba(143,232,255,.22)}
 .type-badge.other{color:#c6b8ff;border-color:rgba(198,184,255,.22)}
+
+
+/* v0.9.4 · YouTube-like watch player */
+.player-shell:not(.is-mini){
+  padding:24px;
+  grid-template-columns:minmax(0,1080px) minmax(320px,390px);
+  grid-template-rows:1fr;
+  align-content:start;
+  align-items:start;
+  justify-content:center;
+  gap:20px;
+  overflow:auto;
+  background:#0f0f0f;
+  backdrop-filter:none;
+}
+.player-watch{min-width:0;display:grid;gap:12px}
+.player-info-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:14px}
+.player-shell:not(.is-mini) .player-video{border-radius:14px;box-shadow:none;background:#000}
+.player-shell:not(.is-mini) .player-copy{padding:0;gap:4px}
+.player-shell:not(.is-mini) .player-copy span{color:#aaa;font-size:9px;letter-spacing:.08em}
+.player-shell:not(.is-mini) .player-copy strong{font-size:19px;line-height:1.35}
+.player-shell:not(.is-mini) .player-copy small{font-size:11px;color:#aaa}
+.player-shell:not(.is-mini) .player-controls{justify-content:flex-end;align-items:center;flex-wrap:wrap}
+.player-shell:not(.is-mini) .player-controls button,
+.player-shell:not(.is-mini) .player-source{background:#272727;border-color:#353535;border-radius:999px}
+.player-shell:not(.is-mini) .player-auto-toggle{width:auto;min-width:92px;padding:0 38px 0 13px;position:relative;font-size:10px;font-weight:850}
+.player-shell:not(.is-mini) .player-auto-toggle:before{content:"";position:absolute;right:10px;width:24px;height:14px;border-radius:999px;background:#555;transition:.18s}
+.player-shell:not(.is-mini) .player-auto-toggle:after{content:"";position:absolute;right:21px;width:10px;height:10px;border-radius:50%;background:#ddd;transition:.18s}
+.player-shell:not(.is-mini) .player-auto-toggle.active{background:#272727;border-color:#4a4a4a}
+.player-shell:not(.is-mini) .player-auto-toggle.active:before{background:#f1f1f1}
+.player-shell:not(.is-mini) .player-auto-toggle.active:after{right:12px;background:#111}
+.player-side{min-width:0;max-height:calc(100dvh - 48px);display:flex;flex-direction:column;border:1px solid #303030;border-radius:14px;background:#181818;color:#f1f1f1;overflow:hidden}
+.player-side-head{display:flex;align-items:center;justify-content:space-between;padding:14px 14px 9px}
+.player-side-head strong{display:block;font-size:14px}
+.player-side-head small{display:block;margin-top:3px;color:#aaa;font-size:9px}
+.player-tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:0 10px 9px;border-bottom:1px solid #2c2c2c}
+.player-tabs button{height:34px;border:0;border-radius:9px;background:transparent;color:#aaa;font-size:10px;font-weight:850}
+.player-tabs button.is-active{background:#2b2b2b;color:#fff}
+.player-side-body{min-height:0;overflow:auto;padding:8px}
+.player-related{display:grid;gap:5px}
+.player-related-item{width:100%;display:grid;grid-template-columns:132px minmax(0,1fr);gap:9px;padding:5px;border:0;border-radius:10px;background:transparent;color:#fff;text-align:left}
+.player-related-item:hover{background:#242424}
+.player-related-thumb{position:relative;width:132px;aspect-ratio:16/9;border-radius:8px;background:#242424 center/cover no-repeat;overflow:hidden}
+.player-related-thumb.no-image{background:linear-gradient(135deg,#302335,#182332)}
+.player-related-thumb b{position:absolute;right:6px;bottom:5px;width:22px;height:22px;display:grid;place-items:center;border-radius:50%;background:#000b;font-size:9px}
+.player-related-copy{min-width:0;align-self:center}
+.player-related-copy strong{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:11px;line-height:1.35}
+.player-related-copy small{display:block;margin-top:4px;color:#aaa;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.player-related-copy em{display:inline-block;margin-top:5px;padding:2px 6px;border-radius:999px;background:#2d2d2d;color:#bbb;font-size:7px;font-style:normal}
+.player-lyrics{padding:6px 8px 18px}
+.lyrics-head{display:flex;align-items:end;justify-content:space-between;gap:10px;padding:6px 2px 12px}
+.lyrics-head strong{font-size:17px}.lyrics-head small{color:#888;font-size:8px}
+.lyrics-text{font-size:13px;line-height:2;color:#f2f2f2;white-space:normal;word-break:keep-all}
+.lyrics-source{display:inline-flex;margin-top:18px;padding:8px 11px;border-radius:999px;background:#2b2b2b;color:#fff;text-decoration:none;font-size:9px;font-weight:800}
+.player-panel-empty{min-height:220px;display:grid;place-items:center;align-content:center;gap:8px;padding:24px;text-align:center;color:#aaa;font-size:10px}
+.player-panel-empty strong{color:#fff;font-size:13px}
+.player-panel-empty span{max-width:260px;line-height:1.6}
+.player-panel-empty .lyrics-source{margin-top:5px}
+
+.player-shell.is-mini{display:block}
+.player-shell.is-mini .player-watch{height:100%;display:grid;grid-template-columns:112px minmax(0,1fr) auto;align-items:center;gap:9px}
+.player-shell.is-mini .player-info-row{display:contents}
+.player-shell.is-mini .player-side{display:none}
+.player-shell.is-mini .player-copy{min-width:0}
+.player-shell.is-mini .player-controls{align-items:center}
+.player-shell.is-mini .player-auto-toggle{display:none!important}
+
+@media(max-width:1180px){
+  .player-shell:not(.is-mini){grid-template-columns:minmax(0,1fr) 330px;padding:18px;gap:14px}
+  .player-related-item{grid-template-columns:112px minmax(0,1fr)}
+  .player-related-thumb{width:112px}
+}
+@media(max-width:860px){
+  .player-shell:not(.is-mini){display:block;padding:max(54px,env(safe-area-inset-top)) 0 calc(18px + env(safe-area-inset-bottom));overflow-y:auto}
+  .player-shell:not(.is-mini) .player-watch{gap:10px}
+  .player-shell:not(.is-mini) .player-info-row{grid-template-columns:1fr;gap:10px}
+  .player-shell:not(.is-mini) .player-copy{padding:0 12px}
+  .player-shell:not(.is-mini) .player-controls{padding:0 12px;justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .player-shell:not(.is-mini) .player-controls::-webkit-scrollbar{display:none}
+  .player-shell:not(.is-mini) .player-auto-toggle{flex:0 0 auto}
+  .player-side{margin:14px 10px 0;max-height:none;min-height:390px}
+  .player-side-body{max-height:55dvh}
+  .player-shell.is-mini .player-watch{grid-template-columns:78px minmax(0,1fr) auto}
+}
+@media(max-width:520px){
+  .player-related-item{grid-template-columns:116px minmax(0,1fr)}
+  .player-related-thumb{width:116px}
+  .lyrics-text{font-size:12px;line-height:1.9}
+}
