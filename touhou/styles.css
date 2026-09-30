@@ -298,3 +298,18 @@ body[data-view="dive"] .iceberg-ui{display:none!important}
 .player-lyrics[hidden]{
   display:none!important;
 }
+
+
+/* v0.9.5 · player ranking strip */
+.player-ranks{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.player-rank-card{min-width:0;padding:10px 12px;border:1px solid #303030;border-radius:12px;background:#181818;color:#fff}
+.player-rank-card.is-current{border-color:#555;background:#242424}
+.player-rank-card span{display:block;color:#aaa;font-size:8px;font-weight:850}
+.player-rank-card strong{display:block;margin-top:4px;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.player-rank-card small{display:block;margin-top:3px;color:#888;font-size:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.player-shell.is-mini .player-ranks{display:none!important}
+@media(max-width:1180px){.player-ranks{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:860px){
+  .player-ranks{grid-template-columns:repeat(2,minmax(0,1fr));padding:0 12px}
+  .player-rank-card{padding:9px 10px}
+}
