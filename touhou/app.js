@@ -522,9 +522,9 @@ function activeSortRankInfo(t){
   }
   if(state.sort==="views"){
     const v=viewRankInfo(t);
-    if(v?.rank)return{label:"조회수순",value:fmt(v.total)+"곡 중 "+fmt(v.rank)+"위",sub:"확인 "+fmt(v.views)+"회"};
-    if(v?.partial)return{label:"조회수순",value:"집계 중",sub:fmt(v.total)+"곡만 확인됨"};
-    return{label:"조회수순",value:"조회수 미집계",sub:"지원 플랫폼 데이터 없음"};
+    if(v?.rank)return{label:"조회수순",value:fmt(v.total)+"확인곡 중 "+fmt(v.rank)+"위",sub:"부분표본 · "+fmt(v.views)+"회"};
+    if(v?.partial)return{label:"조회수순",value:"전수 순위 미확정",sub:fmt(v.total)+"곡만 조회수 확인"};
+    return{label:"조회수순",value:"조회수 미집계",sub:"실제 조회수 값 없음"};
   }
   if(state.sort==="year-desc"||state.sort==="year-asc"){
     if(!t.year)return{label:state.sort==="year-desc"?"최신순":"오래된순",value:"연도 미상",sub:""};
@@ -551,7 +551,7 @@ function playerRankMeta(t){
     overall:{label:"종합",value:rankText(overall),sub:rankPercentText(overall),detail:overallRankDetail(t)},
     popularity:{label:"인기",value:popValue,sub:popSub,detail:popularityRankDetail(t)},
     influence:inf?{label:"원곡 영향력",value:inf.rank?fmt(inf.total)+"원곡 중 "+fmt(inf.rank)+"위":"현재 표본 계산",sub:"파생 "+fmt(inf.children)+"곡 · "+fmt(inf.circles)+"서클",detail:influenceRankDetail(t)}:null,
-    views:views?{label:"플랫폼 조회수",value:views.rank?fmt(views.total)+"곡 중 "+fmt(views.rank)+"위":views.partial?"순위 집계 중":fmt(views.views)+"회",sub:views.partial?fmt(views.total)+"곡만 확인됨":fmt(views.platforms)+"개 플랫폼 · "+fmt(views.media)+"개 영상",detail:viewRankDetail(t)}:null,
+    views:views?{label:"플랫폼 조회수",value:views.rank?fmt(views.total)+"확인곡 중 "+fmt(views.rank)+"위":views.partial?"전수 순위 미확정":fmt(views.views)+"회",sub:views.partial?fmt(views.total)+"곡만 조회수 확인":fmt(views.platforms)+"개 플랫폼 · "+fmt(views.media)+"개 영상",detail:viewRankDetail(t)}:null,
     active:activeSortRankInfo(t)
   };
 }
@@ -1176,13 +1176,17 @@ function mediaViewStats(t){
     const key=(m?.provider||"")+":"+(m?.id||m?.url||"");
     if(!m?.provider||!key||seen.has(key))continue;
     seen.add(key);
-    const views=Number(m?.viewCount);
+    const raw=m?.viewCount;
+    if(raw===null||raw===undefined||raw==="")continue;
+    const views=Number(raw);
     if(!Number.isFinite(views)||views<0)continue;
     mediaCount++;total+=views;max=Math.max(max,views);
     byProvider.set(m.provider,(byProvider.get(m.provider)||0)+views);
   }
   if(!mediaCount&&Number(t?.viewMediaCount)>0){
-    total=Math.max(0,Number(t.viewTotal)||0);max=Math.max(0,Number(t.viewMax)||0);mediaCount=Number(t.viewMediaCount)||0;
+    total=Math.max(0,Number(t.viewTotal)||0);
+    max=Math.max(0,Number(t.viewMax)||0);
+    mediaCount=Number(t.viewMediaCount)||0;
   }
   const providers=[...byProvider.entries()].map(([provider,views])=>({provider,views})).sort((a,b)=>b.views-a.views);
   return{total,max,platforms:byProvider.size||Number(t?.viewPlatformCount)||0,mediaCount,providers};
@@ -1297,35 +1301,45 @@ function influenceRankDetail(t){
 function viewRankInfo(t){
   const stats=mediaViewStats(t),coverage=state.full.manifest?.viewCoverage||{};
   const total=Number(coverage.rankedTracks)||0;
-  const views=Number(t?.viewTotal)||stats.total,platforms=Number(t?.viewPlatformCount)||stats.platforms,media=Number(t?.viewMediaCount)||stats.mediaCount;
-  if(!media&&!Number(t?.viewRank))return null;
-  const enough=rankingV4Ready()&&total>=1000;
-  if(!enough)return{rank:null,total,score:viewSignal(t),views,platforms,media,partial:true};
-  if(t?.viewRank)return{rank:Number(t.viewRank),total,score:Number(t.viewScore)||viewSignal(t),views,platforms,media,partial:coverage.mode!=="multi-platform"};
-  const pool=currentPool().filter(x=>mediaViewStats(x).mediaCount>0).slice(0,1200);
-  const r=sampleRankByScore(t,viewSignal,pool);
-  return{rank:r.rank,total:r.total,score:r.score,views:stats.total,platforms:stats.platforms,media:stats.mediaCount,partial:true};
+  const views=Math.max(Number(t?.viewTotal)||0,stats.total);
+  const platforms=Math.max(Number(t?.viewPlatformCount)||0,stats.platforms);
+  const media=Math.max(Number(t?.viewMediaCount)||0,stats.mediaCount);
+  const storedRank=Number(t?.viewRank)||0;
+  const validStoredRank=rankingV4Ready()&&total>0&&media>0&&storedRank>=1&&storedRank<=total;
+  if(validStoredRank){
+    return{rank:storedRank,total,score:Number(t.viewScore)||viewSignal(t),views,platforms,media,partial:coverage.mode!=="multi-platform",coverage};
+  }
+  if(!media)return null;
+  return{rank:null,total,score:viewSignal(t),views,platforms,media,partial:true,coverage,invalidStoredRank:storedRank>0};
 }
 function viewRankDetail(t){
-  const rank=viewRankInfo(t),v=mediaViewStats(t);
-  const metrics=v.providers.map(x=>({label:platformLabel(x.provider),raw:fmt(x.views)+"회",rule:"검증된 영상 조회수 합계",points:null}));
-  metrics.push({label:"전체 합산",raw:fmt(v.total||t.viewTotal||0)+"회",rule:"중복 영상 ID 제거 후 합산",points:null});
-  metrics.push({label:"최고 단일 영상",raw:fmt(v.max||t.viewMax||0)+"회",rule:"가장 많이 본 등록 PV",points:null});
+  const rank=viewRankInfo(t),v=mediaViewStats(t),coverage=state.full.manifest?.viewCoverage||{};
+  const views=rank?.views??Math.max(v.total,Number(t?.viewTotal)||0);
+  const maxViews=Math.max(v.max,Number(t?.viewMax)||0);
+  const media=rank?.media??Math.max(v.mediaCount,Number(t?.viewMediaCount)||0);
+  const platforms=rank?.platforms??Math.max(v.platforms,Number(t?.viewPlatformCount)||0);
+  const metrics=v.providers.map(x=>({label:platformLabel(x.provider),raw:fmt(x.views)+"회",rule:"실제 조회수 확인 영상만 합산",points:null}));
+  metrics.push({label:"전체 합산",raw:fmt(views)+"회",rule:"조회수 값이 확인된 영상만 · 중복 영상 ID 제거",points:null});
+  metrics.push({label:"최고 단일 영상",raw:fmt(maxViews)+"회",rule:"조회수 확인 성공 PV 중 최댓값",points:null});
+  const providerCoverage=coverage.providers||{};
+  const coverageText=["youtube","niconico","bilibili"].map(p=>platformLabel(p)+" "+fmt(Number(providerCoverage[p])||0)+"곡").join(" · ");
+  const indexed=Number(state.full.manifest?.indexed)||fullRankTotal();
+  const coverageRatio=indexed?((Number(coverage.rankedTracks)||0)/indexed*100):0;
   return{
     title:"플랫폼 조회수 순위 근거",
-    formula:"조회수 점수 = log10(합산+1)×8 + log10(최고+1)×2 + 플랫폼 보너스",
+    formula:"조회수 점수 = log10(합산+1)×8 + log10(최고+1)×2 + 확인 플랫폼 수×1.5",
     score:Number(rank?.score)||viewSignal(t),
     source:rank?.rank
-      ?{label:(rank.partial?"부분 조회수 비교":"다중 플랫폼 조회수 비교"),text:fmt(rank.total)+"곡(조회수 확인 성공 곡) 중 "+fmt(rank.rank)+"위 · "+fmt(rank.views)+"회 확인"}
+      ?{label:"부분 조회수 표본 순위",text:fmt(rank.total)+"곡(조회수 확인 성공 곡) 중 "+fmt(rank.rank)+"위 · 합산 "+fmt(views)+"회"}
       :rank?.partial
-        ?{label:"조회수 순위 보류",text:fmt(rank.total)+"곡만 조회수 확인 · 최소 1,000곡 수집 전에는 순위를 확정 표시하지 않습니다."}
-        :{label:"조회수 미집계",text:"지원 플랫폼의 공개 조회수 데이터를 아직 확보하지 못했습니다."},
+        ?{label:"조회수 순위 미확정",text:"전체 "+fmt(indexed)+"곡 중 "+fmt(rank.total)+"곡("+coverageRatio.toFixed(2)+"%)만 조회수 확인 · 전수 순위처럼 표시하지 않습니다."}
+        :{label:"조회수 미집계",text:"이 곡은 지원 플랫폼의 공개 조회수 값을 아직 확보하지 못했습니다."},
     components:[
-      {label:"합산·최고 조회수",points:viewSignal(t),description:fmt(v.mediaCount||t.viewMediaCount||0)+"개 영상 · "+fmt(v.platforms||t.viewPlatformCount||0)+"개 플랫폼"},
-      {label:"지원 범위",points:0,description:"YouTube · NicoNico · Bilibili"}
+      {label:"실제 확인 조회수",points:viewSignal(t),description:fmt(media)+"개 영상 · "+fmt(platforms)+"개 플랫폼"},
+      {label:"현재 수집 커버리지",points:0,description:coverageText}
     ],
     metrics,
-    note:"여러 업로드가 있는 곡은 영상 ID 중복을 제거한 뒤 합산합니다. 순위 모집단은 조회수 확인에 성공한 곡만 포함합니다."
+    note:(rank?.invalidStoredRank?"이전 캐시에 남아 있던 유효하지 않은 조회수 순위 값은 무시했습니다. ":"")+"조회수 값이 없는 영상은 0회로 간주하지 않습니다. 여러 업로드는 영상 ID 중복을 제거한 뒤 합산하며, 조회수 순위의 모집단은 실제 조회수 확인에 성공한 곡만 포함합니다."
   };
 }
 function overallRankDetail(t){
