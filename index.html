@@ -4626,6 +4626,12 @@ function isUnionSourceMode(mode=state.sourceMode){
 function normalizeSourceTag37(tag){
   try{return String(tag||"").normalize("NFKC").trim().toLowerCase()}catch(_){return String(tag||"").trim().toLowerCase()}
 }
+const ORIGINAL_DERIVATIVE_RE37=/(?:off[\s._-]*vocal|off[\s._-]*vo\b|no[\s._-]*vocal|instrumental(?:\s*(?:ver\.?|version|mix))?|\binst\.?\s*(?:ver\.?|version)?\b|オフ[\s_-]*ボ(?:ーカル)?|オフボ(?:ーカル)?|インスト(?:版|ver\.?)?|カラオケ|ニコカラ|karaoke|伴奏|歌ってみた|歌わせてみた|cover(?:ed)?|カバー曲|踊ってみた|演奏してみた|弾いてみた|吹いてみた|叩いてみた|MMD|MAD)/i;
+function originalDerivativeInfo37(song){
+  const text=[song&&song.title,song&&song.description].concat(parseTags(song&&song.tags)).filter(Boolean).join(" ");
+  const m=text.match(ORIGINAL_DERIVATIVE_RE37);return {hit:!!m,reason:m&&m[0]||""}
+}
+function sourceModeRequiresOriginal37(mode=state.sourceMode){return ["all_voice_synth_union","voice_synth_union","original_union","utau_union","synthv_union","cevio_union","voisona_union","neutrino_union","voicevox_union","ace_union","original_common","custom_tag"].includes(mode)}
 function sourceProofTags37(mode=state.sourceMode){
   const full=fullTagsForSourceMode(mode);
   if(Array.isArray(full)&&full.length)return full;
@@ -4640,6 +4646,8 @@ function sourceProofTags37(mode=state.sourceMode){
   return ORIGINAL_TAGS;
 }
 function strictSourceProof37(song,mode=state.sourceMode){
+  const derivative=originalDerivativeInfo37(song);
+  if(sourceModeRequiresOriginal37(mode)&&derivative.hit)return {ok:false,tag:"",mode:mode,derivative:true,reason:derivative.reason};
   const songTags=parseTags(song&&song.tags).map(normalizeSourceTag37);
   const tagSet=new Set(songTags);
   const proof=sourceProofTags37(mode);
@@ -4663,6 +4671,8 @@ function discoveryOriginalTags37(mode=state.sourceMode){
   return ALL_VOICE_SYNTH_ORIGINAL_TAGS
 }
 function discoveryOriginalProof37(song,mode=state.sourceMode){
+  const derivative=originalDerivativeInfo37(song);
+  if(derivative.hit)return {ok:false,tag:"",mode:mode,derivative:true,reason:derivative.reason};
   const tags=parseTags(song&&song.tags).map(normalizeSourceTag37);
   const set=new Set(tags);
   const proof=discoveryOriginalTags37(mode);
@@ -10390,6 +10400,7 @@ function mediaCard39(x,mark){
   '</article>'
 }
 function shelf39(mark,rows,excludeId,priority){
+  rows=preferOriginal399(rows||[]);
   rows=(mark==="DEEP"?normalizeDeepRows3944(rows,"shelf_"+mark,12):pageRows3941("shelf_"+mark,rows||[])).filter(function(x){return !excludeId||x.contentId!==excludeId});
   if(window.VSA37AdultFilterRows)rows=window.VSA37AdultFilterRows(rows,"home_"+mark).rows;
   rows=rows.slice(0,12);
@@ -10565,15 +10576,15 @@ function openView(name){if(window.VSAV33&&VSAV33.openView){VSAV33.openView(name)
   return null
 }
 function preferOriginal399(rows,count){
-  rows=(rows||[]).filter(Boolean);var original=[],fallback=[];
+  rows=(rows||[]).filter(Boolean);var original=[];
   rows.forEach(function(s){
+    try{if(typeof originalDerivativeInfo37==="function"&&originalDerivativeInfo37(s).hit)return}catch(e){}
     var ok=false;
     try{ok=typeof discoveryOriginalProof37==="function"&&discoveryOriginalProof37(s,"all_voice_synth_union").ok}catch(e){}
     if(!ok){var tt=tags(s).join(" ");ok=/オリジナル曲|Original Song|原创曲|原創曲/i.test(tt)}
-    (ok?original:fallback).push(s)
+    if(ok)original.push(s)
   });
-  var out=original.concat(fallback);
-  return typeof count==="number"?out.slice(0,count):out
+  return typeof count==="number"?original.slice(0,count):original
 }
 var relatedCycle399=new Map();
 var RELATED_EXPOSURE_KEY399="vsa399.related.exposure.v3";
@@ -12140,7 +12151,7 @@ function ensure(name){
   if(name==="detective")base=seq(["./detective-v11.js?v=39.106.0","./detective-v12.js?v=39.106.0","./detective-v13.js?v=39.106.0","./detective-v14.js?v=39.106.0","./detective-v16.js?v=39.106.0"]);
   else if(name==="personal")base=seq(["./organizer-v22.js?v=39.106.0","./smart-v23.js?v=39.106.0","./playlist-v24.js?v=39.106.0"]);
   else if(name==="discovery")base=load("./discovery-v20.js?v=39.106.0");
-  else if(name==="homeData")base=load("./vocalo-home-v28.js?v=39.106.0");
+  else if(name==="homeData")base=load("./vocalo-home-v28.js?v=39.117.0");
   else if(name==="universe")base=load("./universe-search-v28.js?v=39.106.0");
   else if(name==="player")base=load("./nico-player-v32.js?v=39.106.0");
   else if(name==="deviceSync")base=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.106.0");
@@ -15206,5 +15217,5 @@ body.mr74-transitioning{overflow:hidden!important}
 }
 </style>
 
-<script src="./vocadive-ui-v3980.js?v=39.106.0"></script>\n</body>
+<script src="./vocadive-ui-v3980.js?v=39.117.0"></script>\n</body>
 </html>
