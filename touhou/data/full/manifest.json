@@ -2,9 +2,9 @@
   "schema": 3,
   "source": "TouhouDB",
   "api": "https://touhoudb.com/api",
-  "generatedAt": "2026-09-30T11:01:53.172Z",
-  "totalCount": 189051,
-  "indexed": 189051,
+  "generatedAt": "2026-09-30T11:50:19.558Z",
+  "totalCount": 189041,
+  "indexed": 189041,
   "shardSize": 1000,
   "shardCount": 190,
   "files": [
@@ -956,12 +956,12 @@
     {
       "file": "shard-189.json",
       "start": 189000,
-      "count": 51
+      "count": 41
     }
   ],
   "counts": {
     "original": 593,
-    "arrangement": 188458,
+    "arrangement": 188448,
     "mediaCandidates": 72847
   },
   "providers": {
@@ -982,8 +982,9 @@
   ],
   "viewCoverage": {
     "providers": {
-      "niconico": 881,
-      "bilibili": 56
+      "youtube": 63345,
+      "niconico": 892,
+      "bilibili": 43
     },
     "candidates": {
       "youtube": 65052,
@@ -991,16 +992,16 @@
       "bilibili": 766
     },
     "ratios": {
-      "youtube": 0,
-      "niconico": 0.09281500210703751,
-      "bilibili": 0.0731070496083551
+      "youtube": 0.9737594539752813,
+      "niconico": 0.09397387273493468,
+      "bilibili": 0.05613577023498695
     },
-    "tracks": 927,
-    "media": 937,
-    "youtubeKeyConfigured": false,
+    "tracks": 56550,
+    "media": 64280,
+    "youtubeKeyConfigured": true,
     "popularityEligible": false,
     "mode": "partial",
-    "rankedTracks": 927,
+    "rankedTracks": 56550,
     "supportedProviders": [
       "youtube",
       "niconico",
