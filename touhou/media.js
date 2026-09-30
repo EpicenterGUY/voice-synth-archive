@@ -46,7 +46,7 @@ class TouhouMediaPlayer{
     this.type=document.getElementById("playerType");
     this.source=document.getElementById("playerSource");
     this.playBtn=document.getElementById("playerPlay");
-    this.autoBtn=document.getElementById("playerAuto");
+    this.autoBtn=document.getElementById("playerAuto");\n    this.rankEl=document.getElementById("playerRanks");
     this.relatedEl=document.getElementById("playerRelated");
     this.lyricsEl=document.getElementById("playerLyrics");
     this.relatedTab=document.getElementById("playerTabRelated");
@@ -105,7 +105,7 @@ class TouhouMediaPlayer{
     this.source.href=this.current.media?.url||this.current.source?.url||"#";
     this.source.hidden=this.source.href.endsWith("#");
     this.shell.hidden=false;
-    this.syncMeta();this.syncControls();this.syncMediaSession();this.renderPanels();
+    this.syncMeta();this.syncControls();this.syncMediaSession();this.renderRankings();this.renderPanels();
     if(provider==="youtube"){
       const expectedTrack=this.current.id,expectedVideo=this.current.media.id;
       const mount=document.createElement("div");mount.id="tdYoutubeMount-"+Date.now();this.video.appendChild(mount);
@@ -150,6 +150,28 @@ class TouhouMediaPlayer{
     if(this.relatedTab){this.relatedTab.classList.toggle("is-active",this.activeTab==="related");this.relatedTab.setAttribute("aria-selected",this.activeTab==="related"?"true":"false")}
     if(this.lyricsTab){this.lyricsTab.classList.toggle("is-active",this.activeTab==="lyrics");this.lyricsTab.setAttribute("aria-selected",this.activeTab==="lyrics"?"true":"false")}
   }
+  renderRankings(){
+    if(!this.rankEl||!this.current)return;
+    const meta=this.current._playerRanks||{};
+    const rows=[];
+    const push=(key,row,accent=false)=>{
+      if(!row?.value)return;
+      const sig=(row.label||"")+"|"+row.value;
+      if(rows.some(x=>x.sig===sig))return;
+      rows.push({sig,key,row,accent});
+    };
+    push("active",meta.active,true);
+    push("overall",meta.overall,false);
+    push("popularity",meta.popularity,false);
+    push("influence",meta.influence,false);
+    this.rankEl.innerHTML=rows.map(({row,accent})=>
+      '<div class="player-rank-card '+(accent?"is-current":"")+'">'+
+        '<span>'+this.esc(row.label||"순위")+'</span>'+
+        '<strong>'+this.esc(row.value)+'</strong>'+
+        (row.sub?'<small>'+this.esc(row.sub)+'</small>':"")+
+      '</div>'
+    ).join("");
+  }
   renderPanels(){
     this.renderRelated();
     this.renderLyrics();
@@ -178,17 +200,18 @@ class TouhouMediaPlayer{
     const best=rows.find(x=>/original/i.test(x?.translationType||""))||rows.find(x=>(x?.cultureCodes||[]).some(c=>/^ja/i.test(c)))||rows[0]||null;
     const sourceUrl=(best?.source&&/^https?:\/\//i.test(best.source)?best.source:"")||this.current.lyricsSource||(this.current.touhoudbId?"https://touhoudb.com/S/"+this.current.touhoudbId+"/lyrics":"");
     if(best?.text){
-      this.lyricsEl.innerHTML='<div class="lyrics-head"><strong>가사</strong><small>TouhouDB 제공 데이터</small></div>'+
+      this.lyricsEl.innerHTML='<div class="lyrics-head"><strong>가사</strong><small>TouhouDB 곡 항목에서 불러옴</small></div>'+
         '<div class="lyrics-text">'+this.esc(best.text).replace(/\r?\n/g,"<br>")+'</div>'+
         (sourceUrl?'<a class="lyrics-source" href="'+this.esc(sourceUrl)+'" target="_blank" rel="noopener noreferrer">가사 출처 열기 ↗</a>':"");
       return;
     }
-    if(this.current.lyricsAvailable||sourceUrl){
-      this.lyricsEl.innerHTML='<div class="player-panel-empty"><strong>가사 데이터가 있는 곡입니다.</strong><span>현재 인앱 데이터가 비어 있으면 TouhouDB 원문에서 확인할 수 있습니다.</span>'+
-        (sourceUrl?'<a class="lyrics-source" href="'+this.esc(sourceUrl)+'" target="_blank" rel="noopener noreferrer">가사 원문 열기 ↗</a>':"")+'</div>';
+    if(this.current.lyricsLoaded){
+      this.lyricsEl.innerHTML='<div class="player-panel-empty"><strong>이 TouhouDB 항목에는 가사 본문이 등록되어 있지 않습니다.</strong><span>영상과 곡 항목 연결은 확인됐지만 가사 텍스트가 비어 있습니다.</span>'+
+        (sourceUrl?'<a class="lyrics-source" href="'+this.esc(sourceUrl)+'" target="_blank" rel="noopener noreferrer">TouhouDB 곡 페이지 열기 ↗</a>':"")+'</div>';
       return;
     }
-    this.lyricsEl.innerHTML='<div class="player-panel-empty"><strong>등록된 가사가 없습니다.</strong><span>가사가 있는 곡은 이 탭에 자동으로 표시됩니다.</span></div>';
+    this.lyricsEl.innerHTML='<div class="player-panel-empty"><strong>가사 정보를 불러오지 못했습니다.</strong><span>영상 ID 또는 곡명으로 TouhouDB 연결을 다시 시도한 뒤 표시합니다.</span>'+
+      (sourceUrl?'<a class="lyrics-source" href="'+this.esc(sourceUrl)+'" target="_blank" rel="noopener noreferrer">곡 페이지 열기 ↗</a>':"")+'</div>';
   }
   jumpTo(index){
     if(!Number.isInteger(index)||index<0||index>=this.queue.length||index===this.index)return false;
