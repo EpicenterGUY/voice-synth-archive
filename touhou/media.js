@@ -47,6 +47,7 @@ class TouhouMediaPlayer{
     this.source=document.getElementById("playerSource");
     this.playBtn=document.getElementById("playerPlay");
     this.autoBtn=document.getElementById("playerAuto");
+    this.pipBtn=document.getElementById("playerPip");
     this.rankEl=document.getElementById("playerRanks");
     this.rankDetailEl=document.getElementById("playerRankDetail");
     this.rankDetailKey="";
@@ -55,9 +56,11 @@ class TouhouMediaPlayer{
     this.relatedTab=document.getElementById("playerTabRelated");
     this.lyricsTab=document.getElementById("playerTabLyrics");
     this.current=null;this.queue=[];this.index=-1;this.frame=null;this.yt=null;this.playing=true;this.activeTab="related";
+    this.pipWindow=null;this.pipHome=null;this.backgroundActive=false;
     this.autoNext=localStorage.getItem(AUTO_KEY)!=="0";
     try{this.badMedia=new Set(JSON.parse(localStorage.getItem(BAD_MEDIA_KEY)||"[]"))}catch(_){this.badMedia=new Set()}
     document.getElementById("playerClose").onclick=()=>this.close();
+    if(this.pipBtn)this.pipBtn.onclick=()=>this.requestPip();
     document.getElementById("playerMini").onclick=()=>this.minimize();
     document.getElementById("playerExpand").onclick=()=>this.expand();
     document.getElementById("playerPrev").onclick=()=>this.relative(-1);
@@ -67,6 +70,8 @@ class TouhouMediaPlayer{
     if(this.relatedTab)this.relatedTab.onclick=()=>this.setTab("related");
     if(this.lyricsTab)this.lyricsTab.onclick=()=>this.setTab("lyrics");
     window.addEventListener("message",e=>this.onMessage(e));
+    document.addEventListener("visibilitychange",()=>this.onVisibilityChange());
+    window.addEventListener("pagehide",()=>this.onPageHide());
     this.bindMediaSession();
     this.syncControls();
     this.setTab("related");
@@ -132,7 +137,17 @@ class TouhouMediaPlayer{
           videoId:this.current.media.id,
           playerVars:{autoplay:autoplay?1:0,playsinline:1,rel:0,modestbranding:1},
           events:{
-            onReady:e=>{if(autoplay)try{e.target.playVideo()}catch(_){}},
+            onReady:e=>{
+              try{
+                const iframe=e.target.getIframe?.();
+                if(iframe){
+                  iframe.setAttribute("allow","autoplay; encrypted-media; picture-in-picture; fullscreen");
+                  iframe.setAttribute("allowfullscreen","");
+                }
+              }catch(_){}
+              if(autoplay)try{e.target.playVideo()}catch(_){}
+              this.syncPipAvailability();
+            },
             onStateChange:e=>{
               if(!window.YT)return;
               if(e.data===YT.PlayerState.PLAYING){this.playing=true;this.syncControls();this.setPlaybackState("playing")}
@@ -317,6 +332,105 @@ class TouhouMediaPlayer{
     f.allow="autoplay; encrypted-media; picture-in-picture; fullscreen";
     f.setAttribute("allowfullscreen","");f.referrerPolicy="strict-origin-when-cross-origin";
     this.video.appendChild(f);
+    this.syncPipAvailability();
+  }
+  async requestPip(){
+    if(!this.current)return false;
+    try{
+      if(document.pictureInPictureElement){
+        await document.exitPictureInPicture();
+        return true;
+      }
+    }catch(_){}
+    const nativeVideo=this.video.querySelector("video");
+    if(nativeVideo?.requestPictureInPicture){
+      try{
+        await nativeVideo.requestPictureInPicture();
+        return true;
+      }catch(_){}
+    }
+    if("documentPictureInPicture" in window&&window.documentPictureInPicture?.requestWindow){
+      try{
+        if(this.pipWindow&&!this.pipWindow.closed){this.pipWindow.focus();return true}
+        const pip=await window.documentPictureInPicture.requestWindow({width:420,height:300});
+        this.pipWindow=pip;
+        const doc=pip.document;
+        doc.title=this.current.title+" · TouhouDive";
+        const style=doc.createElement("style");
+        style.textContent="*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#080b12;color:#fff;font-family:system-ui,sans-serif}body{display:grid;grid-template-rows:1fr auto}.pip-video{min-height:0;background:#000;display:grid;place-items:center;overflow:hidden}.pip-video iframe,.pip-video>div{width:100%!important;height:100%!important;border:0}.pip-bar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px;background:#101522}.pip-copy{min-width:0}.pip-copy strong,.pip-copy small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pip-copy strong{font-size:13px}.pip-copy small{margin-top:2px;color:#aab4c6;font-size:10px}.pip-actions{display:flex;gap:6px}.pip-actions button{width:36px;height:36px;border:0;border-radius:10px;background:#20283a;color:#fff;font-size:16px}";
+        doc.head.appendChild(style);
+        const videoHost=doc.createElement("div");videoHost.className="pip-video";
+        const bar=doc.createElement("div");bar.className="pip-bar";
+        bar.innerHTML='<div class="pip-copy"><strong></strong><small>TouhouDive · 백그라운드 재생</small></div><div class="pip-actions"><button data-prev>‹</button><button data-play>❚❚</button><button data-next>›</button></div>';
+        bar.querySelector("strong").textContent=this.current.title;
+        doc.body.append(videoHost,bar);
+        this.pipHome={parent:this.video.parentNode,next:this.video.nextSibling};
+        videoHost.appendChild(this.video);
+        bar.querySelector("[data-prev]").onclick=()=>this.relative(-1);
+        bar.querySelector("[data-play]").onclick=()=>this.togglePlayback();
+        bar.querySelector("[data-next]").onclick=()=>this.relative(1);
+        const sync=()=>{
+          const btn=bar.querySelector("[data-play]");if(btn)btn.textContent=this.playing?"❚❚":"▶";
+          const title=bar.querySelector("strong");if(title&&this.current)title.textContent=this.current.title;
+        };
+        this._pipSync=sync;sync();
+        pip.addEventListener("pagehide",()=>this.restoreFromDocumentPip(),{once:true});
+        return true;
+      }catch(e){
+        console.warn("Document PiP unavailable",e);
+      }
+    }
+    // Cross-origin iframe players (notably YouTube) cannot be forced into
+    // native PiP by the parent page. Keep the in-app mini player and make
+    // the iframe eligible for browser/player PiP controls instead.
+    this.minimize();
+    this.flashPipHint();
+    return false;
+  }
+  restoreFromDocumentPip(){
+    if(this.pipHome&&this.video){
+      try{
+        const {parent,next}=this.pipHome;
+        if(parent){
+          if(next&&next.parentNode===parent)parent.insertBefore(this.video,next);
+          else parent.appendChild(this.video);
+        }
+      }catch(_){}
+    }
+    this.pipHome=null;this.pipWindow=null;this._pipSync=null;
+    this.syncPipAvailability();
+  }
+  flashPipHint(){
+    try{
+      window.dispatchEvent(new CustomEvent("touhoudive:pip-hint",{detail:{
+        message:"이 영상은 브라우저가 허용하는 경우 플레이어의 PiP 기능을 사용할 수 있습니다. 앱 안에서는 미니플레이어로 계속 재생합니다."
+      }}));
+    }catch(_){}
+  }
+  syncPipAvailability(){
+    if(!this.pipBtn)return;
+    const native=!!this.video.querySelector("video")&&!!document.pictureInPictureEnabled;
+    const docPip=!!window.documentPictureInPicture?.requestWindow;
+    const iframe=!!this.current?.media&&["youtube","niconico","soundcloud","bilibili","bandcamp"].includes(this.current.media.provider);
+    this.pipBtn.disabled=!(native||docPip||iframe);
+    this.pipBtn.title=docPip||native?"화면 밖 작은 창(PiP)":"브라우저/플레이어 PiP 사용";
+  }
+  onVisibilityChange(){
+    if(!this.current)return;
+    this.backgroundActive=document.visibilityState==="hidden";
+    if(this.backgroundActive){
+      this.syncMediaSession();
+      this.setPlaybackState(this.playing?"playing":"paused");
+    }else{
+      this.backgroundActive=false;
+      this._pipSync?.();
+      this.syncControls();
+    }
+  }
+  onPageHide(){
+    if(!this.current)return;
+    this.syncMediaSession();
+    this.setPlaybackState(this.playing?"playing":"paused");
   }
   destroySurface(){
     if(this.yt){try{this.yt.destroy()}catch(_){} this.yt=null}
@@ -349,7 +463,7 @@ class TouhouMediaPlayer{
     }else if(this.current.media?.provider==="niconico"){
       this.sendNico(this.playing?"pause":"play");this.playing=!this.playing;
     }
-    this.syncControls();this.setPlaybackState(this.playing?"playing":"paused");
+    this.syncControls();this.setPlaybackState(this.playing?"playing":"paused");this._pipSync?.();
   }
   relative(dir,fromEnded=false){
     if(!this.queue.length)return false;
@@ -357,6 +471,7 @@ class TouhouMediaPlayer{
     const mini=this.shell.classList.contains("is-mini");
     this.index=next;this.current=this.queue[next];this.playing=true;
     this.renderCurrent(true);
+    this._pipSync?.();
     if(mini)this.minimize();else if(!fromEnded)this.expand();
     return true;
   }
@@ -389,6 +504,8 @@ class TouhouMediaPlayer{
     this.autoBtn.classList.toggle("active",this.autoNext);
     this.autoBtn.textContent="자동재생";
     this.autoBtn.setAttribute("aria-pressed",this.autoNext?"true":"false");
+    this.syncPipAvailability();
+    this._pipSync?.();
   }
   syncMeta(){
     if(!this.current)return;
@@ -404,6 +521,7 @@ class TouhouMediaPlayer{
     try{navigator.mediaSession.setActionHandler("pause",()=>{if(this.playing)this.togglePlayback()})}catch(_){}
     try{navigator.mediaSession.setActionHandler("nexttrack",()=>this.relative(1))}catch(_){}
     try{navigator.mediaSession.setActionHandler("previoustrack",()=>this.relative(-1))}catch(_){}
+    try{navigator.mediaSession.setActionHandler("stop",()=>this.close())}catch(_){}
   }
   syncMediaSession(){
     if(!("mediaSession" in navigator)||!this.current)return;
@@ -418,6 +536,8 @@ class TouhouMediaPlayer{
   }
   setPlaybackState(v){try{if("mediaSession" in navigator)navigator.mediaSession.playbackState=v}catch(_){}}
   close(){
+    try{if(this.pipWindow&&!this.pipWindow.closed)this.pipWindow.close()}catch(_){}
+    this.restoreFromDocumentPip();
     this.destroySurface();this.current=null;this.queue=[];this.index=-1;this.playing=false;
     this.shell.hidden=true;this.shell.classList.remove("is-mini");document.body.classList.remove("player-open");this.setPlaybackState("none");
     try{if("mediaSession" in navigator)navigator.mediaSession.metadata=null}catch(_){}
