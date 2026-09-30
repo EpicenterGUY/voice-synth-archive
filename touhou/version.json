@@ -1,5 +1,5 @@
 {
-  "version": "0.9.16",
+  "version": "0.9.17",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-09-30",
@@ -155,6 +155,10 @@
     "view-rank-denominator-validation",
     "partial-view-rank-label",
     "view-evidence-coverage-panel",
-    "stale-view-rank-guard"
+    "stale-view-rank-guard",
+    "youtube-api-missing-status",
+    "view-ranking-not-live-loading-label",
+    "partial-view-coverage-value",
+    "provider-collection-status"
   ]
 }
