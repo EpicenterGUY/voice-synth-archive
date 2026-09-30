@@ -152,7 +152,7 @@ function toTrack(item){
     lyrics,
     lyricsLoaded,
     lyricsAvailable:lyrics.length>0,
-    lyricsSource:id?("https://touhoudb.com/S/"+id+"/lyrics"):"",
+    lyricsSource:id?("https://touhoudb.com/S/"+id):"",
     thumb:clean(item?.thumbUrl||item?.mainPicture?.urlThumb||item?.mainPicture?.urlSmallThumb||item?.mainPicture?.urlOriginal),
     source:{name:"TouhouDB",url:id?("https://touhoudb.com/S/"+id):"https://touhoudb.com"},
     songType:clean(item?.songType),
