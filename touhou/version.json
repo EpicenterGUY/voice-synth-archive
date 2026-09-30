@@ -1,5 +1,5 @@
 {
-  "version": "0.9.17",
+  "version": "0.9.18",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-09-30",
@@ -159,6 +159,10 @@
     "youtube-api-missing-status",
     "view-ranking-not-live-loading-label",
     "partial-view-coverage-value",
-    "provider-collection-status"
+    "provider-collection-status",
+    "fresh-full-index-manifest",
+    "full-index-cache-v5",
+    "manifest-network-first",
+    "dataset-generation-cache-purge"
   ]
 }
