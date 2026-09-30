@@ -270,6 +270,49 @@ function cleanPersonalRecent(){
   page.querySelectorAll(".v395-section").forEach(function(sec){var h=sec.querySelector("h3");if(h&&h.textContent.indexOf("최근 활동")>=0)sec.remove()});
   page.querySelectorAll('[data-v395-open="recent"]').forEach(function(b){var title=b.querySelector("b"),small=b.querySelector("small");if(title&&title.textContent!=="시청 기록")title.textContent="시청 기록";if(small&&small.textContent!=="별도 시청 기록 페이지에서 다시 보기")small.textContent="별도 시청 기록 페이지에서 다시 보기"})
 }
+function uniqueSongs39116(rows){
+  var m=new Map();(rows||[]).forEach(function(x){if(x&&x.contentId&&!m.has(String(x.contentId)))m.set(String(x.contentId),x)});
+  return [...m.values()]
+}
+function scoreReaction39116(s){
+  var v=Math.max(1,+s.viewCounter||1);
+  return ((+s.mylistCounter||0)*2+(+s.commentCounter||0)+(+s.likeCounter||0)*.5)/v
+}
+function balanceBands39116(rows,bands,count){
+  var buckets=bands.map(function(r){return rows.filter(function(s){var v=+s.viewCounter||0;return v>=r[0]&&v<=r[1]}).sort(function(a,b){return scoreReaction39116(b)-scoreReaction39116(a)})});
+  var out=[],used=new Set(),i=0;
+  while(out.length<count&&i<80){
+    var added=false;
+    for(var b=0;b<buckets.length&&out.length<count;b++){
+      var x=buckets[b][i];if(x&&x.contentId&&!used.has(String(x.contentId))){used.add(String(x.contentId));out.push(x);added=true}
+    }
+    if(!added&&i>Math.max.apply(null,buckets.map(function(x){return x.length}).concat([0])))break;
+    i++
+  }
+  return out
+}
+async function directExpand39116(mark){
+  if(typeof fetchNico!=="function")return[];
+  try{
+    if(mark==="DEEP"){
+      var bands=[[30,499],[500,1999],[2000,9999],[10000,50000]];
+      var groups=await Promise.all(bands.map(function(r,i){return fetchNico({year:"all",limit:90,offset:i*90,mode:"ranking",sort:i%2?"-commentCounter":"-mylistCounter",applyYear:false,applyTier:false,numericFilters:{viewCounter:{gte:r[0],lte:r[1]}}})}));
+      var rows=uniqueSongs39116(groups.flatMap(function(g){return g&&g.data||[]})).filter(function(s){var v=+s.viewCounter||0;return v>=30&&v<=50000});
+      return balanceBands39116(rows,bands,36)
+    }
+    if(mark==="DAILY"){
+      var groups=await Promise.all([
+        fetchNico({year:"all",limit:100,offset:0,mode:"ranking",sort:"-mylistCounter",applyYear:false,applyTier:false,numericFilters:{viewCounter:{gte:1000,lte:1500000}}}),
+        fetchNico({year:"all",limit:100,offset:100,mode:"ranking",sort:"-commentCounter",applyYear:false,applyTier:false,numericFilters:{viewCounter:{gte:500,lte:1500000}}})
+      ]);
+      var rows=uniqueSongs39116(groups.flatMap(function(g){return g&&g.data||[]}));
+      rows.sort(function(a,b){return scoreReaction39116(b)-scoreReaction39116(a)});
+      return rows.slice(0,36)
+    }
+  }catch(_){}
+  return[]
+}
+
 async function ensureExpandedPools(){
   if(refreshingPools)return;refreshingPools=true;
   try{
@@ -278,7 +321,12 @@ async function ensureExpandedPools(){
     if((f.daily||[]).length<24)needs.push("DAILY");
     if((f.hidden||[]).length<24)needs.push("DEEP");
     for(var mark of needs){
-      if(window.VSAHome28&&window.VSAHome28.refreshSection)await window.VSAHome28.refreshSection(mark)
+      if(window.VSAHome28&&window.VSAHome28.refreshSection)await window.VSAHome28.refreshSection(mark);
+      var nowFeed=feed(),key=markKey(mark);
+      if((nowFeed[key]||[]).length<24){
+        var extra=await directExpand39116(mark);
+        if(extra.length){nowFeed[key]=extra;nowFeed.at=Date.now();save(FEED_KEY,nowFeed)}
+      }
     }
     if(needs.length&&window.VSAHome37&&window.VSAHome37.render){window.VSAHome37.render();setTimeout(enhanceHome,0)}
   }catch(_){}
