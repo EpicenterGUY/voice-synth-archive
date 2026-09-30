@@ -181,25 +181,22 @@ async function fetchYoutubeViews(ids){
 }
 async function fetchNicoViews(ids){
   const map=new Map();
-  if(!ids.length)return map;
-  const chunks=[];for(let i=0;i<ids.length;i+=20)chunks.push(ids.slice(i,i+20));
-  await mapLimit(chunks,Math.min(VIEW_CONCURRENCY,6),async(group,idx)=>{
-    const p=new URLSearchParams();
-    p.set("q",group.join(" OR "));
-    p.set("targets","contentId");
-    p.set("fields","contentId,viewCounter");
-    p.set("_sort","-viewCounter");
-    p.set("_limit","100");
-    p.set("_offset","0");
-    p.set("_context","touhoudive_full_view_index");
-    const r=await fetch(NICO_API+"?"+p.toString(),{headers:{"Accept":"application/json","User-Agent":"TouhouDive-ViewIndex/1.0"}});
-    if(!r.ok)throw new Error("Nico HTTP "+r.status);
-    const d=await r.json();
-    for(const item of arr(d?.data)){
-      const id=clean(item?.contentId),v=Number(item?.viewCounter);
-      if(id&&Number.isFinite(v)&&v>=0)map.set(id,v);
-    }
-    if(idx%100===0)console.log("nico view chunks",idx,"/",chunks.length);
+  const valid=ids.filter(id=>/^(?:sm|nm|so)\d+$/i.test(clean(id)));
+  if(!valid.length)return map;
+  await mapLimit(valid,Math.min(VIEW_CONCURRENCY,8),async(id,idx)=>{
+    const ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),12000);
+    try{
+      const r=await fetch("https://ext.nicovideo.jp/api/getthumbinfo/"+encodeURIComponent(id),{
+        signal:ctl.signal,
+        headers:{"Accept":"application/xml,text/xml,*/*","User-Agent":"TouhouDive-ViewIndex/1.0"}
+      });
+      if(!r.ok)return;
+      const xml=await r.text();
+      const m=xml.match(/<view_counter>(\d+)<\/view_counter>/i);
+      if(m)map.set(id,Number(m[1])||0);
+    }finally{clearTimeout(timer)}
+    if(idx%250===0)console.log("nico exact views",idx,"/",valid.length);
+    await sleep(35);
   });
   return map;
 }
@@ -222,7 +219,12 @@ async function fetchBilibiliViews(ids){
   return map;
 }
 async function enrichPlatformViews(tracks){
-  const coverage={providers:{},tracks:0,media:0,youtubeKeyConfigured:!!YOUTUBE_API_KEY};
+  const candidateCounts={
+    youtube:uniqueMediaIds(tracks,"youtube").length,
+    niconico:uniqueMediaIds(tracks,"niconico").length,
+    bilibili:uniqueMediaIds(tracks,"bilibili").length
+  };
+  const coverage={providers:{},candidates:candidateCounts,ratios:{},tracks:0,media:0,youtubeKeyConfigured:!!YOUTUBE_API_KEY};
   if(!FETCH_VIEWS)return coverage;
   const youtubeIds=uniqueMediaIds(tracks,"youtube");
   const nicoIds=uniqueMediaIds(tracks,"niconico");
@@ -246,6 +248,14 @@ async function enrichPlatformViews(tracks){
     }
     if(any){coverage.tracks++;trackSet.add(t.i)}
   }
+  for(const provider of ["youtube","niconico","bilibili"]){
+    const c=Number(candidateCounts[provider])||0,s=Number(coverage.providers[provider])||0;
+    coverage.ratios[provider]=c?s/c:0;
+  }
+  const majorReady=coverage.youtubeKeyConfigured&&coverage.ratios.youtube>=0.65;
+  const supplementalReady=(coverage.ratios.niconico>=0.55||coverage.ratios.bilibili>=0.55);
+  coverage.popularityEligible=!!(majorReady&&supplementalReady);
+  coverage.mode=coverage.popularityEligible?"multi-platform":"partial";
   return coverage;
 }
 function platformViewStats(t){
@@ -264,7 +274,7 @@ function platformViewStats(t){
 function viewSignal(t){
   const v=platformViewStats(t);
   if(!v.mediaCount)return 0;
-  return Math.log10(v.total+1)*12+Math.log10(v.max+1)*4+Math.min(3,v.platforms)*2;
+  return Math.log10(v.total+1)*8+Math.log10(v.max+1)*2+Math.min(3,v.platforms)*1.5;
 }
 function compact(item){
   const id=Number(item?.id)||0,roles=artistRoles(item),type=typeOf(item);
@@ -342,16 +352,18 @@ async function main(){
     if(t.p?.length)childMedia.set(t.o,(childMedia.get(t.o)||0)+1);
   }
   const popularity=t=>{
-    const rating=Math.max(0,Number(t.r)||0),fav=Math.max(0,Number(t.f)||0),hits=Math.max(0,Number(t.h)||0);
+    const rating=Math.max(0,Number(t.r)||0),fav=Math.max(0,Number(t.f)||0);
     const providers=new Set((t.p||[]).map(x=>x?.[0]).filter(Boolean)).size;
-    return rating*5+Math.log10(fav+1)*18+Math.log10(hits+1)*6+Math.min(4,providers)*2+viewSignal(t);
+    const community=Math.log10(rating+1)*24+Math.log10(fav+1)*7+Math.min(4,providers)*1.5;
+    const views=viewCoverage.popularityEligible?viewSignal(t)*0.55:0;
+    return community+views;
   };
   const influence=t=>{
     if(t.t)return 0;
     const children=relations.get(t.i)||0,circles=childCircles.get(t.i)?.size||0,albums=childAlbums.get(t.i)?.size||0,mediaChildren=childMedia.get(t.i)||0;
-    return Math.log10(children+1)*34+Math.log10(circles+1)*22+Math.log10(albums+1)*14+Math.log10(mediaChildren+1)*6;
+    return Math.log10(children+1)*14+Math.log10(circles+1)*9+Math.log10(albums+1)*6+Math.log10(mediaChildren+1)*3;
   };
-  const composite=t=>popularity(t)+influence(t);
+  const composite=t=>popularity(t)+influence(t)*0.35;
   const byComposite=[...tracks].sort((a,b)=>composite(b)-composite(a)||popularity(b)-popularity(a)||b.r-a.r||a.i-b.i);
   byComposite.forEach((t,idx)=>{t.q=idx+1;t.s=Math.round(composite(t)*100)/100});
   const byPopularity=[...tracks].sort((a,b)=>popularity(b)-popularity(a)||b.r-a.r||a.i-b.i);
@@ -398,17 +410,20 @@ async function main(){
     files.push({file:name,start:i*SHARD_SIZE,count:part.length});
   }
   const manifest={
-    schema:2,source:"TouhouDB",api:API,generatedAt:new Date().toISOString(),
+    schema:3,source:"TouhouDB",api:API,generatedAt:new Date().toISOString(),
     totalCount:total,indexed:tracks.length,shardSize:SHARD_SIZE,shardCount,files,
     counts,providers,allowedProviders:[...ALLOWED],
     viewCoverage:{...viewCoverage,rankedTracks:tracks.filter(t=>Number(t.qv)>0).length,supportedProviders:["youtube","niconico","bilibili"]},
     lookup:{path:"lookup",bucketSize:LOOKUP_BUCKET_SIZE,bucketCount:lookupBuckets.size,format:"[id,q,s,qp,sp,qi,si,qv,sv,vt,vm,vp,vc,dc,dsc,da,dm,viewMedia]"},
     ranking:{
-      version:3,
-      composite:"popularity + original influence",
-      popularity:"rating*5 + log10(favorites+1)*18 + log10(hits+1)*6 + media-provider bonus + verified platform view signal",
-      views:"log10(sum verified views+1)*12 + log10(max video views+1)*4 + verified-platform bonus",
-      influence:"official original only: derivative tracks + distinct circles + distinct albums + playable derivative bonus"
+      version:4,
+      composite:"popularity + original influence*0.35",
+      popularity:"log10(TouhouDB cumulative vote score+1)*24 + log10(favorites+1)*7 + media-provider bonus + optional verified multi-platform view signal*0.55",
+      ratingMeaning:"TouhouDB RatingScore is a cumulative vote score: Favorite +3, Like +2, Dislike -1; it is not a 10-point average rating",
+      views:"log10(sum verified views+1)*8 + log10(max video views+1)*2 + verified-platform bonus; ranked only among measured tracks",
+      viewPolicy:"platform views affect popularity only when YouTube coverage >=65% and NicoNico or Bilibili coverage >=55%; otherwise views remain a separate partial ranking",
+      influence:"official original only: log-weighted derivative tracks + distinct circles + distinct albums + playable derivative count",
+      denominator:"overall/popularity ranks use the full indexed song count directly; no 128,040 arrangement-scale projection"
     },
     classification:{
       original:"SongType Original AND no parent AND (ZUN artist OR official collaborator + official-work match)",
