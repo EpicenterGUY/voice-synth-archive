@@ -1,10 +1,10 @@
 {
-  "schema": 1,
+  "schema": 2,
   "source": "TouhouDB",
   "api": "https://touhoudb.com/api",
-  "generatedAt": "2026-09-29T06:52:38.917Z",
-  "totalCount": 189002,
-  "indexed": 189002,
+  "generatedAt": "2026-09-30T10:39:51.658Z",
+  "totalCount": 189051,
+  "indexed": 189051,
   "shardSize": 1000,
   "shardCount": 190,
   "files": [
@@ -956,17 +956,17 @@
     {
       "file": "shard-189.json",
       "start": 189000,
-      "count": 2
+      "count": 51
     }
   ],
   "counts": {
     "original": 593,
-    "arrangement": 188409,
-    "mediaCandidates": 72842
+    "arrangement": 188458,
+    "mediaCandidates": 72847
   },
   "providers": {
-    "youtube": 65231,
-    "niconico": 10723,
+    "youtube": 65236,
+    "niconico": 10724,
     "soundcloud": 4315,
     "bandcamp": 12803,
     "bilibili": 774,
@@ -980,10 +980,25 @@
     "bilibili",
     "bandcamp"
   ],
+  "viewCoverage": {
+    "providers": {
+      "bilibili": 45
+    },
+    "tracks": 45,
+    "media": 45,
+    "youtubeKeyConfigured": false,
+    "rankedTracks": 45,
+    "supportedProviders": [
+      "youtube",
+      "niconico",
+      "bilibili"
+    ]
+  },
   "ranking": {
-    "version": 2,
+    "version": 3,
     "composite": "popularity + original influence",
-    "popularity": "rating*5 + log10(favorites+1)*18 + log10(hits+1)*6 + media-provider bonus",
+    "popularity": "rating*5 + log10(favorites+1)*18 + log10(hits+1)*6 + media-provider bonus + verified platform view signal",
+    "views": "log10(sum verified views+1)*12 + log10(max video views+1)*4 + verified-platform bonus",
     "influence": "official original only: derivative tracks + distinct circles + distinct albums + playable derivative bonus"
   },
   "classification": {
