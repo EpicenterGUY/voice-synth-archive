@@ -1,3 +1,4 @@
+# Manual rebuild trigger: YouTube API key configured
 name: Build Touhou full index
 
 on:
