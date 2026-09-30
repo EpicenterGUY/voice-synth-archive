@@ -1437,7 +1437,7 @@ function normalizePersistentIds(){
   writeJson("touhoudive:favorites",[...state.favorites]);
   writeJson("touhoudive:history",state.history);
 }
-function syncModeTabs(){$$$("#modeTabs .mode-tab").forEach(x=>x.classList.toggle("is-active",x.dataset.mode===state.mode))}
+function syncModeTabs(){$("#modeTabs .mode-tab").forEach(x=>x.classList.toggle("is-active",x.dataset.mode===state.mode))}
 function setDataHealth(kind,text){
   const el=$("#dataHealth");
   el.classList.toggle("is-loading",kind==="loading");
