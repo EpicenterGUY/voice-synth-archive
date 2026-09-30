@@ -1,5 +1,5 @@
 {
-  "version": "0.9.9",
+  "version": "0.9.11",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-09-30",
@@ -125,6 +125,15 @@
     "mobile-rank-lookup",
     "autoplay-rank-enrichment",
     "platform-view-evidence",
-    "ranking-v3-mobile"
+    "ranking-v3-mobile",
+    "instant-player-open",
+    "async-related-queue",
+    "bounded-relation-index",
+    "mobile-touch-hitbox-fix",
+    "six-button-bottom-nav",
+    "deferred-heavy-renders",
+    "linear-rank-ordering",
+    "mobile-blur-reduction",
+    "search-render-debounce"
   ]
 }
