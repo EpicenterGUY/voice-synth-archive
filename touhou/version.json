@@ -1,5 +1,5 @@
 {
-  "version": "0.9.13",
+  "version": "0.9.14",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-09-30",
@@ -142,6 +142,9 @@
     "button-binding-recovery",
     "stale-rank-suppression",
     "partial-view-rank-guard",
-    "ranking-v4-pending-state"
+    "ranking-v4-pending-state",
+    "full-index-v4-cache-reset",
+    "view-evidence-v4-formula",
+    "render-selector-crash-fix"
   ]
 }
