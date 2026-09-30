@@ -137,8 +137,16 @@ class TouhouMediaPlayer{
   }
   setTab(tab){
     this.activeTab=tab==="lyrics"?"lyrics":"related";
-    if(this.relatedEl)this.relatedEl.hidden=this.activeTab!=="related";
-    if(this.lyricsEl)this.lyricsEl.hidden=this.activeTab!=="lyrics";
+    if(this.relatedEl){
+      const show=this.activeTab==="related";
+      this.relatedEl.hidden=!show;
+      this.relatedEl.style.display=show?"grid":"none";
+    }
+    if(this.lyricsEl){
+      const show=this.activeTab==="lyrics";
+      this.lyricsEl.hidden=!show;
+      this.lyricsEl.style.display=show?"block":"none";
+    }
     if(this.relatedTab){this.relatedTab.classList.toggle("is-active",this.activeTab==="related");this.relatedTab.setAttribute("aria-selected",this.activeTab==="related"?"true":"false")}
     if(this.lyricsTab){this.lyricsTab.classList.toggle("is-active",this.activeTab==="lyrics");this.lyricsTab.setAttribute("aria-selected",this.activeTab==="lyrics"?"true":"false")}
   }
