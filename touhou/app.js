@@ -38,7 +38,7 @@ async function boot(){
     setView("home");
     renderLocalFirst();
     bind();
-    if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js?v=0.9.6").then(r=>r.update()).catch(()=>{});
+    if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js?v=0.9.7").then(r=>r.update()).catch(()=>{});
     connectFullDataset();
     await connectRemote();
   }catch(err){
@@ -412,7 +412,7 @@ function playerRankMeta(t){
     const r=sampleRankByScore(t,popularityScore,currentPool());popValue=fmt(r.total)+"곡 중 "+fmt(r.rank)+"위";popSub="현재 로드 기준";
   }
   return{
-    overall:{label:"종합",value:rankText(overall),sub:rankPercentText(overall)},
+    overall:{label:"종합",value:rankText(overall),sub:rankPercentText(overall),detail:overallRankDetail(t)},
     popularity:{label:"인기",value:popValue,sub:popSub},
     influence:inf?{label:"원곡 영향력",value:inf.rank?fmt(inf.total)+"원곡 중 "+fmt(inf.rank)+"위":"현재 표본 계산",sub:"파생 "+fmt(inf.children)+"곡 · "+fmt(inf.circles)+"서클"}:null,
     active:activeSortRankInfo(t)
@@ -1012,6 +1012,72 @@ function influenceScore(t){
   return Math.log10(children+1)*34+Math.log10(circles+1)*22+Math.log10(albums+1)*14;
 }
 function overallRankScore(t){return popularityScore(t)+influenceScore(t)}
+function popularityBreakdown(t){
+  const rating=Math.max(0,Number(t?.ratingScore)||0);
+  const favorites=Math.max(0,Number(t?.favoritedTimes)||0);
+  const hits=Math.max(0,Number(t?.hitCount)||0);
+  const providers=new Set((t?.mediaCandidates||[]).map(m=>m?.provider).filter(Boolean)).size;
+  const ratingPts=rating*5;
+  const favoritePts=Math.log10(favorites+1)*18;
+  const hitPts=Math.log10(hits+1)*6;
+  const providerPts=Math.min(4,providers)*2;
+  return{
+    total:ratingPts+favoritePts+hitPts+providerPts,
+    metrics:[
+      {label:"TouhouDB 평점",raw:rating.toFixed(1),rule:"× 5",points:ratingPts},
+      {label:"즐겨찾기",raw:fmt(favorites)+"회",rule:"log10(n+1) × 18",points:favoritePts},
+      {label:"DB 조회",raw:fmt(hits)+"회",rule:"log10(n+1) × 6",points:hitPts},
+      {label:"재생 소스",raw:fmt(providers)+"종",rule:"최대 4종 × 2",points:providerPts}
+    ]
+  };
+}
+function influenceBreakdown(t){
+  if(t?.type!=="original")return{total:0,metrics:[]};
+  const children=Math.max(0,Number(t.derivativeCount)||countChildren(t.id));
+  const circles=Math.max(0,Number(t.derivativeCircleCount)||0);
+  const albums=Math.max(0,Number(t.derivativeAlbumCount)||0);
+  const childPts=Math.log10(children+1)*34;
+  const circlePts=Math.log10(circles+1)*22;
+  const albumPts=Math.log10(albums+1)*14;
+  return{
+    total:childPts+circlePts+albumPts,
+    metrics:[
+      {label:"파생 어레인지",raw:fmt(children)+"곡",rule:"log10(n+1) × 34",points:childPts},
+      {label:"파생 서클",raw:fmt(circles)+"곳",rule:"log10(n+1) × 22",points:circlePts},
+      {label:"파생 앨범",raw:fmt(albums)+"장",rule:"log10(n+1) × 14",points:albumPts}
+    ]
+  };
+}
+function overallRankDetail(t){
+  const rank=trackRank(t),pop=popularityBreakdown(t),inf=influenceBreakdown(t);
+  const score=Number(rank.score)||pop.total+inf.total;
+  let source;
+  if(rank.fullScale){
+    source={
+      label:"전수 인덱스 기반",
+      text:fmt(rank.sampleTotal)+"곡 전수 원순위 "+fmt(rank.sampleRank)+"위 → "+fmt(rank.total)+"곡 표시 스케일 "+fmt(rank.rank)+"위"
+    };
+  }else if(rank.sampleRank){
+    source={
+      label:rank.estimated?"현재 표본에서 환산":"현재 로드 기준",
+      text:fmt(rank.sampleTotal)+"곡 표본 "+fmt(rank.sampleRank)+"위"+(rank.estimated?" → "+fmt(rank.total)+"곡 스케일 약 "+fmt(rank.rank)+"위":"")
+    };
+  }else{
+    source={label:"순위 계산 중",text:"현재 곡의 비교 표본이 충분히 로드되면 순위를 다시 계산합니다."};
+  }
+  return{
+    title:"종합순위 산정 근거",
+    formula:"종합 점수 = 인기 점수 + 원곡 영향력 점수",
+    score,
+    source,
+    components:[
+      {label:"인기 점수",points:pop.total,description:"평점 · 즐겨찾기 · DB 조회 · 재생 소스"},
+      {label:"원곡 영향력",points:inf.total,description:t?.type==="original"?"파생곡 · 파생 서클 · 파생 앨범":"2차창작에는 0점"}
+    ],
+    metrics:[...pop.metrics,...inf.metrics],
+    note:"즐겨찾기·조회·파생량은 로그 가중치를 사용해 한 지표가 점수를 과도하게 지배하지 않도록 합니다."
+  };
+}
 function refreshRanks(){
   if(state.full.loaded){
     state.rankTotal=state.full.manifest?.indexed||state.fullItems.length;
