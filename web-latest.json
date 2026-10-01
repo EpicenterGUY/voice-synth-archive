@@ -1,6 +1,6 @@
 {
-  "version": "39.117.0",
+  "version": "39.118.0",
   "channel": "web",
-  "publishedAt": "2026-09-30T21:30:00+09:00",
-  "notes": "Fixes sparse home recommendations so saved-library size no longer caps the feed, automatically refills undersized recommendation shelves, and strengthens original-song filtering to exclude Off Vocal, instrumental, karaoke, cover and other derivative uploads even when they retain original-song tags."
+  "publishedAt": "2026-10-01T20:58:00+09:00",
+  "notes": "Fixes unresponsive related/next-song cards by caching remotely discovered related-song metadata, resolving clicks from that cache, and using the visible related list as the player next-track queue."
 }
