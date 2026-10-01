@@ -10567,6 +10567,10 @@ function openView(name){if(window.VSAV33&&VSAV33.openView){VSAV33.openView(name)
     }
   }catch(e){}
   try{
+    if(window.__VSA399_RELATED_MAP instanceof Map){
+      var rr399=window.__VSA399_RELATED_MAP.get(String(id));
+      if(rr399)return rr399
+    }
     var groups=[state.songs,state.tasteSongs,state.guideSongs,state.hiddenGems,state.hiddenGemPool,state.detectiveCandidates];
     if(Array.isArray(state.producerDiscovery))state.producerDiscovery.forEach(function(p){if(p&&Array.isArray(p.songs))groups.push(p.songs)});
     for(var g of groups){if(!Array.isArray(g))continue;for(var item of g){var sng=item&&item.song?item.song:item;if(sng&&sng.contentId===id)return sng}}
@@ -10756,7 +10760,11 @@ function stopWatchInline399(showResume){
   }
 }
 function watchQueue399(song){
-  return [song].concat(relatedSongs39(song)).map(function(x){return{id:x.contentId,title:x.title||x.contentId}})
+  var shown=[];
+  try{if(window.__VSA399_RELATED_CENTER===String(song&&song.contentId||"")&&Array.isArray(window.__VSA399_RELATED_ROWS))shown=window.__VSA399_RELATED_ROWS.slice()}catch(e){}
+  var pool=shown.length?shown:relatedSongs39(song),seen=new Set([String(song&&song.contentId||"")]),rows=[song];
+  pool.forEach(function(x){var id=String(x&&x.contentId||"");if(id&&!seen.has(id)){seen.add(id);rows.push(x)}});
+  return rows.map(function(x){return{id:x.contentId,title:x.title||x.contentId}})
 }
 function handoffWatchToMini399(){
   var song=window.__VSA39_DETAIL_SONG,frame=document.getElementById("v399InlineFrame");
@@ -10987,6 +10995,10 @@ function renderWatchRelated399(song,extra,remote,commit){
   (extra||[]).forEach(function(x){if(x&&x.contentId)m.set(x.contentId,Object.assign({},m.get(x.contentId)||{},x))});
   (remote||[]).forEach(function(x){if(x&&x.contentId)m.set(x.contentId,Object.assign({},m.get(x.contentId)||{},x))});
   var rows=balancedRelatedSelection399(song,[...m.values()],14,commit);
+  window.__VSA399_RELATED_MAP=window.__VSA399_RELATED_MAP instanceof Map?window.__VSA399_RELATED_MAP:new Map();
+  rows.forEach(function(x){if(x&&x.contentId)window.__VSA399_RELATED_MAP.set(String(x.contentId),x)});
+  window.__VSA399_RELATED_ROWS=rows.slice();
+  window.__VSA399_RELATED_CENTER=String(song&&song.contentId||"");
   box.innerHTML=rows.length?rows.map(relatedItemHtml399).join(""):'<div class="v399-empty">연관곡을 아직 찾지 못했습니다.</div>';
   var count=document.getElementById("v399RelatedCount");if(count)count.textContent=rows.length+"곡"
 }
@@ -11965,7 +11977,18 @@ function init(){
     var sp397=e.target.closest("[data-v397-producer]");if(sp397){openDiscoveredProducer37(sp397.dataset.v397Producer);return}
     if(e.target.closest("[data-v397-clear-recent]")){try{localStorage.removeItem(SEARCH397_RECENT_KEY)}catch(_){ }renderSearchAssist397("");return}
     var clear3910=e.target.closest("[data-v3910-clear-history]");if(clear3910){clearHistory3910(clear3910.dataset.v3910ClearHistory||"all");return}
-    var play399=e.target.closest("[data-v399-play]");if(play399){openSongDetail39(play399.dataset.v399Play,true);return}
+    var play399=e.target.closest("[data-v399-play]");if(play399){
+      e.preventDefault();e.stopPropagation();
+      var opened399=openSongDetail39(play399.dataset.v399Play,true);
+      if(!opened399){
+        try{
+          var fallback399=window.__VSA399_RELATED_MAP instanceof Map?window.__VSA399_RELATED_MAP.get(String(play399.dataset.v399Play||"")):null;
+          if(fallback399){window.__VSA39_DETAIL_SONG=fallback399;recordRecentView3910(fallback399);renderSongDetail39(fallback399,true);openToolsModal("songDetail39");opened399=true}
+        }catch(_){ }
+      }
+      if(!opened399)try{toast("곡 정보를 다시 찾는 중입니다. 목록을 한 번 새로 열어주세요.")}catch(_){}
+      return
+    }
     var lyric399=e.target.closest("[data-v399-lyric]");if(lyric399){selectLyric399(lyric399.dataset.v399Lyric);return}
     var mini399=e.target.closest("[data-v399-mini]");if(mini399){
       var ms399=getAnySong39(mini399.dataset.v399Mini);if(!ms399)return;
