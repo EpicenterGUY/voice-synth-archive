@@ -89,6 +89,24 @@ class TouhouMediaPlayer{
     }
     return out;
   }
+  fallbackPriority(provider,failedProvider=""){
+    const order=failedProvider==="youtube"
+      ? ["niconico","soundcloud","bandcamp","bilibili","piapro","touhoudb","youtube"]
+      : ["youtube","niconico","soundcloud","bandcamp","bilibili","piapro","touhoudb"];
+    const i=order.indexOf(provider);
+    return i<0?999:i;
+  }
+  mergeMediaCandidates(track,rows=[]){
+    if(!track)return[];
+    const seen=new Set(),out=[];
+    for(const media of [...(track.mediaCandidates||[]),...(rows||[])]){
+      const key=this.mediaKey(media);
+      if(!media||!key||seen.has(key))continue;
+      seen.add(key);out.push(media);
+    }
+    track.mediaCandidates=out;
+    return out;
+  }
   playable(track){return this.candidates(track).length>0}
   selectPlayableMedia(track){
     const media=this.candidates(track)[0]||null;
@@ -329,20 +347,53 @@ class TouhouMediaPlayer{
   persistBadMedia(){
     try{localStorage.setItem(BAD_MEDIA_KEY,JSON.stringify([...this.badMedia].slice(-300)))}catch(_){}
   }
+  async recoverAlternativeMedia(code=0,failedMedia=null){
+    if(!this.current)return false;
+    const trackId=this.current.id;
+    const failedKey=this.mediaKey(failedMedia);
+    const failedProvider=failedMedia?.provider||"";
+    if(this.current.touhoudbId&&window.TouhouCatalog?.hydrate){
+      try{
+        const hydrated=await window.TouhouCatalog.hydrate(this.current.touhoudbId);
+        if(!this.current||this.current.id!==trackId)return false;
+        if(hydrated){
+          this.mergeMediaCandidates(this.current,hydrated.mediaCandidates||[]);
+          if(!this.current.thumb&&hydrated.thumb)this.current.thumb=hydrated.thumb;
+          if(!this.current.source&&hydrated.source)this.current.source=hydrated.source;
+        }
+      }catch(e){console.warn("TouhouDive alternate source refresh failed",e)}
+    }
+    if(!this.current||this.current.id!==trackId)return false;
+    const choices=this.candidates(this.current)
+      .filter(x=>this.mediaKey(x)!==failedKey)
+      .sort((a,b)=>this.fallbackPriority(a.provider,failedProvider)-this.fallbackPriority(b.provider,failedProvider));
+    const next=choices[0]||null;
+    if(next){
+      this.current.media=next;
+      this.current.mediaUnavailable=false;
+      this.current.mediaFallback={from:failedProvider||"unknown",to:next.provider||"unknown",code};
+      window.dispatchEvent(new CustomEvent("touhoudive:media-fallback",{detail:{
+        trackId:this.current.id,
+        from:failedProvider||null,
+        to:next.provider||null,
+        code
+      }}));
+      this.renderCurrent(true);
+      return true;
+    }
+    this.current.media=null;this.current.mediaUnavailable=true;
+    window.dispatchEvent(new CustomEvent("touhoudive:media-unavailable",{detail:{trackId:this.current.id,code}}));
+    this.destroySurface();
+    this.video.innerHTML='<div class="player-unavailable"><strong>이 곡의 재생 가능한 영상을 찾지 못했습니다.</strong><span>YouTube 비공개·삭제·지역/임베드 제한 영상은 제외하고 NicoNico 등 다른 등록 소스까지 확인했습니다.</span></div>';
+    this.setPlaybackState("none");
+    if(this.autoNext)setTimeout(()=>this.relative(1,true),650);
+    return false;
+  }
   handleMediaError(code=0){
     this.playing=false;this.syncControls();
     const media=this.current?.media,key=this.mediaKey(media);
     if(key&&(code===100||code===101||code===150||code===2||code===5)){this.badMedia.add(key);this.persistBadMedia()}
-    if(this.current){
-      const next=this.candidates(this.current)[0]||null;
-      if(next&&this.mediaKey(next)!==key){this.current.media=next;this.renderCurrent(true);return}
-      this.current.media=null;this.current.mediaUnavailable=true;
-      window.dispatchEvent(new CustomEvent("touhoudive:media-unavailable",{detail:{trackId:this.current.id,code}}));
-      this.destroySurface();
-      this.video.innerHTML='<div class="player-unavailable"><strong>이 영상은 재생할 수 없습니다.</strong><span>비공개·삭제·임베드 제한 영상은 자동으로 제외합니다.</span></div>';
-      this.setPlaybackState("none");
-      if(this.autoNext)setTimeout(()=>this.relative(1,true),650);
-    }
+    void this.recoverAlternativeMedia(code,media);
   }
   renderIframeFallback(){
     if(!this.current)return;
@@ -461,8 +512,16 @@ class TouhouMediaPlayer{
   onMessage(e){
     if(!this.current||this.current.media?.provider!=="niconico"||e.origin!==NICO_ORIGIN||!this.frame||e.source!==this.frame.contentWindow)return;
     const msg=e.data||{};if(msg.playerId!==PLAYER_ID)return;
+    const eventName=String(msg.eventName||"");
+    const errorCode=Number(msg?.data?.errorCode||msg?.data?.code)||0;
+    if(/error|fail/i.test(eventName)||errorCode){
+      const media=this.current.media,key=this.mediaKey(media);
+      if(key){this.badMedia.add(key);this.persistBadMedia()}
+      void this.recoverAlternativeMedia(errorCode||900,media);
+      return;
+    }
     const st=Number(msg?.data?.playerStatus)||0;
-    if(msg.eventName==="playerStatusChange"){
+    if(eventName==="playerStatusChange"){
       if(st===2){this.playing=true;this.setPlaybackState("playing")}
       else if(st===3){this.playing=false;this.setPlaybackState("paused")}
       else if(st===4){this.playing=false;this.setPlaybackState("none");if(this.autoNext)this.relative(1,true)}
