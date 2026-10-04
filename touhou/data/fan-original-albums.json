@@ -1,0 +1,1165 @@
+{
+  "version": 1,
+  "updated": "2026-10-04",
+  "classification": "Touhou-style original / Touhou fangame original OST only",
+  "note": "Official Touhou source arrangements and mixed albums with uncertain provenance are excluded from this catalog.",
+  "albums": [
+    {
+      "id": "drillimation-struggle-mollusk",
+      "title": "The Struggle of the Mollusk",
+      "artist": "Drillimation Systems",
+      "year": 2023,
+      "url": "https://drillimation.bandcamp.com/album/the-struggle-of-the-mollusk",
+      "sourceKind": "original-touhou-style-album",
+      "evidence": "creator-described-touhou-style",
+      "tags": [
+        "PC-98풍"
+      ],
+      "tracks": [
+        "Oriental Genesis",
+        "Rag of Lotus Love",
+        "Royal Scroll of Unity",
+        "The Swedish Settle in Gensokyo",
+        "Tomorrow I Will Become a Noble, Yesterday I was a Peasant",
+        "Perpetual Scarlet of an Oriental Orléans",
+        "Super Long-Haired Siren of the Phantasmal Waters",
+        "A Youkai-born's Beautiful and Spiritual Kingdom",
+        "The Victorian Princess Sets Afoot ~ The Half Youkai Magician",
+        "Grand Debut On Air",
+        "Chocobo de Norou",
+        "The Princess Who Slays Ender Dragons",
+        "Scrambling in the Waters",
+        "An Evening With the Half-Youkai Crown Princess",
+        "Strawberry Waltz",
+        "A Nostalgic Dream Express",
+        "The Town Where Young Apples Grow",
+        "Living in the Endless Village",
+        "Kids Run Through the Aether City",
+        "Scarlet Wildfire Over the Mountainous Prairies",
+        "Blade of the Bearded Ronin ~ American Tanabata",
+        "A Phoenix Born From a Heat Wave",
+        "Mushroom Fantasma",
+        "Hakurei Circuit",
+        "Misty Lake Voyage",
+        "Autumn Heat Wave ~ Extended Summer",
+        "The Harbor Where Autumn Sails",
+        "A Primal Dance to the Shrine of Faith",
+        "Reincarnation of Marisa's Mother",
+        "Arrow of Konpaku ~ Watchtower Archer",
+        "A Girl Livestreaming Under a Cherry Tree",
+        "A Cozy and Pleasant Winter Spirit",
+        "A Cat Spirit With a Jar of Sugar",
+        "Amidst the Musical Tempest",
+        "Mollusk"
+      ]
+    },
+    {
+      "id": "orange-whispers-parallel-world",
+      "title": "東方奇妙伝 ~ Whispers of a Parallel World",
+      "artist": "OrangeBlugt",
+      "year": 2024,
+      "url": "https://orangeblugt.bandcamp.com/album/whispers-of-a-parallel-world-cancelled",
+      "sourceKind": "fangame-ost",
+      "evidence": "touhou-style-fangame-project",
+      "tracks": [
+        "Will the Eastern World Exist That Day (Menu)",
+        "Oriental Society Is No Longer There, But Here (ST1)",
+        "Otter Attack! ~ Be Careful (ST1 BOSS)",
+        "Komorebi Dance (ST2)",
+        "Enlightenment Haunting Dance (ST2 BOSS)",
+        "Forgotten Road From Giant Rocks (ST3)",
+        "Powerful Competition of Feng Shui ~ Wind (ST3 BOSS)",
+        "Abyss of Memories (ST4)",
+        "Dancing Maiden (ST4 A BOSS)",
+        "The Beasts of Ancient War (ST4 B BOSS)",
+        "Invincible MindGame ~ Advanced Technology (ST4 C BOSS)",
+        "Abandonment Dreams and Reality (ST5)",
+        "Fleeing Ancient Dreams ~ Look Away! (ST5 BOSS)",
+        "Fire Dove (ST6)",
+        "Unfinished Alienated Scholar Poem ~ Fire Dove (ST6 BOSS)",
+        "Night Times (ENDING)",
+        "Ending the Last Dream (STAFF ROLL)",
+        "Into Discord's Core ~ Dream Traveler (ST EX)",
+        "Shattering the 第三 Gate in 4D Core ~ Last Think (ST EX BOSS)"
+      ]
+    },
+    {
+      "id": "wanwan-hollow-song-birds",
+      "title": "神授ノ書 Hollow Song of Birds - Original Soundtrack",
+      "artist": "Wanwan",
+      "year": 2019,
+      "url": "https://wanwan.bandcamp.com/album/hollow-song-of-birds-original-soundtrack",
+      "sourceKind": "fangame-ost",
+      "evidence": "touhou-fangame-original-soundtrack",
+      "tracks": [
+        "幻想郷の一番長い日",
+        "沈黙の春景",
+        "スカーレットランラン",
+        "末法の夜は来たれり",
+        "ちいちい墓場へご招待！",
+        "ロータスメイズ",
+        "気高き翠の灰被姫",
+        "メメントの森",
+        "飛翔八十億劫 〜 Sinful Rampage",
+        "ファーイーストエルドラド",
+        "烈日の暴君 ～ Violent General",
+        "我は遠方の者を連れ戻す者",
+        "黄金讃歌 〜 アイビストリスメギストス",
+        "幻想郷の一番短い夜",
+        "朝焼けに響く鳥の歌",
+        "千紫万紅の百鬼夜行",
+        "グラスハートシュバリエ",
+        "プレイヤーズスコア"
+      ]
+    },
+    {
+      "id": "wanwan-tri-focuser",
+      "title": "Tri Focuser - Original Soundtrack",
+      "artist": "Wanwan",
+      "year": 2017,
+      "url": "https://wanwan.bandcamp.com/album/tri-focuser-original-soundtrack",
+      "sourceKind": "fangame-ost",
+      "evidence": "touhou-fangame-original-soundtrack",
+      "tracks": [
+        "ニュースレイヴン出撃！",
+        "コティングリー天狗事件",
+        "アステリズムダンジョン",
+        "桃源航路 ～ Avalon Gate",
+        "天地結ぶビーンストーク",
+        "終焉と創造の天頂",
+        "デスサイズパラダイス",
+        "純真なる徒花 〜 Absolute Lily",
+        "ニュースレイヴン反省会場",
+        "天狗が帰ってバイバイバイ"
+      ]
+    },
+    {
+      "id": "djabner-servants-harvest-wish",
+      "title": "東方催狐譚 ～ Servants of Harvest Wish",
+      "artist": "DJ Abner",
+      "year": 2020,
+      "url": "https://djabner.bandcamp.com/album/servants-of-harvest-wish",
+      "sourceKind": "fangame-ost",
+      "evidence": "touhou-fangame-original-soundtrack",
+      "tracks": [
+        "Withered Bounty",
+        "The Golden Sun and the Cloud-Colored Horizon",
+        "Cumulonimbus Grimace",
+        "Evening Parade of Humans and Beasts",
+        "Yosakoi Foxtrot",
+        "Beware the Forest's Flowers",
+        "Night-Blooming Camellia ~ Heart of the Swarm",
+        "Windy Waves of a Starry Sea",
+        "Poppet of Nemesis",
+        "A Profane Shrine Maiden in a Sacred Shrine (Ruby Version)",
+        "A Profane Shrine Maiden in a Sacred Shrine (Sapphire Version)",
+        "Showdown! Trial of the Wish-Fulfilling Jewel",
+        "Vulpecula et Anser",
+        "Rising Sun Moon Viewing ~ Best Wishes",
+        "Master of Harvest Wish",
+        "Three Shrines, Three Wishes",
+        "The Autumn Breeze Has Obtained Its Wish ~ Wishful Dreaming",
+        "Spiriting Away of Mañju and Saka ~ by any other name",
+        "Mikuzume's Mind Game",
+        "Tessenjutsu Dance ~ Harvest Mix",
+        "Player's Score ~ Reap and Sow"
+      ]
+    },
+    {
+      "id": "altend-glory-deep-skies",
+      "title": "旧阿迦奢記録 Glory of Deep Skies Original Soundtrack",
+      "artist": "Τeam αlternative Σnding",
+      "year": 2020,
+      "url": "https://altend.bandcamp.com/album/glory-of-deep-skies-original-soundtrack",
+      "sourceKind": "fangame-ost",
+      "evidence": "touhou-fangame-original-soundtrack",
+      "tracks": [
+        {
+          "title": "The Shadow Over Gensokyo",
+          "artist": "GizmoTheDragon, Tokiko Tatsunagi"
+        },
+        {
+          "title": "Welcome to the Subsky Tour",
+          "artist": "Tokiko Tatsunagi"
+        },
+        {
+          "title": "Prominence of a Shy Heron",
+          "artist": "Tokiko Tatsunagi"
+        },
+        {
+          "title": "Madman's Tavern of the Dream World",
+          "artist": "Tokiko Tatsunagi"
+        },
+        {
+          "title": "Stardust Shambler",
+          "artist": "Mana Kazami, Tokiko Tatsunagi"
+        },
+        {
+          "title": "Stardust Shambler (Alien ver.)",
+          "artist": "Mana Kazami, Tokiko Tatsunagi"
+        },
+        {
+          "title": "Kadath, the Giant Castle of Dreams",
+          "artist": "Aka Kyuketsuki"
+        },
+        {
+          "title": "Dreamquest of the Forsaken Gods",
+          "artist": "Dragon Zwei"
+        },
+        {
+          "title": "Into the Courts of Azathoth",
+          "artist": "Spectral Nexus"
+        },
+        {
+          "title": "Insane God of the Primordial Chaos ~ Ethereal Paradise",
+          "artist": "Wanwan, Tokiko Tatsunagi"
+        },
+        {
+          "title": "The Old Ones' Promise of Eternal Life ~ AZOTH",
+          "artist": "Tokiko Tatsunagi"
+        },
+        {
+          "title": "Aethyr Paradise",
+          "artist": "Spectral Nexus"
+        },
+        {
+          "title": "Elements of Creation and Destruction ~ Zeroth Dream",
+          "artist": "Tokiko Tatsunagi"
+        },
+        {
+          "title": "Crossing the River of Heaven",
+          "artist": "Aka Kyuketsuki"
+        },
+        {
+          "title": "Jewel of the Sky-Ruling Dragon God ~ Quintessential Fragments",
+          "artist": "ELEMENTAL SYMPOSIUM"
+        },
+        {
+          "title": "Jewel of the Sky-Ruling Dragon God ~ Quintessential Fragments (Distant Sea MIX)",
+          "artist": "Aka Kyuketsuki"
+        },
+        {
+          "title": "Jewel of the Sky-Ruling Dragon God ~ Quintessential Fragments (Inferno MIX)",
+          "artist": "Tokiko Tatsunagi"
+        },
+        {
+          "title": "Jewel of the Sky-Ruling Dragon God ~ Quintessential Fragments (Death Garden MIX)",
+          "artist": "GizmoTheDragon"
+        },
+        {
+          "title": "Jewel of the Sky-Ruling Dragon God ~ Quintessential Fragments (Zenith Peak MIX)",
+          "artist": "Mana Kazami"
+        },
+        {
+          "title": "Jewel of the Sky-Ruling Dragon God ~ Quintessential Fragments (World's End MIX)",
+          "artist": "Spectral Nexus"
+        },
+        {
+          "title": "Arcane Spell Card",
+          "artist": "Dragon Zwei"
+        },
+        {
+          "title": "Records of an Unreadable Name",
+          "artist": "Tokiko Tatsunagi"
+        },
+        {
+          "title": "Brilliant Lights From the Land of Dreams (Trailer Theme)",
+          "artist": "Tokiko Tatsunagi"
+        },
+        {
+          "title": "Prominence of a Chill Heron (Short Ver.)",
+          "artist": "Kirbio"
+        }
+      ]
+    },
+    {
+      "id": "benji-compendium-legendary-beast",
+      "title": "東方幻獣誌 ~ Compendium of Legendary Beast",
+      "artist": "Benji Tunez",
+      "year": 2024,
+      "url": "https://benjitunez.bandcamp.com/album/compendium-of-legendary-beast",
+      "sourceKind": "original-touhou-style-album",
+      "evidence": "creator-tagged-touhou-style",
+      "tracks": [
+        "Natsukashii Fantasy ~ Imaginary Dreams in The Air",
+        "Not So Peaceful Stroll ~ Adventure's Origin",
+        "Hikyaku Fox Trout ~ Message For You!",
+        "Mystery Forest ~ Don't Leave the Path",
+        "Pumpkin Jack's Attack ~ Mazel-Tov!",
+        "To The Great Blue Sky ~ Hidden Majesty",
+        "Otherworldly Dissonance ~ Despair of the Warg",
+        "Behold, Journey Below ~ Deja-Vu and Not The Good Kind!",
+        "Black Widows Requiem ~ Weaver of Death",
+        "Paradisus Absconditus ~ Lasting Dreams",
+        "Macabra Chupacabra ~ Una Niña Sangrieta",
+        "In the Birthplace of A New God ~ False Salvation, True Hopes",
+        "Eldritch Being ~ The Ones Forgotten by Their Creators",
+        "Horizon of Pandora ~ Ragnarok",
+        "Evil Spirits Awaken ~ Kitsune Under the Sessho-Sekki",
+        "Lesser Key ~ The Prince of Chaos has Awaken",
+        "End of Fantasy ~ Girls are Now Resting",
+        "Mountain of Fantasy ~ Until Next Dream"
+      ]
+    },
+    {
+      "id": "benji-compendium-bonus",
+      "title": "Compendium of Legendary Beast ~ Bonus Tracks",
+      "artist": "Benji Tunez",
+      "year": 2025,
+      "url": "https://benjitunez.bandcamp.com/album/compendium-of-legendary-beast-bonus-tracks",
+      "sourceKind": "original-touhou-style-album",
+      "evidence": "creator-tagged-touhou-style",
+      "tracks": [
+        "Player Score (Legendary Mix)",
+        "Trailer Song (Unused)",
+        "Coming Soon",
+        "Chaos and Hope",
+        "Adventure Awaits",
+        "Behold Journey Below ~ Deja Vu and Not The Good Kind! (UFO Mix)",
+        "In the Birthplace of a New God (Old Mix)",
+        "Bad Company",
+        "In the Realm of a New Lord",
+        "Hope Is Your New Friend",
+        "Mountain of Fantasy ~ Until Next Dream (Short Version)",
+        "Magicus Awakening (Prelude to Labellum Sacrament)"
+      ]
+    },
+    {
+      "id": "benji-technological-gensokyo-encore",
+      "title": "Technological Gensokyo - Encore!",
+      "artist": "Benji Tunez",
+      "year": 2026,
+      "url": "https://benjitunez.bandcamp.com/album/technological-gensokyo-encore",
+      "sourceKind": "original-touhou-style-album",
+      "evidence": "creator-tagged-touhou-style",
+      "tracks": [
+        "Technological Gensokyo (Encore Mix)",
+        "Landscape of the Vitruvian Summit (Extended)"
+      ]
+    },
+    {
+      "id": "benji-supernatural-oasis-stars",
+      "title": "Supernatural Oasis Of Stars",
+      "artist": "Benji Tunez",
+      "year": 2025,
+      "url": "https://benjitunez.bandcamp.com/album/supernatural-oasis-of-stars",
+      "sourceKind": "original-touhou-style-album",
+      "evidence": "creator-tagged-touhou-style",
+      "tracks": [
+        "The Space-Time Abyss of Gensokyo",
+        "To the Exosphere!! ~ Hasty Adventure",
+        "Wandering Painter ~ Colorful Night to Fight",
+        "Illusionary Twilight ~ Wondrous Planet",
+        "Night Light Incandesence",
+        "Absolute Magnitude of Unnatural Objects",
+        "Miraculous Pegacorn Fate ~ Good Omens",
+        "Pillars of Creation ~ Cosmic Clouds",
+        "The Long-Haired Star Comet ~ Let the True Battle Begin!",
+        "Hypothetical Realm of Alcubierre ~ G-Force",
+        "Exotic Magician Bending Space-Time ~ G-Force",
+        "10 Billion Years of Heaven's SuperCluster ~ Final Destination",
+        "Majestic Genesis of Hyperverse ~ Undesireable Origin",
+        "Undesireable Singularity ~ Last Genesis",
+        "Imaginary Pattern Expanding at a Cosmological Constant",
+        "Undaunted Fate of Inescapable Horizons ~ Everlasting Entropy"
+      ]
+    },
+    {
+      "id": "sylvysprit-celestial-heaven-collider",
+      "title": "東方崩天劇 ~ Celestial Heaven Collider 『Touhou Style Album 3』",
+      "artist": "Princess Sylvysprit",
+      "year": 2025,
+      "url": "https://sylvysprit.bandcamp.com/album/celestial-heaven-collider-touhou-style-album-3",
+      "sourceKind": "original-touhou-style-album",
+      "evidence": "creator-described-touhou-style",
+      "tracks": [
+        "Ascension of Descension ~ Theme of Eastern Story",
+        "Gensokyo's Twilight ~ Night of Magic",
+        "Reckoning of the Abbandonned God ~ Starstruck Fairy",
+        "Stairway of Eternity ~ Beacon of the Blinding Light",
+        "Forbidden from Heaven ~ Gatekeeper of Paradise",
+        "Flawless Realm of the Celestials ~ Catharsis of Melancholy",
+        "Accelerator of Purgatory ~ Celestial Heaven Collider"
+      ]
+    },
+    {
+      "id": "sylvysprit-fraternity-melancholy",
+      "title": "Touhou: Fraternity of Melancholy",
+      "artist": "Princess Sylvysprit",
+      "year": 2019,
+      "url": "https://sylvysprit.bandcamp.com/album/touhou-fraternity-of-melancholy",
+      "sourceKind": "original-touhou-style-album",
+      "evidence": "touhou-inspired-original-album",
+      "tracks": [
+        "Entrance of the Forbidden Realm ~ Eastern Story",
+        "Opulence of the Majestic Trail ~ Immaterial Journey",
+        "Domination of the Endless Cheer ~ Fleeting Dream Fantasy",
+        "Eternity Chasm ~ Fairy Dance",
+        "Guardian of Sorrow ~ Unreachable Waltz",
+        "Chronology of the Hidden World ~ Epic Gensokyo",
+        "Severity of the Fantastic Rainbow ~ Grand Entrance",
+        "Welcome to Makai 2",
+        "Spirit Journey ~ Centurial Chase",
+        "Immaculate Prosperity",
+        "Absence of the Eternal Dawn ~ Meiji Restoration"
+      ]
+    },
+    {
+      "id": "fantouhou-fabricated-firmament",
+      "title": "東方常諝章 ~ Fabricated Firmament of Everyday Life.",
+      "artist": "FanTouhouMusic",
+      "year": 2026,
+      "url": "https://fantouhoumusic.bandcamp.com/album/fabricated-firmament-of-everyday-life",
+      "sourceKind": "original-touhou-style-album",
+      "evidence": "creator-described-touhou-style",
+      "tracks": [
+        "Starting an Ordinary Life",
+        "Strolling as if Nothing Unusual is Happening",
+        "I'm More Than Just a Meowing Cat",
+        "Unwanted Laughing Commotion",
+        "Welcome to My Game Show ~ Comedic Bonanza!",
+        "Sleeping in the Daydreaming Forest",
+        "Nano's Screw Rhapsody ~ Little Robot Maid",
+        "Valley of Statues",
+        "Mai's Sutras ~ Immeasurable Devilment",
+        "Marching at the Yokai Mountain",
+        "Revenge Without End",
+        "Into the Concealed Sky",
+        "A Girl's Laboratory Playground ~ Atomic Playtime!",
+        "Strange Sun is Smiling",
+        "Last Comer",
+        "All in the Name of Science ~ Research Impetus",
+        "Smiling Sun is Sleeping",
+        "Ending an Ordinary Life ~ Good Night"
+      ]
+    },
+    {
+      "id": "fantouhou-naivete-festive",
+      "title": "Wandering and Transcending Naivete Soul - Festive Stage.",
+      "artist": "FanTouhouMusic",
+      "year": 2025,
+      "url": "https://fantouhoumusic.bandcamp.com/album/wandering-and-transcending-naivete-soul-festive-stage",
+      "sourceKind": "original-touhou-style-album",
+      "evidence": "creator-described-touhou-style",
+      "tracks": [
+        "A Heavenly Danmaku Festival ~ Cheer Up!",
+        "Legend of a Demon and a Human ~ Ultimate Showdown!",
+        "A Festival's End ~ Have a Good Drink!"
+      ]
+    },
+    {
+      "id": "fantouhou-naivete-soul",
+      "title": "Wandering and Transcending Naivete Soul.",
+      "artist": "FanTouhouMusic",
+      "year": 2024,
+      "url": "https://fantouhoumusic.bandcamp.com/album/wandering-and-transcending-naivete-soul",
+      "sourceKind": "original-touhou-style-album",
+      "evidence": "creator-described-touhou-style",
+      "tracks": [
+        "An Unexpected Havoc",
+        "A New Day, A New Journey",
+        "Let's Make Something ~ Tsukurimashou!",
+        "Valley of Dancing Spirits and Youkai",
+        "Tomfoolery Shenanigans",
+        "Treacherous Deep Cave",
+        "Hall of Disharmonious Sounds",
+        "Underground Beast Feast",
+        "Lunatic Monster ~ Wrath of a Girl",
+        "Unilluminated Spirits of Illusionary",
+        "Heart of a Lost Girl ~ Unbroken Feline",
+        "Raging Heartbeat",
+        "Unimaginable Phantasmic Power ~ Dream Pavement",
+        "Ultimate Dream Pavement",
+        "Osaka and Chiyo are Taking a Break",
+        "Through the Deep Mystical Flora",
+        "A Heart that Blooms Once ~ Romantic Floret",
+        "A Sweet and Nostalgic Tea Time",
+        "A Song We Sang Together in the Evening"
+      ]
+    },
+    {
+      "id": "fantouhou-crimson-acropolis",
+      "title": "東方深紅城 ~ Emergence of Crimson Acropolis",
+      "artist": "FanTouhouMusic",
+      "year": 2023,
+      "url": "https://fantouhoumusic.bandcamp.com/album/emergence-of-crimson-acropolis",
+      "sourceKind": "original-touhou-style-album",
+      "evidence": "creator-described-touhou-style",
+      "tracks": [
+        "An Unknown Red-Colored Arrival",
+        "A Red Evening with Fairies and Youkais",
+        "Bright Feathers ~ Little Sparrow",
+        "Reddish Misty Lake",
+        "Deep Mermaid of a Far Land",
+        "Bizzare Nights",
+        "Delusion Hibernation",
+        "A Hope Above the Dark Mist",
+        "Dark Cinderella",
+        "Melancholic Mansion of the Past",
+        "Red-Bloody Service ~ Maid Business",
+        "Soaring to the Red Full Moon",
+        "Agony, Bloodshed and Misdirection ~ Divine Revolution",
+        "A Reconciliation",
+        "Insane Whereabouts ~ Senseless Pathway",
+        "Aggression and Grim ~ Demon's Offensive",
+        "End of a Deal",
+        "When the Red Moon Sets and the Sun Rises in the Sky"
+      ]
+    },
+    {
+      "id": "fantouhou-thousand-swords",
+      "title": "東方戦士魂 ~ Immense Will of a Thousand Swords",
+      "artist": "FanTouhouMusic",
+      "year": 2023,
+      "url": "https://fantouhoumusic.bandcamp.com/album/immense-will-of-a-thousand-swords",
+      "sourceKind": "original-touhou-style-album",
+      "evidence": "creator-described-touhou-style",
+      "tracks": [
+        "An Eastern Story from Another World",
+        "Calming Rivers of Youkai Mountain",
+        "An Iwana's Deep Lecture",
+        "Little Spirits' Dance in a Steep Valley",
+        "Illusionary Trickster",
+        "Remote Mountain Cage",
+        "Awakening Mountain Beast ~ Oni's Wrath",
+        "Breezing Wind of Fallen Arrows",
+        "Beware of the Evil-Punishing Eyes ~ Purifying Sights",
+        "Behold as Oumagatoki has Come Again",
+        "Thousand Years Old Samurai Sword ~ Shimmering Blade",
+        "Futsunushi's No Man's Land",
+        "Warrior God who Wields Countless Swords ~ Immense Battle Force",
+        "End of a Battle",
+        "Where this Path will Lead Us to?",
+        "Emerald Warrior of Love and Hope ~ Glorious Battle",
+        "Behold as Hinode has Come Again"
+      ]
+    },
+    {
+      "id": "cd-forgotten-fables",
+      "title": "東方嘘偽話 ~ Anthology of Forgotten Fables",
+      "artist": "Consonances & Dissonances",
+      "year": 2021,
+      "url": "https://consonancesdissonances.bandcamp.com/album/anthology-of-forgotten-fables",
+      "sourceKind": "community-touhou-style-album",
+      "evidence": "touhou-style-community-album",
+      "tracks": [
+        {
+          "title": "The Fake and True Tales of History",
+          "artist": "Kale Hakaido"
+        },
+        {
+          "title": "Beyond the Deep Blue Sky",
+          "artist": "ivanlychkov"
+        },
+        {
+          "title": "Crazed Magic Duo",
+          "artist": "RaysonWilliams"
+        },
+        {
+          "title": "Mysterious Mist ~ Day Blind Flying",
+          "artist": "Kale Hakaido"
+        },
+        {
+          "title": "The Green Flame that Lit Up Fear",
+          "artist": "Purulixir"
+        },
+        {
+          "title": "Winds of Abandon ~ Forgotten Village",
+          "artist": "Artifex"
+        },
+        {
+          "title": "Timeless Escape ~ Being of Fear",
+          "artist": "ScarletKnives, RickyRister, Sodacat"
+        },
+        {
+          "title": "Lost Blossom Dancing in the Moonlight",
+          "artist": "Sodacat"
+        },
+        {
+          "title": "Illusive Place where Cats Live ~ Dreaming Shrine",
+          "artist": "Anyatsu"
+        },
+        {
+          "title": "Iron of the Rusted Past",
+          "artist": "RickyRister, Ocha"
+        },
+        {
+          "title": "Raging Dark",
+          "artist": "FanTBS, Broken Moon, Sodacat"
+        },
+        {
+          "title": "A Castle Once Called Home",
+          "artist": "RickyRister, Sodacat"
+        },
+        {
+          "title": "untitled4",
+          "artist": "Zen Saikara, Ocha"
+        },
+        {
+          "title": "A Sunken Land of Fantasy",
+          "artist": "Compound"
+        },
+        {
+          "title": "Forgotten Radiance ~ Recrudescence of the Ardent Ravaging Light",
+          "artist": "Praeto, Ocha"
+        },
+        {
+          "title": "Emergence of the Lost Sun",
+          "artist": "Compound"
+        },
+        {
+          "title": "Sinking into the Setting Sun",
+          "artist": "RickyRister, Compound"
+        },
+        {
+          "title": "Dawn of Our Beginning ~ Illusion or Reality?",
+          "artist": "Broken Moon, Purulixir, Eren, Sodacat, Ocha"
+        },
+        {
+          "title": "Grim Reaper's Distorted Wife ~ Song of Despair",
+          "artist": "Ocha, Eren"
+        },
+        {
+          "title": "Fable's End",
+          "artist": "Ocha, Sodacat"
+        },
+        {
+          "title": "Sayonara",
+          "artist": "ivanlychkov"
+        }
+      ]
+    },
+    {
+      "id": "team-eclectic-empyreal-garden",
+      "title": "東方天界雲 ～ Empyreal Garden of Amusements",
+      "artist": "Team Eclectic Anthologists",
+      "year": 2023,
+      "url": "https://teameclecticanthologists.bandcamp.com/album/empyreal-garden-of-amusements",
+      "sourceKind": "community-touhou-style-album",
+      "evidence": "creator-tagged-touhou-style",
+      "tracks": [
+        {
+          "title": "Main Menu Theme: Overcast Carnival Day",
+          "artist": "Plazzap"
+        },
+        {
+          "title": "A Waterlogged Hibernation",
+          "artist": "Ocha"
+        },
+        {
+          "title": "Exiled Psalakantha",
+          "artist": "SlowBro"
+        },
+        {
+          "title": "The Silent River Below the Sunless Sky",
+          "artist": "Eren"
+        },
+        {
+          "title": "Blue Shadow of Aggrandizement",
+          "artist": "PumpkinPielex"
+        },
+        {
+          "title": "Dances and Melodies Amidst Fragrant Fields",
+          "artist": "Benji Tunez"
+        },
+        {
+          "title": "Unparalleled Grace ~ Heavenly Terpsichorean",
+          "artist": "Benji Tunez, Compound"
+        },
+        {
+          "title": "Symposium of Nebulas",
+          "artist": "Plazzap"
+        },
+        {
+          "title": "An Okeanid-Sylph's Sky Embodiment",
+          "artist": "Ocha, Plazzap"
+        },
+        {
+          "title": "Starlit Ceremony of Paradise",
+          "artist": "Benji Tunez"
+        },
+        {
+          "title": "The Kindreds Intertwined by One Undying Nexus",
+          "artist": "Plazzap"
+        },
+        {
+          "title": "Jubilant Fields in Elysium",
+          "artist": "SlowBro, Plazzap"
+        },
+        {
+          "title": "The Ostracized Seraphic Emissary ~ Zeal Hauler",
+          "artist": "Armand"
+        },
+        {
+          "title": "Slumbering Mists",
+          "artist": "Compound, Plazzap"
+        },
+        {
+          "title": "Symposium of Nebulas (Evergreen Mix)",
+          "artist": "PumpkinPielex"
+        },
+        {
+          "title": "The Leafage Blanket Shields Them From the Storm",
+          "artist": "PumpkinPielex"
+        },
+        {
+          "title": "Protector of the Evergreen Dharma ~ Floral Guardian",
+          "artist": "PumpkinPielex"
+        },
+        {
+          "title": "Words From An Evergreen Authority",
+          "artist": "PumpkinPielex"
+        },
+        {
+          "title": "A World of Festivity and Joyful Treasures",
+          "artist": "Ocha"
+        },
+        {
+          "title": "Blue Shadow of Aggrandizement (Beta Mix)",
+          "artist": "PumpkinPielex"
+        },
+        {
+          "title": "The Leafage Blanked Sheilds Them From the Storm ~ Piano Mix",
+          "artist": "PumpkinPielex"
+        }
+      ]
+    },
+    {
+      "id": "cd-falsified-wonders",
+      "title": "東方近状況 ～ Falsified Wonders.",
+      "artist": "Consonances & Dissonances",
+      "year": 2025,
+      "url": "https://consonancesdissonances.bandcamp.com/album/falsified-wonders",
+      "sourceKind": "community-touhou-style-album",
+      "evidence": "touhou-style-prediction-album",
+      "tracks": [
+        {
+          "title": "宝飾のプロビデンス (Jeweled Providence)",
+          "artist": "Ocha"
+        },
+        {
+          "title": "青い空際が未来に連れる (The Blue Horizon Leads to the Future)",
+          "artist": "bebn legg"
+        },
+        {
+          "title": "龍石ルミナリエ (Dragon Stone Luminarie)",
+          "artist": "lunar_eyes, Ocha"
+        },
+        {
+          "title": "ゲラゲラのドブ川 (A Guffawing Gutter)",
+          "artist": "Kale Hakaido, Ocha"
+        },
+        {
+          "title": "サルドニック・プリンセス (Sardonic Princess)",
+          "artist": "Plazzap"
+        },
+        {
+          "title": "エッシャーの終わりなき用水路 (Escher's Endless Aqueduct)",
+          "artist": "Wookywok"
+        },
+        {
+          "title": "検査因の見る目 (The Inspector's Discerning Gazes) 〜 Qigong Aquaterrean",
+          "artist": "Tuck V"
+        },
+        {
+          "title": "道源郷の向こう側に (On the Other Side of Where the Road Originates)",
+          "artist": "bebn legg"
+        },
+        {
+          "title": "デーモン不変条件 (Daemon Invariant)",
+          "artist": "Eikishiki, camu, Tuck V"
+        },
+        {
+          "title": "液晶画面に映るアーコロジー (Arcology On a Liquid Crystal Display)",
+          "artist": "Wookywok"
+        },
+        {
+          "title": "立つ鳥絆を断つ (A Bird Taking Flight Burns its Bridges) ～ Disconnected Network",
+          "artist": "Plazzap"
+        },
+        {
+          "title": "地球での最終日の永遠な懐かしさ (Eternal Nostalgia for the Last Day on Earth)",
+          "artist": "Tuck V"
+        },
+        {
+          "title": "無限聖都の絶対値 (Absolute Value of the Infinite Sacred Capital) ～ Integral Utopia",
+          "artist": "Ocha, Plazzap, lunar_eyes, bebn legg"
+        },
+        {
+          "title": "彗星のベンベン (Cometary Benben)",
+          "artist": "Ocha"
+        },
+        {
+          "title": "不思議の国の拡張プロトコル (Wonderland Expansion Protocol) ～ Universal Elimination Fallacy",
+          "artist": "lunar_eyes, Ocha"
+        },
+        {
+          "title": "神のプロビデンスの極限に (At the Limit of Divine Providence)",
+          "artist": "bebn legg"
+        },
+        {
+          "title": "さんかく幻想の外側は星空 (The Starry Sky Beyond the Tricornered Fantasy)",
+          "artist": "Ocha"
+        },
+        {
+          "title": "デーモン不変条件 (Daemon Invariant) (SMW arr.)",
+          "artist": "bebn legg"
+        },
+        {
+          "title": "不思議の国の拡張プロトコル ～ Universal Elimination Fallacy (Original Version)",
+          "artist": "lunar_eyes"
+        },
+        {
+          "title": "Abandoned Capital of Paleolithos ~ Memories of Wonder",
+          "artist": "PumpkinPielex"
+        }
+      ]
+    },
+    {
+      "id": "cd-heart-sacred-singularity",
+      "title": "東方聖鮮血 ~ Heart of Sacred Singularity",
+      "artist": "Consonances & Dissonances",
+      "year": 2022,
+      "url": "https://consonancesdissonances.bandcamp.com/album/heart-of-sacred-singularity",
+      "sourceKind": "community-touhou-style-album",
+      "evidence": "touhou-style-community-album",
+      "tracks": [
+        {
+          "title": "Singularity of Old and New",
+          "artist": "Ocha"
+        },
+        {
+          "title": "Tempered Bullets in a Deer ~ March of The Fawns",
+          "artist": "Kale"
+        },
+        {
+          "title": "Hunting Season Vigilante",
+          "artist": "Plazzap"
+        },
+        {
+          "title": "Autumn-coloured Wonderland",
+          "artist": "Plazzap"
+        },
+        {
+          "title": "Dead Insect Ritual Song",
+          "artist": "Ocha"
+        },
+        {
+          "title": "Welcome to Scala ad Inferno",
+          "artist": "Ocha"
+        },
+        {
+          "title": "Infernal Menu",
+          "artist": "Ocha"
+        },
+        {
+          "title": "Scorching Water from the Monkey's Paw ~ PRIMAL RAGE!!!",
+          "artist": "Plazzap"
+        },
+        {
+          "title": "Through The Looking Glass ~ Eye of Adarna",
+          "artist": "Popcat"
+        },
+        {
+          "title": "Dangerous Crimson Shadow ~ Vermillion Sisters (Alligator Mix)",
+          "artist": "Ocha"
+        },
+        {
+          "title": "Dangerous Crimson Shadow ~ Vermillion Sisters (Snake Mix)",
+          "artist": "PopCat"
+        },
+        {
+          "title": "Dangerous Crimson Shadow ~ Vermillion Sisters (Shark Mix)",
+          "artist": "Spooderboi"
+        },
+        {
+          "title": "Jive of the Ember City",
+          "artist": "Armand"
+        },
+        {
+          "title": "Two Sides of the Same Coin ~ Twinsanity",
+          "artist": "Spooder"
+        },
+        {
+          "title": "Gehinnom of Frozen Tears",
+          "artist": "Spooder"
+        },
+        {
+          "title": "Pohjolan Lämmin Valo ~ Platinum Solstice",
+          "artist": "Armand, d3, Ocha, Plazzap, PopCat"
+        },
+        {
+          "title": "Calm After the Infernal Hellstorm",
+          "artist": "Spooderboi"
+        },
+        {
+          "title": "Farewell from Scala ad Inferno ~ Infernal Dream",
+          "artist": "Ocha"
+        },
+        {
+          "title": "Stabbed In The Back By A Beast",
+          "artist": "Kale"
+        },
+        {
+          "title": "A Red Rainbow Stares Back ~ Tuonela's Winter",
+          "artist": "Kale, PopCat"
+        },
+        {
+          "title": "Dreams for Pandemonium",
+          "artist": "Artifex"
+        },
+        {
+          "title": "Tonight, We Party at Helsinki",
+          "artist": "Palto"
+        },
+        {
+          "title": "Holy-Blooded King of Calamity",
+          "artist": "Ocha, Plazzap"
+        },
+        {
+          "title": "Colourful Walpurgis Night",
+          "artist": "Ocha"
+        }
+      ]
+    },
+    {
+      "id": "cd-champaign-unfinished-dreams",
+      "title": "東方蒔夢原 ~ Champaign of Unfinished Dreams",
+      "artist": "Consonances & Dissonances",
+      "year": 2021,
+      "url": "https://consonancesdissonances.bandcamp.com/album/champaign-of-unfinished-dreams",
+      "sourceKind": "community-touhou-style-album",
+      "evidence": "touhou-style-community-album",
+      "tracks": [
+        {
+          "title": "Distant Paradise Seen in One's Dream",
+          "artist": "Kale Hakaido"
+        },
+        {
+          "title": "Unease Blowin' in the Wind",
+          "artist": "Compound, bebn legg"
+        },
+        {
+          "title": "Carnival of Runaway Danmaku",
+          "artist": "YouknowOwO, Plazzap"
+        },
+        {
+          "title": "Senshuraku of Nightmares",
+          "artist": "Armand, Ocha"
+        },
+        {
+          "title": "Grave of Melody",
+          "artist": "Spooderboi, Melody Harmonia"
+        },
+        {
+          "title": "Between Solitude and Sweet Cocoons",
+          "artist": "Eren"
+        },
+        {
+          "title": "Ophelia’s Miniature Garden Theatre",
+          "artist": "FanTBS"
+        },
+        {
+          "title": "A Roadway Brimming with Colors",
+          "artist": "Broken Moon"
+        },
+        {
+          "title": "Spiritual Scenery ~ A Thousand Colors",
+          "artist": "ISMTUD, Artifex"
+        },
+        {
+          "title": "The Festival Starts Today",
+          "artist": "Ocha, SlowBro"
+        },
+        {
+          "title": "Brilliance of Individuality, Glory of Everyone",
+          "artist": "???, Plazzap"
+        },
+        {
+          "title": "Nostalgic Lamentation",
+          "artist": "Plazzap, Artifex"
+        },
+        {
+          "title": "Phantasm Paradise ~ Lost Dreams",
+          "artist": "RickyRister, Tokiko, Roka Enzaki"
+        },
+        {
+          "title": "A Mirage-like Flower of Dreams",
+          "artist": "Roka Enzaki, Lunaちゃん"
+        },
+        {
+          "title": "That Which was Seen at the End of One’s Dreams",
+          "artist": "ivanlychkov"
+        },
+        {
+          "title": "Player's Score",
+          "artist": "YouknowOwO"
+        },
+        {
+          "title": "Fragments of Dreams, Beyond the Night",
+          "artist": "ivanlychkov"
+        },
+        {
+          "title": "The Calendar is Definite, the World is Transient",
+          "artist": "Kaioshi K, Ocha"
+        },
+        {
+          "title": "That Which Was Born from the Depths of One’s Heart",
+          "artist": "Kale Hakaido"
+        },
+        {
+          "title": "Departing on a Fine Sunny Day",
+          "artist": "SodaCat"
+        }
+      ]
+    },
+    {
+      "id": "cd-euphonious-phantom-act",
+      "title": "東方狂音祭 ~ Euphonious Phantom Act",
+      "artist": "Consonances & Dissonances",
+      "year": 2021,
+      "url": "https://consonancesdissonances.bandcamp.com/album/euphonious-phantom-act",
+      "sourceKind": "community-touhou-style-album",
+      "evidence": "creator-described-touhou-style",
+      "tracks": [
+        {
+          "title": "Overture of an Euphonious Act",
+          "artist": "Ocha, Troglody"
+        },
+        {
+          "title": "The Shrine Maiden at Her Duties ~ Nonchalant Extermination",
+          "artist": "SpooderBoi"
+        },
+        {
+          "title": "Forgotten Riff ~ Rhythmic Dissonance",
+          "artist": "SodaCat, ivanlychkov, SpooderBoi"
+        },
+        {
+          "title": "Daily Lives of Musical Ghosts",
+          "artist": "BlizZ, RickyRister"
+        },
+        {
+          "title": "Uncoincidental Incident ~ Tale of the Songstruck Sisters",
+          "artist": "Broken Moon"
+        },
+        {
+          "title": "The Dancing Plague",
+          "artist": "Broken Moon"
+        },
+        {
+          "title": "Bounce! An Eccentric Doll Crafter",
+          "artist": "Electroll, Purulixir"
+        },
+        {
+          "title": "Akiramenai ~ Don’t Give Up!",
+          "artist": "Slowbro"
+        },
+        {
+          "title": "Perspicuous Sleuth ~ Red Herring",
+          "artist": "Slowbro, Armand"
+        },
+        {
+          "title": "Dark Premonition",
+          "artist": "Broken Moon"
+        },
+        {
+          "title": "Jazzy White Travellers",
+          "artist": "Armand, Ocha"
+        },
+        {
+          "title": "Is the Enigmatic Theatre Playing by Itself?",
+          "artist": "Spacepiratehacker, SodaCat, Kaioshi K"
+        },
+        {
+          "title": "The Doll Forgotten by Time ~ Mercurial Melancholy",
+          "artist": "SpooderBoi, Scarletknives"
+        },
+        {
+          "title": "A Theatre as Empty as it is Grand (Ocean Mix)",
+          "artist": "Zen Saikara, Ocha"
+        },
+        {
+          "title": "Sea Hermit's Water Angle",
+          "artist": "ISMTUD"
+        },
+        {
+          "title": "A Theatre as Empty as it is Grand (Land Mix)",
+          "artist": "Zen Saikara, Ocha"
+        },
+        {
+          "title": "Feline Keyboard Master (Orchestra Ver.)",
+          "artist": "Roka Enzaki, Lunaちゃん"
+        },
+        {
+          "title": "A Theatre as Empty as it is Grand (Sky Mix)",
+          "artist": "Zen Saikara, Ocha"
+        },
+        {
+          "title": "An Angel’s Bittersweet Joy ~ Stratospheric Evangelism",
+          "artist": "Broken Moon"
+        },
+        {
+          "title": "Windswept Halls of the Labyrinth",
+          "artist": "Zen Saikara"
+        },
+        {
+          "title": "¿",
+          "artist": "Zen Saikara"
+        },
+        {
+          "title": "Night Raven’s Sightless Spiel ~ Ill Game",
+          "artist": "Zen Saikara"
+        },
+        {
+          "title": "Phantom of the Orchestra ~ Euphonious Grand Finale",
+          "artist": "Zen Saikara, Metaku"
+        },
+        {
+          "title": "The Curtains Fall on an Euphonious Act",
+          "artist": "RickyRister, Electroll, Purulixir, Ocha"
+        },
+        {
+          "title": "Feline Keyboard Master (Standalone Ver.)",
+          "artist": "Roka Enzaki, Lunaちゃん"
+        },
+        {
+          "title": "Hamelin's Legend ~ Spring-colored Piper",
+          "artist": "Ocha, Slowbro, Electroll"
+        },
+        {
+          "title": "Mastermind of the Twisted Strings",
+          "artist": "Zen Saikara, Ocha"
+        }
+      ]
+    },
+    {
+      "id": "touhou-gensoukyou-collab",
+      "title": "東方幻創鏡～Fairyland of Mishmash.",
+      "artist": "Various Touhou-style composers",
+      "year": 2022,
+      "url": "https://www.youtube.com/watch?v=1_x93HWZP1A",
+      "provider": "youtube",
+      "sourceKind": "touhou-style-collaboration",
+      "evidence": "creator-described-touhou-style",
+      "tracks": [
+        "画面先に現れた謎",
+        "記憶に沈んだ花形",
+        "霧が映していた目撃写真〜Someone noticed me!",
+        "今はもう太陽の眠る刻",
+        "モディファイドストリーム",
+        "岩肌の冷たい息",
+        "並列世界から来た次元訪問者",
+        "DREAM.DAT",
+        "ミラーリングデバイス",
+        "幻想の葉は太陽を映して",
+        "忠誠の剣、溟海を裂いて〜Raging God",
+        "歪曲されたサンライズ",
+        "終焉のサンセット",
+        "虚像のメモリスタ",
+        "アリスメティシャン・パティー〜Augmented Reality",
+        "極光は燈火か、隧道の果てか ～Light of Mystery?",
+        "D.C.Dream"
+      ]
+    }
+  ]
+}
