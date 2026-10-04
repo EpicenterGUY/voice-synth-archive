@@ -222,6 +222,12 @@
     "indexeddb-local-background",
     "custom-background-dimming",
     "custom-background-fit",
-    "built-in-skins-artwork-free"
+    "built-in-skins-artwork-free",
+    "custom-user-artwork-skin",
+    "custom-artwork-indexeddb",
+    "custom-artwork-local-only",
+    "custom-artwork-auto-optimize",
+    "custom-only-artwork-isolation",
+    "single-skin-settings-panel"
   ]
 }
