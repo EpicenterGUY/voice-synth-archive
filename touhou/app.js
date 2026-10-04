@@ -86,14 +86,15 @@ async function boot(){
     setDataHealth("error","UI 초기화 오류 · 새로고침 필요");
   }
   if("serviceWorker" in navigator){
-    navigator.serviceWorker.register("./sw.js?v=0.9.24").then(r=>r.update()).catch(err=>console.warn("service worker",err));
+    navigator.serviceWorker.register("./sw.js?v=0.9.25").then(r=>r.update()).catch(err=>console.warn("service worker",err));
   }
 
-  const [or,ar,fr,far,wr,sr]=await Promise.all([
+  const [or,ar,fr,far,fy,wr,sr]=await Promise.all([
     loadLocalJson("./data/originals.json",[]),
     loadLocalJson("./data/arrangements.json",[]),
     loadLocalJson("./data/fan-originals.json",[]),
     loadLocalJson("./data/fan-original-albums.json",{albums:[]}),
+    loadLocalJson("./data/fan-youtube.json",{items:{}}),
     loadLocalJson("./data/works.json",[]),
     loadLocalJson("./data/archive-sources.json",null)
   ]);
@@ -108,6 +109,19 @@ async function boot(){
     ...(Array.isArray(fr.data)?fr.data:[]).map(x=>({...x,type:"fan-original",category:"fan-original",originalIds:[],remote:false})),
     ...expandFanAlbums(far.data)
   ];
+  const fanYoutube=fy.data?.items&&typeof fy.data.items==="object"?fy.data.items:{};
+  state.localFanOriginals=state.localFanOriginals.map(x=>{
+    const hit=fanYoutube[x.id];
+    if(!hit?.videoId)return x;
+    const yt={provider:"youtube",id:String(hit.videoId),url:"https://www.youtube.com/watch?v="+encodeURIComponent(hit.videoId),name:hit.videoTitle||x.title,mode:"embed",matchScore:Number(hit.score)||0};
+    return{
+      ...x,
+      mediaCandidates:uniqMedia([yt,...(x.mediaCandidates||[]),x.media]),
+      media:yt,
+      thumb:x.thumb||("https://i.ytimg.com/vi/"+encodeURIComponent(hit.videoId)+"/mqdefault.jpg"),
+      youtubeMatched:true
+    };
+  });
   [...state.localOriginals,...state.localArrangements,...state.localFanOriginals].forEach(remember);
   Object.values(state.snapshots||{}).forEach(x=>x&&remember({...x,snapshot:true}));
   normalizePersistentIds();
