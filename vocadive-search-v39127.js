@@ -1,7 +1,7 @@
 /* VocaDive 39.127.0 · unified search filters + exhaustive title relation rescue */
 (function(){
 "use strict";
-var VER="39.129.0",baseFreeSearch127=null,searchToken127=0,titleState127={query:"",key:"",total:0,seen:0,nextOffset:300,loading:false,done:false};
+var VER="39.130.2",baseFreeSearch127=null,searchToken127=0,titleState127={query:"",key:"",total:0,seen:0,nextOffset:300,loading:false,done:false};
 function q(sel,root){return (root||document).querySelector(sel)}
 function qa(sel,root){return Array.prototype.slice.call((root||document).querySelectorAll(sel))}
 function norm(v){
@@ -176,15 +176,18 @@ function keyFor(query){
 }
 function mergeTitleRows(rows,query){
   if(typeof state==="undefined"||String(state.freeQuery||"")!==String(query||"")||state.listMode!=="free")return 0;
-  var map=new Map((state.songs||[]).map(function(x){return[x.contentId,x]})),added=0;
+  var o=currentOptions(),map=new Map((state.songs||[]).filter(function(x){
+    try{return o.scope==="all"||typeof songMatchesScope!=="function"||songMatchesScope(x,o.scope)}catch(_){return true}
+  }).map(function(x){return[x.contentId,x]})),added=0;
   (rows||[]).forEach(function(s){
     if(!s||!s.contentId)return;
+    try{if(o.scope!=="all"&&typeof songMatchesScope==="function"&&!songMatchesScope(s,o.scope))return}catch(_){}
     s.__v127TitleHit=true;
     var prev=map.get(s.contentId);
     if(prev)map.set(s.contentId,Object.assign({},prev,s,{__v127TitleHit:true}));
     else{map.set(s.contentId,s);added++}
   });
-  var o=currentOptions(),sorted=sortRows(Array.from(map.values()),query,o.sort);
+  var sorted=sortRows(Array.from(map.values()),query,o.sort);
   state.songs=sorted.map(function(x,i){return Object.assign({},x,{__rank:i+1,__v127TitleTier:titleTier(x,query)})});
   state.offset=state.songs.length;
   try{if(typeof renderSongs==="function")renderSongs()}catch(_){}
