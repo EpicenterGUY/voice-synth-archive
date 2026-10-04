@@ -1289,7 +1289,7 @@ function card(t){
       '</div>'+
     '</button>'+
     '<div class="card-actions '+(originButton?"has-origin":"")+'">'+
-      (playable?'<button class="play-btn" data-play="'+escAttr(t.id)+'">▶ 재생</button>':canLookup?'<button class="play-btn" data-play="'+escAttr(t.id)+'">⌕ YouTube/영상 찾기</button>':external?'<button class="play-btn external-play" data-external="'+escAttr(t.id)+'">↗ 외부 재생</button>':'<button class="play-btn" disabled>영상 없음</button>')+
+      (playable?'<button class="play-btn" data-play="'+escAttr(t.id)+'">▶ 재생</button>':external?'<button class="play-btn external-play" data-external="'+escAttr(t.id)+'">↗ '+esc(externalProviderLabel(external))+'에서 열기</button>':canLookup?'<button class="play-btn" data-play="'+escAttr(t.id)+'">⌕ YouTube/영상 찾기</button>':'<button class="play-btn" disabled>영상 없음</button>')+
       originButton+'<button class="dive-btn" data-dive="'+escAttr(t.id)+'">⌁ 다이브</button></div>'+
   '</article>';
 }
@@ -1304,7 +1304,7 @@ function openTrack(t,opts={}){
     ? [t.circle&&"Circle "+t.circle,(t.artists?.arranger||[]).length&&"Arrange "+t.artists.arranger.join(", "),(t.artists?.vocal||[]).length&&"Vocal "+t.artists.vocal.join(", ")].filter(Boolean).join("<br>")
     : [t.work||t.artistString,t.role,t.character&&"Character "+t.character].filter(Boolean).join("<br>");
   const external=trustedExternalMedia(t);
-  const source=t.media?.url||external?.url||t.source?.url||"";
+  const source=externalMediaUrl(external)||t.media?.url||t.source?.url||"";
   const rank=trackRank(t),popRank=popularityRankInfo(t),infRank=influenceRankInfo(t),links=trustedLinks(t);
   const fan=isCuratedStyle(t),rankLabel=fan?"동방풍 순위":"종합";
   const canLookup=!player.playable(t)&&state.remote.available;
@@ -1316,7 +1316,7 @@ function openTrack(t,opts={}){
       ${infRank?'<div><label>원곡 영향력</label><strong>'+fmt(infRank.total)+'원곡 중 '+(infRank.rank?fmt(infRank.rank)+'위':"집계 중")+'</strong><small>파생 '+fmt(infRank.children)+'곡 · '+fmt(infRank.circles)+'서클 · '+fmt(infRank.albums)+'앨범</small></div>':""}
     </div><h2>${esc(t.title)}</h2><div class="detail-meta">${artistLine}<br>${t.year||""}${t.album?" · "+esc(t.album):""}</div></div>
     <div class="tag-row">${(t.moods||[]).map(x=>`<span class="tag">${esc(x)}</span>`).join("")}</div>
-    <div class="detail-actions"><button class="hot" id="detailPlay" ${player.playable(t)||external||canLookup?"":"disabled"}>${player.playable(t)?(player.getYoutubeMode?.()==="youtube"&&player.candidates?.(t).some(x=>x.provider==="youtube")?"▶ YouTube 앱 재생":"▶ 앱에서 재생"):canLookup?"⌕ YouTube/영상 찾기":external?"↗ 외부 재생":"영상 없음"}</button><button id="detailDive">⌁ 다이브</button>${t.type==="arrangement"?'<button class="origin-jump" id="detailOrigin"><span>↖</span><strong>원곡으로</strong></button>':""}<button id="favBtn">${fav?"♥ 보관됨":"♡ 보관하기"}</button>${source?`<a href="${escAttr(source)}" target="_blank" rel="noopener">원본 링크 ↗</a>`:'<button disabled>원본 링크 없음</button>'}</div>
+    <div class="detail-actions"><button class="hot" id="detailPlay" ${player.playable(t)||external||canLookup?"":"disabled"}>${player.playable(t)?(player.getYoutubeMode?.()==="youtube"&&player.candidates?.(t).some(x=>x.provider==="youtube")?"▶ YouTube 앱 재생":"▶ 앱에서 재생"):external?"↗ "+esc(externalProviderLabel(external))+"에서 열기":canLookup?"⌕ YouTube/영상 찾기":"영상 없음"}</button><button id="detailDive">⌁ 다이브</button>${t.type==="arrangement"?'<button class="origin-jump" id="detailOrigin"><span>↖</span><strong>원곡으로</strong></button>':""}<button id="favBtn">${fav?"♥ 보관됨":"♡ 보관하기"}</button>${source?`<a href="${escAttr(source)}" target="_blank" rel="noopener">원본 링크 ↗</a>`:'<button disabled>원본 링크 없음</button>'}</div>
     ${fan?'<div class="fact-box"><label>분류</label><div class="detail-meta">공식 동방 원곡을 직접 사용하지 않는 동방풍 오리지널입니다. 통합 검색에는 포함하고, 계보·분류·순위 축은 별도로 유지합니다.</div></div>':t.type==="arrangement"?lineageBox("이 어레인지의 원곡",origins,missing):derivedWorksBox(t,children)}
     <div class="fact-box"><label>순위 기준</label><div class="detail-meta">${fan?"동방풍 순위는 동방풍 큐레이션 내부에서 비교합니다. 곡 자체는 동방 관련 전체 검색에 포함되며 공식 원곡·파생곡 랭킹 축과는 분리합니다.":"종합 = 인기 + 원곡 영향력. 종합·인기 순위의 분모는 FULL INDEX 전체 등록곡 "+fmt(fullRankTotal())+"곡을 그대로 사용하며, 현재 로드된 표본 순위를 전수 순위처럼 환산하지 않습니다. 플랫폼 조회수 순위는 실제 조회수 확인에 성공한 곡만 별도로 집계합니다."}</div></div>
     ${links.length?'<div class="fact-box trusted-links"><label>플랫폼 바로가기</label><div class="trusted-link-list">'+links.slice(0,18).map(x=>'<a class="platform-link platform-'+escAttr(x.provider)+'" href="'+escAttr(x.url)+'" target="_blank" rel="noopener noreferrer"><span>'+esc(platformLabel(x.provider))+'</span><b>↗</b></a>').join("")+'</div></div>':""}
@@ -1563,12 +1563,30 @@ async function hydrateAndOpen(id){
   try{const t=await catalog.hydrate(id);if(t){remember(t);openTrack(t);renderCatalog();}}catch(e){toast("원곡 계보를 불러오지 못했습니다.");}
 }
 function hasMediaCandidate(t){return !!(t&&player.playable(t))}
+function externalMediaUrl(media){
+  if(!media)return"";
+  const policy=window.TouhouMediaPolicy;
+  const fromPolicy=policy?.externalMediaUrl?.(media)||"";
+  const raw=fromPolicy||String(media.url||"");
+  return /^https?:\/\//i.test(raw)?raw:"";
+}
+function isExternalOnlyMedia(media){
+  if(!media)return false;
+  const policy=window.TouhouMediaPolicy;
+  if(policy?.isExternalOnlyMedia)return !!policy.isExternalOnlyMedia(media);
+  return media.mode==="external"||["soundcloud","bandcamp","bandcamp-url","piapro","touhoudb"].includes(String(media.provider||"").toLowerCase());
+}
 function trustedExternalMedia(t){
-  return (t?.mediaCandidates||[]).find(m=>m?.mode==="external"&&/^https?:\/\//.test(String(m.url||"")))||null;
+  const rows=[t?.media,...(t?.mediaCandidates||[])].filter(Boolean);
+  return rows.find(m=>isExternalOnlyMedia(m)&&!!externalMediaUrl(m))||null;
+}
+function externalProviderLabel(media){
+  const p=String(media?.provider||"").toLowerCase();
+  return ({soundcloud:"SoundCloud",bandcamp:"Bandcamp","bandcamp-url":"Bandcamp",piapro:"Piapro",touhoudb:"TouhouDB"})[p]||"외부 사이트";
 }
 function openTrustedExternal(t){
-  const media=trustedExternalMedia(t);if(!media?.url)return false;
-  try{window.open(media.url,"_blank","noopener,noreferrer");return true}catch(_){return false}
+  const media=trustedExternalMedia(t),url=externalMediaUrl(media);if(!url)return false;
+  try{window.open(url,"_blank","noopener,noreferrer");return true}catch(_){return false}
 }
 async function hydratePlayingTrack(base){
   let t=byId(base.id)||base;
