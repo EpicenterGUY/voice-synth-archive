@@ -1,5 +1,5 @@
 {
-  "version": 19,
+  "version": 20,
   "entities": {
     "track": [
       "id",
@@ -178,6 +178,26 @@
       ],
       "display": "contain foreground + blurred cover fill",
       "playbackQuality": "request highest available YouTube quality when API exposes levels"
+    },
+    "tabletMiniPlayer": {
+      "portrait": "compact bar above bottom navigation",
+      "landscape": "fixed-width content-area bar",
+      "hidden": [
+        "song-video-toggle",
+        "media-stage",
+        "timeline",
+        "rank-panels",
+        "side-panel"
+      ]
+    },
+    "catalogThumbnail": {
+      "youtubeOrder": [
+        "maxresdefault",
+        "sddefault",
+        "hqdefault",
+        "mqdefault"
+      ],
+      "fallback": "original source thumbnail"
     }
   },
   "notes": [
@@ -231,6 +251,9 @@
     "Low-resolution/old thumbnails preserve their original aspect ratio in the foreground while the surrounding square is filled with a blurred copy.",
     "YouTube playback quality is requested at the highest available API-exposed level, but the service may still choose a lower quality based on device/network conditions.",
     "The song/video mode toggle is structurally outside the media stage so it cannot cover the embedded video.",
-    "On mobile the media-mode toggle stays below the full-player header and above the video frame."
+    "On mobile the media-mode toggle stays below the full-player header and above the video frame.",
+    "Mini-player mode never displays the song/video switcher; it is reserved for the expanded player.",
+    "Tablet portrait and landscape use separate mini-player sizing/position rules to avoid navigation overlap and edge-to-edge stretching.",
+    "Catalog cards use a layered YouTube thumbnail fallback chain so large tablet cards prefer maxres/sd/hq assets before mqdefault."
   ]
 }
