@@ -1,5 +1,5 @@
 {
-  "version": "0.9.30",
+  "version": "0.9.31",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-10-04",
@@ -236,6 +236,13 @@
     "all-platform-source-spread",
     "soundcloud-bandcamp-piapro-ranking-signal",
     "platform-direct-links",
-    "touhoudb-direct-link"
+    "touhoudb-direct-link",
+    "beginner-discovery-tab",
+    "beginner-score",
+    "famous-originals-filter",
+    "iosys-beginner-filter",
+    "famous-arrangements-filter",
+    "vocal-beginner-filter",
+    "beginner-playable-filter"
   ]
 }
