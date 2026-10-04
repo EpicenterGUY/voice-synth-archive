@@ -1,5 +1,5 @@
 {
-  "version": "0.9.35",
+  "version": "0.9.36",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-10-04",
@@ -272,6 +272,11 @@
     "music-mini-player",
     "player-queue-lyrics-info-tabs",
     "player-library-origin-dive-actions",
-    "ambient-artwork-player"
+    "ambient-artwork-player",
+    "player-empty-boot-guard",
+    "player-bfcache-reset",
+    "player-close-minimize-hardening",
+    "video-mode-16x9",
+    "mobile-edge-to-edge-video"
   ]
 }
