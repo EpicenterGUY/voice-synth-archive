@@ -4,7 +4,8 @@ import path from "node:path";
 const API=process.env.TOUHOUDb_API||"https://touhoudb.com/api";
 const OUT=process.env.OUT_DIR||"touhou/data/full";
 const WORKS_FILE=process.env.WORKS_FILE||"touhou/data/works.json";
-let OFFICIAL_WORKS=[];
+const ORIGINALS_FILE=process.env.ORIGINALS_FILE||"touhou/data/originals.json";
+let OFFICIAL_WORKS=[],CANONICAL_ORIGINALS=[];
 const PAGE_SIZE=Math.max(25,Math.min(100,Number(process.env.PAGE_SIZE)||100));
 const SHARD_SIZE=Math.max(500,Math.min(2000,Number(process.env.SHARD_SIZE)||1000));
 const CONCURRENCY=Math.max(1,Math.min(6,Number(process.env.CONCURRENCY)||3));
@@ -71,13 +72,27 @@ function circleName(item,roles){
   }
   return roles.arranger[0]||artistNames(item)[0]||clean(item?.artistString);
 }
+function matchesCanonicalOriginal(item){
+  if(!CANONICAL_ORIGINALS.length||!hasZunArtist(item))return false;
+  const names=[clean(item?.name),clean(item?.defaultName),clean(item?.additionalNames),...arr(item?.names).map(nameValue)]
+    .filter(Boolean).map(norm);
+  const album=norm(albumName(item)),year=Number(item?.publishDate||item?.year||0)||0;
+  return CANONICAL_ORIGINALS.some(o=>{
+    const titleKeys=[o.title,...arr(o.aliases)].filter(Boolean).map(norm);
+    if(!titleKeys.some(k=>k&&names.includes(k)))return false;
+    if(year&&o.year&&Number(o.year)!==year)return false;
+    const work=norm(o.work||"");
+    if(work&&album&&!album.includes(work)&&!work.includes(album))return false;
+    return true;
+  });
+}
 function typeOf(item){
   const s=clean(item?.songType).toLowerCase();
   const parent=Number(item?.originalVersionId)||Number(item?.originalVersion?.id)||Number(item?.parentSongId)||0;
-  const officialOriginal=s==="original"&&!parent&&(
+  const officialOriginal=(s==="original"&&!parent&&(
     hasZunArtist(item)||
     (hasOfficialCollaborator(item)&&matchesOfficialWork(item))
-  );
+  ))||matchesCanonicalOriginal(item);
   return officialOriginal?0:1;
 }
 function relationCategoryCompact(t){
@@ -362,7 +377,8 @@ async function fetchPage(start,pageSize=PAGE_SIZE,attempt=0){
 }
 async function main(){
   try{OFFICIAL_WORKS=JSON.parse(await fs.readFile(WORKS_FILE,"utf8"))}catch(e){console.warn("works registry unavailable",e?.message||e);OFFICIAL_WORKS=[]}
-  console.log("official work registry",OFFICIAL_WORKS.length);
+  try{CANONICAL_ORIGINALS=JSON.parse(await fs.readFile(ORIGINALS_FILE,"utf8"))}catch(e){console.warn("original registry unavailable",e?.message||e);CANONICAL_ORIGINALS=[]}
+  console.log("official work registry",OFFICIAL_WORKS.length,"canonical originals",CANONICAL_ORIGINALS.length);
   await fs.rm(OUT,{recursive:true,force:true});await fs.mkdir(OUT,{recursive:true});
   const first=await fetchPage(0),total=Number(first?.totalCount)||0;
   if(!total)throw new Error("TouhouDB returned no totalCount");
