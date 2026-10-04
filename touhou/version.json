@@ -1,5 +1,5 @@
 {
-  "version": "0.9.32",
+  "version": "0.9.33",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-10-04",
@@ -246,6 +246,13 @@
     "beginner-playable-filter",
     "station-hero-artifact-fix",
     "custom-artwork-layer-isolation",
-    "legacy-hero-ring-suppression"
+    "legacy-hero-ring-suppression",
+    "beginner-filter-two-block-layout",
+    "mobile-two-column-circle-grid",
+    "full-index-circle-search",
+    "iosys-full-index-results",
+    "yuuhei-satellite-category",
+    "shinra-bansho-category",
+    "doujin-circle-discovery"
   ]
 }
