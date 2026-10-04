@@ -80,6 +80,20 @@ function typeOf(item){
   );
   return officialOriginal?0:1;
 }
+function relationCategoryCompact(t){
+  const raw=clean(t?.k).toLowerCase();
+  if(!t?.t)return"official-original";
+  if(raw==="original")return"fan-original";
+  if(/rearrangement/.test(raw))return"rearrangement";
+  if(/remix/.test(raw))return"remix";
+  if(/cover/.test(raw))return"cover";
+  if(/remaster/.test(raw))return"remaster";
+  if(/instrumental|off.?vocal/.test(raw))return"instrumental";
+  if(/mashup/.test(raw))return"mashup";
+  if(/short/.test(raw))return"short-version";
+  if(/arrangement/.test(raw))return"arrangement";
+  return"other-related";
+}
 function yearOf(item){
   const p=clean(item?.publishDate||item?.createDate),y=Number(p.slice(0,4));
   if(y>1900&&y<2200)return y;
@@ -406,9 +420,13 @@ async function main(){
     const name="lookup-"+String(bucket).padStart(4,"0")+".json";
     await fs.writeFile(path.join(lookupDir,name),JSON.stringify(rows));
   }
-  const providers={},counts={original:0,arrangement:0,mediaCandidates:0};
+  const providers={},counts={original:0,fanOriginal:0,arrangement:0,mediaCandidates:0,categories:{}};
   for(const t of tracks){
-    t.t?counts.arrangement++:counts.original++;
+    const category=relationCategoryCompact(t);
+    counts.categories[category]=(counts.categories[category]||0)+1;
+    if(category==="official-original")counts.original++;
+    else if(category==="fan-original")counts.fanOriginal++;
+    else counts.arrangement++;
     if(t.p.length)counts.mediaCandidates++;
     for(const p of t.p)providers[p[0]]=(providers[p[0]]||0)+1;
   }
@@ -437,8 +455,11 @@ async function main(){
       denominator:"overall/popularity ranks use the full indexed song count directly; no archive-scale projection"
     },
     classification:{
+      inclusion:"all TouhouDB song entries are retained as Touhou-related data; category controls presentation, not inclusion",
       original:"SongType Original AND no parent AND (ZUN artist OR official collaborator + official-work match)",
-      secondary:"all other TouhouDB entries, including fan originals and derivative entries"
+      fanOriginal:"non-official SongType Original entries",
+      derivative:"Arrangement/Rearrangement/Remix/Cover/Remaster/Instrumental/Mashup/Short and other related entries",
+      categories:["official-original","fan-original","arrangement","rearrangement","remix","cover","remaster","instrumental","mashup","short-version","other-related"]
     }
   };
   await fs.writeFile(path.join(OUT,"manifest.json"),JSON.stringify(manifest,null,2)+"\n");
