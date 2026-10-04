@@ -903,3 +903,13 @@ html[data-skin="station"] .beginner-filter-group{
 @media(max-width:390px){
   .beginner-type-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+
+
+/* v0.9.34 beginner MV priority */
+.toolbar-row.is-beginner .filter-chip[data-filter="beginner:mv"]{
+  border-color:rgba(115,214,194,.28);
+}
+.toolbar-row.is-beginner .filter-chip[data-filter="beginner:mv"].is-active{
+  background:linear-gradient(135deg,#83dac2,#80aee6);
+  color:#07110e;
+}
