@@ -109,9 +109,26 @@ function yearFrom(item){
   const ay=Number(a?.album?.releaseDate?.year||a?.releaseDate?.year);
   return ay||null;
 }
+function relationCategory(item){
+  const raw=clean(item?.songType).toLowerCase();
+  const parent=Number(item?.originalVersionId)||Number(item?.originalVersion?.id)||Number(item?.parentSongId)||0;
+  const artists=[clean(item?.artistString),...artistNames(item)].join(" ").toLowerCase();
+  const official=raw==="original"&&!parent&&/(^|\b)zun(\b|$)/i.test(artists);
+  if(official)return"official-original";
+  if(raw==="original"&&!parent)return"fan-original";
+  if(/rearrangement/.test(raw))return"rearrangement";
+  if(/remix/.test(raw))return"remix";
+  if(/cover/.test(raw))return"cover";
+  if(/remaster/.test(raw))return"remaster";
+  if(/instrumental|off.?vocal/.test(raw))return"instrumental";
+  if(/mashup/.test(raw))return"mashup";
+  if(/short/.test(raw))return"short-version";
+  if(/arrangement/.test(raw))return"arrangement";
+  return"other-related";
+}
 function trackType(item){
-  const s=clean(item?.songType).toLowerCase();
-  return /arrangement|remix|cover|remaster|instrumental|mashup/.test(s)?"arrangement":"original";
+  const c=relationCategory(item);
+  return c==="official-original"?"original":c==="fan-original"?"fan-original":"arrangement";
 }
 function toTrack(item){
   const id=Number(item?.id)||0;
@@ -133,6 +150,8 @@ function toTrack(item){
     id:"tdb-"+id,
     touhoudbId:id,
     type,
+    category:relationCategory(item),
+    songTypeRaw:clean(item?.songType),
     title,
     aliases,
     year:yearFrom(item),
@@ -174,7 +193,7 @@ async function fetchJson(url,force=false){
 }
 function modeSongTypes(mode){
   if(mode==="original")return"Original";
-  if(mode==="arrangement")return"Arrangement,Remix,Cover,Remaster";
+  if(mode==="arrangement")return"Arrangement,Rearrangement,Remix,Cover,Remaster,Instrumental,Mashup,ShortVersion";
   return"";
 }
 async function search(opts={}){
@@ -207,6 +226,7 @@ async function search(opts={}){
   let items=arr(d?.items).map(toTrack);
   if(opts.mode==="original")items=items.filter(x=>x.type==="original");
   if(opts.mode==="arrangement")items=items.filter(x=>x.type==="arrangement");
+  if(opts.mode==="fan-original")items=items.filter(x=>x.type==="fan-original");
   return {
     items,
     total:Number(d?.totalCount)||items.length,
