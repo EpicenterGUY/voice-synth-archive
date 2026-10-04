@@ -1,6 +1,6 @@
 {
-  "version": "39.119.0",
+  "version": "39.120.0",
   "channel": "web",
-  "publishedAt": "2026-10-04T17:40:00+09:00",
-  "notes": "Adds Skin Studio with MP3/music-station inspired presets, persistent customization, player EQ styling, density/blur/grain controls, and import/exportable skin codes."
+  "publishedAt": "2026-10-04T18:02:00+09:00",
+  "notes": "Skin Experience adds distinct device identities: MP3 station LCD, Walkman display, cassette reels, Aqua glass motion, Neon spectrum, Pocket Mono, and skin-specific backgrounds/cards/player surfaces."
 }

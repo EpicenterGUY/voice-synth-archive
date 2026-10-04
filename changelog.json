@@ -1,11 +1,27 @@
 {
   "current": {
-    "version": "39.119.0",
+    "version": "39.120.0",
     "releasedAt": "2026-10-04",
-    "title": "Skin Studio · MP3 Music Station",
-    "summary": "MP3 플레이어와 음악 스테이션 감성의 스킨 프리셋, 세부 꾸미기, 플레이어 EQ, 스킨 코드 공유 시스템을 추가했습니다."
+    "title": "Skin Experience · Device Identity",
+    "summary": "스킨마다 MP3 스테이션·워크맨·카세트·유리 플레이어·네온 신스·포켓 MP3처럼 서로 다른 음악기기 경험을 갖도록 확장했습니다."
   },
   "entries": [
+    {
+      "version": "39.120.0",
+      "date": "2026-10-04",
+      "title": "Skin Experience · Device Identity",
+      "changes": [
+        "Music Station 2000에 MP3 코덱·트랙 카운터·44.1kHz·재생형 스펙트럼 추가",
+        "Night Walkman에 녹색 LCD·MEGA BASS·배터리 표시와 매트 블랙 UI 추가",
+        "Cassette Warm에 재생 중 회전하는 좌우 테이프 릴과 TYPE II 데크 연출 추가",
+        "Neon Deck에 멀티밴드 스펙트럼·신스 버스·네온 글로우 추가",
+        "Aqua Glass에 수면 웨이브·유리 패널·앰비언트 배경 강화",
+        "Pocket Mono에 고밀도 흑백 LCD와 저채도 앨범아트 스타일 추가",
+        "각 스킨의 홈 배경·카드·전체 플레이어 표면·브랜드 라벨까지 서로 다르게 확장",
+        "재생/정지 상태에 맞춰 릴과 스펙트럼 애니메이션을 동기화",
+        "모바일에서는 장식 정보를 축약해 폴드 접힘 화면의 조작 공간을 보존"
+      ]
+    },
     {
       "version": "39.119.0",
       "date": "2026-10-04",
