@@ -1,11 +1,29 @@
 {
   "current": {
-    "version": "39.128.0",
+    "version": "39.129.3",
     "releasedAt": "2026-10-05",
-    "title": "Unified Music Cards · Player 4.0",
-    "summary": "음악 카드와 재생 UI를 하나의 규칙으로 통일하고 미니/전체 플레이어를 YouTube Music 계열로 정리했습니다."
+    "title": "Stability Pass · Landscape Fix · Library Queue",
+    "summary": "렉과 가로모드 터치 불량을 먼저 안정화하면서 보관함·다음 곡 작업도 병행했습니다."
   },
   "entries": [
+    {
+      "version": "39.129.3",
+      "date": "2026-10-05",
+      "title": "Stability Pass · Landscape Fix · Library Queue",
+      "changes": [
+        "검색 필터 버튼이 눌리지 않던 경우를 캡처 단계에서 직접 처리하도록 보강하고 필터 시트/백드롭의 pointer-events를 명확히 분리",
+        "검색 결과 패치가 스스로 DOM 변경을 감지해 반복 실행되던 구조를 시그니처 캐시와 좁은 observer로 바꿔 렉 감소",
+        "탐색·TouhouDive 셸·재생 UI에 남아 있던 전체 toolsModal subtree MutationObserver를 제거하거나 직계 자식 감시로 축소",
+        "재생 중 배지 갱신 주기를 완화하고 DOM 전체 스캔을 라우트 전환/재생곡 변경 중심으로 제한",
+        "가로모드에서 실험적 좌측 레일을 안정적인 하단 5탭 독으로 되돌려 가려짐·터치 먹힘 문제를 줄임",
+        "가로모드 검색 결과를 1열 음악 리스트로 고정하고 필터 시트 위치/높이를 재조정",
+        "가로모드에서 topbar·dock·mini player의 backdrop-filter를 제거해 GPU 합성 부담을 줄임",
+        "보이지 않는 backdrop/hidden layer가 클릭을 가로채지 않도록 전역 pointer-events 안전장치 추가",
+        "보관함에서 니코동 외부 열기 대신 앱 내 플레이어로 재생하고 현재 보관함/최근 목록을 재생 큐로 전달",
+        "보관함 UI를 MY/홈과 같은 음악 앱 스타일로 정리하고 곡·최근·탐정 탭을 단순화",
+        "현재 재생 큐를 볼 수 있는 가벼운 다음 곡 드로어를 추가"
+      ]
+    },
     {
       "version": "39.128.0",
       "date": "2026-10-05",
