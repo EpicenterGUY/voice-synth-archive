@@ -137,5 +137,262 @@
     ],
     "lyricsAvailable": true,
     "lyricsSearchTitle": "Bad Apple!! feat. nomico"
+  },
+  {
+    "id": "arr-legacy-unowen-mixed-theme",
+    "type": "arrangement",
+    "category": "mashup",
+    "title": "混合テーマ / Is U.N. Owen her?",
+    "aliases": [
+      "【東方】【U.N.オーエンは彼女なのか？】【高音質】 混合テーマ",
+      "Is U.N.Owen her?",
+      "U.N. Owen Mixed Theme",
+      "100층 올라가기 80~90층 BGM",
+      "플래시게임 U.N. 오웬 혼합 테마"
+    ],
+    "year": null,
+    "circle": "Legacy Web Mix",
+    "album": "YouTube legacy mix",
+    "moods": [
+      "메들리",
+      "고속",
+      "현악",
+      "플래시게임 BGM",
+      "레거시 웹"
+    ],
+    "originalIds": [
+      "eosd-09"
+    ],
+    "artists": {
+      "arranger": [],
+      "vocal": [],
+      "lyricist": [],
+      "other": [
+        "unknown legacy arranger"
+      ]
+    },
+    "media": {
+      "provider": "youtube",
+      "id": "DKuThW90b6s",
+      "url": "https://www.youtube.com/watch?v=DKuThW90b6s",
+      "name": "【東方】【U.N.オーエンは彼女なのか？】【高音質】 混合テーマ"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "youtube",
+        "id": "DKuThW90b6s",
+        "url": "https://www.youtube.com/watch?v=DKuThW90b6s",
+        "name": "混合テーマ / Is U.N.Owen her?"
+      }
+    ],
+    "source": {
+      "name": "100층 올라가기 BGM archive reference",
+      "url": "https://wiki.gamess.co.kr/wiki/%EB%82%B4%EA%B0%80_%EA%B3%A0%EC%83%9D%ED%95%B4%EC%84%9C_%EC%B0%BE%EC%9D%80_BGM_%EB%AA%A8%EC%9D%8C"
+    }
+  },
+  {
+    "id": "arr-aquaelie-compressed-medley",
+    "type": "arrangement",
+    "category": "mashup",
+    "title": "東方めどれ～圧縮すぺしゃる！",
+    "aliases": [
+      "Touhou Medley ~ Condensed Special",
+      "Touhou Medley ~ Compressed Special",
+      "東方めどれ 圧縮すぺしゃる"
+    ],
+    "year": 2008,
+    "circle": "AQUAELIE",
+    "album": "疾走大結界 ～ Plastic mind in Casket of star",
+    "moods": [
+      "메들리",
+      "메탈",
+      "고속",
+      "multiple originals"
+    ],
+    "originalIds": [
+      "pcb-06",
+      "eosd-09",
+      "pcb-08",
+      "in-04",
+      "eosd-04",
+      "in-08",
+      "in-05",
+      "pcb-03",
+      "in-07"
+    ],
+    "artists": {
+      "arranger": [
+        "Xi"
+      ],
+      "vocal": [],
+      "lyricist": []
+    },
+    "media": {
+      "provider": "youtube",
+      "id": "QNo_IZ4W-vA",
+      "url": "https://www.youtube.com/watch?v=QNo_IZ4W-vA",
+      "name": "東方めどれ～圧縮すぺしゃる！"
+    },
+    "source": {
+      "name": "AQUAELIE / historical track reference",
+      "url": "https://w.atwiki.jp/toho/pages/1722.html"
+    }
+  },
+  {
+    "id": "arr-samidare-21-medley",
+    "type": "arrangement",
+    "category": "mashup",
+    "title": "東方project「東方２１曲メドレー」",
+    "aliases": [
+      "東方project、２１曲まとめて耳コピしてメドレーにしてみた",
+      "Touhou 21 Song Medley",
+      "Touhou Medley MIDI"
+    ],
+    "year": 2008,
+    "circle": "刻刻音樂館",
+    "album": "web / MIDI medley",
+    "moods": [
+      "메들리",
+      "MIDI",
+      "귀카피",
+      "레거시 웹",
+      "multiple originals"
+    ],
+    "originalIds": [
+      "eosd-03",
+      "eosd-09"
+    ],
+    "artists": {
+      "arranger": [
+        "Samidare"
+      ],
+      "vocal": [],
+      "lyricist": []
+    },
+    "media": {
+      "provider": "niconico",
+      "id": "sm2515783",
+      "url": "https://www.nicovideo.jp/watch/sm2515783",
+      "name": "東方project、２１曲まとめて耳コピしてメドレーにしてみた"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "niconico",
+        "id": "sm2515783",
+        "url": "https://www.nicovideo.jp/watch/sm2515783",
+        "name": "original medley"
+      },
+      {
+        "provider": "niconico",
+        "id": "sm4267043",
+        "url": "https://www.nicovideo.jp/watch/sm4267043",
+        "name": "karaoke archive variant"
+      }
+    ],
+    "source": {
+      "name": "NicoNico legacy medley",
+      "url": "https://www.nicozon.net/watch/sm4267043"
+    }
+  },
+  {
+    "id": "arr-chireiden-17-medley",
+    "type": "arrangement",
+    "category": "mashup",
+    "title": "【MIDI】東方地霊殿１７曲メドレー全曲耳コピしたです。【完成】",
+    "aliases": [
+      "東方地霊殿17曲メドレー",
+      "Touhou Chireiden 17 Song Medley",
+      "Subterranean Animism 17-track MIDI Medley"
+    ],
+    "year": 2009,
+    "circle": "白兎",
+    "album": "web / MIDI medley",
+    "moods": [
+      "메들리",
+      "MIDI",
+      "귀카피",
+      "지령전",
+      "레거시 웹"
+    ],
+    "originalIds": [
+      "sa-01",
+      "sa-02",
+      "sa-03",
+      "sa-04",
+      "sa-05",
+      "sa-06",
+      "sa-07",
+      "sa-08"
+    ],
+    "artists": {
+      "arranger": [
+        "白兎"
+      ],
+      "vocal": [],
+      "lyricist": []
+    },
+    "media": {
+      "provider": "niconico",
+      "id": "sm5727006",
+      "url": "https://www.nicovideo.jp/watch/sm5727006",
+      "name": "東方地霊殿１７曲メドレー"
+    },
+    "source": {
+      "name": "NicoNico archive",
+      "url": "https://www.nicolog.jp/watch/sm5727006"
+    }
+  },
+  {
+    "id": "arr-taniya-2008-midi-medley",
+    "type": "arrangement",
+    "category": "mashup",
+    "title": "2008年製 東方アレンジ打ち込みメドレー",
+    "aliases": [
+      "東方アレンジ打ち込みメドレー08",
+      "2008 Touhou Arrange MIDI Medley",
+      "東方アレンジ打ち込みメドレー"
+    ],
+    "year": 2009,
+    "circle": "谷屋",
+    "album": "web medley",
+    "moods": [
+      "메들리",
+      "동방 어레인지",
+      "MIDI",
+      "레거시 웹",
+      "multiple originals"
+    ],
+    "originalIds": [],
+    "artists": {
+      "arranger": [
+        "谷屋"
+      ],
+      "vocal": [],
+      "lyricist": []
+    },
+    "media": {
+      "provider": "niconico",
+      "id": "sm7433110",
+      "url": "https://www.nicovideo.jp/watch/sm7433110",
+      "name": "2008年製 東方アレンジ打ち込みメドレー"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "niconico",
+        "id": "sm7433110",
+        "url": "https://www.nicovideo.jp/watch/sm7433110",
+        "name": "original"
+      },
+      {
+        "provider": "niconico",
+        "id": "sm9067758",
+        "url": "https://www.nicovideo.jp/watch/sm9067758",
+        "name": "원곡 재현 수정판"
+      }
+    ],
+    "source": {
+      "name": "NicoNico legacy arrange medley",
+      "url": "https://www.nicozon.net/tag/%E6%AD%8C%E3%81%A0%E3%81%A3%E3%81%A6%E3%81%8F%E3%82%8C/r/d"
+    }
   }
 ]
