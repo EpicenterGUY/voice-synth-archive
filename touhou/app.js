@@ -580,7 +580,14 @@ function normalizeOfficialOriginalCandidate(t){
       /remaster/.test(raw)?"remaster":/instrumental|off.?vocal/.test(raw)?"instrumental":
       /mashup/.test(raw)?"mashup":/short/.test(raw)?"short-version":
       /arrangement/.test(raw)?"arrangement":"other-related";
-    return{...t,type:"arrangement",category};
+    return{
+      ...t,type:"arrangement",category,
+      // These fields were computed while the row was incorrectly treated as
+      // an official original. Keep popularity/view measurements, but discard
+      // the contaminated overall/influence ranks until the rebuilt index lands.
+      globalRank:null,globalScore:0,influenceRank:null,influenceScore:0,
+      derivativeCount:0,derivativeCircleCount:0,derivativeAlbumCount:0,derivativeMediaCount:0
+    };
   }
   if(t.type==="original"||parented)return t;
   const local=localOriginalMatch(t);
