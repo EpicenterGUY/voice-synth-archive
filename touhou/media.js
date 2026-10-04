@@ -6,6 +6,7 @@ const AUTO_KEY="touhoudive:player:autoNext";
 const PLAYBACK_MODE_KEY="touhoudive:player:youtubeMode";
 const PLAYBACK_POLICY_KEY="touhoudive:player:youtubeInlinePolicy:v3";
 const BAD_MEDIA_KEY="touhoudive:media:unavailable:v1";
+const VISUAL_MODE_KEY="touhoudive:player:visualMode:v1";
 
 function clean(v){return String(v??"").trim()}
 function srcFor(media){
@@ -59,11 +60,26 @@ class TouhouMediaPlayer{
     this.stationAlbum=document.getElementById("stationPlayerAlbum");
     this.stationSource=document.getElementById("stationPlayerSource");
     this.stationQueue=document.getElementById("stationPlayerQueue");
+    this.artwork=document.getElementById("playerArtwork");
+    this.miniArt=document.getElementById("playerMiniArt");
+    this.ambient=document.getElementById("playerAmbient");
+    this.songModeBtn=document.getElementById("playerSongMode");
+    this.videoModeBtn=document.getElementById("playerVideoMode");
+    this.seek=document.getElementById("playerSeek");
+    this.elapsed=document.getElementById("playerElapsed");
+    this.duration=document.getElementById("playerDuration");
+    this.favoriteBtn=document.getElementById("playerFavAction");
+    this.originBtn=document.getElementById("playerOriginAction");
+    this.diveBtn=document.getElementById("playerDiveAction");
+    this.detailBtn=document.getElementById("playerDetailAction");
     this.rankDetailKey="";
     this.relatedEl=document.getElementById("playerRelated");
     this.lyricsEl=document.getElementById("playerLyrics");
+    this.infoEl=document.getElementById("playerInfo");
     this.relatedTab=document.getElementById("playerTabRelated");
     this.lyricsTab=document.getElementById("playerTabLyrics");
+    this.infoTab=document.getElementById("playerTabInfo");
+    this.visualMode=localStorage.getItem(VISUAL_MODE_KEY)==="video"?"video":"song";
     this.current=null;this.queue=[];this.index=-1;this.frame=null;this.yt=null;this.playing=true;this.activeTab="related";
     this.pipWindow=null;this.pipHome=null;this.backgroundActive=false;
     this.autoNext=localStorage.getItem(AUTO_KEY)!=="0";
@@ -77,8 +93,10 @@ class TouhouMediaPlayer{
     }
     try{this.badMedia=new Set(JSON.parse(localStorage.getItem(BAD_MEDIA_KEY)||"[]"))}catch(_){this.badMedia=new Set()}
     document.getElementById("playerClose").onclick=()=>this.close();
+    document.getElementById("playerHeadClose").onclick=()=>this.close();
     if(this.pipBtn)this.pipBtn.onclick=()=>this.requestPip();
     document.getElementById("playerMini").onclick=()=>this.minimize();
+    document.getElementById("playerHeadMini").onclick=()=>this.minimize();
     document.getElementById("playerExpand").onclick=()=>this.expand();
     document.getElementById("playerPrev").onclick=()=>this.relative(-1);
     document.getElementById("playerNext").onclick=()=>this.relative(1);
@@ -86,11 +104,28 @@ class TouhouMediaPlayer{
     this.autoBtn.onclick=()=>this.setAutoNext(!this.autoNext);
     if(this.relatedTab)this.relatedTab.onclick=()=>this.setTab("related");
     if(this.lyricsTab)this.lyricsTab.onclick=()=>this.setTab("lyrics");
+    if(this.infoTab)this.infoTab.onclick=()=>this.setTab("info");
+    if(this.songModeBtn)this.songModeBtn.onclick=()=>this.setVisualMode("song");
+    if(this.videoModeBtn)this.videoModeBtn.onclick=()=>this.setVisualMode("video");
+    if(this.seek){
+      this.seek.addEventListener("change",()=>{
+        if(!this.yt||this.seek.disabled)return;
+        const d=Number(this.yt.getDuration?.())||0;
+        if(d>0)try{this.yt.seekTo(d*(Number(this.seek.value)||0)/1000,true)}catch(_){}
+      });
+    }
+    const emitAction=action=>window.dispatchEvent(new CustomEvent("touhoudive:player-action",{detail:{action,trackId:this.current?.id||""}}));
+    if(this.favoriteBtn)this.favoriteBtn.onclick=()=>emitAction("favorite");
+    if(this.originBtn)this.originBtn.onclick=()=>emitAction("origin");
+    if(this.diveBtn)this.diveBtn.onclick=()=>emitAction("dive");
+    if(this.detailBtn)this.detailBtn.onclick=()=>emitAction("detail");
     window.addEventListener("message",e=>this.onMessage(e));
     document.addEventListener("visibilitychange",()=>this.onVisibilityChange());
     window.addEventListener("pagehide",()=>this.onPageHide());
     this.bindMediaSession();
+    this.timelineTimer=setInterval(()=>this.syncTimeline(),750);
     this.syncControls();
+    this.setVisualMode(this.visualMode,false);
     this.setTab("related");
   }
   esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}
@@ -180,7 +215,7 @@ class TouhouMediaPlayer{
     this.source.href=this.current.media?.url||this.current.source?.url||"#";
     this.source.hidden=this.source.href.endsWith("#");
     this.shell.hidden=false;
-    this.rankDetailKey="";if(this.rankDetailEl){this.rankDetailEl.hidden=true;this.rankDetailEl.innerHTML=""}this.syncMeta();this.syncStationDisplay();this.syncControls();this.syncMediaSession();this.renderRankings();this.renderPanels();
+    this.rankDetailKey="";if(this.rankDetailEl){this.rankDetailEl.hidden=true;this.rankDetailEl.innerHTML=""}this.syncMeta();this.syncArtwork();this.syncStationDisplay();this.syncVisualMode();this.syncControls();this.syncMediaSession();this.renderRankings();this.renderPanels();
     window.dispatchEvent(new CustomEvent("touhoudive:player-track",{detail:{trackId:this.current.id,touhoudbId:this.current.touhoudbId||null}}));
     if(provider==="youtube"){
       const expectedTrack=this.current.id,expectedVideo=this.current.media.id;
@@ -200,7 +235,7 @@ class TouhouMediaPlayer{
                 }
               }catch(_){}
               if(autoplay)try{e.target.playVideo()}catch(_){}
-              this.syncPipAvailability();
+              this.syncPipAvailability();this.syncTimeline();
             },
             onStateChange:e=>{
               if(!window.YT)return;
@@ -221,6 +256,60 @@ class TouhouMediaPlayer{
     const m=this.candidates(track).find(x=>x.provider==="youtube"&&x.id);
     return m?"https://i.ytimg.com/vi/"+encodeURIComponent(m.id)+"/mqdefault.jpg":"";
   }
+  syncArtwork(){
+    if(!this.current)return;
+    const art=this.thumbFor(this.current),targets=[this.artwork,this.miniArt];
+    for(const el of targets){
+      if(!el)continue;
+      el.style.backgroundImage=art?'url("'+String(art).replace(/"/g,"%22")+'")':"";
+      el.classList.toggle("has-art",!!art);
+    }
+    if(this.ambient){
+      this.ambient.style.backgroundImage=art?'url("'+String(art).replace(/"/g,"%22")+'")':"";
+      this.ambient.classList.toggle("has-art",!!art);
+    }
+  }
+  canVideoVisual(){
+    return !!this.current?.media&&["youtube","niconico","bilibili"].includes(this.current.media.provider);
+  }
+  setVisualMode(mode,persist=true){
+    this.visualMode=mode==="video"&&this.canVideoVisual()?"video":"song";
+    if(persist)try{localStorage.setItem(VISUAL_MODE_KEY,this.visualMode)}catch(_){}
+    this.syncVisualMode();
+  }
+  syncVisualMode(){
+    const canVideo=this.canVideoVisual();
+    if(this.visualMode==="video"&&!canVideo)this.visualMode="song";
+    this.shell.classList.toggle("player-video-mode",this.visualMode==="video");
+    this.shell.classList.toggle("player-song-mode",this.visualMode!=="video");
+    if(this.songModeBtn){
+      const on=this.visualMode!=="video";this.songModeBtn.classList.toggle("is-active",on);this.songModeBtn.setAttribute("aria-selected",on?"true":"false");
+    }
+    if(this.videoModeBtn){
+      const on=this.visualMode==="video";this.videoModeBtn.disabled=!canVideo;this.videoModeBtn.classList.toggle("is-active",on);this.videoModeBtn.setAttribute("aria-selected",on?"true":"false");
+    }
+  }
+  formatTime(sec){
+    sec=Math.max(0,Math.floor(Number(sec)||0));
+    const m=Math.floor(sec/60),s=sec%60;return m+":"+String(s).padStart(2,"0");
+  }
+  syncTimeline(){
+    if(!this.seek||!this.elapsed||!this.duration)return;
+    let now=0,total=0,ok=false;
+    if(this.yt&&this.current?.media?.provider==="youtube"){
+      try{now=Number(this.yt.getCurrentTime?.())||0;total=Number(this.yt.getDuration?.())||0;ok=total>0}catch(_){}
+    }
+    this.seek.disabled=!ok;
+    if(ok){
+      this.seek.value=String(Math.max(0,Math.min(1000,Math.round(now/total*1000))));
+      this.elapsed.textContent=this.formatTime(now);this.duration.textContent=this.formatTime(total);
+    }else{
+      this.seek.value="0";this.elapsed.textContent="--:--";this.duration.textContent="--:--";
+    }
+  }
+  setFavoriteState(on){
+    if(this.favoriteBtn)this.favoriteBtn.textContent=on?"♥ 보관됨":"♡ 보관";
+  }
   syncStationDisplay(){
     if(!this.current)return;
     const art=this.thumbFor(this.current);
@@ -235,25 +324,19 @@ class TouhouMediaPlayer{
     if(this.stationQueue)this.stationQueue.textContent="QUEUE "+(this.index>=0?String(this.index+1).padStart(2,"0"):"--")+"/"+(this.queue.length?String(this.queue.length).padStart(2,"0"):"--");
   }
   setTab(tab){
-    this.activeTab=tab==="lyrics"?"lyrics":"related";
-    if(this.relatedEl){
-      const show=this.activeTab==="related";
-      this.relatedEl.hidden=!show;
-      this.relatedEl.style.display=show?"grid":"none";
-    }
-    if(this.lyricsEl){
-      const show=this.activeTab==="lyrics";
-      this.lyricsEl.hidden=!show;
-      this.lyricsEl.style.display=show?"block":"none";
-    }
+    this.activeTab=["lyrics","info"].includes(tab)?tab:"related";
+    if(this.relatedEl){const show=this.activeTab==="related";this.relatedEl.hidden=!show;this.relatedEl.style.display=show?"grid":"none"}
+    if(this.lyricsEl){const show=this.activeTab==="lyrics";this.lyricsEl.hidden=!show;this.lyricsEl.style.display=show?"block":"none"}
+    if(this.infoEl){const show=this.activeTab==="info";this.infoEl.hidden=!show;this.infoEl.style.display=show?"grid":"none"}
     if(this.relatedTab){this.relatedTab.classList.toggle("is-active",this.activeTab==="related");this.relatedTab.setAttribute("aria-selected",this.activeTab==="related"?"true":"false")}
     if(this.lyricsTab){this.lyricsTab.classList.toggle("is-active",this.activeTab==="lyrics");this.lyricsTab.setAttribute("aria-selected",this.activeTab==="lyrics"?"true":"false")}
+    if(this.infoTab){this.infoTab.classList.toggle("is-active",this.activeTab==="info");this.infoTab.setAttribute("aria-selected",this.activeTab==="info"?"true":"false")}
   }
   updateCurrentData(track){
     if(!track||!this.current||track.id!==this.current.id)return false;
     this.current={...this.current,...track};
     if(this.index>=0&&this.index<this.queue.length)this.queue[this.index]=this.current;
-    this.syncMeta();this.syncStationDisplay();this.syncMediaSession();this.renderRankings();this.renderLyrics();
+    this.syncMeta();this.syncArtwork();this.syncStationDisplay();this.syncVisualMode();this.syncMediaSession();this.renderRankings();this.renderLyrics();this.renderInfo();
     return true;
   }
   renderRankings(){
@@ -326,6 +409,7 @@ class TouhouMediaPlayer{
   renderPanels(){
     this.renderRelated();
     this.renderLyrics();
+    this.renderInfo();
     this.setTab(this.activeTab);
   }
   renderRelated(){
@@ -344,6 +428,20 @@ class TouhouMediaPlayer{
     });
     this.relatedEl.innerHTML=rows.length?rows.join(""):'<div class="player-panel-empty">재생 가능한 연관곡이 없습니다.</div>';
     this.relatedEl.querySelectorAll("[data-player-index]").forEach(btn=>btn.onclick=()=>this.jumpTo(Number(btn.dataset.playerIndex)));
+  }
+  renderInfo(){
+    if(!this.infoEl||!this.current)return;
+    const t=this.current,providers=[...new Set((t.mediaCandidates||[]).map(x=>x?.provider).filter(Boolean))];
+    const by=t.circle||t.artistString||((t.artists?.composer||[]).join(", "))||"정보 없음";
+    const rows=[
+      ["아티스트 / 서클",by],
+      ["앨범 / 작품",t.album||t.work||"정보 없음"],
+      ["분류",t.role||t.category||t.type||"정보 없음"],
+      ["연도",t.year||"정보 없음"],
+      ["재생 소스",providers.length?providers.join(" · "):(t.media?.provider||"정보 없음")],
+      ["TouhouDB",t.touhoudbId?"#"+t.touhoudbId:"미연결"]
+    ];
+    this.infoEl.innerHTML='<div class="player-info-grid">'+rows.map(([k,v])=>'<div><span>'+this.esc(k)+'</span><strong>'+this.esc(v)+'</strong></div>').join("")+'</div>';
   }
   renderLyrics(){
     if(!this.lyricsEl||!this.current)return;
@@ -618,6 +716,7 @@ class TouhouMediaPlayer{
   }
   syncMeta(){
     if(!this.current)return;
+    if(this.originBtn)this.originBtn.hidden=this.current.type!=="arrangement";
     const base=this.current.type==="arrangement"
       ? [this.current.circle,this.current.album,this.current.year].filter(Boolean).join(" · ")
       : [this.current.work||this.current.artistString,this.current.role,this.current.year].filter(Boolean).join(" · ");
@@ -649,7 +748,7 @@ class TouhouMediaPlayer{
     try{if(this.pipWindow&&!this.pipWindow.closed)this.pipWindow.close()}catch(_){}
     this.restoreFromDocumentPip();
     this.destroySurface();this.current=null;this.queue=[];this.index=-1;this.playing=false;
-    this.shell.classList.remove("is-playing");
+    this.shell.classList.remove("is-playing");if(this.seek){this.seek.value="0";this.seek.disabled=true}if(this.elapsed)this.elapsed.textContent="--:--";if(this.duration)this.duration.textContent="--:--";
     this.shell.hidden=true;this.shell.classList.remove("is-mini");document.body.classList.remove("player-open");this.setPlaybackState("none");
     try{if("mediaSession" in navigator)navigator.mediaSession.metadata=null}catch(_){}
     this.renderPanels();this.syncControls();
