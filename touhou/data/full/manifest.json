@@ -2,7 +2,7 @@
   "schema": 3,
   "source": "TouhouDB",
   "api": "https://touhoudb.com/api",
-  "generatedAt": "2026-10-04T13:16:55.737Z",
+  "generatedAt": "2026-10-04T14:07:36.078Z",
   "totalCount": 189255,
   "indexed": 189255,
   "shardSize": 1000,
@@ -960,61 +960,60 @@
     }
   ],
   "counts": {
-    "original": 614,
+    "original": 593,
     "fanOriginal": 8090,
-    "arrangement": 180551,
-    "mediaCandidates": 72872,
+    "arrangement": 180572,
+    "mediaCandidates": 72874,
     "categories": {
-      "official-original": 614,
+      "official-original": 593,
+      "arrangement": 145517,
       "other-related": 4519,
-      "arrangement": 145505,
-      "rearrangement": 13585,
-      "short-version": 2330,
+      "rearrangement": 13594,
+      "remaster": 1799,
       "cover": 2833,
       "instrumental": 9980,
-      "remaster": 1799,
+      "short-version": 2330,
       "fan-original": 8090
     },
     "categoryMediaCandidates": {
-      "official-original": 569,
+      "official-original": 557,
+      "arrangement": 59307,
       "other-related": 736,
-      "arrangement": 59293,
       "rearrangement": 5169,
-      "short-version": 561,
+      "remaster": 657,
       "cover": 686,
       "instrumental": 1321,
-      "remaster": 657,
+      "short-version": 561,
       "fan-original": 3880
     },
     "categoryYoutubeCandidates": {
-      "official-original": 569,
+      "official-original": 557,
+      "arrangement": 47328,
       "other-related": 480,
-      "arrangement": 47314,
       "rearrangement": 4200,
-      "short-version": 413,
+      "remaster": 486,
       "cover": 624,
       "instrumental": 943,
-      "remaster": 486,
+      "short-version": 413,
       "fan-original": 2706
     },
     "categoryViewTracks": {
-      "official-original": 563,
-      "other-related": 481,
-      "arrangement": 46339,
-      "rearrangement": 4080,
-      "short-version": 348,
-      "cover": 607,
-      "instrumental": 905,
-      "remaster": 461,
-      "fan-original": 2633
+      "official-original": 94,
+      "other-related": 34,
+      "arrangement": 1003,
+      "rearrangement": 64,
+      "short-version": 6,
+      "cover": 9,
+      "remaster": 2,
+      "fan-original": 17
     }
   },
   "providers": {
-    "youtube": 65263,
+    "youtube": 65265,
     "niconico": 10724,
-    "bandcamp": 12803,
     "soundcloud": 4315,
     "bilibili": 774,
+    "bandcamp": 12803,
     "piapro": 11
   },
   "allowedProviders": [
@@ -1027,12 +1026,12 @@
   ],
   "viewCoverage": {
     "providers": {
-      "youtube": 63374,
-      "niconico": 587,
-      "bilibili": 44
+      "niconico": 653,
+      "youtube": 804,
+      "bilibili": 31
     },
     "candidates": {
-      "youtube": 65079,
+      "youtube": 65081,
       "niconico": 9492,
       "soundcloud": 3542,
       "piapro": 7,
@@ -1040,19 +1039,19 @@
       "bandcamp": 12405
     },
     "ratios": {
-      "youtube": 0.9738010725426021,
-      "niconico": 0.06184155077960388,
+      "youtube": 0.012353835988998325,
+      "niconico": 0.06879477454698693,
       "soundcloud": 0,
       "piapro": 0,
-      "bilibili": 0.057441253263707574,
+      "bilibili": 0.04046997389033943,
       "bandcamp": 0
     },
-    "tracks": 56417,
-    "media": 64005,
+    "tracks": 1229,
+    "media": 1488,
     "youtubeKeyConfigured": true,
-    "popularityEligible": true,
-    "mode": "youtube-major",
-    "rankedTracks": 56417,
+    "popularityEligible": false,
+    "mode": "partial",
+    "rankedTracks": 1229,
     "supportedProviders": [
       "youtube",
       "niconico",
@@ -1082,12 +1081,12 @@
     "ratingMeaning": "TouhouDB RatingScore is a cumulative vote score: Favorite +3, Like +2, Dislike -1; it is not a 10-point average rating",
     "views": "log10(total verified views+1)*6 + log10(max video views+1)*1.5 + per-platform log view contributions + verified-platform breadth; same-song distinct media IDs are deduplicated",
     "viewPolicy": "YouTube, NicoNico and Bilibili verified counts feed view ranking; SoundCloud, Bandcamp and Piapro are reflected as source-spread links unless a stable public count is available",
-    "influence": "official original only: log-weighted derivative tracks + distinct circles + distinct albums + playable derivative count",
+    "influence": "official parentless original only: log-weighted transitive descendant tracks + distinct descendant circles + distinct descendant albums + playable descendant count; intermediate versions roll up to the canonical root",
     "denominator": "overall/popularity ranks use the full indexed song count directly; no archive-scale projection"
   },
   "classification": {
     "inclusion": "all TouhouDB song entries are retained as Touhou-related data; category controls presentation, not inclusion",
-    "original": "SongType Original AND no parent AND (ZUN artist OR official collaborator + official-work match)",
+    "original": "parentless source only: SongType Original AND (ZUN artist OR official collaborator + official-work match), plus canonical-title recovery only when parentless",
     "fanOriginal": "non-official SongType Original entries",
     "derivative": "Arrangement/Rearrangement/Remix/Cover/Remaster/Instrumental/Mashup/Short and other related entries",
     "categories": [
