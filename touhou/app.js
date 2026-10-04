@@ -6,7 +6,7 @@ const player=new window.TouhouMediaPlayer();
 
 const state={
   localOriginals:[],localArrangements:[],localFanOriginals:[],known:new Map(),aliases:new Map(),identities:new Map(),remoteItems:[],fullItems:[],works:[],archiveSource:null,fanYoutubeMeta:null,
-  mode:"all",filter:"전체",workFilter:"",sort:"recommend",selected:null,view:"home",diveDepth:0,diveRoot:null,icebergMode:"visibility",rankIndex:new Map(),rankTotal:0,enriching:new Map(),homeMixIds:[],beginnerCircleCache:new Map(),beginnerCircleLoading:new Set(),
+  mode:"all",filter:"전체",workFilter:"",sort:"recommend",selected:null,view:"home",diveDepth:0,diveRoot:null,icebergMode:"visibility",rankIndex:new Map(),rankTotal:0,enriching:new Map(),homeMixIds:[],beginnerCircleCache:new Map(),beginnerCircleLoading:new Set(),beginnerIndex:{loaded:false,loading:false,tracks:[],total:0,video:0,explicitMv:0,error:""},
   full:{available:false,loading:false,loaded:false,streaming:false,manifest:null,loadedCount:0,error:""},displayLimit:60,renderKey:"",lastMatchCount:0,childCounts:new Map(),
   relations:{ready:false,building:false,byOriginal:new Map(),byWork:new Map(),byCircle:new Map(),byVocal:new Map(),byMood:new Map()},
   remote:{available:false,loading:false,start:0,total:0,catalogTotal:0,key:"",error:"",counts:{},seq:0},
@@ -89,7 +89,7 @@ async function boot(){
     setDataHealth("error","UI 초기화 오류 · 새로고침 필요");
   }
   if("serviceWorker" in navigator){
-    navigator.serviceWorker.register("./sw.js?v=0.9.33").then(r=>r.update()).catch(err=>console.warn("service worker",err));
+    navigator.serviceWorker.register("./sw.js?v=0.9.34").then(r=>r.update()).catch(err=>console.warn("service worker",err));
   }
 
   const [or,ar,fr,far,fy,wr,sr]=await Promise.all([
@@ -271,6 +271,7 @@ function bind(){
       state.mode=modeBtn.dataset.mode;state.filter="전체";state.homeMixIds=[];
       if(state.mode==="fan-original"||state.mode==="db-fan-original"){state.workFilter="";$("#workSelect").value=""}
       syncModeTabs();
+      if(state.mode==="beginner")ensureBeginnerIndex();
       requestAnimationFrame(()=>state.view==="iceberg"?renderIceberg():renderCatalog());
       loadRemote(true);
       return;
@@ -791,33 +792,62 @@ async function ensureBeginnerCircleResults(filterKey){
     state.renderKey="";renderCatalog();
   }
 }
+function beginnerVideoInfo(t){
+  const rows=(t?.mediaCandidates||[]).filter(m=>["youtube","niconico","bilibili"].includes(m?.provider));
+  const explicit=rows.some(m=>/(?:^|\b)(?:mv|pv)(?:\b|$)|music\s*video|official\s*(?:video|mv|pv)|公式(?:mv|pv|動画|映像)|ミュージック(?:ビデオ|ビデオ)|映像作品/i.test(String(m?.name||"")+" "+String(m?.url||"")));
+  return{video:rows.length>0,explicit,count:rows.length};
+}
+async function ensureBeginnerIndex(){
+  if(state.beginnerIndex.loaded||state.beginnerIndex.loading||!fullIndex?.searchBeginnerCandidates)return;
+  state.beginnerIndex.loading=true;state.beginnerIndex.error="";
+  if(state.mode==="beginner"){state.renderKey="";renderCatalog()}
+  try{
+    const result=await fullIndex.searchBeginnerCandidates({
+      titleSeeds:BEGINNER_TITLE_SEEDS,
+      circleAliases:BEGINNER_CIRCLE_GROUPS.flatMap(x=>x.aliases),
+      limit:3600,concurrency:3
+    });
+    const tracks=dedupe((result?.tracks||[]).map(remember));
+    state.beginnerIndex={loaded:true,loading:false,tracks,total:tracks.length,video:Number(result?.video)||0,explicitMv:Number(result?.explicitMv)||0,error:""};
+  }catch(err){
+    console.warn("beginner full-index search failed",err);
+    state.beginnerIndex.loading=false;state.beginnerIndex.error=String(err?.message||err);
+    toast("입문 추천 전체 인덱스 검색에 실패했습니다.");
+  }finally{
+    state.renderKey="";
+    if(state.mode==="beginner")renderCatalog();
+  }
+}
 function isVocalTrack(t){
   return !!((t?.artists?.vocal||[]).length||/(vocal|보컬|歌|feat\.?)/i.test([t?.artistString,...(t?.moods||[])].filter(Boolean).join(" ")));
 }
 function beginnerScore(t){
   if(!t)return 0;
-  const cat=relationCategory(t),views=mediaViewStats(t),popRank=Number(t.popularityRank)||0,globalRank=Number(t.globalRank)||0;
-  let score=0;
-  if(beginnerTitleHit(t))score+=58;
-  if(isIosysTrack(t))score+=46;
-  else if(isBeginnerCircle(t))score+=22;
-  if(cat==="official-original")score+=24;
-  else if(["arrangement","rearrangement","remix","cover"].includes(cat))score+=12;
-  if(player.playable(t))score+=12;
-  if(views.mediaCount)score+=Math.min(30,Math.log10(views.total+1)*5);
-  if(popRank>0)score+=popRank<=100?28:popRank<=500?21:popRank<=2000?14:popRank<=10000?7:0;
-  if(globalRank>0)score+=globalRank<=200?18:globalRank<=1000?12:globalRank<=5000?6:0;
-  if(isVocalTrack(t))score+=4;
-  if(sourceProviders(t).size>=2)score+=5;
+  const cat=relationCategory(t),views=mediaViewStats(t),popRank=Number(t.popularityRank)||0,globalRank=Number(t.globalRank)||0,video=beginnerVideoInfo(t);
+  let score=Math.max(0,Number(t.beginnerIndexScore)||0)*.55;
+  if(beginnerTitleHit(t))score+=62;
+  if(isIosysTrack(t))score+=48;
+  else if(isBeginnerCircle(t))score+=24;
+  if(cat==="official-original")score+=26;
+  else if(["arrangement","rearrangement","remix","cover"].includes(cat))score+=13;
+  if(video.explicit)score+=92;
+  else if(video.video)score+=48;
+  if(player.playable(t))score+=14;
+  if(views.mediaCount)score+=Math.min(34,Math.log10(views.total+1)*5.5);
+  if(popRank>0)score+=popRank<=100?30:popRank<=500?24:popRank<=2000?18:popRank<=10000?11:popRank<=30000?5:0;
+  if(globalRank>0)score+=globalRank<=200?20:globalRank<=1000?15:globalRank<=5000?10:globalRank<=20000?5:0;
+  if(isVocalTrack(t))score+=5;
+  if(sourceProviders(t).size>=2)score+=6;
   return score;
 }
 function beginnerEligible(t){
-  return beginnerTitleHit(t)||isIosysTrack(t)||beginnerScore(t)>=44;
+  return Number(t?.beginnerIndexScore)>0||beginnerTitleHit(t)||isBeginnerCircle(t)||beginnerScore(t)>=28;
 }
 function beginnerFilterMatch(t,key){
   if(key==="beginner:original")return relationCategory(t)==="official-original";
   if(key==="beginner:arrangement")return ["arrangement","rearrangement","remix","cover","remaster"].includes(relationCategory(t));
   if(key==="beginner:vocal")return isVocalTrack(t)&&relationCategory(t)!=="official-original";
+  if(key==="beginner:mv")return beginnerVideoInfo(t).video;
   if(key.startsWith("beginner-circle:"))return beginnerCircleMatch(t,beginnerCircleGroup(key));
   return true;
 }
@@ -825,9 +855,12 @@ function beginnerFilterLabel(key){
   if(key==="beginner:original")return"유명 원곡";
   if(key==="beginner:arrangement")return"유명 어레인지";
   if(key==="beginner:vocal")return"보컬 입문";
+  if(key==="beginner:mv")return"뮤비 · PV 우선";
   const group=beginnerCircleGroup(key);return group?.label||key;
 }
 function beginnerReason(t){
+  const video=beginnerVideoInfo(t);
+  if(video.explicit)return"뮤비 · PV 추천";
   const group=BEGINNER_CIRCLE_GROUPS.find(g=>beginnerCircleMatch(t,g));
   if(group)return group.label+" 입문";
   if(beginnerTitleHit(t)&&relationCategory(t)==="official-original")return"대표 원곡";
@@ -878,10 +911,13 @@ function renderCatalog(title){
   renderFilters();
   let list=currentPool();
   const beginnerCircleFilter=state.mode==="beginner"&&state.filter.startsWith("beginner-circle:");
+  if(state.mode==="beginner"&&!state.beginnerIndex.loaded&&!state.beginnerIndex.loading)queueMicrotask(ensureBeginnerIndex);
   if(beginnerCircleFilter){
     const group=beginnerCircleGroup(state.filter),extra=group?state.beginnerCircleCache.get(group.key)||[]:[];
-    list=dedupe([...list,...extra]).filter(t=>beginnerFilterMatch(t,state.filter));
-  }else if(state.mode==="beginner")list=list.filter(beginnerEligible);
+    list=dedupe([...list,...state.beginnerIndex.tracks,...extra]).filter(t=>beginnerFilterMatch(t,state.filter));
+  }else if(state.mode==="beginner"){
+    list=dedupe([...list,...state.beginnerIndex.tracks]).filter(beginnerEligible);
+  }
   if(state.filter==="인앱 재생"||state.filter==="영상 있음")list=list.filter(t=>player.playable(t));
   else if(state.filter.startsWith("beginner:"))list=list.filter(t=>beginnerFilterMatch(t,state.filter));
   else if(state.filter.startsWith("category:")){
@@ -927,7 +963,7 @@ function renderFilters(){
     const primary=[
       {key:"전체",label:"★ 입문 전체"},{key:"beginner:original",label:"유명 원곡"},
       {key:"beginner:arrangement",label:"유명 어레인지"},{key:"beginner:vocal",label:"보컬 입문"},
-      {key:"인앱 재생",label:"바로 재생"}
+      {key:"beginner:mv",label:"뮤비 · PV"},{key:"인앱 재생",label:"바로 재생"}
     ];
     const valid=new Set(["전체","인앱 재생",...primary.map(x=>x.key),...BEGINNER_CIRCLE_GROUPS.map(x=>"beginner-circle:"+x.key)]);
     if(!valid.has(state.filter))state.filter="전체";
@@ -999,6 +1035,12 @@ function syncCatalogFooter(){
   if(state.mode==="fan-original"){
     btn.disabled=true;btn.textContent="동방풍 목록 모두 표시";
     meta.innerHTML='<span class="remote-pulse">TOUHOU-STYLE</span> · 큐레이션 '+fmt(state.lastMatchCount)+'곡 · 공식 원곡/어레인지 순위와 별도 집계';
+    return;
+  }
+  if(state.mode==="beginner"){
+    const shown=Math.min(state.displayLimit,state.lastMatchCount),bi=state.beginnerIndex;
+    btn.disabled=shown>=state.lastMatchCount;btn.textContent=btn.disabled?"현재 입문 후보 모두 표시":"60곡 더 표시";
+    meta.innerHTML='<span class="remote-pulse">BEGINNER INDEX</span> · '+(bi.loading?"18.9만곡 전체에서 후보 검색 중 · ":"")+'입문 후보 '+fmt(state.lastMatchCount)+'곡 · 영상 '+fmt(bi.video||0)+'곡 · 명시 MV/PV '+fmt(bi.explicitMv||0)+'곡 · 화면 '+fmt(shown)+'곡';
     return;
   }
   if(state.full.loaded){
@@ -1972,7 +2014,10 @@ function orderByStoredRank(list,field,totalHint=0){
 }
 function sortList(list,sort){
   const fanOnly=list.length>0&&list.every(isCuratedStyle);
-  if(state.mode==="beginner"&&sort==="recommend")return [...list].sort((a,b)=>beginnerScore(b)-beginnerScore(a)||popularityScore(b)-popularityScore(a)||String(a.title||"").localeCompare(String(b.title||""),"ja"));
+  if(state.mode==="beginner"&&sort==="recommend")return [...list].sort((a,b)=>{
+    const av=beginnerVideoInfo(a),bv=beginnerVideoInfo(b);
+    return Number(bv.explicit)-Number(av.explicit)||beginnerScore(b)-beginnerScore(a)||Number(bv.video)-Number(av.video)||popularityScore(b)-popularityScore(a)||String(a.title||"").localeCompare(String(b.title||""),"ja");
+  });
   if(sort==="year-desc")return [...list].sort((a,b)=>(b.year||0)-(a.year||0));
   if(sort==="year-asc")return [...list].sort((a,b)=>(a.year||9999)-(b.year||9999));
   if(sort==="title")return [...list].sort((a,b)=>a.title.localeCompare(b.title,"ja"));
