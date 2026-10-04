@@ -89,7 +89,7 @@ async function boot(){
     setDataHealth("error","UI 초기화 오류 · 새로고침 필요");
   }
   if("serviceWorker" in navigator){
-    navigator.serviceWorker.register("./sw.js?v=0.9.41").then(r=>r.update()).catch(err=>console.warn("service worker",err));
+    navigator.serviceWorker.register("./sw.js?v=0.9.42").then(r=>r.update()).catch(err=>console.warn("service worker",err));
   }
 
   const [or,ar,fr,far,fy,wr,sr]=await Promise.all([
@@ -1124,6 +1124,7 @@ function renderGrid(list){
     return;
   }
   grid.innerHTML=list.map(card).join("");
+  hydrateCardThumbnails(grid);
   grid.querySelectorAll("[data-open]").forEach(b=>b.onclick=e=>{e.stopPropagation();openTrack(byId(b.dataset.open))});
   grid.querySelectorAll("[data-dive]").forEach(b=>b.onclick=e=>{e.stopPropagation();startDive(byId(b.dataset.dive))});
   grid.querySelectorAll("[data-play]").forEach(b=>b.onclick=e=>{e.stopPropagation();playTrack(byId(b.dataset.play))});
@@ -1133,11 +1134,14 @@ function renderGrid(list){
 function typeLabel(t){return RELATION_BADGES[relationCategory(t)]||"TOUHOU RELATED"}
 function typeClass(t){return relationCategory(t)}
 function trackYoutubeId(t){
-  const m=(t?.mediaCandidates||[]).find(x=>x?.provider==="youtube"&&x?.id);
+  const rows=player?.candidates?.(t)||t?.mediaCandidates||[];
+  const m=rows.find(x=>x?.provider==="youtube"&&x?.id);
   if(m?.id)return String(m.id);
   const raw=String(t?.thumb||"");
   const hit=raw.match(/i\.ytimg\.com\/vi\/([^/]+)\//i);
-  return hit?decodeURIComponent(hit[1]):"";
+  if(!hit)return"";
+  const id=decodeURIComponent(hit[1]);
+  return player?.badMedia?.has?.("youtube:"+id)?"":id;
 }
 function cssUrl(url){
   return 'url("'+String(url||"").replace(/\\/g,"\\\\").replace(/"/g,'\\"')+'")';
@@ -1151,6 +1155,18 @@ function cardThumbStyle(t){
   const raw=String(t?.thumb||"").trim();
   if(raw&&!urls.includes(raw))urls.push(raw);
   return urls.length?' style="background-image:'+urls.map(cssUrl).join(",")+'"':"";
+}
+function hydrateCardThumbnails(grid){
+  if(!grid||!player?.resolveArtwork)return;
+  grid.querySelectorAll("[data-card-thumb]").forEach(el=>{
+    const t=byId(el.dataset.cardThumb);if(!t)return;
+    player.resolveArtwork(t).then(url=>{
+      if(!url)return;
+      const safe=String(url).replace(/"/g,"%22");
+      el.style.backgroundImage='url("'+safe+'")';
+      el.classList.remove("no-image");el.classList.add("has-art");
+    }).catch(()=>{});
+  });
 }
 function card(t){
   const playable=player.playable(t),external=trustedExternalMedia(t),canLookup=!playable&&state.remote.available,origins=originalNames(t);
@@ -1170,7 +1186,7 @@ function card(t){
     : "";
   return '<article class="track-card">'+
     '<button class="track-main" data-open="'+escAttr(t.id)+'">'+
-      '<div class="track-thumb '+(hasThumb?"":"no-image")+'"'+thumb+'>'+
+      '<div class="track-thumb '+(hasThumb?"":"no-image")+'" data-card-thumb="'+escAttr(t.id)+'"'+thumb+'>'+
         '<div class="track-badges"><span class="type-badge '+escAttr(typeClass(t))+'">'+esc(typeLabel(t))+'</span><span class="rank-badge">'+esc(rankText(rank))+'</span><span class="percent-badge">'+esc(rankPercentText(rank))+'</span>'+(playable?'<span class="media-badge">▶ VIDEO</span>':'')+'</div>'+
       '</div>'+
       '<div class="track-copy"><h3>'+esc(t.title)+'</h3><div class="byline">'+esc(by||"정보 준비 중")+'</div>'+(beginner?'<div class="beginner-note">★ '+esc(beginnerReason(t))+'</div>':'')+'<div class="origin-line">'+esc(originLine)+'</div>'+
