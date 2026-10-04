@@ -1,5 +1,5 @@
 {
-  "version": "0.9.37",
+  "version": "0.9.38",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-10-04",
@@ -281,6 +281,11 @@
     "folded-mobile-video-center",
     "mobile-player-opaque-backdrop",
     "viewport-width-video-stage",
-    "mobile-video-background-leak-fix"
+    "mobile-video-background-leak-fix",
+    "high-res-youtube-artwork",
+    "youtube-thumbnail-fallback-chain",
+    "artwork-aspect-ratio-preserve",
+    "blurred-artwork-fill",
+    "youtube-hd-playback-preference"
   ]
 }
