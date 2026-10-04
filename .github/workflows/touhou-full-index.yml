@@ -9,6 +9,9 @@ on:
     branches: [main]
     paths:
       - "tools/build-touhou-index.mjs"
+      - "tools/build-touhou-fan-youtube.mjs"
+      - "touhou/data/fan-originals.json"
+      - "touhou/data/fan-original-albums.json"
       - ".github/workflows/touhou-full-index.yml"
 
 permissions:
@@ -47,18 +50,26 @@ jobs:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: node tools/build-touhou-index.mjs
 
+      - name: Match Touhou-style tracks to embeddable YouTube videos
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          YOUTUBE_SEARCH_LIMIT: "75"
+        run: node tools/build-touhou-fan-youtube.mjs
+
       - name: Commit generated index
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          rm -rf /tmp/touhou-full
+          rm -rf /tmp/touhou-full /tmp/fan-youtube.json
           cp -a touhou/data/full /tmp/touhou-full
+          cp touhou/data/fan-youtube.json /tmp/fan-youtube.json
           for attempt in 1 2 3 4; do
             git fetch origin main
             git reset --hard origin/main
             rm -rf touhou/data/full
             cp -a /tmp/touhou-full touhou/data/full
-            git add touhou/data/full
+            cp /tmp/fan-youtube.json touhou/data/fan-youtube.json
+            git add touhou/data/full touhou/data/fan-youtube.json
             if git diff --cached --quiet; then
               echo "Generated index is already current."
               break
