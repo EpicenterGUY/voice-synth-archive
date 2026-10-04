@@ -1,17 +1,21 @@
 {
   "version": 2,
-  "updated": "2026-10-04T07:05:15.321Z",
+  "updated": "2026-10-04T07:30:00.000Z",
   "totalTracks": 583,
   "checkedTracks": 75,
-  "matchedTracks": 50,
+  "matchedTracks": 51,
   "policy": "Exact/near-exact title match with artist/context checks; only embeddable syndicated YouTube videos.",
   "items": {
     "fan-sparxe-switcheroo": {
-      "videoId": "",
-      "score": 0,
+      "videoId": "lWcN4oJsvps",
+      "score": 99,
       "title": "Switcheroo",
       "artist": "Sparxe",
-      "matchedAt": "2026-10-04T07:04:51.771Z"
+      "videoTitle": "Sparxe - Switcheroo (From osu! TWC 2024)",
+      "channelTitle": "Sparxe Music",
+      "matchedAt": "2026-10-04T07:30:00.000Z",
+      "verified": true,
+      "basis": "creator-linked"
     },
     "fan-akakyu-the-theorists-interpretation-of-fantasia": {
       "videoId": "OYWlMiD1XAk",
