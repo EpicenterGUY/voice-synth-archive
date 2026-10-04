@@ -1,5 +1,5 @@
 {
-  "version": "0.9.31",
+  "version": "0.9.32",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-10-04",
@@ -243,6 +243,9 @@
     "iosys-beginner-filter",
     "famous-arrangements-filter",
     "vocal-beginner-filter",
-    "beginner-playable-filter"
+    "beginner-playable-filter",
+    "station-hero-artifact-fix",
+    "custom-artwork-layer-isolation",
+    "legacy-hero-ring-suppression"
   ]
 }
