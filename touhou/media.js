@@ -87,6 +87,7 @@ class TouhouMediaPlayer{
     this.lyricsTab=document.getElementById("playerTabLyrics");
     this.infoTab=document.getElementById("playerTabInfo");
     this.visualMode=localStorage.getItem(VISUAL_MODE_KEY)==="video"?"video":"song";
+    this.viewportOrientation=window.innerWidth>window.innerHeight?"landscape":"portrait";
     this.artworkCache=new Map();this.artworkSeq=0;
     this.current=null;this.queue=[];this.index=-1;this.frame=null;this.yt=null;this.playing=true;this.activeTab="related";
     this.pipWindow=null;this.pipHome=null;this.backgroundActive=false;
@@ -144,6 +145,19 @@ class TouhouMediaPlayer{
         document.body.classList.remove("player-open");
       }
     });
+    const normalizeOrientation=()=>{
+      const next=window.innerWidth>window.innerHeight?"landscape":"portrait";
+      if(next===this.viewportOrientation)return;
+      this.viewportOrientation=next;
+      window.setTimeout(()=>{
+        if(!this.current||this.shell.hidden||this.shell.classList.contains("is-mini"))return;
+        this.shell.scrollTop=0;
+        this.syncVisualMode();
+        this.syncTimeline();
+      },90);
+    };
+    window.addEventListener("resize",normalizeOrientation,{passive:true});
+    window.addEventListener("orientationchange",normalizeOrientation,{passive:true});
     this.timelineTimer=setInterval(()=>this.syncTimeline(),750);
     this.syncControls();
     this.setVisualMode(this.visualMode,false);
