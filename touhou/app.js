@@ -5,7 +5,7 @@ const fullIndex=window.TouhouFullIndex;
 const player=new window.TouhouMediaPlayer();
 
 const state={
-  localOriginals:[],localArrangements:[],known:new Map(),aliases:new Map(),identities:new Map(),remoteItems:[],fullItems:[],works:[],archiveSource:null,
+  localOriginals:[],localArrangements:[],localFanOriginals:[],known:new Map(),aliases:new Map(),identities:new Map(),remoteItems:[],fullItems:[],works:[],archiveSource:null,
   mode:"all",filter:"전체",workFilter:"",sort:"recommend",selected:null,view:"home",diveDepth:0,diveRoot:null,icebergMode:"visibility",rankIndex:new Map(),rankTotal:0,enriching:new Map(),
   full:{available:false,loading:false,loaded:false,streaming:false,manifest:null,loadedCount:0,error:""},displayLimit:60,renderKey:"",lastMatchCount:0,childCounts:new Map(),
   relations:{ready:false,building:false,byOriginal:new Map(),byWork:new Map(),byCircle:new Map(),byVocal:new Map(),byMood:new Map()},
@@ -48,9 +48,10 @@ async function boot(){
     navigator.serviceWorker.register("./sw.js?v=0.9.21").then(r=>r.update()).catch(err=>console.warn("service worker",err));
   }
 
-  const [or,ar,wr,sr]=await Promise.all([
+  const [or,ar,fr,wr,sr]=await Promise.all([
     loadLocalJson("./data/originals.json",[]),
     loadLocalJson("./data/arrangements.json",[]),
+    loadLocalJson("./data/fan-originals.json",[]),
     loadLocalJson("./data/works.json",[]),
     loadLocalJson("./data/archive-sources.json",null)
   ]);
@@ -61,7 +62,8 @@ async function boot(){
   fullIndex?.setWorks?.(state.works);
   state.localOriginals=(Array.isArray(or.data)?or.data:[]).map(x=>({...x,type:"original",circle:"ZUN",album:x.work,originalIds:[],remote:false}));
   state.localArrangements=(Array.isArray(ar.data)?ar.data:[]).map(x=>({...x,type:"arrangement",remote:false}));
-  [...state.localOriginals,...state.localArrangements].forEach(remember);
+  state.localFanOriginals=(Array.isArray(fr.data)?fr.data:[]).map(x=>({...x,type:"fan-original",category:"fan-original",originalIds:[],remote:false}));
+  [...state.localOriginals,...state.localArrangements,...state.localFanOriginals].forEach(remember);
   Object.values(state.snapshots||{}).forEach(x=>x&&remember({...x,snapshot:true}));
   normalizePersistentIds();
 
@@ -74,9 +76,9 @@ async function boot(){
     $("#trackGrid").innerHTML='<div class="empty-state" style="grid-column:1/-1;min-height:220px"><strong>초기 화면 구성 중 오류가 발생했습니다.</strong><span>라이브 DB 연결은 계속 시도합니다.</span></div>';
   }
 
-  const criticalFailed=!or.ok||!ar.ok||!wr.ok;
+  const criticalFailed=!or.ok||!ar.ok||!fr.ok||!wr.ok;
   if(criticalFailed){
-    const failed=[!or.ok&&"원곡",!ar.ok&&"2차창작",!wr.ok&&"작품"].filter(Boolean).join(" · ");
+    const failed=[!or.ok&&"원곡",!ar.ok&&"2차창작",!fr.ok&&"동방풍",!wr.ok&&"작품"].filter(Boolean).join(" · ");
     setDataHealth("loading","로컬 일부 재시도 필요("+failed+") · 라이브 DB 연결 중");
   }
 
@@ -162,8 +164,10 @@ function bind(){
       player.updateCurrentData?.({...merged,_playerRanks:playerRankMeta(merged)});
     }catch(_){}
   });
-  $$("#modeTabs .mode-tab").forEach(btn=>btn.onclick=()=>{
-    state.mode=btn.dataset.mode;state.filter="전체";syncModeTabs();
+  $("#modeTabs .mode-tab").forEach(btn=>btn.onclick=()=>{
+    state.mode=btn.dataset.mode;state.filter="전체";
+    if(state.mode==="fan-original"){state.workFilter="";$("#workSelect").value=""}
+    syncModeTabs();
     requestAnimationFrame(()=>state.view==="iceberg"?renderIceberg():renderCatalog());
     loadRemote(true);
   });
@@ -287,6 +291,11 @@ function remoteSort(){
   return"RatingScore";
 }
 async function loadRemote(reset=false,force=false){
+  if(state.mode==="fan-original"){
+    state.remoteItems=[];state.remote.start=0;state.remote.error="";
+    renderCatalog("동방풍 오리지널");setDataHealth("ok","동방풍 큐레이션 · "+fmt(state.localFanOriginals.length)+"곡");syncCatalogFooter();
+    return;
+  }
   if(state.full.loaded)return;
   if(!state.remote.available)return;
   if(!reset&&state.remote.loading)return;
@@ -308,6 +317,7 @@ async function loadRemote(reset=false,force=false){
     let incoming=(res.items||[]).map(t=>{const work=selectedWork();return remember(work?{...t,workId:work.id,work:t.work||work.title}:t)});
     if(state.mode==="original")incoming=incoming.filter(t=>t.type==="original");
     if(state.mode==="arrangement")incoming=incoming.filter(t=>t.type==="arrangement");
+    if(state.mode==="fan-original")incoming=[];
     state.remoteItems=dedupe([...state.remoteItems,...incoming]);
     state.remote.start=start+(Number(res.consumed)||Number(res.raw?.items?.length)||res.items?.length||0);
     state.remote.total=Number(res.total)||state.remote.total;
@@ -402,6 +412,7 @@ function identityKey(t){
   const title=normKey(t.title);
   if(!title)return"";
   if(t.type==="original")return"original|"+title;
+  if(isFanOriginal(t))return"fan-original|"+title+"|"+normKey(t.artistString||t.circle||"");
   return"arrangement|"+title+"|"+normKey(t.circle||t.artistString||"");
 }
 function mergeArtists(a={},b={}){
@@ -558,9 +569,10 @@ function playerRankMeta(t){
     const pool=currentPool(),sample=pool.length>5000?pool.slice(0,1200):pool;
     const r=sampleRankByScore(t,popularityScore,sample);popValue=fmt(pop.total)+"곡 전체 · 순위 준비 중";popSub="현재 로드 표본 "+fmt(r.rank)+"/"+fmt(r.total);
   }
+  const fan=isFanOriginal(t);
   return{
-    overall:{label:"종합",value:rankText(overall),sub:rankPercentText(overall),detail:overallRankDetail(t)},
-    popularity:{label:"인기",value:popValue,sub:popSub,detail:popularityRankDetail(t)},
+    overall:{label:fan?"동방풍 순위":"종합",value:rankText(overall),sub:rankPercentText(overall),detail:overallRankDetail(t)},
+    popularity:{label:fan?"동방풍 인기":"인기",value:popValue,sub:popSub,detail:popularityRankDetail(t)},
     influence:inf?{label:"원곡 영향력",value:inf.rank?fmt(inf.total)+"원곡 중 "+fmt(inf.rank)+"위":"현재 표본 계산",sub:"파생 "+fmt(inf.children)+"곡 · "+fmt(inf.circles)+"서클",detail:influenceRankDetail(t)}:null,
     views:views?{label:"플랫폼 조회수",value:views.rank?fmt(views.total)+"확인곡 중 "+fmt(views.rank)+"위":views.partial?"부분 집계 "+fmt(views.total)+"곡":fmt(views.views)+"회",sub:views.partial?"FULL INDEX 재빌드 때 갱신":fmt(views.platforms)+"개 플랫폼 · "+fmt(views.media)+"개 영상",detail:viewRankDetail(t)}:null,
     active:activeSortRankInfo(t)
@@ -582,13 +594,14 @@ function dedupe(list){
 }
 function currentPool(){
   let pool;
-  if(state.full.loaded)pool=state.fullItems;
+  if(state.full.loaded)pool=dedupe([...state.fullItems,...state.localFanOriginals.map(x=>byId(x.id)||x)]);
   else{
-    const local=[...state.localOriginals,...state.localArrangements].map(x=>byId(x.id)||x);
+    const local=[...state.localOriginals,...state.localArrangements,...state.localFanOriginals].map(x=>byId(x.id)||x);
     pool=dedupe([...local,...state.remoteItems]);
   }
   if(state.mode==="original")pool=pool.filter(t=>t.type==="original");
   if(state.mode==="arrangement")pool=pool.filter(t=>t.type==="arrangement");
+  if(state.mode==="fan-original")pool=pool.filter(isFanOriginal);
   return pool;
 }
 function renderCatalog(title){
@@ -632,6 +645,9 @@ function renderFilters(){
   if(state.mode==="arrangement"){
     uniq(base.map(x=>x.circle).filter(Boolean)).slice(0,10).forEach(x=>out.push(x));
   }
+  if(state.mode==="fan-original"){
+    uniq(base.map(x=>x.artistString||x.circle).filter(Boolean)).slice(0,10).forEach(x=>out.push(x));
+  }
   if(!out.includes(state.filter))state.filter="전체";
   $("#quickFilters").innerHTML=out.map(x=>'<button class="filter-chip '+(x===state.filter?"is-active":"")+'" data-filter="'+escAttr(x)+'">'+esc(x)+'</button>').join("");
   $$("#quickFilters .filter-chip").forEach(b=>b.onclick=()=>{state.filter=b.dataset.filter;requestAnimationFrame(()=>renderCatalog());loadRemote(true);});
@@ -639,15 +655,18 @@ function renderFilters(){
 function updateStats(){
   const meta=state.full.manifest;
   const loaded=[...state.known.values()];
-  const localOrig=state.localOriginals.length,localArr=state.localArrangements.length;
+  const localOrig=state.localOriginals.length,localArr=state.localArrangements.length,localFan=state.localFanOriginals.length;
   const originalCount=meta?.counts?.original||state.remote.counts.original||loaded.filter(x=>x.type==="original").length||localOrig;
   const arrangementCount=meta?.counts?.arrangement||state.remote.counts.arrangement||loaded.filter(x=>x.type==="arrangement").length||localArr;
+  const fanOriginalCount=loaded.filter(isFanOriginal).length||localFan;
   const mediaCount=meta?.counts?.mediaCandidates??null;
   $("#statOriginal").textContent=fmt(originalCount);
   $("#statArrangement").textContent=fmt(arrangementCount);
+  $("#statFanOriginal").textContent=fmt(fanOriginalCount);
   $("#statMedia").textContent=mediaCount===null?"집계 중":fmt(mediaCount);
   $("#statOriginalMeta").textContent=meta?"공식 작품/ZUN 기준":"TouhouDB 공식 원곡 분류";
   $("#statArrangementMeta").textContent=meta?"전체 인덱스":"TouhouDB 어레인지 분류";
+  $("#statFanOriginalMeta").textContent="공식 원곡·어레인지와 별도 큐레이션";
   $("#statMediaMeta").textContent=meta?"전체 "+fmt(meta.indexed)+"곡에서 PV 후보 확인":"전수 인덱스 생성 후 확정";
   updateCatalogTotal();
 }
@@ -662,6 +681,11 @@ function syncCatalogFooter(){
   const special=state.view==="library"||state.view==="history";
   $("#catalogFooter").hidden=special;
   if(special)return;
+  if(state.mode==="fan-original"){
+    btn.disabled=true;btn.textContent="동방풍 목록 모두 표시";
+    meta.innerHTML='<span class="remote-pulse">TOUHOU-STYLE</span> · 큐레이션 '+fmt(state.lastMatchCount)+'곡 · 공식 원곡/어레인지 순위와 별도 집계';
+    return;
+  }
   if(state.full.loaded){
     const shown=Math.min(state.displayLimit,state.lastMatchCount);
     btn.disabled=shown>=state.lastMatchCount;
@@ -702,6 +726,7 @@ function catalogTitle(q,count){
   if(state.filter!=="전체")return state.filter;
   if(state.mode==="original")return "동방 공식 원곡 전체 탐색";
   if(state.mode==="arrangement")return "동방 2차창작 전체 탐색";
+  if(state.mode==="fan-original")return "동방풍 오리지널 전체 탐색";
   return state.view==="home"?"오늘의 다이브 입구":"전체 카탈로그";
 }
 function renderGrid(list){
@@ -719,17 +744,17 @@ function renderGrid(list){
 }
 function typeLabel(t){
   if(t?.category==="official-original"||t?.type==="original")return"OFFICIAL ORIGINAL";
-  if(t?.category==="fan-original")return"FAN ORIGINAL";
+  if(isFanOriginal(t))return"TOUHOU-STYLE";
   if(t?.category==="other")return"OTHER";
   return"ARRANGE";
 }
 function typeClass(t){
-  if(t?.category==="fan-original")return"fan-original";
+  if(isFanOriginal(t))return"fan-original";
   if(t?.category==="other")return"other";
   return t?.type==="original"?"original":"arrangement";
 }
 function card(t){
-  const playable=player.playable(t),external=trustedExternalMedia(t),canLookup=!playable&&!external&&state.remote.available,origins=originalNames(t);
+  const playable=player.playable(t),external=trustedExternalMedia(t),canLookup=!isFanOriginal(t)&&!playable&&!external&&state.remote.available,origins=originalNames(t);
   const rank=trackRank(t);
   const by=t.type==="arrangement"
     ? [t.circle,(t.artists?.vocal||[]).join(", ")].filter(Boolean).join(" · ")
@@ -737,7 +762,9 @@ function card(t){
   const thumb=t.thumb?' style="background-image:url(&quot;'+escAttr(t.thumb)+'&quot;)"':"";
   const originLine=t.type==="arrangement"
     ? "원곡 · "+(origins.join(" / ")||(t.originalIds?.length?"계보 연결 가능":"원곡 정보 확인 가능"))
-    : (t.year||"연도 미상")+" · "+countChildren(t.id)+"개 연결";
+    : isFanOriginal(t)
+      ? (t.year||"연도 미상")+" · 동방풍 오리지널 · 직접 원곡 없음"
+      : (t.year||"연도 미상")+" · "+countChildren(t.id)+"개 연결";
   const originButton=t.type==="arrangement"
     ? '<button class="origin-jump" data-origin="'+escAttr(t.id)+'"><span>↖</span><strong>원곡</strong></button>'
     : "";
@@ -768,21 +795,22 @@ function openTrack(t,opts={}){
   const external=trustedExternalMedia(t);
   const source=t.media?.url||external?.url||t.source?.url||"";
   const rank=trackRank(t),popRank=popularityRankInfo(t),infRank=influenceRankInfo(t),links=trustedLinks(t);
-  const canLookup=!player.playable(t)&&!external&&state.remote.available;
+  const fan=isFanOriginal(t),rankLabel=fan?"동방풍 순위":"종합";
+  const canLookup=!fan&&!player.playable(t)&&!external&&state.remote.available;
   const missing=(t.originalIds||[]).filter(id=>!byId(id));
   $("#detailContent").innerHTML=`
-    <div class="detail-hero"><div class="detail-kicker">${typeLabel(t)} · ${t.touhoudbId?(t.remote?"TOUHOUDB LIVE":"LOCAL + TOUHOUDB"):"LOCAL VERIFIED"}</div><div class="detail-rank"><strong>종합 · ${rankText(rank)}</strong><span>${rankPercentText(rank)} · ${rank.fullScale?"전수 "+fmt(rank.total)+"곡 기준":rank.sampleRank?"현재 로드 표본 "+fmt(rank.sampleTotal)+"곡 중 "+fmt(rank.sampleRank)+"위":"전수 순위 준비 중"} · ${rank.score.toFixed(1)}pt</span></div>
+    <div class="detail-hero"><div class="detail-kicker">${typeLabel(t)} · ${fan?"CURATED STYLE INDEX":t.touhoudbId?(t.remote?"TOUHOUDB LIVE":"LOCAL + TOUHOUDB"):"LOCAL VERIFIED"}</div><div class="detail-rank"><strong>${rankLabel} · ${rankText(rank)}</strong><span>${rankPercentText(rank)} · ${fan?"동방풍 카테고리 내부":rank.fullScale?"전수 "+fmt(rank.total)+"곡 기준":rank.sampleRank?"현재 로드 표본 "+fmt(rank.sampleTotal)+"곡 중 "+fmt(rank.sampleRank)+"위":"전수 순위 준비 중"} · ${rank.score.toFixed(1)}pt</span></div>
     <div class="rank-breakdown">
-      <div><label>인기</label><strong>${popRank.rank?fmt(popRank.total)+"곡 중 "+fmt(popRank.rank)+"위":"집계 중"}</strong><small>${popRank.percent!==null?"상위 "+(popRank.percent<0.01?"<0.01":popRank.percent.toFixed(2))+"%":""}</small></div>
+      <div><label>${fan?"동방풍 인기":"인기"}</label><strong>${popRank.rank?fmt(popRank.total)+"곡 중 "+fmt(popRank.rank)+"위":"집계 중"}</strong><small>${popRank.percent!==null?"상위 "+(popRank.percent<0.01?"<0.01":popRank.percent.toFixed(2))+"%":""}</small></div>
       ${infRank?'<div><label>원곡 영향력</label><strong>'+fmt(infRank.total)+'원곡 중 '+(infRank.rank?fmt(infRank.rank)+'위':"집계 중")+'</strong><small>파생 '+fmt(infRank.children)+'곡 · '+fmt(infRank.circles)+'서클 · '+fmt(infRank.albums)+'앨범</small></div>':""}
     </div><h2>${esc(t.title)}</h2><div class="detail-meta">${artistLine}<br>${t.year||""}${t.album?" · "+esc(t.album):""}</div></div>
     <div class="tag-row">${(t.moods||[]).map(x=>`<span class="tag">${esc(x)}</span>`).join("")}</div>
     <div class="detail-actions"><button class="hot" id="detailPlay" ${player.playable(t)||external||canLookup?"":"disabled"}>${player.playable(t)?(player.getYoutubeMode?.()==="youtube"&&player.candidates?.(t).some(x=>x.provider==="youtube")?"▶ YouTube 앱 재생":"▶ 앱에서 재생"):external?"↗ 외부 재생":canLookup?"⌕ 영상 찾기":"영상 없음"}</button><button id="detailDive">⌁ 다이브</button>${t.type==="arrangement"?'<button class="origin-jump" id="detailOrigin"><span>↖</span><strong>원곡으로</strong></button>':""}<button id="favBtn">${fav?"♥ 보관됨":"♡ 보관하기"}</button>${source?`<a href="${escAttr(source)}" target="_blank" rel="noopener">원본 링크 ↗</a>`:'<button disabled>원본 링크 없음</button>'}</div>
-    ${t.type==="arrangement"?lineageBox("이 어레인지의 원곡",origins,missing):lineageBox("이 원곡을 사용한 현재 로드 어레인지",children,[])}
-    <div class="fact-box"><label>순위 기준</label><div class="detail-meta">종합 = 인기 + 원곡 영향력. 종합·인기 순위의 분모는 FULL INDEX 전체 등록곡 ${fmt(fullRankTotal())}곡을 그대로 사용하며, 현재 로드된 표본 순위를 전수 순위처럼 환산하지 않습니다. 플랫폼 조회수 순위는 실제 조회수 확인에 성공한 곡만 별도로 집계합니다.</div></div>
+    ${fan?'<div class="fact-box"><label>분류</label><div class="detail-meta">공식 동방 원곡을 직접 사용하지 않는 동방풍 오리지널입니다. 공식 원곡·2차창작 계보와 분리해 표시합니다.</div></div>':t.type==="arrangement"?lineageBox("이 어레인지의 원곡",origins,missing):lineageBox("이 원곡을 사용한 현재 로드 어레인지",children,[])}
+    <div class="fact-box"><label>순위 기준</label><div class="detail-meta">${fan?"동방풍 순위는 동방풍 큐레이션 내부에서 인기 점수를 기준으로 비교합니다. 공식 원곡·2차창작 FULL INDEX 순위에는 끼워 넣지 않습니다.":"종합 = 인기 + 원곡 영향력. 종합·인기 순위의 분모는 FULL INDEX 전체 등록곡 "+fmt(fullRankTotal())+"곡을 그대로 사용하며, 현재 로드된 표본 순위를 전수 순위처럼 환산하지 않습니다. 플랫폼 조회수 순위는 실제 조회수 확인에 성공한 곡만 별도로 집계합니다."}</div></div>
     ${links.length?'<div class="fact-box trusted-links"><label>확인된 링크</label><div class="trusted-link-list">'+links.slice(0,12).map(x=>'<a href="'+escAttr(x.url)+'" target="_blank" rel="noopener noreferrer">'+esc(x.provider)+' ↗</a>').join("")+'</div></div>':""}
     <div class="fact-box"><label>다이브 기준</label><div class="detail-meta">${esc(relationText(t))}</div></div>
-    ${!opts.skipEnrich&&!t.touhoudbId&&state.remote.available?'<div class="detail-sync">TouhouDB에서 영상·통계를 보강하는 중…</div>':""}`;
+    ${!fan&&!opts.skipEnrich&&!t.touhoudbId&&state.remote.available?'<div class="detail-sync">TouhouDB에서 영상·통계를 보강하는 중…</div>':""}`;
   $("#detailPanel").classList.add("is-open");$("#detailPanel").setAttribute("aria-hidden","false");syncScrim();
   const play=$("#detailPlay");if(play)play.onclick=async()=>{
     if(!player.playable(t)&&trustedExternalMedia(t)){openTrustedExternal(t);closePanel();return}
@@ -793,14 +821,14 @@ function openTrack(t,opts={}){
   $("#favBtn").onclick=()=>toggleFavorite(t);
   $("#detailContent").querySelectorAll("[data-lineage]").forEach(b=>b.onclick=()=>openTrack(byId(b.dataset.lineage)));
   $("#detailContent").querySelectorAll("[data-hydrate]").forEach(b=>b.onclick=()=>hydrateAndOpen(b.dataset.hydrate));
-  if(!opts.skipEnrich&&!t.touhoudbId&&state.remote.available){
+  if(!fan&&!opts.skipEnrich&&!t.touhoudbId&&state.remote.available){
     enrichTrack(t).then(enriched=>{
       if(enriched&&state.selected&&resolveId(state.selected.id)===resolveId(t.id)&&$("#detailPanel").classList.contains("is-open"))openTrack(enriched,{skipEnrich:true});
     }).catch(()=>{});
   }
 }
 async function enrichTrack(t){
-  if(!t||!catalog?.lookupByTitle)return t;
+  if(!t||isFanOriginal(t)||!catalog?.lookupByTitle)return t;
   const id=resolveId(t.id);
   if(t.touhoudbId)return t;
   if(state.enriching.has(id))return state.enriching.get(id);
@@ -861,6 +889,7 @@ function openTrustedExternal(t){
 }
 async function hydratePlayingTrack(base){
   let t=byId(base.id)||base;
+  if(isFanOriginal(t))return t;
   try{
     if(state.remote.available&&catalog){
       let candidate=null;
@@ -1183,7 +1212,17 @@ function countChildren(id){
 function searchBlob(t){
   if(t._search)return t._search;
   const originals=originalNames(t).join(" "),artists=t.artists?Object.values(t.artists).flat().join(" "):"";
-  return [t.title,...(t.aliases||[]),t.work,t.role,t.character,t.circle,t.album,t.artistString,artists,originals,...(t.moods||[])].filter(Boolean).join(" ").toLowerCase();
+  return [t.title,...(t.aliases||[]),t.work,t.role,t.character,t.circle,t.album,t.artistString,artists,originals,t.styleClass,...(t.moods||[])].filter(Boolean).join(" ").toLowerCase();
+}
+function isFanOriginal(t){return !!t&&(t.type==="fan-original"||t.category==="fan-original")}
+function fanOriginalPool(){
+  return dedupe([...state.localFanOriginals,...[...state.known.values()].filter(isFanOriginal)]).filter(isFanOriginal);
+}
+function fanOriginalRankInfo(t){
+  const pool=fanOriginalPool().sort((a,b)=>popularityScore(b)-popularityScore(a)||recommendScore(b)-recommendScore(a)||String(a.title||"").localeCompare(String(b.title||""),"ja"));
+  const i=pool.findIndex(x=>resolveId(x.id)===resolveId(t?.id));
+  const total=Math.max(pool.length,1),rank=i>=0?i+1:null;
+  return{rank,total,percent:rank?rank/total*100:null,score:popularityScore(t),fullScale:true,stale:false};
 }
 function mediaViewStats(t){
   const seen=new Set(),byProvider=new Map();
@@ -1379,6 +1418,18 @@ function viewRankDetail(t){
   };
 }
 function overallRankDetail(t){
+  if(isFanOriginal(t)){
+    const r=fanOriginalRankInfo(t),pop=popularityBreakdown(t);
+    return{
+      title:"동방풍 순위 산정 근거",
+      formula:"동방풍 점수 = 인기 점수",
+      score:Number(r.score)||pop.total,
+      source:{label:"동방풍 큐레이션 내부",text:fmt(r.total)+"곡 중 "+(r.rank?fmt(r.rank)+"위":"집계 중")+" · 공식 원곡/2차창작 순위와 별도"},
+      components:[{label:"인기 점수",points:pop.total,description:"확인 가능한 플랫폼 조회수 + 커뮤니티/소스 신호"}],
+      metrics:pop.metrics,
+      note:"동방풍 오리지널은 공식 동방 원곡이나 어레인지가 아니므로 FULL INDEX 종합순위와 직접 섞지 않습니다."
+    };
+  }
   const rank=trackRank(t),pop=popularityBreakdown(t),inf=influenceBreakdown(t);
   const score=Number(rank.score)||pop.total+inf.total*0.35;
   let source;
@@ -1413,7 +1464,7 @@ function refreshRanks(){
     state.rankTotal=state.full.manifest?.indexed||state.fullItems.length;
     return;
   }
-  const pool=dedupe([...state.known.values()]).sort((a,b)=>overallRankScore(b)-overallRankScore(a)||recommendScore(b)-recommendScore(a)||a.title.localeCompare(b.title,"ja"));
+  const pool=dedupe([...state.known.values()]).filter(t=>!isFanOriginal(t)).sort((a,b)=>overallRankScore(b)-overallRankScore(a)||recommendScore(b)-recommendScore(a)||a.title.localeCompare(b.title,"ja"));
   state.rankIndex=new Map(pool.map((t,i)=>[resolveId(t.id),{rank:i+1,score:overallRankScore(t)}]));
   state.rankTotal=pool.length;
 }
@@ -1423,6 +1474,10 @@ function fullRankTotal(){
 function trackRank(t){
   const total=fullRankTotal();
   if(!t)return{rank:null,sampleRank:null,score:0,total,sampleTotal:state.rankTotal||0,estimated:false,fullScale:false,stale:!rankingV5Ready()};
+  if(isFanOriginal(t)){
+    const r=fanOriginalRankInfo(t);
+    return{rank:r.rank,sampleRank:r.rank,score:r.score,total:r.total,sampleTotal:r.total,estimated:false,fullScale:true,stale:false,fanOriginal:true};
+  }
   if(rankingV5Ready()&&t.globalRank&&state.full.manifest){
     return{
       rank:Number(t.globalRank),sampleRank:Number(t.globalRank),score:Number(t.globalScore)||overallRankScore(t),
@@ -1459,6 +1514,7 @@ function rankText(rank){
   return fmt(total)+"곡 중 "+fmt(rank.rank)+"위";
 }
 function popularityRankInfo(t){
+  if(isFanOriginal(t))return fanOriginalRankInfo(t);
   const total=fullRankTotal();
   if(rankingV5Ready()&&t?.popularityRank&&state.full.manifest){
     const rank=Number(t.popularityRank);
@@ -1504,10 +1560,12 @@ function orderByStoredRank(list,field,totalHint=0){
   return out;
 }
 function sortList(list,sort){
+  const fanOnly=list.length>0&&list.every(isFanOriginal);
   if(sort==="year-desc")return [...list].sort((a,b)=>(b.year||0)-(a.year||0));
   if(sort==="year-asc")return [...list].sort((a,b)=>(a.year||9999)-(b.year||9999));
   if(sort==="title")return [...list].sort((a,b)=>a.title.localeCompare(b.title,"ja"));
   if(sort==="popularity"){
+    if(fanOnly)return [...list].sort((a,b)=>popularityScore(b)-popularityScore(a)||recommendScore(b)-recommendScore(a)||a.title.localeCompare(b.title,"ja"));
     if(state.full.loaded)return orderByStoredRank(list,"popularityRank",state.full.manifest?.indexed);
     return [...list].sort((a,b)=>(Number(a.popularityRank)||1e12)-(Number(b.popularityRank)||1e12)||popularityScore(b)-popularityScore(a));
   }
@@ -1521,6 +1579,7 @@ function sortList(list,sort){
     if(state.full.loaded)return orderByStoredRank(list,"viewRank",state.full.manifest?.viewCoverage?.rankedTracks||state.full.manifest?.indexed);
     return [...list].sort((a,b)=>(Number(a.viewRank)||1e12)-(Number(b.viewRank)||1e12)||viewSignal(b)-viewSignal(a)||a.title.localeCompare(b.title,"ja"));
   }
+  if(fanOnly)return [...list].sort((a,b)=>popularityScore(b)-popularityScore(a)||recommendScore(b)-recommendScore(a)||a.title.localeCompare(b.title,"ja"));
   if(state.full.loaded)return list;
   return [...list].sort((a,b)=>overallRankScore(b)-overallRankScore(a)||recommendScore(b)-recommendScore(a));
 }
@@ -1555,7 +1614,10 @@ function normalizePersistentIds(){
   writeJson("touhoudive:favorites",[...state.favorites]);
   writeJson("touhoudive:history",state.history);
 }
-function syncModeTabs(){$$("#modeTabs .mode-tab").forEach(x=>x.classList.toggle("is-active",x.dataset.mode===state.mode))}
+function syncModeTabs(){
+  $("#modeTabs .mode-tab").forEach(x=>x.classList.toggle("is-active",x.dataset.mode===state.mode));
+  const work=$("#workSelect");if(work){work.disabled=state.mode==="fan-original";work.title=work.disabled?"동방풍 오리지널은 공식 작품 필터와 별도입니다.":""}
+}
 function setDataHealth(kind,text){
   const el=$("#dataHealth");
   el.classList.toggle("is-loading",kind==="loading");
