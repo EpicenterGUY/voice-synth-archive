@@ -1,5 +1,5 @@
 {
-  "version": 13,
+  "version": 14,
   "entities": {
     "track": [
       "id",
@@ -126,7 +126,25 @@
       "key",
       "label",
       "aliases"
-    ]
+    ],
+    "beginnerIndex": {
+      "maxCandidates": 3600,
+      "priority": [
+        "explicit-mv-pv",
+        "video-provider",
+        "iconic-title",
+        "known-circle",
+        "platform-views",
+        "popularity-rank",
+        "overall-rank",
+        "in-app-playable"
+      ],
+      "videoProviders": [
+        "youtube",
+        "niconico",
+        "bilibili"
+      ]
+    }
   },
   "notes": [
     "Original and arrangement entries stay separate.",
@@ -163,6 +181,9 @@
     "Beginner recommendations prioritize recognizability and immediate playback in addition to popularity.",
     "Beginner circle filters can scan the complete sharded full index instead of depending on whichever tracks have streamed into memory first.",
     "Beginner filters are grouped into recommendation type and circle/doujin/band sections; mobile uses a non-horizontal two-column circle grid.",
-    "Circle aliases cover major Touhou doujin circles and bands including IOSYS, Yuuhei Satellite, Shinra-Bansho, COOL&CREATE, SOUND HOLIC and others."
+    "Circle aliases cover major Touhou doujin circles and bands including IOSYS, Yuuhei Satellite, Shinra-Bansho, COOL&CREATE, SOUND HOLIC and others.",
+    "Beginner mode scans the complete full index and keeps a large ranked candidate pool instead of relying on the current mobile streaming cache.",
+    "Explicit MV/PV/official-video candidates are strongly prioritized, followed by other YouTube/NicoNico/Bilibili video-linked tracks.",
+    "The beginner MV/PV filter restricts the discovery pool to tracks with a video-provider candidate."
   ]
 }
