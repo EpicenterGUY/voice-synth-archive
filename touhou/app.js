@@ -1262,7 +1262,7 @@ function openTrack(t,opts={}){
     ${links.length?'<div class="fact-box trusted-links"><label>플랫폼 바로가기</label><div class="trusted-link-list">'+links.slice(0,18).map(x=>'<a class="platform-link platform-'+escAttr(x.provider)+'" href="'+escAttr(x.url)+'" target="_blank" rel="noopener noreferrer"><span>'+esc(platformLabel(x.provider))+'</span><b>↗</b></a>').join("")+'</div></div>':""}
     <div class="fact-box"><label>다이브 기준</label><div class="detail-meta">${esc(relationText(t))}</div></div>
     ${!fan&&!opts.skipEnrich&&!t.touhoudbId&&state.remote.available?'<div class="detail-sync">TouhouDB에서 영상·통계를 보강하는 중…</div>':""}`;
-  $("#detailPanel").classList.add("is-open");$("#detailPanel").setAttribute("aria-hidden","false");syncScrim();
+  $("#detailPanel").classList.add("is-open");$("#detailPanel").setAttribute("aria-hidden","false");document.body.classList.add("detail-open");syncScrim();
   const play=$("#detailPlay");if(play)play.onclick=async()=>{
     if(!player.playable(t)&&trustedExternalMedia(t)){openTrustedExternal(t);closePanel();return}
     const ok=await playTrack(t);if(ok)closePanel();
@@ -1285,10 +1285,18 @@ async function enrichTrack(t){
   if(state.enriching.has(id))return state.enriching.get(id);
   const promise=(async()=>{
     const work=state.works.find(w=>w.id===t.workId)||state.works.find(w=>trackMatchesWork(t,w));
-    const candidate=await catalog.lookupByTitle(t.title,{mode:t.type,tagName:work?.tag||""});
-    if(!candidate)return t;
-    const exact=normKey(candidate.title)===normKey(t.title)||(candidate.aliases||[]).some(a=>normKey(a)===normKey(t.title));
-    if(!exact)return t;
+    let candidate=await catalog.lookupByTitle(t.title,{mode:t.type,tagName:work?.tag||""});
+    let exact=!!candidate&&(normKey(candidate.title)===normKey(t.title)||(candidate.aliases||[]).some(a=>normKey(a)===normKey(t.title)));
+    if((!candidate||!exact)&&t.type==="original"){
+      const fallback=await catalog.lookupByTitle(t.title,{mode:"",tagName:work?.tag||""});
+      if(fallback){
+        const fExact=normKey(fallback.title)===normKey(t.title)||(fallback.aliases||[]).some(a=>normKey(a)===normKey(t.title));
+        if(fExact){candidate=fallback;exact=true}
+      }
+    }
+    if(!candidate||!exact)return t;
+    candidate=normalizeOfficialOriginalCandidate(candidate);
+    if(t.type==="original"&&candidate.type!=="original")return t;
     const merged=mergeRemoteIntoTrack(t,candidate);
     refreshRanks();
     return merged||byId(id)||byId(candidate.id)||t;
@@ -2178,7 +2186,7 @@ function setDataHealth(kind,text){
   el.classList.toggle("is-error",kind==="error");
   $("#datasetStatus").textContent=text;
 }
-function closePanel(){$("#detailPanel").classList.remove("is-open");$("#detailPanel").setAttribute("aria-hidden","true");syncScrim();}
+function closePanel(){$("#detailPanel").classList.remove("is-open");$("#detailPanel").setAttribute("aria-hidden","true");document.body.classList.remove("detail-open");syncScrim();}
 function closeMenu(){$("#sidebar").classList.remove("is-open");syncScrim();}
 function openSkinPanel(){
   closeMenu();
