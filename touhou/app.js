@@ -1843,5 +1843,3 @@ function fmt(n){return Number(n||0).toLocaleString()}
 function normKey(v){return String(v||"").normalize("NFKC").toLowerCase().replace(/[\s\u3000\p{P}\p{S}]+/gu,"")}
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}
 function escAttr(v){return esc(v)}
-document.documentElement.dataset.theme=localStorage.getItem("touhoudive:theme")||"dark";
-document.documentElement.dataset.skin=localStorage.getItem("touhoudive:skin")||"station";
