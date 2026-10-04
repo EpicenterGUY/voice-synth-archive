@@ -1,5 +1,5 @@
 {
-  "version": "0.9.36",
+  "version": "0.9.37",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-10-04",
@@ -277,6 +277,10 @@
     "player-bfcache-reset",
     "player-close-minimize-hardening",
     "video-mode-16x9",
-    "mobile-edge-to-edge-video"
+    "mobile-edge-to-edge-video",
+    "folded-mobile-video-center",
+    "mobile-player-opaque-backdrop",
+    "viewport-width-video-stage",
+    "mobile-video-background-leak-fix"
   ]
 }
