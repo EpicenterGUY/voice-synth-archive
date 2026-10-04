@@ -89,7 +89,7 @@ async function boot(){
     setDataHealth("error","UI 초기화 오류 · 새로고침 필요");
   }
   if("serviceWorker" in navigator){
-    navigator.serviceWorker.register("./sw.js?v=0.9.30").then(r=>r.update()).catch(err=>console.warn("service worker",err));
+    navigator.serviceWorker.register("./sw.js?v=0.9.31").then(r=>r.update()).catch(err=>console.warn("service worker",err));
   }
 
   const [or,ar,fr,far,fy,wr,sr]=await Promise.all([
@@ -389,7 +389,9 @@ function remoteFail(msg){
   $("#loadMoreBtn").disabled=true;$("#loadMoreBtn").textContent="라이브 DB 연결 안 됨";
 }
 function remoteMode(){
-  return state.mode==="db-fan-original"?"fan-original":state.mode;
+  if(state.mode==="db-fan-original")return"fan-original";
+  if(state.mode==="beginner")return"all";
+  return state.mode;
 }
 function remoteKey(){
   return JSON.stringify({q:$("#searchInput").value.trim(),mode:state.mode,filter:state.filter,work:state.workFilter,sort:state.sort});
@@ -669,6 +671,10 @@ function activeSortRankInfo(t){
     let ahead=0;for(const x of pool){if(resolveId(x.id)!==resolveId(t.id)&&String(x.title||"").localeCompare(String(t.title||""),"ja")<0)ahead++}
     return{label:"제목순",value:fmt(pool.length)+"곡 중 "+fmt(ahead+1)+"위",sub:"가나다/문자 정렬"};
   }
+  if(state.mode==="beginner"){
+    const pool=currentPool().filter(beginnerEligible),r=sampleRankByScore(t,beginnerScore,pool);
+    return{label:"입문 추천",value:fmt(r.total)+"곡 중 "+fmt(r.rank)+"위",sub:beginnerReason(t)+" · "+beginnerScore(t).toFixed(1)+"pt"};
+  }
   const r=trackRank(t);return{label:"종합순",value:rankText(r),sub:rankPercentText(r)};
 }
 function playerRankMeta(t){
@@ -703,6 +709,70 @@ function dedupe(list){
     seen.add(id);out.push(t);
   }
   return out;
+}
+const BEGINNER_TITLE_SEEDS=[
+  "U.N.オーエンは彼女なのか？","亡き王女の為のセプテット","恋色マスタースパーク","少女綺想曲 ～ Dream Battle",
+  "上海紅茶館 ～ Chinese Tea","月まで届け、不死の煙","竹取飛翔 ～ Lunatic Princess","幽雅に咲かせ、墨染の桜 ～ Border of Life",
+  "ネイティブフェイス","神々が恋した幻想郷","ハルトマンの妖怪少女","感情の摩天楼 ～ Cosmic Mind",
+  "平安のエイリアン","偶像に世界を委ねて ～ Idoratrize World",
+  "魔理沙は大変なものを盗んでいきました","チルノのパーフェクトさんすう教室","患部で止まってすぐ溶ける ～ 狂気の優曇華院",
+  "ウサテイ","ひれ伏せ愚民どもっ！","Help me, ERINNNNNN!!","Bad Apple!! feat. nomico","ナイト・オブ・ナイツ"
+];
+const BEGINNER_CIRCLES=[
+  "iosys","cool&create","alstroemeria records","sound holic","eastsnewsound","eastnewsound",
+  "暁records","akatsuki records","森羅万象","shinra-bansho","幽閉サテライト","yuuhei satellite",
+  "魂音泉","tamaonsen","a-one","shibayanrecords","東京アクティブneets","tokyo active neets"
+];
+function beginnerNorm(v){return String(v||"").normalize("NFKC").toLowerCase().replace(/[\s\u3000~～・_\-—:：!?！？.,'"“”‘’()[\]{}]+/g,"")}
+const BEGINNER_TITLE_KEYS=new Set(BEGINNER_TITLE_SEEDS.map(beginnerNorm));
+function beginnerTitleHit(t){
+  const keys=[t?.title,...(t?.aliases||[]),...originalNames(t)].map(beginnerNorm).filter(Boolean);
+  return keys.some(k=>BEGINNER_TITLE_KEYS.has(k));
+}
+function beginnerCircleKey(t){
+  return [t?.circle,t?.artistString,...Object.values(t?.artists||{}).flat()].filter(Boolean).join(" ").normalize("NFKC").toLowerCase();
+}
+function isIosysTrack(t){return /(^|[^a-z])iosys([^a-z]|$)/i.test(beginnerCircleKey(t))}
+function isBeginnerCircle(t){
+  const hay=beginnerCircleKey(t);
+  return BEGINNER_CIRCLES.some(x=>hay.includes(x));
+}
+function isVocalTrack(t){
+  return !!((t?.artists?.vocal||[]).length||/(vocal|보컬|歌|feat\.?)/i.test([t?.artistString,...(t?.moods||[])].filter(Boolean).join(" ")));
+}
+function beginnerScore(t){
+  if(!t)return 0;
+  const cat=relationCategory(t),views=mediaViewStats(t),popRank=Number(t.popularityRank)||0,globalRank=Number(t.globalRank)||0;
+  let score=0;
+  if(beginnerTitleHit(t))score+=58;
+  if(isIosysTrack(t))score+=46;
+  else if(isBeginnerCircle(t))score+=22;
+  if(cat==="official-original")score+=24;
+  else if(["arrangement","rearrangement","remix","cover"].includes(cat))score+=12;
+  if(player.playable(t))score+=12;
+  if(views.mediaCount)score+=Math.min(30,Math.log10(views.total+1)*5);
+  if(popRank>0)score+=popRank<=100?28:popRank<=500?21:popRank<=2000?14:popRank<=10000?7:0;
+  if(globalRank>0)score+=globalRank<=200?18:globalRank<=1000?12:globalRank<=5000?6:0;
+  if(isVocalTrack(t))score+=4;
+  if(sourceProviders(t).size>=2)score+=5;
+  return score;
+}
+function beginnerEligible(t){
+  return beginnerTitleHit(t)||isIosysTrack(t)||beginnerScore(t)>=44;
+}
+function beginnerFilterMatch(t,key){
+  if(key==="beginner:original")return relationCategory(t)==="official-original";
+  if(key==="beginner:iosys")return isIosysTrack(t);
+  if(key==="beginner:arrangement")return ["arrangement","rearrangement","remix","cover","remaster"].includes(relationCategory(t));
+  if(key==="beginner:vocal")return isVocalTrack(t)&&relationCategory(t)!=="official-original";
+  return true;
+}
+function beginnerReason(t){
+  if(isIosysTrack(t))return"IOSYS 대표 입문";
+  if(beginnerTitleHit(t)&&relationCategory(t)==="official-original")return"대표 원곡";
+  if(beginnerTitleHit(t))return"유명 동방곡";
+  if(isVocalTrack(t))return"보컬 입문";
+  return"인기 입문곡";
 }
 function currentPool(){
   if(state.mode==="fan-original"){
@@ -746,7 +816,9 @@ function renderCatalog(title){
   refreshRanks();
   renderFilters();
   let list=currentPool();
+  if(state.mode==="beginner")list=list.filter(beginnerEligible);
   if(state.filter==="인앱 재생"||state.filter==="영상 있음")list=list.filter(t=>player.playable(t));
+  else if(state.filter.startsWith("beginner:"))list=list.filter(t=>beginnerFilterMatch(t,state.filter));
   else if(state.filter.startsWith("category:")){
     const key=state.filter.slice(9);list=list.filter(t=>relationCategory(t)===key);
   }else if(state.filter!=="전체")list=list.filter(t=>(state.mode==="fan-original"||state.mode==="db-fan-original")?(t.artistString===state.filter||t.circle===state.filter):t.circle===state.filter);
@@ -782,8 +854,17 @@ function trackMatchesWork(t,work){
   return [work.title,work.tag,...(work.aliases||[])].some(v=>v&&hay.includes(String(v).normalize("NFKC").toLowerCase()));
 }
 function renderFilters(){
-  const base=currentPool(),out=[{key:"전체",label:"전체"},{key:"인앱 재생",label:"인앱 재생"}];
-  if(state.mode==="all"||state.mode==="arrangement"){
+  const base=currentPool(),out=state.mode==="beginner"
+    ?[
+      {key:"전체",label:"★ 입문 전체"},
+      {key:"beginner:original",label:"유명 원곡"},
+      {key:"beginner:iosys",label:"IOSYS"},
+      {key:"beginner:arrangement",label:"유명 어레인지"},
+      {key:"beginner:vocal",label:"보컬 입문"},
+      {key:"인앱 재생",label:"바로 재생"}
+    ]
+    :[{key:"전체",label:"전체"},{key:"인앱 재생",label:"인앱 재생"}];
+  if(state.mode!=="beginner"&&(state.mode==="all"||state.mode==="arrangement")){
     const order=["official-original","fan-original","touhou-style","fan-game-ost","arrangement","rearrangement","remix","cover","remaster","instrumental","mashup","short-version","other-related"];
     const present=new Set(base.map(relationCategory));
     order.filter(x=>present.has(x)).forEach(x=>out.push({key:"category:"+x,label:relationLabel(x)}));
@@ -881,6 +962,7 @@ function catalogTitle(q,count){
   if(work)return "TH"+work.number+" · "+work.title;
   if(state.filter.startsWith("category:"))return relationLabel(state.filter.slice(9));
   if(state.filter!=="전체")return state.filter;
+  if(state.mode==="beginner")return "처음 듣기 좋은 동방 입문곡";
   if(state.mode==="original")return "동방 공식 원곡 전체 탐색";
   if(state.mode==="arrangement")return "동방 2차창작 전체 탐색";
   if(state.mode==="db-fan-original")return "TouhouDB 팬 원곡 전체 탐색";
@@ -904,6 +986,7 @@ function typeLabel(t){return RELATION_BADGES[relationCategory(t)]||"TOUHOU RELAT
 function typeClass(t){return relationCategory(t)}
 function card(t){
   const playable=player.playable(t),external=trustedExternalMedia(t),canLookup=!playable&&state.remote.available,origins=originalNames(t);
+  const beginner=state.mode==="beginner";
   const rank=trackRank(t);
   const by=t.type==="arrangement"
     ? [t.circle,(t.artists?.vocal||[]).join(", ")].filter(Boolean).join(" · ")
@@ -922,7 +1005,7 @@ function card(t){
       '<div class="track-thumb '+(t.thumb?"":"no-image")+'"'+thumb+'>'+
         '<div class="track-badges"><span class="type-badge '+escAttr(typeClass(t))+'">'+esc(typeLabel(t))+'</span><span class="rank-badge">'+esc(rankText(rank))+'</span><span class="percent-badge">'+esc(rankPercentText(rank))+'</span>'+(playable?'<span class="media-badge">▶ VIDEO</span>':'')+'</div>'+
       '</div>'+
-      '<div class="track-copy"><h3>'+esc(t.title)+'</h3><div class="byline">'+esc(by||"정보 준비 중")+'</div><div class="origin-line">'+esc(originLine)+'</div>'+
+      '<div class="track-copy"><h3>'+esc(t.title)+'</h3><div class="byline">'+esc(by||"정보 준비 중")+'</div>'+(beginner?'<div class="beginner-note">★ '+esc(beginnerReason(t))+'</div>':'')+'<div class="origin-line">'+esc(originLine)+'</div>'+
         '<div class="tag-row">'+(t.moods||[]).slice(0,3).map(x=>'<span class="tag">'+esc(x)+'</span>').join("")+'</div>'+
       '</div>'+
     '</button>'+
@@ -1807,6 +1890,7 @@ function orderByStoredRank(list,field,totalHint=0){
 }
 function sortList(list,sort){
   const fanOnly=list.length>0&&list.every(isCuratedStyle);
+  if(state.mode==="beginner"&&sort==="recommend")return [...list].sort((a,b)=>beginnerScore(b)-beginnerScore(a)||popularityScore(b)-popularityScore(a)||String(a.title||"").localeCompare(String(b.title||""),"ja"));
   if(sort==="year-desc")return [...list].sort((a,b)=>(b.year||0)-(a.year||0));
   if(sort==="year-asc")return [...list].sort((a,b)=>(a.year||9999)-(b.year||9999));
   if(sort==="title")return [...list].sort((a,b)=>a.title.localeCompare(b.title,"ja"));
