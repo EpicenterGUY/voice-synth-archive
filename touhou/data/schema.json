@@ -1,5 +1,5 @@
 {
-  "version": 18,
+  "version": 19,
   "entities": {
     "track": [
       "id",
@@ -229,6 +229,8 @@
     "Full-screen mobile playback uses an opaque background so the underlying catalog cannot show through.",
     "The player probes YouTube thumbnail resolutions and caches the highest useful artwork instead of enlarging mqdefault by default.",
     "Low-resolution/old thumbnails preserve their original aspect ratio in the foreground while the surrounding square is filled with a blurred copy.",
-    "YouTube playback quality is requested at the highest available API-exposed level, but the service may still choose a lower quality based on device/network conditions."
+    "YouTube playback quality is requested at the highest available API-exposed level, but the service may still choose a lower quality based on device/network conditions.",
+    "The song/video mode toggle is structurally outside the media stage so it cannot cover the embedded video.",
+    "On mobile the media-mode toggle stays below the full-player header and above the video frame."
   ]
 }
