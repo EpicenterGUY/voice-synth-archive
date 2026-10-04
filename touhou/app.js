@@ -6,7 +6,7 @@ const player=new window.TouhouMediaPlayer();
 
 const state={
   localOriginals:[],localArrangements:[],localFanOriginals:[],known:new Map(),aliases:new Map(),identities:new Map(),remoteItems:[],fullItems:[],works:[],archiveSource:null,fanYoutubeMeta:null,
-  mode:"all",filter:"전체",workFilter:"",sort:"recommend",selected:null,view:"home",diveDepth:0,diveRoot:null,icebergMode:"visibility",rankIndex:new Map(),rankTotal:0,enriching:new Map(),homeMixIds:[],
+  mode:"all",filter:"전체",workFilter:"",sort:"recommend",selected:null,view:"home",diveDepth:0,diveRoot:null,icebergMode:"visibility",rankIndex:new Map(),rankTotal:0,enriching:new Map(),homeMixIds:[],beginnerCircleCache:new Map(),beginnerCircleLoading:new Set(),
   full:{available:false,loading:false,loaded:false,streaming:false,manifest:null,loadedCount:0,error:""},displayLimit:60,renderKey:"",lastMatchCount:0,childCounts:new Map(),
   relations:{ready:false,building:false,byOriginal:new Map(),byWork:new Map(),byCircle:new Map(),byVocal:new Map(),byMood:new Map()},
   remote:{available:false,loading:false,start:0,total:0,catalogTotal:0,key:"",error:"",counts:{},seq:0},
@@ -89,7 +89,7 @@ async function boot(){
     setDataHealth("error","UI 초기화 오류 · 새로고침 필요");
   }
   if("serviceWorker" in navigator){
-    navigator.serviceWorker.register("./sw.js?v=0.9.31").then(r=>r.update()).catch(err=>console.warn("service worker",err));
+    navigator.serviceWorker.register("./sw.js?v=0.9.33").then(r=>r.update()).catch(err=>console.warn("service worker",err));
   }
 
   const [or,ar,fr,far,fy,wr,sr]=await Promise.all([
@@ -718,12 +718,35 @@ const BEGINNER_TITLE_SEEDS=[
   "魔理沙は大変なものを盗んでいきました","チルノのパーフェクトさんすう教室","患部で止まってすぐ溶ける ～ 狂気の優曇華院",
   "ウサテイ","ひれ伏せ愚民どもっ！","Help me, ERINNNNNN!!","Bad Apple!! feat. nomico","ナイト・オブ・ナイツ"
 ];
-const BEGINNER_CIRCLES=[
-  "iosys","cool&create","alstroemeria records","sound holic","eastsnewsound","eastnewsound",
-  "暁records","akatsuki records","森羅万象","shinra-bansho","幽閉サテライト","yuuhei satellite",
-  "魂音泉","tamaonsen","a-one","shibayanrecords","東京アクティブneets","tokyo active neets"
+const BEGINNER_CIRCLE_GROUPS=[
+  {key:"iosys",label:"IOSYS",aliases:["iosys"]},
+  {key:"yuuhei",label:"유폐 새틀라이트",aliases:["幽閉サテライト","yuuhei satellite","yuuheisatellite"]},
+  {key:"shinra",label:"삼라만상",aliases:["森羅万象","shinra-bansho","shinra bansho","shinrabansho"]},
+  {key:"coolcreate",label:"COOL&CREATE",aliases:["cool&create","cool create","coolcreate"]},
+  {key:"soundholic",label:"SOUND HOLIC",aliases:["sound holic","soundholic"]},
+  {key:"eastnewsound",label:"EastNewSound",aliases:["eastnewsound","east new sound"]},
+  {key:"akatsuki",label:"暁Records",aliases:["暁records","akatsuki records","akatsukirecords"]},
+  {key:"tamaonsen",label:"魂音泉",aliases:["魂音泉","tamaonsen"]},
+  {key:"aone",label:"A-One",aliases:["a-one","a one"]},
+  {key:"alstroemeria",label:"Alstroemeria Records",aliases:["alstroemeria records","alstroemeriarecords"]},
+  {key:"shibayan",label:"ShibayanRecords",aliases:["shibayanrecords","shibayan records"]},
+  {key:"felt",label:"FELT",aliases:["felt"]},
+  {key:"digitalwing",label:"DiGiTAL WiNG",aliases:["digital wing","digitalwing"]},
+  {key:"halozy",label:"Halozy",aliases:["halozy"]},
+  {key:"amateras",label:"Amateras Records",aliases:["amateras records","amaterasrecords"]},
+  {key:"silverforest",label:"Silver Forest",aliases:["silver forest","silverforest"]},
+  {key:"tumeneco",label:"TUMENECO",aliases:["tumeneco"]},
+  {key:"getinthering",label:"GET IN THE RING",aliases:["get in the ring","getinthering"]},
+  {key:"active-neets",label:"東京アクティブNEETs",aliases:["東京アクティブneets","tokyo active neets","東京アクティブニーツ"]},
+  {key:"dzy",label:"凋叶棕 / RD-Sounds",aliases:["凋叶棕","rd-sounds","rdsounds"]},
+  {key:"kishida",label:"岸田教団",aliases:["岸田教団","岸田教団&the明星ロケッツ","kishida kyoudan","kishida教団"]},
+  {key:"tamusic",label:"TAMUSIC",aliases:["tamusic"]},
+  {key:"cclays",label:"C-CLAYS",aliases:["c-clays","c clays","cclays"]},
+  {key:"syncarts",label:"SYNC.ART'S",aliases:["sync.art's","sync arts","syncarts"]},
+  {key:"innocentkey",label:"Innocent Key",aliases:["innocent key","innocentkey"]}
 ];
-function beginnerNorm(v){return String(v||"").normalize("NFKC").toLowerCase().replace(/[\s\u3000~～・_\-—:：!?！？.,'"“”‘’()[\]{}]+/g,"")}
+const BEGINNER_CIRCLES=BEGINNER_CIRCLE_GROUPS.flatMap(x=>x.aliases).map(x=>String(x).normalize("NFKC").toLowerCase());
+function beginnerNorm(v){return String(v||"").normalize("NFKC").toLowerCase().replace(/[\s\u3000~～・_\-—:：!?！？.,'"“”‘’()[\]{}&＋+]+/g,"")}
 const BEGINNER_TITLE_KEYS=new Set(BEGINNER_TITLE_SEEDS.map(beginnerNorm));
 function beginnerTitleHit(t){
   const keys=[t?.title,...(t?.aliases||[]),...originalNames(t)].map(beginnerNorm).filter(Boolean);
@@ -732,10 +755,31 @@ function beginnerTitleHit(t){
 function beginnerCircleKey(t){
   return [t?.circle,t?.artistString,...Object.values(t?.artists||{}).flat()].filter(Boolean).join(" ").normalize("NFKC").toLowerCase();
 }
-function isIosysTrack(t){return /(^|[^a-z])iosys([^a-z]|$)/i.test(beginnerCircleKey(t))}
+function beginnerCircleGroup(key){return BEGINNER_CIRCLE_GROUPS.find(x=>x.key===String(key||"").replace(/^beginner-circle:/,""))||null}
+function beginnerCircleMatch(t,group){
+  if(!group)return false;
+  const hay=beginnerNorm(beginnerCircleKey(t));
+  return group.aliases.some(x=>hay.includes(beginnerNorm(x)));
+}
+function isIosysTrack(t){return beginnerCircleMatch(t,beginnerCircleGroup("iosys"))}
 function isBeginnerCircle(t){
-  const hay=beginnerCircleKey(t);
-  return BEGINNER_CIRCLES.some(x=>hay.includes(x));
+  return BEGINNER_CIRCLE_GROUPS.some(group=>beginnerCircleMatch(t,group));
+}
+async function ensureBeginnerCircleResults(filterKey){
+  const group=beginnerCircleGroup(filterKey);
+  if(!group||state.beginnerCircleCache.has(group.key)||state.beginnerCircleLoading.has(group.key)||!fullIndex?.searchByCircleAliases)return;
+  state.beginnerCircleLoading.add(group.key);renderCatalog();
+  try{
+    const result=await fullIndex.searchByCircleAliases(group.aliases,{concurrency:3});
+    const tracks=dedupe((result?.tracks||[]).map(remember));
+    state.beginnerCircleCache.set(group.key,tracks);
+  }catch(err){
+    console.warn("beginner circle full-index search failed",group.key,err);
+    toast(group.label+" 전체 검색에 실패했습니다.");
+  }finally{
+    state.beginnerCircleLoading.delete(group.key);
+    state.renderKey="";renderCatalog();
+  }
 }
 function isVocalTrack(t){
   return !!((t?.artists?.vocal||[]).length||/(vocal|보컬|歌|feat\.?)/i.test([t?.artistString,...(t?.moods||[])].filter(Boolean).join(" ")));
@@ -762,13 +806,20 @@ function beginnerEligible(t){
 }
 function beginnerFilterMatch(t,key){
   if(key==="beginner:original")return relationCategory(t)==="official-original";
-  if(key==="beginner:iosys")return isIosysTrack(t);
   if(key==="beginner:arrangement")return ["arrangement","rearrangement","remix","cover","remaster"].includes(relationCategory(t));
   if(key==="beginner:vocal")return isVocalTrack(t)&&relationCategory(t)!=="official-original";
+  if(key.startsWith("beginner-circle:"))return beginnerCircleMatch(t,beginnerCircleGroup(key));
   return true;
 }
+function beginnerFilterLabel(key){
+  if(key==="beginner:original")return"유명 원곡";
+  if(key==="beginner:arrangement")return"유명 어레인지";
+  if(key==="beginner:vocal")return"보컬 입문";
+  const group=beginnerCircleGroup(key);return group?.label||key;
+}
 function beginnerReason(t){
-  if(isIosysTrack(t))return"IOSYS 대표 입문";
+  const group=BEGINNER_CIRCLE_GROUPS.find(g=>beginnerCircleMatch(t,g));
+  if(group)return group.label+" 입문";
   if(beginnerTitleHit(t)&&relationCategory(t)==="official-original")return"대표 원곡";
   if(beginnerTitleHit(t))return"유명 동방곡";
   if(isVocalTrack(t))return"보컬 입문";
@@ -816,7 +867,11 @@ function renderCatalog(title){
   refreshRanks();
   renderFilters();
   let list=currentPool();
-  if(state.mode==="beginner")list=list.filter(beginnerEligible);
+  const beginnerCircleFilter=state.mode==="beginner"&&state.filter.startsWith("beginner-circle:");
+  if(beginnerCircleFilter){
+    const group=beginnerCircleGroup(state.filter),extra=group?state.beginnerCircleCache.get(group.key)||[]:[];
+    list=dedupe([...list,...extra]).filter(t=>beginnerFilterMatch(t,state.filter));
+  }else if(state.mode==="beginner")list=list.filter(beginnerEligible);
   if(state.filter==="인앱 재생"||state.filter==="영상 있음")list=list.filter(t=>player.playable(t));
   else if(state.filter.startsWith("beginner:"))list=list.filter(t=>beginnerFilterMatch(t,state.filter));
   else if(state.filter.startsWith("category:")){
@@ -854,30 +909,40 @@ function trackMatchesWork(t,work){
   return [work.title,work.tag,...(work.aliases||[])].some(v=>v&&hay.includes(String(v).normalize("NFKC").toLowerCase()));
 }
 function renderFilters(){
-  const base=currentPool(),out=state.mode==="beginner"
-    ?[
-      {key:"전체",label:"★ 입문 전체"},
-      {key:"beginner:original",label:"유명 원곡"},
-      {key:"beginner:iosys",label:"IOSYS"},
-      {key:"beginner:arrangement",label:"유명 어레인지"},
-      {key:"beginner:vocal",label:"보컬 입문"},
+  const base=currentPool(),tools=$("#catalogTools"),quick=$("#quickFilters");
+  tools?.classList.toggle("is-beginner",state.mode==="beginner");
+  const recommendOption=$("#sortSelect option[value='recommend']");
+  if(recommendOption)recommendOption.textContent=state.mode==="beginner"?"입문추천순":"종합순위";
+  if(state.mode==="beginner"){
+    const primary=[
+      {key:"전체",label:"★ 입문 전체"},{key:"beginner:original",label:"유명 원곡"},
+      {key:"beginner:arrangement",label:"유명 어레인지"},{key:"beginner:vocal",label:"보컬 입문"},
       {key:"인앱 재생",label:"바로 재생"}
-    ]
-    :[{key:"전체",label:"전체"},{key:"인앱 재생",label:"인앱 재생"}];
-  if(state.mode!=="beginner"&&(state.mode==="all"||state.mode==="arrangement")){
-    const order=["official-original","fan-original","touhou-style","fan-game-ost","arrangement","rearrangement","remix","cover","remaster","instrumental","mashup","short-version","other-related"];
-    const present=new Set(base.map(relationCategory));
-    order.filter(x=>present.has(x)).forEach(x=>out.push({key:"category:"+x,label:relationLabel(x)}));
+    ];
+    const valid=new Set(["전체","인앱 재생",...primary.map(x=>x.key),...BEGINNER_CIRCLE_GROUPS.map(x=>"beginner-circle:"+x.key)]);
+    if(!valid.has(state.filter))state.filter="전체";
+    const buttons=rows=>rows.map(x=>'<button class="filter-chip '+(x.key===state.filter?"is-active":"")+'" data-filter="'+escAttr(x.key)+'" title="'+escAttr(x.label)+'">'+esc(x.label)+'</button>').join("");
+    quick.innerHTML=
+      '<div class="beginner-filter-group"><span class="beginner-filter-label">추천 유형</span><div class="beginner-chip-grid beginner-type-grid">'+buttons(primary)+'</div></div>'+
+      '<div class="beginner-filter-group"><span class="beginner-filter-label">서클 · 동인 · 밴드</span><div class="beginner-chip-grid beginner-circle-grid">'+buttons(BEGINNER_CIRCLE_GROUPS.map(x=>({key:"beginner-circle:"+x.key,label:x.label})))+'</div></div>';
+  }else{
+    const out=[{key:"전체",label:"전체"},{key:"인앱 재생",label:"인앱 재생"}];
+    if(state.mode==="all"||state.mode==="arrangement"){
+      const order=["official-original","fan-original","touhou-style","fan-game-ost","arrangement","rearrangement","remix","cover","remaster","instrumental","mashup","short-version","other-related"];
+      const present=new Set(base.map(relationCategory));
+      order.filter(x=>present.has(x)).forEach(x=>out.push({key:"category:"+x,label:relationLabel(x)}));
+    }
+    if(state.mode==="arrangement")uniq(base.map(x=>x.circle).filter(Boolean)).slice(0,8).forEach(x=>out.push({key:x,label:x}));
+    if(state.mode==="fan-original"||state.mode==="db-fan-original")uniq(base.map(x=>x.artistString||x.circle).filter(Boolean)).slice(0,10).forEach(x=>out.push({key:x,label:x}));
+    if(!out.some(x=>x.key===state.filter))state.filter="전체";
+    quick.innerHTML=out.map(x=>'<button class="filter-chip '+(x.key===state.filter?"is-active":"")+'" data-filter="'+escAttr(x.key)+'">'+esc(x.label)+'</button>').join("");
   }
-  if(state.mode==="arrangement"){
-    uniq(base.map(x=>x.circle).filter(Boolean)).slice(0,8).forEach(x=>out.push({key:x,label:x}));
-  }
-  if(state.mode==="fan-original"||state.mode==="db-fan-original"){
-    uniq(base.map(x=>x.artistString||x.circle).filter(Boolean)).slice(0,10).forEach(x=>out.push({key:x,label:x}));
-  }
-  if(!out.some(x=>x.key===state.filter))state.filter="전체";
-  $("#quickFilters").innerHTML=out.map(x=>'<button class="filter-chip '+(x.key===state.filter?"is-active":"")+'" data-filter="'+escAttr(x.key)+'">'+esc(x.label)+'</button>').join("");
-  $$("#quickFilters .filter-chip").forEach(b=>b.onclick=()=>{state.filter=b.dataset.filter;requestAnimationFrame(()=>renderCatalog());loadRemote(true);});
+  $("#quickFilters .filter-chip").forEach(b=>b.onclick=()=>{
+    state.filter=b.dataset.filter;state.renderKey="";
+    if(state.filter.startsWith("beginner-circle:"))ensureBeginnerCircleResults(state.filter);
+    requestAnimationFrame(()=>renderCatalog());
+    if(!state.filter.startsWith("beginner-circle:"))loadRemote(true);
+  });
 }
 function updateStats(){
   const meta=state.full.manifest;
@@ -961,6 +1026,10 @@ function catalogTitle(q,count){
   const work=selectedWork();
   if(work)return "TH"+work.number+" · "+work.title;
   if(state.filter.startsWith("category:"))return relationLabel(state.filter.slice(9));
+  if(state.filter.startsWith("beginner:")||state.filter.startsWith("beginner-circle:")){
+    const group=beginnerCircleGroup(state.filter),loading=group&&state.beginnerCircleLoading.has(group.key);
+    return beginnerFilterLabel(state.filter)+(loading?" · 전체 인덱스 검색 중…":"");
+  }
   if(state.filter!=="전체")return state.filter;
   if(state.mode==="beginner")return "처음 듣기 좋은 동방 입문곡";
   if(state.mode==="original")return "동방 공식 원곡 전체 탐색";
@@ -1946,7 +2015,7 @@ function normalizePersistentIds(){
 }
 function syncModeTabs(){
   $$("#modeTabs .mode-tab").forEach(x=>x.classList.toggle("is-active",x.dataset.mode===state.mode));
-  const work=$("#workSelect");if(work){work.disabled=state.mode==="fan-original"||state.mode==="db-fan-original";work.title=work.disabled?"팬 원곡/동방풍은 공식 작품 필터와 별도입니다.":""}
+  const work=$("#workSelect");if(work){work.disabled=state.mode==="fan-original"||state.mode==="db-fan-original"||state.mode==="beginner";work.title=work.disabled?"입문/팬 원곡/동방풍은 작품 필터와 별도입니다.":""}
 }
 function setDataHealth(kind,text){
   const el=$("#dataHealth");
