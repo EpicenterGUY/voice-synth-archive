@@ -2,9 +2,9 @@
   "schema": 3,
   "source": "TouhouDB",
   "api": "https://touhoudb.com/api",
-  "generatedAt": "2026-10-04T14:07:36.078Z",
-  "totalCount": 189255,
-  "indexed": 189255,
+  "generatedAt": "2026-10-04T21:47:23.493Z",
+  "totalCount": 189265,
+  "indexed": 189265,
   "shardSize": 1000,
   "shardCount": 190,
   "files": [
@@ -956,18 +956,18 @@
     {
       "file": "shard-189.json",
       "start": 189000,
-      "count": 255
+      "count": 265
     }
   ],
   "counts": {
     "original": 593,
     "fanOriginal": 8090,
-    "arrangement": 180572,
-    "mediaCandidates": 72874,
+    "arrangement": 180582,
+    "mediaCandidates": 72875,
     "categories": {
       "official-original": 593,
-      "arrangement": 145517,
-      "other-related": 4519,
+      "arrangement": 145519,
+      "other-related": 4527,
       "rearrangement": 13594,
       "remaster": 1799,
       "cover": 2833,
@@ -977,7 +977,7 @@
     },
     "categoryMediaCandidates": {
       "official-original": 557,
-      "arrangement": 59307,
+      "arrangement": 59308,
       "other-related": 736,
       "rearrangement": 5169,
       "remaster": 657,
@@ -988,7 +988,7 @@
     },
     "categoryYoutubeCandidates": {
       "official-original": 557,
-      "arrangement": 47328,
+      "arrangement": 47329,
       "other-related": 480,
       "rearrangement": 4200,
       "remaster": 486,
@@ -998,18 +998,18 @@
       "fan-original": 2706
     },
     "categoryViewTracks": {
-      "official-original": 94,
-      "other-related": 34,
-      "arrangement": 1003,
-      "rearrangement": 64,
-      "short-version": 6,
-      "cover": 9,
-      "remaster": 2,
-      "fan-original": 17
+      "official-original": 58,
+      "other-related": 26,
+      "arrangement": 458,
+      "rearrangement": 22,
+      "short-version": 3,
+      "cover": 4,
+      "fan-original": 16,
+      "remaster": 1
     }
   },
   "providers": {
-    "youtube": 65265,
+    "youtube": 65266,
     "niconico": 10724,
     "soundcloud": 4315,
     "bilibili": 774,
@@ -1026,12 +1026,11 @@
   ],
   "viewCoverage": {
     "providers": {
-      "niconico": 653,
-      "youtube": 804,
-      "bilibili": 31
+      "niconico": 582,
+      "bilibili": 11
     },
     "candidates": {
-      "youtube": 65081,
+      "youtube": 65082,
       "niconico": 9492,
       "soundcloud": 3542,
       "piapro": 7,
@@ -1039,19 +1038,19 @@
       "bandcamp": 12405
     },
     "ratios": {
-      "youtube": 0.012353835988998325,
-      "niconico": 0.06879477454698693,
+      "youtube": 0,
+      "niconico": 0.06131479140328698,
       "soundcloud": 0,
       "piapro": 0,
-      "bilibili": 0.04046997389033943,
+      "bilibili": 0.014360313315926894,
       "bandcamp": 0
     },
-    "tracks": 1229,
-    "media": 1488,
+    "tracks": 588,
+    "media": 593,
     "youtubeKeyConfigured": true,
     "popularityEligible": false,
     "mode": "partial",
-    "rankedTracks": 1229,
+    "rankedTracks": 588,
     "supportedProviders": [
       "youtube",
       "niconico",
