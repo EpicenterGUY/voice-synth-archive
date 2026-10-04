@@ -2,7 +2,7 @@
   "schema": 3,
   "source": "TouhouDB",
   "api": "https://touhoudb.com/api",
-  "generatedAt": "2026-10-04T07:39:59.751Z",
+  "generatedAt": "2026-10-04T08:17:14.063Z",
   "totalCount": 189241,
   "indexed": 189241,
   "shardSize": 1000,
@@ -974,6 +974,39 @@
       "instrumental": 9980,
       "remaster": 1799,
       "fan-original": 8090
+    },
+    "categoryMediaCandidates": {
+      "official-original": 557,
+      "arrangement": 59305,
+      "other-related": 736,
+      "rearrangement": 5169,
+      "short-version": 561,
+      "cover": 686,
+      "instrumental": 1321,
+      "remaster": 657,
+      "fan-original": 3880
+    },
+    "categoryYoutubeCandidates": {
+      "official-original": 557,
+      "arrangement": 47326,
+      "other-related": 480,
+      "rearrangement": 4200,
+      "short-version": 413,
+      "cover": 624,
+      "instrumental": 943,
+      "remaster": 486,
+      "fan-original": 2706
+    },
+    "categoryViewTracks": {
+      "official-original": 551,
+      "arrangement": 46483,
+      "other-related": 482,
+      "rearrangement": 4087,
+      "short-version": 348,
+      "cover": 608,
+      "instrumental": 905,
+      "remaster": 463,
+      "fan-original": 2626
     }
   },
   "providers": {
@@ -995,8 +1028,8 @@
   "viewCoverage": {
     "providers": {
       "youtube": 63374,
-      "niconico": 879,
-      "bilibili": 21
+      "niconico": 901,
+      "bilibili": 18
     },
     "candidates": {
       "youtube": 65079,
@@ -1005,15 +1038,15 @@
     },
     "ratios": {
       "youtube": 0.9738010725426021,
-      "niconico": 0.09260429835651074,
-      "bilibili": 0.02741514360313316
+      "niconico": 0.0949220396123051,
+      "bilibili": 0.02349869451697128
     },
-    "tracks": 56550,
-    "media": 64274,
+    "tracks": 56553,
+    "media": 64293,
     "youtubeKeyConfigured": true,
     "popularityEligible": true,
     "mode": "youtube-major",
-    "rankedTracks": 56550,
+    "rankedTracks": 56553,
     "supportedProviders": [
       "youtube",
       "niconico",
