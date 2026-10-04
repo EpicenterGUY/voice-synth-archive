@@ -1,6 +1,6 @@
 {
-  "version": "39.118.0",
+  "version": "39.119.0",
   "channel": "web",
-  "publishedAt": "2026-10-01T20:58:00+09:00",
-  "notes": "Fixes unresponsive related/next-song cards by caching remotely discovered related-song metadata, resolving clicks from that cache, and using the visible related list as the player next-track queue."
+  "publishedAt": "2026-10-04T17:40:00+09:00",
+  "notes": "Adds Skin Studio with MP3/music-station inspired presets, persistent customization, player EQ styling, density/blur/grain controls, and import/exportable skin codes."
 }
