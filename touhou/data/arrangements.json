@@ -398,5 +398,1206 @@
       "name": "NicoNico legacy arrange medley",
       "url": "https://www.nicozon.net/tag/%E6%AD%8C%E3%81%A3%E3%81%A6%E3%81%8F%E3%82%8C/r/d"
     }
+  },
+  {
+    "id": "arr-legacy-eosd-inst-medley-2008",
+    "type": "arrangement",
+    "category": "mashup",
+    "title": "東方インストアレンジメドレー【紅魔郷編】",
+    "aliases": [
+      "Touhou EoSD Instrumental Arrange Medley",
+      "홍마향 인스트 어레인지 메들리"
+    ],
+    "year": 2008,
+    "circle": "Legacy Web Medley",
+    "album": "NicoNico legacy mix",
+    "moods": [
+      "메들리",
+      "레거시 웹",
+      "니코동",
+      "인스트",
+      "록",
+      "메탈",
+      "홍마향"
+    ],
+    "originalIds": [
+      "eosd-01",
+      "eosd-02",
+      "eosd-03",
+      "eosd-04",
+      "eosd-05",
+      "eosd-06",
+      "eosd-07",
+      "eosd-08",
+      "eosd-09"
+    ],
+    "artists": {
+      "arranger": [],
+      "vocal": [],
+      "lyricist": [],
+      "other": [
+        "legacy uploader / mixed sources"
+      ]
+    },
+    "media": {
+      "provider": "niconico",
+      "id": "sm3811553",
+      "url": "https://www.nicovideo.jp/watch/sm3811553",
+      "name": "東方インストアレンジメドレー【紅魔郷編】"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "niconico",
+        "id": "sm3811553",
+        "url": "https://www.nicovideo.jp/watch/sm3811553",
+        "name": "東方インストアレンジメドレー【紅魔郷編】"
+      }
+    ],
+    "source": {
+      "name": "NicoNico archive reference",
+      "url": "https://www.nicozon.net/watch/sm3811553"
+    }
+  },
+  {
+    "id": "arr-legacy-pcb-inst-medley-2008",
+    "type": "arrangement",
+    "category": "mashup",
+    "title": "東方インストアレンジメドレー【妖々夢編】",
+    "aliases": [
+      "Touhou PCB Instrumental Arrange Medley",
+      "요요몽 인스트 어레인지 메들리"
+    ],
+    "year": 2008,
+    "circle": "Legacy Web Medley",
+    "album": "NicoNico legacy mix",
+    "moods": [
+      "메들리",
+      "레거시 웹",
+      "니코동",
+      "인스트",
+      "록",
+      "메탈",
+      "요요몽"
+    ],
+    "originalIds": [
+      "pcb-01",
+      "pcb-02",
+      "pcb-03",
+      "pcb-04",
+      "pcb-05",
+      "pcb-06",
+      "pcb-07",
+      "pcb-08"
+    ],
+    "artists": {
+      "arranger": [],
+      "vocal": [],
+      "lyricist": [],
+      "other": [
+        "legacy uploader / mixed sources"
+      ]
+    },
+    "media": {
+      "provider": "niconico",
+      "id": "sm3831779",
+      "url": "https://www.nicovideo.jp/watch/sm3831779",
+      "name": "東方インストアレンジメドレー【妖々夢編】"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "niconico",
+        "id": "sm3831779",
+        "url": "https://www.nicovideo.jp/watch/sm3831779",
+        "name": "東方インストアレンジメドレー【妖々夢編】"
+      }
+    ],
+    "source": {
+      "name": "NicoNico archive reference",
+      "url": "https://www.nicozon.net/watch/sm3831779"
+    }
+  },
+  {
+    "id": "arr-legacy-in-inst-medley-2008",
+    "type": "arrangement",
+    "category": "mashup",
+    "title": "東方インストアレンジメドレー【永夜抄前編】",
+    "aliases": [
+      "Touhou IN Instrumental Arrange Medley",
+      "영야초 인스트 어레인지 메들리"
+    ],
+    "year": 2008,
+    "circle": "Legacy Web Medley",
+    "album": "NicoNico legacy mix",
+    "moods": [
+      "메들리",
+      "레거시 웹",
+      "니코동",
+      "인스트",
+      "록",
+      "메탈",
+      "영야초"
+    ],
+    "originalIds": [
+      "in-01",
+      "in-02",
+      "in-03",
+      "in-04",
+      "in-05",
+      "in-06",
+      "in-07",
+      "in-08",
+      "in-09"
+    ],
+    "artists": {
+      "arranger": [],
+      "vocal": [],
+      "lyricist": [],
+      "other": [
+        "legacy uploader / mixed sources"
+      ]
+    },
+    "media": {
+      "provider": "niconico",
+      "id": "sm3832401",
+      "url": "https://www.nicovideo.jp/watch/sm3832401",
+      "name": "東方インストアレンジメドレー【永夜抄前編】"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "niconico",
+        "id": "sm3832401",
+        "url": "https://www.nicovideo.jp/watch/sm3832401",
+        "name": "東方インストアレンジメドレー【永夜抄前編】"
+      }
+    ],
+    "source": {
+      "name": "NicoNico archive reference",
+      "url": "https://www.nicozon.net/watch/sm3832401"
+    }
+  },
+  {
+    "id": "arr-legacy-pofv-inst-medley-2008",
+    "type": "arrangement",
+    "category": "mashup",
+    "title": "東方インストアレンジメドレー【花映塚編】",
+    "aliases": [
+      "Touhou PoFV Instrumental Arrange Medley",
+      "화영총 인스트 어레인지 메들리"
+    ],
+    "year": 2008,
+    "circle": "Legacy Web Medley",
+    "album": "NicoNico legacy mix",
+    "moods": [
+      "메들리",
+      "레거시 웹",
+      "니코동",
+      "인스트",
+      "화영총"
+    ],
+    "originalIds": [
+      "eosd-07",
+      "pcb-04",
+      "in-07"
+    ],
+    "artists": {
+      "arranger": [],
+      "vocal": [],
+      "lyricist": [],
+      "other": [
+        "legacy uploader / mixed sources"
+      ]
+    },
+    "media": {
+      "provider": "niconico",
+      "id": "sm3852715",
+      "url": "https://www.nicovideo.jp/watch/sm3852715",
+      "name": "東方インストアレンジメドレー【花映塚編】"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "niconico",
+        "id": "sm3852715",
+        "url": "https://www.nicovideo.jp/watch/sm3852715",
+        "name": "東方インストアレンジメドレー【花映塚編】"
+      }
+    ],
+    "source": {
+      "name": "NicoNico archive reference",
+      "url": "https://www.nicozon.net/watch/sm3852715"
+    }
+  },
+  {
+    "id": "arr-legacy-mof-inst-medley-2008",
+    "type": "arrangement",
+    "category": "mashup",
+    "title": "東方インストアレンジメドレー【風神録編】",
+    "aliases": [
+      "Touhou MoF Instrumental Arrange Medley",
+      "풍신록 인스트 어레인지 메들리"
+    ],
+    "year": 2008,
+    "circle": "Legacy Web Medley",
+    "album": "NicoNico legacy mix",
+    "moods": [
+      "메들리",
+      "레거시 웹",
+      "니코동",
+      "인스트",
+      "록",
+      "메탈",
+      "풍신록"
+    ],
+    "originalIds": [
+      "mof-01",
+      "mof-02",
+      "mof-03",
+      "mof-04",
+      "mof-05",
+      "mof-06",
+      "mof-07",
+      "mof-08"
+    ],
+    "artists": {
+      "arranger": [],
+      "vocal": [],
+      "lyricist": [],
+      "other": [
+        "legacy uploader / mixed sources"
+      ]
+    },
+    "media": {
+      "provider": "niconico",
+      "id": "sm3883784",
+      "url": "https://www.nicovideo.jp/watch/sm3883784",
+      "name": "東方インストアレンジメドレー【風神録編】"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "niconico",
+        "id": "sm3883784",
+        "url": "https://www.nicovideo.jp/watch/sm3883784",
+        "name": "東方インストアレンジメドレー【風神録編】"
+      }
+    ],
+    "source": {
+      "name": "NicoNico archive reference",
+      "url": "https://www.nicozon.net/watch/sm3883784"
+    }
+  },
+  {
+    "id": "arr-legacy-in-speedmetal-boss-2008",
+    "type": "arrangement",
+    "category": "mashup",
+    "title": "メロディックスピードメタル系東方永夜抄ボスインストアレンジ集",
+    "aliases": [
+      "Touhou IN Boss Melodic Speed Metal Medley",
+      "영야초 보스 메탈 메들리"
+    ],
+    "year": 2008,
+    "circle": "Legacy Web Medley",
+    "album": "NicoNico legacy mix",
+    "moods": [
+      "메들리",
+      "레거시 웹",
+      "니코동",
+      "인스트",
+      "멜로딕 스피드 메탈",
+      "보스"
+    ],
+    "originalIds": [
+      "in-01",
+      "in-02",
+      "in-03",
+      "in-04",
+      "in-05",
+      "in-06",
+      "in-07",
+      "in-08",
+      "in-09"
+    ],
+    "artists": {
+      "arranger": [],
+      "vocal": [],
+      "lyricist": [],
+      "other": [
+        "legacy uploader / mixed sources"
+      ]
+    },
+    "media": {
+      "provider": "niconico",
+      "id": "sm3849150",
+      "url": "https://www.nicovideo.jp/watch/sm3849150",
+      "name": "メロディックスピードメタル系東方永夜抄ボスインストアレンジ集"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "niconico",
+        "id": "sm3849150",
+        "url": "https://www.nicovideo.jp/watch/sm3849150",
+        "name": "メロディックスピードメタル系東方永夜抄ボスインストアレンジ集"
+      }
+    ],
+    "source": {
+      "name": "NicoNico archive reference",
+      "url": "https://www.nicozon.net/watch/sm3849150"
+    }
+  },
+  {
+    "id": "arr-legacy-lastboss-ex-medley-2008",
+    "type": "arrangement",
+    "category": "mashup",
+    "title": "【東方】ラスボス・EX神アレンジメドレー【作業用ＢＧＭ】",
+    "aliases": [
+      "Touhou Last Boss / EX Arrange Medley",
+      "라스트보스 EX 어레인지 메들리"
+    ],
+    "year": 2008,
+    "circle": "Legacy Web Medley",
+    "album": "NicoNico legacy mix",
+    "moods": [
+      "메들리",
+      "레거시 웹",
+      "니코동",
+      "보스",
+      "Extra",
+      "고속"
+    ],
+    "originalIds": [
+      "eosd-08",
+      "eosd-09",
+      "pcb-06",
+      "pcb-08",
+      "in-08",
+      "in-09",
+      "mof-08"
+    ],
+    "artists": {
+      "arranger": [],
+      "vocal": [],
+      "lyricist": [],
+      "other": [
+        "legacy uploader / mixed sources"
+      ]
+    },
+    "media": {
+      "provider": "niconico",
+      "id": "sm3822557",
+      "url": "https://www.nicovideo.jp/watch/sm3822557",
+      "name": "【東方】ラスボス・EX神アレンジメドレー【作業用ＢＧＭ】"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "niconico",
+        "id": "sm3822557",
+        "url": "https://www.nicovideo.jp/watch/sm3822557",
+        "name": "【東方】ラスボス・EX神アレンジメドレー【作業用ＢＧＭ】"
+      }
+    ],
+    "source": {
+      "name": "NicoNico archive reference",
+      "url": "https://www.nicozon.net/watch/sm3822557"
+    }
+  },
+  {
+    "id": "arr-legacy-old-seihou-inst-medley-2008",
+    "type": "arrangement",
+    "category": "mashup",
+    "title": "【全曲みすちー肌】東方旧作・西方・その他インストアレンジメドレー",
+    "aliases": [
+      "Touhou PC-98 / Seihou Instrumental Arrange Medley",
+      "동방 구작 서방 인스트 메들리"
+    ],
+    "year": 2008,
+    "circle": "Legacy Web Medley",
+    "album": "NicoNico legacy mix",
+    "moods": [
+      "메들리",
+      "레거시 웹",
+      "니코동",
+      "구작",
+      "서방",
+      "인스트"
+    ],
+    "originalIds": [
+      "lls-bad-apple"
+    ],
+    "artists": {
+      "arranger": [],
+      "vocal": [],
+      "lyricist": [],
+      "other": [
+        "legacy uploader / mixed sources"
+      ]
+    },
+    "media": {
+      "provider": "niconico",
+      "id": "sm3511452",
+      "url": "https://www.nicovideo.jp/watch/sm3511452",
+      "name": "【全曲みすちー肌】東方旧作・西方・その他インストアレンジメドレー"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "niconico",
+        "id": "sm3511452",
+        "url": "https://www.nicovideo.jp/watch/sm3511452",
+        "name": "【全曲みすちー肌】東方旧作・西方・その他インストアレンジメドレー"
+      }
+    ],
+    "source": {
+      "name": "NicoNico archive reference",
+      "url": "https://www.nicozon.net/watch/sm3511452"
+    }
+  },
+  {
+    "id": "arr-legacy-upbeat-inst-2008",
+    "type": "arrangement",
+    "category": "mashup",
+    "title": "けっこうアガって色々はかどる東方インストアレンジ集",
+    "aliases": [
+      "Upbeat Touhou Instrumental Arrange Collection",
+      "동방 인스트 작업용 메들리"
+    ],
+    "year": 2008,
+    "circle": "Legacy Web Medley",
+    "album": "NicoNico legacy mix",
+    "moods": [
+      "메들리",
+      "레거시 웹",
+      "니코동",
+      "인스트",
+      "작업용 BGM",
+      "고속"
+    ],
+    "originalIds": [
+      "in-01"
+    ],
+    "artists": {
+      "arranger": [],
+      "vocal": [],
+      "lyricist": [],
+      "other": [
+        "legacy uploader / mixed sources"
+      ]
+    },
+    "media": {
+      "provider": "niconico",
+      "id": "sm3789500",
+      "url": "https://www.nicovideo.jp/watch/sm3789500",
+      "name": "けっこうアガって色々はかどる東方インストアレンジ集"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "niconico",
+        "id": "sm3789500",
+        "url": "https://www.nicovideo.jp/watch/sm3789500",
+        "name": "けっこうアガって色々はかどる東方インストアレンジ集"
+      }
+    ],
+    "source": {
+      "name": "NicoNico archive reference",
+      "url": "https://www.nicozon.net/watch/sm3789500"
+    }
+  },
+  {
+    "id": "arr-legacy-sa-dbu-medley-2009",
+    "type": "arrangement",
+    "category": "mashup",
+    "title": "【東方】どぶウサギアレンジメドレー（東方地霊殿）",
+    "aliases": [
+      "dBu music Subterranean Animism Arrange Medley",
+      "지령전 도부우사기 메들리"
+    ],
+    "year": 2009,
+    "circle": "Legacy Web Medley",
+    "album": "NicoNico legacy mix",
+    "moods": [
+      "메들리",
+      "레거시 웹",
+      "니코동",
+      "지령전",
+      "dBu music",
+      "인스트"
+    ],
+    "originalIds": [
+      "sa-01",
+      "sa-02",
+      "sa-03",
+      "sa-04",
+      "sa-05",
+      "sa-06",
+      "sa-07",
+      "sa-08"
+    ],
+    "artists": {
+      "arranger": [],
+      "vocal": [],
+      "lyricist": [],
+      "other": [
+        "legacy uploader / mixed sources"
+      ]
+    },
+    "media": {
+      "provider": "niconico",
+      "id": "sm5711985",
+      "url": "https://www.nicovideo.jp/watch/sm5711985",
+      "name": "【東方】どぶウサギアレンジメドレー（東方地霊殿）"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "niconico",
+        "id": "sm5711985",
+        "url": "https://www.nicovideo.jp/watch/sm5711985",
+        "name": "【東方】どぶウサギアレンジメドレー（東方地霊殿）"
+      }
+    ],
+    "source": {
+      "name": "NicoNico archive reference",
+      "url": "https://www.nicozon.net/watch/sm5711985"
+    }
+  },
+  {
+    "id": "arr-legacy-eosd-fm-medley-2008",
+    "type": "arrangement",
+    "category": "mashup",
+    "title": "【東方MIDI】FM音源で紅魔郷BGM【エコノミー回避】",
+    "aliases": [
+      "FM Sound EoSD BGM Medley",
+      "홍마향 FM 음원 메들리"
+    ],
+    "year": 2008,
+    "circle": "Legacy Web Medley",
+    "album": "NicoNico legacy mix",
+    "moods": [
+      "메들리",
+      "레거시 웹",
+      "니코동",
+      "MIDI",
+      "FM 음원",
+      "홍마향"
+    ],
+    "originalIds": [
+      "eosd-01",
+      "eosd-02",
+      "eosd-03",
+      "eosd-04",
+      "eosd-05",
+      "eosd-06",
+      "eosd-07",
+      "eosd-08",
+      "eosd-09"
+    ],
+    "artists": {
+      "arranger": [],
+      "vocal": [],
+      "lyricist": [],
+      "other": [
+        "legacy uploader / mixed sources"
+      ]
+    },
+    "media": {
+      "provider": "niconico",
+      "id": "sm5107970",
+      "url": "https://www.nicovideo.jp/watch/sm5107970",
+      "name": "【東方MIDI】FM音源で紅魔郷BGM【エコノミー回避】"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "niconico",
+        "id": "sm5107970",
+        "url": "https://www.nicovideo.jp/watch/sm5107970",
+        "name": "【東方MIDI】FM音源で紅魔郷BGM【エコノミー回避】"
+      }
+    ],
+    "source": {
+      "name": "NicoNico archive reference",
+      "url": "https://www.nicozon.net/watch/sm5107970"
+    }
+  },
+  {
+    "id": "arr-legacy-eosd-sc88-medley-2009",
+    "type": "arrangement",
+    "category": "mashup",
+    "title": "【東方原曲midi】東方紅魔郷medley BGM 3Loop【SC-88Pro】",
+    "aliases": [
+      "Touhou EoSD original MIDI medley SC-88Pro",
+      "홍마향 원곡 MIDI 메들리"
+    ],
+    "year": 2009,
+    "circle": "Legacy Web Medley",
+    "album": "NicoNico legacy mix",
+    "moods": [
+      "메들리",
+      "레거시 웹",
+      "니코동",
+      "MIDI",
+      "SC-88Pro",
+      "홍마향"
+    ],
+    "originalIds": [
+      "eosd-01",
+      "eosd-02",
+      "eosd-03",
+      "eosd-04",
+      "eosd-05",
+      "eosd-06",
+      "eosd-07",
+      "eosd-08",
+      "eosd-09"
+    ],
+    "artists": {
+      "arranger": [],
+      "vocal": [],
+      "lyricist": [],
+      "other": [
+        "legacy uploader / mixed sources"
+      ]
+    },
+    "media": {
+      "provider": "niconico",
+      "id": "sm7972922",
+      "url": "https://www.nicovideo.jp/watch/sm7972922",
+      "name": "【東方原曲midi】東方紅魔郷medley BGM 3Loop【SC-88Pro】"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "niconico",
+        "id": "sm7972922",
+        "url": "https://www.nicovideo.jp/watch/sm7972922",
+        "name": "【東方原曲midi】東方紅魔郷medley BGM 3Loop【SC-88Pro】"
+      }
+    ],
+    "source": {
+      "name": "NicoNico archive reference",
+      "url": "https://www.nicozon.net/watch/sm7972922"
+    }
+  },
+  {
+    "id": "arr-legacy-gensokyo-80min-2010",
+    "type": "arrangement",
+    "category": "mashup",
+    "title": "東方組曲「８０分間幻想郷一周」【MIDI】",
+    "aliases": [
+      "80分間幻想郷一周",
+      "80-minute Gensokyo Tour",
+      "80분간 환상향 일주"
+    ],
+    "year": 2010,
+    "circle": "Legacy Web Medley",
+    "album": "NicoNico legacy mix",
+    "moods": [
+      "메들리",
+      "레거시 웹",
+      "니코동",
+      "MIDI",
+      "71곡",
+      "대형 메들리",
+      "전작품"
+    ],
+    "originalIds": [
+      "eosd-01",
+      "eosd-02",
+      "eosd-03",
+      "eosd-04",
+      "eosd-05",
+      "eosd-06",
+      "eosd-07",
+      "eosd-08",
+      "eosd-09",
+      "pcb-01",
+      "pcb-02",
+      "pcb-03",
+      "pcb-04",
+      "pcb-05",
+      "pcb-06",
+      "pcb-07",
+      "pcb-08",
+      "in-01",
+      "in-02",
+      "in-03",
+      "in-04",
+      "in-05",
+      "in-06",
+      "in-07",
+      "in-08",
+      "in-09",
+      "mof-01",
+      "mof-02",
+      "mof-03",
+      "mof-04",
+      "mof-05",
+      "mof-06",
+      "mof-07",
+      "mof-08",
+      "sa-01",
+      "sa-02",
+      "sa-03",
+      "sa-04",
+      "sa-05",
+      "sa-06",
+      "sa-07",
+      "sa-08"
+    ],
+    "artists": {
+      "arranger": [],
+      "vocal": [],
+      "lyricist": [],
+      "other": [
+        "legacy uploader / mixed sources"
+      ]
+    },
+    "media": {
+      "provider": "niconico",
+      "id": "sm10357652",
+      "url": "https://www.nicovideo.jp/watch/sm10357652",
+      "name": "東方組曲「８０分間幻想郷一周」【MIDI】"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "niconico",
+        "id": "sm10357652",
+        "url": "https://www.nicovideo.jp/watch/sm10357652",
+        "name": "東方組曲「８０分間幻想郷一周」【MIDI】"
+      }
+    ],
+    "source": {
+      "name": "NicoNico archive reference",
+      "url": "https://www.nicozon.net/watch/sm10357652"
+    }
+  },
+  {
+    "id": "arr-legacy-unowen-suite-2008",
+    "type": "arrangement",
+    "category": "mashup",
+    "title": "【最終鬼畜】組曲『U.N.オーエンは彼女なのか？』【メドレー】",
+    "aliases": [
+      "U.N. Owen Suite Medley",
+      "UN Owen nonstop medley",
+      "플랑도르 논스톱 메들리"
+    ],
+    "year": 2008,
+    "circle": "Legacy Web Medley",
+    "album": "NicoNico legacy mix",
+    "moods": [
+      "메들리",
+      "레거시 웹",
+      "니코동",
+      "U.N.オーエン",
+      "플랑도르",
+      "논스톱",
+      "매시업"
+    ],
+    "originalIds": [
+      "eosd-09"
+    ],
+    "artists": {
+      "arranger": [],
+      "vocal": [],
+      "lyricist": [],
+      "other": [
+        "legacy uploader / mixed sources"
+      ]
+    },
+    "media": {
+      "provider": "niconico",
+      "id": "sm2310110",
+      "url": "https://www.nicovideo.jp/watch/sm2310110",
+      "name": "【最終鬼畜】組曲『U.N.オーエンは彼女なのか？』【メドレー】"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "niconico",
+        "id": "sm2310110",
+        "url": "https://www.nicovideo.jp/watch/sm2310110",
+        "name": "【最終鬼畜】組曲『U.N.オーエンは彼女なのか？』【メドレー】"
+      }
+    ],
+    "source": {
+      "name": "NicoNico archive reference",
+      "url": "https://www.nicozon.net/watch/sm2310110"
+    }
+  },
+  {
+    "id": "arr-legacy-unowen-medley-2009",
+    "type": "arrangement",
+    "category": "mashup",
+    "title": "U.N.オーエンのメドレーなのか？最終鬼畜ヴォーカル・アレンジ2009",
+    "aliases": [
+      "U.N. Owen Vocal Arrange Medley 2009",
+      "UN Owen 2009 medley"
+    ],
+    "year": 2009,
+    "circle": "Legacy Web Medley",
+    "album": "NicoNico legacy mix",
+    "moods": [
+      "메들리",
+      "레거시 웹",
+      "니코동",
+      "U.N.オーエン",
+      "플랑도르",
+      "보컬",
+      "논스톱"
+    ],
+    "originalIds": [
+      "eosd-09"
+    ],
+    "artists": {
+      "arranger": [],
+      "vocal": [],
+      "lyricist": [],
+      "other": [
+        "legacy uploader / mixed sources"
+      ]
+    },
+    "media": {
+      "provider": "niconico",
+      "id": "sm7813984",
+      "url": "https://www.nicovideo.jp/watch/sm7813984",
+      "name": "U.N.オーエンのメドレーなのか？最終鬼畜ヴォーカル・アレンジ2009"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "niconico",
+        "id": "sm7813984",
+        "url": "https://www.nicovideo.jp/watch/sm7813984",
+        "name": "U.N.オーエンのメドレーなのか？最終鬼畜ヴォーカル・アレンジ2009"
+      }
+    ],
+    "source": {
+      "name": "NicoNico archive reference",
+      "url": "https://www.nicozon.net/watch/sm7813984"
+    }
+  },
+  {
+    "id": "arr-legacy-unowen-vocal-2008",
+    "type": "arrangement",
+    "category": "mashup",
+    "title": "U.N.オーエンは彼女なのか？ ヴォーカルアレンジ集",
+    "aliases": [
+      "U.N. Owen Vocal Arrangement Collection",
+      "UN Owen vocal medley"
+    ],
+    "year": 2008,
+    "circle": "Legacy Web Medley",
+    "album": "NicoNico legacy mix",
+    "moods": [
+      "메들리",
+      "레거시 웹",
+      "니코동",
+      "U.N.オーエン",
+      "플랑도르",
+      "보컬"
+    ],
+    "originalIds": [
+      "eosd-09"
+    ],
+    "artists": {
+      "arranger": [],
+      "vocal": [],
+      "lyricist": [],
+      "other": [
+        "legacy uploader / mixed sources"
+      ]
+    },
+    "media": {
+      "provider": "niconico",
+      "id": "sm2147941",
+      "url": "https://www.nicovideo.jp/watch/sm2147941",
+      "name": "U.N.オーエンは彼女なのか？ ヴォーカルアレンジ集"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "niconico",
+        "id": "sm2147941",
+        "url": "https://www.nicovideo.jp/watch/sm2147941",
+        "name": "U.N.オーエンは彼女なのか？ ヴォーカルアレンジ集"
+      }
+    ],
+    "source": {
+      "name": "NicoNico archive reference",
+      "url": "https://www.nicozon.net/watch/sm2147941"
+    }
+  },
+  {
+    "id": "arr-legacy-circle-inst-2009",
+    "type": "arrangement",
+    "category": "mashup",
+    "title": "【東方Inst】私的東方お気に入りサークル別アレンジ集",
+    "aliases": [
+      "Touhou Favorite Circle Instrumental Arrange Collection",
+      "서클별 동방 인스트 어레인지 모음"
+    ],
+    "year": 2009,
+    "circle": "Legacy Web Medley",
+    "album": "NicoNico legacy mix",
+    "moods": [
+      "메들리",
+      "레거시 웹",
+      "니코동",
+      "인스트",
+      "서클별",
+      "록",
+      "메탈"
+    ],
+    "originalIds": [
+      "eosd-08",
+      "eosd-09",
+      "pcb-03",
+      "pcb-08",
+      "in-08",
+      "mof-08",
+      "sa-05"
+    ],
+    "artists": {
+      "arranger": [],
+      "vocal": [],
+      "lyricist": [],
+      "other": [
+        "legacy uploader / mixed sources"
+      ]
+    },
+    "media": {
+      "provider": "niconico",
+      "id": "sm6115956",
+      "url": "https://www.nicovideo.jp/watch/sm6115956",
+      "name": "【東方Inst】私的東方お気に入りサークル別アレンジ集"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "niconico",
+        "id": "sm6115956",
+        "url": "https://www.nicovideo.jp/watch/sm6115956",
+        "name": "【東方Inst】私的東方お気に入りサークル別アレンジ集"
+      }
+    ],
+    "source": {
+      "name": "NicoNico archive reference",
+      "url": "https://www.nicozon.net/watch/sm6115956"
+    }
+  },
+  {
+    "id": "arr-legacy-speed-violation-2008",
+    "type": "arrangement",
+    "category": "mashup",
+    "title": "【東方インストアレンジ】The Next of 「スピード違反」",
+    "aliases": [
+      "The Next of Speed Violation",
+      "동방 스피드 위반 인스트 메들리"
+    ],
+    "year": 2008,
+    "circle": "Legacy Web Medley",
+    "album": "NicoNico legacy mix",
+    "moods": [
+      "메들리",
+      "레거시 웹",
+      "니코동",
+      "인스트",
+      "고속",
+      "메탈"
+    ],
+    "originalIds": [
+      "pcb-08",
+      "in-07",
+      "mof-07",
+      "in-09"
+    ],
+    "artists": {
+      "arranger": [],
+      "vocal": [],
+      "lyricist": [],
+      "other": [
+        "legacy uploader / mixed sources"
+      ]
+    },
+    "media": {
+      "provider": "niconico",
+      "id": "sm4626036",
+      "url": "https://www.nicovideo.jp/watch/sm4626036",
+      "name": "【東方インストアレンジ】The Next of 「スピード違反」"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "niconico",
+        "id": "sm4626036",
+        "url": "https://www.nicovideo.jp/watch/sm4626036",
+        "name": "【東方インストアレンジ】The Next of 「スピード違反」"
+      }
+    ],
+    "source": {
+      "name": "NicoNico archive reference",
+      "url": "https://www.nicozon.net/watch/sm4626036"
+    }
+  },
+  {
+    "id": "arr-legacy-mof-inst-long-2010",
+    "type": "arrangement",
+    "category": "mashup",
+    "title": "【作業用】東方風神録インストアレンジメドレー【BGM】",
+    "aliases": [
+      "Touhou MoF Instrumental Arrange Medley BGM",
+      "풍신록 인스트 작업용 메들리"
+    ],
+    "year": 2010,
+    "circle": "Legacy Web Medley",
+    "album": "NicoNico legacy mix",
+    "moods": [
+      "메들리",
+      "레거시 웹",
+      "니코동",
+      "인스트",
+      "풍신록",
+      "작업용 BGM"
+    ],
+    "originalIds": [
+      "mof-01",
+      "mof-02",
+      "mof-03",
+      "mof-04",
+      "mof-05",
+      "mof-06",
+      "mof-07",
+      "mof-08"
+    ],
+    "artists": {
+      "arranger": [],
+      "vocal": [],
+      "lyricist": [],
+      "other": [
+        "legacy uploader / mixed sources"
+      ]
+    },
+    "media": {
+      "provider": "niconico",
+      "id": "sm10319004",
+      "url": "https://www.nicovideo.jp/watch/sm10319004",
+      "name": "【作業用】東方風神録インストアレンジメドレー【BGM】"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "niconico",
+        "id": "sm10319004",
+        "url": "https://www.nicovideo.jp/watch/sm10319004",
+        "name": "【作業用】東方風神録インストアレンジメドレー【BGM】"
+      }
+    ],
+    "source": {
+      "name": "NicoNico archive reference",
+      "url": "https://www.nicozon.net/watch/sm10319004"
+    }
+  },
+  {
+    "id": "arr-legacy-pcb-inst-long-2012",
+    "type": "arrangement",
+    "category": "mashup",
+    "title": "【作業用BGM】妖々夢インストアレンジメドレー",
+    "aliases": [
+      "Touhou PCB Instrumental Arrange Medley BGM",
+      "요요몽 인스트 작업용 메들리"
+    ],
+    "year": 2012,
+    "circle": "Legacy Web Medley",
+    "album": "NicoNico legacy mix",
+    "moods": [
+      "메들리",
+      "레거시 웹",
+      "니코동",
+      "인스트",
+      "요요몽",
+      "작업용 BGM"
+    ],
+    "originalIds": [
+      "pcb-01",
+      "pcb-02",
+      "pcb-03",
+      "pcb-04",
+      "pcb-05",
+      "pcb-06",
+      "pcb-07",
+      "pcb-08"
+    ],
+    "artists": {
+      "arranger": [],
+      "vocal": [],
+      "lyricist": [],
+      "other": [
+        "legacy uploader / mixed sources"
+      ]
+    },
+    "media": {
+      "provider": "niconico",
+      "id": "sm16699533",
+      "url": "https://www.nicovideo.jp/watch/sm16699533",
+      "name": "【作業用BGM】妖々夢インストアレンジメドレー"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "niconico",
+        "id": "sm16699533",
+        "url": "https://www.nicovideo.jp/watch/sm16699533",
+        "name": "【作業用BGM】妖々夢インストアレンジメドレー"
+      }
+    ],
+    "source": {
+      "name": "NicoNico archive reference",
+      "url": "https://www.nicozon.net/watch/sm16699533"
+    }
+  },
+  {
+    "id": "arr-legacy-in-metalrock-2012",
+    "type": "arrangement",
+    "category": "mashup",
+    "title": "【作業用BGM】メタル＆ロックな永夜抄インストアレンジメドレー",
+    "aliases": [
+      "Touhou IN Metal & Rock Instrumental Arrange Medley",
+      "영야초 메탈 록 인스트 메들리"
+    ],
+    "year": 2012,
+    "circle": "Legacy Web Medley",
+    "album": "NicoNico legacy mix",
+    "moods": [
+      "메들리",
+      "레거시 웹",
+      "니코동",
+      "인스트",
+      "영야초",
+      "메탈",
+      "록"
+    ],
+    "originalIds": [
+      "in-01",
+      "in-02",
+      "in-03",
+      "in-04",
+      "in-05",
+      "in-06",
+      "in-07",
+      "in-08",
+      "in-09"
+    ],
+    "artists": {
+      "arranger": [],
+      "vocal": [],
+      "lyricist": [],
+      "other": [
+        "legacy uploader / mixed sources"
+      ]
+    },
+    "media": {
+      "provider": "niconico",
+      "id": "sm17124672",
+      "url": "https://www.nicovideo.jp/watch/sm17124672",
+      "name": "【作業用BGM】メタル＆ロックな永夜抄インストアレンジメドレー"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "niconico",
+        "id": "sm17124672",
+        "url": "https://www.nicovideo.jp/watch/sm17124672",
+        "name": "【作業用BGM】メタル＆ロックな永夜抄インストアレンジメドレー"
+      }
+    ],
+    "source": {
+      "name": "NicoNico archive reference",
+      "url": "https://www.nicozon.net/watch/sm17124672"
+    }
   }
 ]
