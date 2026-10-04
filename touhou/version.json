@@ -1,5 +1,5 @@
 {
-  "version": "0.9.24",
+  "version": "0.9.25",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-10-04",
@@ -190,6 +190,12 @@
     "button-binding-repair",
     "delegated-navigation-events",
     "touhou-style-583-track-catalog",
-    "verified-touhou-style-expansion"
+    "verified-touhou-style-expansion",
+    "inclusive-touhou-related-catalog",
+    "detailed-relation-taxonomy",
+    "youtube-inline-priority",
+    "fan-youtube-auto-matcher",
+    "fan-youtube-embed-cache",
+    "fan-original-touhoudb-video-enrichment"
   ]
 }
