@@ -3644,7 +3644,7 @@ body[data-vsa-theme="light"] .v3929-guide-scope-more summary{color:#52736f}
     </details>
   </section>
 
-  <div class="footer">v39.130.2 · Iceberg Mini Universe 1.0 · Iceberg Song Nodes 1.0 · Dive Motion 1.0 · Iceberg Explore HUD 1.0 · Iceberg Depth 3.0 · Queue Stability 1.0 · Ocean HUD 2.0 · Dive Performance 1.0 · Direct APK Update 1.0 · Search Fix · Rank Turbo 1.0 · Native Brand 0.2 · Android Shell 0.1 · App Foundation 1.0 · Cross-Genre Bridge 1.0 · Relation Trust 3.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
+  <div class="footer">v39.130.3 · Iceberg Mini Universe 1.0 · Iceberg Song Nodes 1.0 · Dive Motion 1.0 · Iceberg Explore HUD 1.0 · Iceberg Depth 3.0 · Queue Stability 1.0 · Ocean HUD 2.0 · Dive Performance 1.0 · Direct APK Update 1.0 · Search Fix · Rank Turbo 1.0 · Native Brand 0.2 · Android Shell 0.1 · App Foundation 1.0 · Cross-Genre Bridge 1.0 · Relation Trust 3.0 · Multi Relation · Mini Return · Dive Handoff 2.0 · Dive Search 1.0 · JA Audit · Explore 2.2 · Archive 2.0 · Search 4.1 · Home 3.0 · Search 4.0 · Watch 1.4 · Nav safety · Theme · Dive Graph 4.6 · Legacy Title Recall · My VocaDive · 설치형 웹앱 · 자동 업데이트 · 니코니코/VocaDB 공식 서비스가 아닙니다.</div>
 </div>
 
 <div class="tools-modal" id="toolsModal" hidden>
@@ -4858,21 +4858,10 @@ function songMatchesScope(song,scope){
   if(!scope || scope==="all") return true;
   const mode=searchScopeOriginalMode37(scope);
   if(!mode)return true;
-
-  if(discoveryOriginalProof37(song,mode).ok)return true;
-
-  const text=[song&&song.title,song&&song.description].concat(parseTags(song&&song.tags)).filter(Boolean).join(" ");
-  if(originalDerivativeInfo37(song).hit)return false;
-  const explicit=/(?:オリジナル(?:曲)?|original(?:\s+song)?|書き下ろし|自作曲)/i.test(text);
-  if(!explicit)return false;
-  if(scope==="vocaloid")return /VOCALOID|初音ミク|鏡音|巡音ルカ|MEIKO|KAITO|GUMI|IA|flower|音街ウナ|結月ゆかり|歌愛ユキ/i.test(text);
-  if(scope==="utau")return /UTAU|重音テト|波音リツ|デフォ子|足立レイ/i.test(text);
-  if(scope==="synthv")return /Synthesizer ?V|SynthV|小春六花|夏色花梨|花隈千冬|宮舞モカ|重音テトSV/i.test(text);
-  if(scope==="cevio")return /CeVIO|可不|星界|裏命|狐子|羽累/i.test(text);
-  if(scope==="voisona")return /VoiSona|知声|機流音|双葉湊音|AiSuu/i.test(text);
-  if(scope==="neutrino")return /NEUTRINO|きりたん|めろう|ナクモ|ずん子|No\.7/i.test(text);
-  if(scope==="voicevox")return /VOICEVOX|ずんだもん/i.test(text);
-  return /VOCALOID|UTAU|Synthesizer ?V|SynthV|CeVIO|VoiSona|NEUTRINO|VOICEVOX|ACE ?Studio/i.test(text)
+  // Original-only scopes are strict: an exact original-song proof tag is required.
+  // Engine/vocal names or words like "original" in title/description are not enough.
+  const proof=discoveryOriginalProof37(song,mode);
+  return !!(proof&&proof.ok)
 }
 
 
@@ -8378,7 +8367,17 @@ function retryCurrentSearch(){
 function esc(s=""){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]))}
 function renderSongs(){
   const q=$("#titleFilter").value.trim().toLowerCase();
-  const rows=state.songs.filter(s=>!q||String(s.title||"").toLowerCase().includes(q));
+  let renderPool=state.songs;
+  if(state.listMode==="free"&&state.freeScope&&state.freeScope!=="all"){
+    renderPool=renderPool.filter(function(s){return songMatchesScope(s,state.freeScope)});
+    if(renderPool.length!==state.songs.length){
+      state.sourceRejectStats.search_render_guard={
+        checked:state.songs.length,kept:renderPool.length,rejected:state.songs.length-renderPool.length,
+        scope:state.freeScope,at:Date.now()
+      }
+    }
+  }
+  const rows=renderPool.filter(s=>!q||String(s.title||"").toLowerCase().includes(q));
   $("#loadedCount").textContent=`${fmt(rows.length)}곡 표시`;
   if(!rows.length){
     $("#songList").innerHTML=`<div class="empty">조건에 맞는 곡이 없습니다.</div>`; return;
