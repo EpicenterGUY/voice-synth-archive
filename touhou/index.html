@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0a0d17">
   <title>TouhouDive — 東方音楽探索</title>
-  <meta name="description" content="동방 Project 원곡과 2차창작 어레인지를 계보로 연결해 탐색하고 앱 안에서 영상을 재생하는 음악 탐색 앱.">
+  <meta name="description" content="동방 Project 공식 원곡, 파생곡, 팬 오리지널, 동방풍 음악까지 관계별로 연결해 탐색하고 앱 안에서 영상을 재생하는 음악 탐색 앱.">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icon.svg">
-  <link rel="stylesheet" href="./styles.css?v=0.9.24">
+  <link rel="stylesheet" href="./styles.css?v=0.9.25">
 </head>
 <body data-view="home">
   <div class="app-shell">
@@ -32,7 +32,7 @@
       </nav>
 
       <div class="sidebar-footer">
-        <div class="build-chip"><span></span>TouhouDive v0.9.24 Alpha</div>
+        <div class="build-chip"><span></span>TouhouDive v0.9.25 Alpha</div>
         <button class="ghost-btn" id="themeBtn">◐ 테마 전환</button>
       </div>
     </aside>
@@ -52,9 +52,9 @@
 
       <section class="commandbar">
         <div class="mode-tabs" id="modeTabs" aria-label="곡 분류">
-          <button class="mode-tab is-active" data-mode="all">전체</button>
+          <button class="mode-tab is-active" data-mode="all">동방 관련 전체</button>
           <button class="mode-tab" data-mode="original">공식 원곡</button>
-          <button class="mode-tab" data-mode="arrangement">2차창작</button>
+          <button class="mode-tab" data-mode="arrangement">파생·2차창작</button>
           <button class="mode-tab" data-mode="fan-original">동방풍</button>
         </div>
         <div class="playback-mode-wrap">
@@ -74,7 +74,7 @@
         <div class="hero-copy">
           <div class="eyebrow">TOUHOU MUSIC GRAPH</div>
           <h1>환상향의 음악을<br><em>이어 듣고, 깊게 파고들기.</em></h1>
-          <p>원곡과 2차창작을 따로 정리하고, 원곡 계보·서클·보컬·태그로 다시 연결합니다.</p>
+          <p>공식 원곡부터 어레인지·리믹스·커버·팬 오리지널·동방풍까지 전부 담고, 계보·서클·보컬·태그로 구분합니다.</p>
           <div class="hero-actions">
             <button class="primary-btn" id="heroDiveBtn">✦ 랜덤 다이브</button>
             <button class="secondary-btn" id="playableBtn">▶ 영상 있는 곡</button>
@@ -92,7 +92,7 @@
 
       <section class="stats-row home-only" aria-label="카탈로그 상태">
         <article><span>공식 원곡</span><strong id="statOriginal">0</strong><small id="statOriginalMeta">로컬 + 라이브</small></article>
-        <article><span>2차창작</span><strong id="statArrangement">0</strong><small id="statArrangementMeta">TouhouDB 라이브</small></article>
+        <article><span>파생·2차창작</span><strong id="statArrangement">0</strong><small id="statArrangementMeta">TouhouDB 라이브</small></article>
         <article><span>동방풍</span><strong id="statFanOriginal">0</strong><small id="statFanOriginalMeta">별도 큐레이션</small></article>
         <article><span>재생 후보</span><strong id="statMedia">0</strong><small id="statMediaMeta">전체 인덱스 PV 후보</small></article>
         <article><span>전체 카탈로그</span><strong id="statLinks">0</strong><small id="statLinksMeta">연결 확인 중</small></article>
@@ -237,9 +237,9 @@
     </aside>
   </section>
 
-  <script src="./catalog.js?v=0.9.24"></script>
-  <script src="./media.js?v=0.9.24"></script>
-  <script src="./full-index.js?v=0.9.24"></script>
-  <script src="./app.js?v=0.9.24" type="module"></script>
+  <script src="./catalog.js?v=0.9.25"></script>
+  <script src="./media.js?v=0.9.25"></script>
+  <script src="./full-index.js?v=0.9.25"></script>
+  <script src="./app.js?v=0.9.25" type="module"></script>
 </body>
 </html>
