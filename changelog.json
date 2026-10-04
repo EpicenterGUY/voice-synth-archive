@@ -1,11 +1,24 @@
 {
   "current": {
-    "version": "39.130.2",
+    "version": "39.130.3",
     "releasedAt": "2026-10-05",
-    "title": "Update Rescue · Original Filter Guard",
-    "summary": "오래된 앱 셸 캐시를 강제로 복구하는 업데이트 경로를 추가하고 오리지널곡 필터 누수를 막았습니다."
+    "title": "Stale PWA Rescue · Strict Original Proof",
+    "summary": "오래된 PWA 화면이 계속 남는 문제를 서비스워커 단계에서 강제 복구하고, 오리지널 필터를 최종 렌더 단계까지 엄격하게 적용했습니다."
   },
   "entries": [
+    {
+      "version": "39.130.3",
+      "date": "2026-10-05",
+      "title": "Stale PWA Rescue · Strict Original Proof",
+      "changes": [
+        "새 서비스워커가 활성화되면 이미 열려 있는 오래된 VocaDive 화면을 update-rescue.html로 강제 이동시켜 39.116 같은 stale shell을 자동 복구",
+        "PWA controllerchange에서도 단순 새로고침 대신 rescue 경로를 사용해 오래된 HTML/JS/Cache Storage를 정리",
+        "오리지널곡 범위는 제목·설명에 VOCALOID/UTAU/Original 문구가 있다는 이유만으로 통과시키지 않고 실제 오리지널 증거 태그를 필수로 요구",
+        "검색 결과 렌더 직전에도 현재 오리지널 범위를 다시 검사해 검색 병합·추가 수집·오래된 state에서 비원곡이 재유입되는 것을 차단",
+        "실황·게임플레이·커버·니코카라·MMD·MAD·연주/댄스·방송/클립 등 파생 콘텐츠는 오리지널 전용 범위에서 제외",
+        "PWA·업데이터 캐시버스터와 서비스워커 버전을 39.130.3으로 통일"
+      ]
+    },
     {
       "version": "39.130.2",
       "date": "2026-10-05",
