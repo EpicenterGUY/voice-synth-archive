@@ -247,6 +247,40 @@
   </section>
   <div class="toast" id="toast"></div>
 
+  <section class="skin-sheet" id="skinSheet" hidden aria-label="스킨 설정">
+    <div class="skin-sheet-head">
+      <div><span>APPEARANCE</span><strong>스킨</strong></div>
+      <button id="skinSheetClose" aria-label="닫기">×</button>
+    </div>
+    <div class="skin-presets" role="group" aria-label="스킨 선택">
+      <button class="skin-preset" data-skin-choice="station"><b>STATION</b><span>MP3 · 미니콤포</span></button>
+      <button class="skin-preset" data-skin-choice="graph"><b>GRAPH</b><span>기본 아카이브</span></button>
+      <button class="skin-preset" data-skin-choice="custom"><b>CUSTOM</b><span>내 그림 배경</span></button>
+    </div>
+    <div class="custom-skin-controls" id="customSkinControls" hidden>
+      <div class="custom-skin-preview" id="customSkinPreview">
+        <span id="customSkinEmpty">내 그림을 추가해 배경으로 사용할 수 있어요.</span>
+      </div>
+      <div class="custom-skin-actions">
+        <button class="primary-btn" id="customImageBtn">＋ 내 그림 추가</button>
+        <button class="secondary-btn" id="customImageRemove">그림 제거</button>
+        <input id="customImageInput" type="file" accept="image/*" hidden>
+      </div>
+      <div class="custom-skin-sliders">
+        <label><span>어둡게</span><input id="customDim" type="range" min="10" max="85" value="48"><output id="customDimValue">48%</output></label>
+        <label><span>블러</span><input id="customBlur" type="range" min="0" max="24" value="4"><output id="customBlurValue">4px</output></label>
+        <label><span>위치</span>
+          <select id="customPosition">
+            <option value="center">가운데</option>
+            <option value="top">위쪽</option>
+            <option value="bottom">아래쪽</option>
+          </select>
+        </label>
+      </div>
+      <p class="custom-skin-note">이미지는 이 기기의 TouhouDive 저장소에만 보관됩니다. STATION/GRAPH에는 적용되지 않습니다.</p>
+    </div>
+  </section>
+
   <section class="player-shell" id="playerShell" hidden>
     <div class="player-watch">
       <div class="station-player-face" id="stationPlayerFace" aria-label="MP3 재생 정보">
