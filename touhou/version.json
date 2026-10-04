@@ -1,5 +1,5 @@
 {
-  "version": "0.9.40",
+  "version": "0.9.41",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-10-04",
@@ -295,6 +295,11 @@
     "tablet-portrait-mini-bar",
     "tablet-landscape-mini-bar",
     "catalog-hq-youtube-thumbnails",
-    "catalog-thumbnail-fallback-chain"
+    "catalog-thumbnail-fallback-chain",
+    "tablet-orientation-player-layout",
+    "non-sticky-song-video-toggle",
+    "landscape-player-height-fit",
+    "landscape-station-compact",
+    "orientation-scroll-reset"
   ]
 }
