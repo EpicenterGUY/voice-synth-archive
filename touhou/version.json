@@ -1,5 +1,5 @@
 {
-  "version": "0.9.34",
+  "version": "0.9.35",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-10-04",
@@ -264,6 +264,14 @@
     "music-video-priority",
     "explicit-mv-pv-detection",
     "beginner-mv-filter",
-    "beginner-full-index-scan"
+    "beginner-full-index-scan",
+    "music-app-player",
+    "song-video-toggle",
+    "album-art-now-playing",
+    "youtube-timeline",
+    "music-mini-player",
+    "player-queue-lyrics-info-tabs",
+    "player-library-origin-dive-actions",
+    "ambient-artwork-player"
   ]
 }
