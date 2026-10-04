@@ -1,0 +1,54 @@
+[
+  {
+    "id": "fan-sparxe-switcheroo",
+    "type": "fan-original",
+    "category": "fan-original",
+    "title": "Switcheroo",
+    "year": 2024,
+    "circle": "Sparxe",
+    "artistString": "Sparxe",
+    "role": "Touhou-style original",
+    "album": "Switcheroo",
+    "moods": [
+      "동방풍",
+      "보스곡",
+      "전자",
+      "리듬게임"
+    ],
+    "originalIds": [],
+    "artists": {
+      "composer": [
+        "Sparxe"
+      ]
+    },
+    "aliases": [
+      "Sparxe - Switcheroo"
+    ],
+    "touhouStyle": true,
+    "styleClass": "touhou-like-original",
+    "classification": {
+      "basis": "curated",
+      "note": "동방풍 오리지널 분류. 공식 동방 원곡이나 동방 어레인지와는 별도 집계."
+    },
+    "media": {
+      "provider": "bandcamp",
+      "url": "https://sparxe.bandcamp.com/track/switcheroo",
+      "mode": "external",
+      "name": "Switcheroo · Bandcamp"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "bandcamp",
+        "url": "https://sparxe.bandcamp.com/track/switcheroo",
+        "mode": "external",
+        "name": "Switcheroo · Bandcamp"
+      }
+    ],
+    "source": {
+      "name": "Sparxe Bandcamp",
+      "url": "https://sparxe.bandcamp.com/track/switcheroo"
+    },
+    "publishDate": "2024-04-07",
+    "remote": false
+  }
+]
