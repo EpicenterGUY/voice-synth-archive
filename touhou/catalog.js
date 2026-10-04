@@ -192,7 +192,7 @@ async function fetchJson(url,force=false){
   }finally{clearTimeout(timer)}
 }
 function modeSongTypes(mode){
-  if(mode==="original")return"Original";
+  if(mode==="original"||mode==="fan-original")return"Original";
   if(mode==="arrangement")return"Arrangement,Rearrangement,Remix,Cover,Remaster,Instrumental,Mashup,ShortVersion";
   return"";
 }
