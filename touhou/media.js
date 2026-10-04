@@ -44,6 +44,13 @@ class TouhouMediaPlayer{
   constructor(){
     this.shell=document.getElementById("playerShell");
     this.video=document.getElementById("playerVideo");
+    // A restored/cached DOM can remember the full-player visibility even though
+    // the JS playback state starts empty. Always boot closed and open only from play().
+    if(this.shell){
+      this.shell.hidden=true;
+      this.shell.classList.remove("is-active","is-mini","is-playing");
+    }
+    document.body.classList.remove("player-open");
     this.title=document.getElementById("playerTitle");
     this.meta=document.getElementById("playerMeta");
     this.type=document.getElementById("playerType");
@@ -94,6 +101,12 @@ class TouhouMediaPlayer{
     try{this.badMedia=new Set(JSON.parse(localStorage.getItem(BAD_MEDIA_KEY)||"[]"))}catch(_){this.badMedia=new Set()}
     document.getElementById("playerClose").onclick=()=>this.close();
     document.getElementById("playerHeadClose").onclick=()=>this.close();
+    this.shell.addEventListener("click",e=>{
+      const target=e.target.closest?.("#playerHeadClose,#playerClose,#playerHeadMini");
+      if(!target)return;
+      e.preventDefault();e.stopPropagation();
+      if(target.id==="playerHeadMini")this.minimize();else this.close();
+    },true);
     if(this.pipBtn)this.pipBtn.onclick=()=>this.requestPip();
     document.getElementById("playerMini").onclick=()=>this.minimize();
     document.getElementById("playerHeadMini").onclick=()=>this.minimize();
@@ -123,6 +136,13 @@ class TouhouMediaPlayer{
     document.addEventListener("visibilitychange",()=>this.onVisibilityChange());
     window.addEventListener("pagehide",()=>this.onPageHide());
     this.bindMediaSession();
+    window.addEventListener("pageshow",()=>{
+      if(!this.current){
+        this.shell.hidden=true;
+        this.shell.classList.remove("is-active","is-mini","is-playing");
+        document.body.classList.remove("player-open");
+      }
+    });
     this.timelineTimer=setInterval(()=>this.syncTimeline(),750);
     this.syncControls();
     this.setVisualMode(this.visualMode,false);
@@ -214,6 +234,7 @@ class TouhouMediaPlayer{
     this.type.textContent=provider.toUpperCase()+" · TOUHOUDIVE WATCH";
     this.source.href=this.current.media?.url||this.current.source?.url||"#";
     this.source.hidden=this.source.href.endsWith("#");
+    this.shell.classList.add("is-active");
     this.shell.hidden=false;
     this.rankDetailKey="";if(this.rankDetailEl){this.rankDetailEl.hidden=true;this.rankDetailEl.innerHTML=""}this.syncMeta();this.syncArtwork();this.syncStationDisplay();this.syncVisualMode();this.syncControls();this.syncMediaSession();this.renderRankings();this.renderPanels();
     window.dispatchEvent(new CustomEvent("touhoudive:player-track",{detail:{trackId:this.current.id,touhoudbId:this.current.touhoudbId||null}}));
@@ -682,14 +703,15 @@ class TouhouMediaPlayer{
     return true;
   }
   minimize(){
-    if(!this.current)return;
-    this.shell.classList.add("is-mini");
+    if(!this.current){this.close();return}
+    this.shell.classList.add("is-active","is-mini");
     document.body.classList.remove("player-open");
     document.getElementById("playerExpand").hidden=false;
     this.syncMeta();
   }
   expand(){
-    if(!this.current)return;
+    if(!this.current){this.close();return}
+    this.shell.classList.add("is-active");
     this.shell.classList.remove("is-mini");
     document.body.classList.add("player-open");
     document.getElementById("playerExpand").hidden=true;
@@ -749,7 +771,7 @@ class TouhouMediaPlayer{
     this.restoreFromDocumentPip();
     this.destroySurface();this.current=null;this.queue=[];this.index=-1;this.playing=false;
     this.shell.classList.remove("is-playing");if(this.seek){this.seek.value="0";this.seek.disabled=true}if(this.elapsed)this.elapsed.textContent="--:--";if(this.duration)this.duration.textContent="--:--";
-    this.shell.hidden=true;this.shell.classList.remove("is-mini");document.body.classList.remove("player-open");this.setPlaybackState("none");
+    this.shell.hidden=true;this.shell.classList.remove("is-active","is-mini","is-playing","player-video-mode");this.shell.classList.add("player-song-mode");document.body.classList.remove("player-open");this.setPlaybackState("none");
     try{if("mediaSession" in navigator)navigator.mediaSession.metadata=null}catch(_){}
     this.renderPanels();this.syncControls();
   }
