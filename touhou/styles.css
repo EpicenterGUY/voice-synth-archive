@@ -780,3 +780,15 @@ html[data-skin="custom"] .hero-visual{display:flex}
 html[data-skin="station"] .beginner-note{
   font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#dec987
 }
+
+
+/* v0.9.32 hero artwork isolation */
+html[data-skin="station"] .hero::after,
+html[data-skin="custom"] .hero::after{display:none!important}
+html[data-skin="station"] .hero,
+html[data-skin="custom"] .hero{isolation:isolate}
+html[data-skin="station"] .hero-copy,
+html[data-skin="station"] .station-console,
+html[data-skin="custom"] .hero-copy,
+html[data-skin="custom"] .hero-visual{position:relative;z-index:1}
+html[data-skin="station"] .station-console{overflow:hidden}
