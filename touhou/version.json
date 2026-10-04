@@ -1,5 +1,5 @@
 {
-  "version": "0.9.43",
+  "version": "0.9.44",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-10-04",
@@ -313,6 +313,10 @@
     "canonical-original-reconciliation",
     "misclassified-zun-original-recovery",
     "dream-battle-rank-recovery",
-    "full-index-rank-hydration-after-recovery"
+    "full-index-rank-hydration-after-recovery",
+    "parented-original-invariant",
+    "zun-arrangement-original-hijack-fix",
+    "stale-original-snapshot-guard",
+    "full-index-v6-cache-reset"
   ]
 }
