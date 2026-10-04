@@ -1,4 +1,4 @@
-/* Voice Synth Archive Organizer v22.0.1
+/* Voice Synth Archive Organizer v22.1.0
  * Library, recent history, detective cases and candidate comparison.
  */
 (function(){
@@ -399,8 +399,8 @@ function savedHtml(){
       '<div class="v22-song-main"><b>'+esc22(s.title||x.id)+'</b>'+
       '<small>'+esc22(x.id)+' · 조회 '+fmt22(s.viewCounter||0)+(growth?' · '+esc22(growth):'')+'</small>'+
       '<div class="v22-row">'+statusSelectHtml(x.id)+
-      '<button class="mini-btn" data-v22-open="'+esc22(x.id)+'">니코동</button>'+
-      '<button class="mini-btn" data-v22-universe="'+esc22(x.id)+'">우주</button></div></div>'+
+      '<button class="mini-btn" data-v22-open="'+esc22(x.id)+'">▶ 재생</button>'+
+      '<button class="mini-btn" data-v22-universe="'+esc22(x.id)+'">다이브</button></div></div>'+
       '</article>';
   }).join("")+'</div>';
 }
@@ -409,7 +409,7 @@ function recentHtml(){
   const searches=db.recentSearches.slice(0,25);
   let html='<div class="v22-split"><section><div class="v22-history-head"><h3>최근 본 곡</h3><button type="button" data-v22-clear-history="views">시청 기록 지우기</button></div>';
   html+=views.length?views.map(function(x){
-    return '<div class="v22-line"><div><b>'+esc22(x.title||x.id)+'</b><small>'+formatWhen(x.viewedAt)+'</small></div><div class="v22-row">'+statusSelectHtml(x.id)+'<button class="mini-btn" data-v22-open="'+esc22(x.id)+'">다시 열기</button></div></div>';
+    return '<div class="v22-line"><div><b>'+esc22(x.title||x.id)+'</b><small>'+formatWhen(x.viewedAt)+'</small></div><div class="v22-row">'+statusSelectHtml(x.id)+'<button class="mini-btn" data-v22-open="'+esc22(x.id)+'">▶ 재생</button></div></div>';
   }).join(""):'<div class="v22-empty compact">아직 최근 본 곡이 없습니다.<br><small>기록은 현재 기기·브라우저별로 저장됩니다.</small></div>';
   html+='</section><section><div class="v22-history-head"><h3>최근 검색</h3><button type="button" data-v22-clear-history="searches">검색 기록 지우기</button></div>';
   html+=searches.length?searches.map(function(x){
@@ -463,9 +463,45 @@ function closeTools22(){
   if(m){m.hidden=true;m.classList.remove("open")}
   document.body.classList.remove("tools-open");
 }
+function libraryPlaybackQueue22(id){
+  reloadDb22();
+  const rows=currentLibraryView==="recent"
+    ? db.recentViews.map(function(x){return x&&x.song||findSong(x&&x.id)})
+    : Object.keys(db.library).map(function(k){return db.library[k]&&db.library[k].song||findSong(k)})
+      .sort(function(a,b){
+        const A=a&&db.library[a.contentId]||{},B=b&&db.library[b.contentId]||{};
+        return (B.updatedAt||0)-(A.updatedAt||0)
+      });
+  const seen=new Set(),out=[];
+  rows.forEach(function(s){
+    if(!s||!s.contentId||seen.has(s.contentId))return;
+    seen.add(s.contentId);out.push({id:s.contentId,title:s.title||s.contentId})
+  });
+  if(!out.some(function(x){return x.id===id})){
+    const s=findSong(id);out.unshift({id:id,title:s&&s.title||id})
+  }
+  return out
+}
 function openSong(id){
   const s=findSong(id);
   recordView(id,s);
+  const play=function(){
+    try{
+      if(window.VSANicoPlayer){
+        const q=libraryPlaybackQueue22(id),title=s&&s.title||id;
+        (VSANicoPlayer.openMini||VSANicoPlayer.open)(id,title,q);
+        return true
+      }
+    }catch(e){}
+    return false
+  };
+  if(play())return;
+  if(window.VSAEnsureFeatures){
+    Promise.resolve(VSAEnsureFeatures("player")).then(function(){
+      if(!play())window.open("https://www.nicovideo.jp/watch/"+encodeURIComponent(id),"_blank","noopener")
+    }).catch(function(){window.open("https://www.nicovideo.jp/watch/"+encodeURIComponent(id),"_blank","noopener")});
+    return
+  }
   window.open("https://www.nicovideo.jp/watch/"+encodeURIComponent(id),"_blank","noopener");
 }
 function openSavedUniverse(id){
@@ -523,11 +559,11 @@ function addUi(){
     section.className="panel tool-view v22-library-panel";
     section.id="v22LibraryPanel";section.dataset.toolView="library22";
     section.innerHTML=
-      '<div class="panel-head"><div><h2>보관함 · 최근 기록 · 탐정 사건</h2><p>찾은 곡과 검색 흐름을 잃지 않고 이어서 사용할 수 있습니다.</p></div><div class="pill">기기 내 저장</div></div>'+
+      '<div class="panel-head"><div><h2>보관함</h2><p>저장한 곡을 바로 듣고, 최근 기록과 탐정 사건으로 이어서 탐색합니다.</p></div><div class="pill">MY MUSIC</div></div>'+
       '<div class="v22-library-tools">'+
-        '<button class="mini-btn active" data-v22-libview="saved">보관함</button>'+
-        '<button class="mini-btn" data-v22-libview="recent">최근 기록</button>'+
-        '<button class="mini-btn" data-v22-libview="cases">탐정 사건</button>'+
+        '<button class="mini-btn active" data-v22-libview="saved">곡</button>'+
+        '<button class="mini-btn" data-v22-libview="recent">최근</button>'+
+        '<button class="mini-btn" data-v22-libview="cases">탐정</button>'+
         '<span style="flex:1"></span>'+
         '<button class="mini-btn" id="v22ExportBtn">백업</button>'+
         '<label class="mini-btn" style="display:inline-flex;align-items:center;cursor:pointer">복원<input id="v22ImportInput" type="file" accept="application/json" hidden></label>'+
