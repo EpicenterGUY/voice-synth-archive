@@ -8107,6 +8107,74 @@ function showApiFallback(message,query){
   $("#loadedCount").textContent="0곡 표시";
   $("#loadMoreBtn").style.display="none";
 }
+
+function searchNorm124(v){
+  try{return String(v||"").normalize("NFKC").toLowerCase().replace(/[\s　・･_\-—–~～!！?？"'“”‘’`´.,，。:：;；/\\|()\[\]{}【】「」『』〈〉《》<>]+/g,"")}
+  catch(_){return String(v||"").toLowerCase().replace(/\s+/g,"")}
+}
+function searchTitleBase124(v){
+  return String(v||"")
+    .replace(/[【\[（(][^\]】）)]{0,42}(?:cover|remix|arrange|mv|pv|歌ってみた|踊ってみた|instrumental|off\s*vocal|short\s*ver|full\s*ver)[^\]】）)]{0,42}[\]】）)]/ig," ")
+    .replace(/\s+(?:feat\.?|ft\.?)\s+.+$/ig," ")
+    .trim()
+}
+function searchEditRatio124(a,b){
+  a=searchNorm124(a);b=searchNorm124(b);
+  if(!a||!b)return 0;if(a===b)return 1;
+  if(a.length>80)a=a.slice(0,80);if(b.length>80)b=b.slice(0,80);
+  var prev=new Array(b.length+1),cur=new Array(b.length+1);
+  for(var j=0;j<=b.length;j++)prev[j]=j;
+  for(var i=1;i<=a.length;i++){
+    cur[0]=i;
+    for(var k=1;k<=b.length;k++)cur[k]=Math.min(cur[k-1]+1,prev[k]+1,prev[k-1]+(a.charAt(i-1)===b.charAt(k-1)?0:1));
+    var t=prev;prev=cur;cur=t
+  }
+  return 1-prev[b.length]/Math.max(a.length,b.length)
+}
+function searchRelevanceScore124(song,q){
+  var nq=searchNorm124(q),title=String(song&&song.title||""),nt=searchNorm124(title),base=searchNorm124(searchTitleBase124(title)),id=searchNorm124(song&&song.contentId),score=0;
+  if(!nq)return 0;
+  if(id===nq)score=120000;
+  else if(nt===nq)score=110000;
+  else if(base&&base===nq)score=106000;
+  else if(nt.startsWith(nq))score=88000-Math.min(8000,Math.max(0,nt.length-nq.length)*110);
+  else if(nt.includes(nq))score=72000-Math.min(9000,nt.indexOf(nq)*180);
+  else if(nq.startsWith(nt)&&nt.length>=3)score=61000;
+  else{
+    var ratio=searchEditRatio124(nq,base||nt);
+    if(ratio>=.9)score=58000+Math.round(ratio*9000);
+    else if(ratio>=.8)score=47000+Math.round(ratio*8000);
+    else if(ratio>=.68)score=33000+Math.round(ratio*6000);
+    var raw=String(q||"").trim().toLowerCase().split(/[\s　・･_\-]+/).filter(Boolean);
+    if(raw.length>1){
+      var low=title.toLowerCase(),hits=raw.filter(function(x){return low.includes(x)}).length;
+      if(hits===raw.length)score=Math.max(score,43000+hits*800)
+    }
+    var blob=searchNorm124([song&&song.description,song&&song.tags].filter(Boolean).join(" "));
+    if(blob.includes(nq))score=Math.max(score,9000)
+  }
+  try{if(typeof discoveryOriginalProof37==="function"&&discoveryOriginalProof37(song,"all_voice_synth_union").ok)score+=1400}catch(_){}
+  score+=Math.min(700,Math.log10(Math.max(1,Number(song&&song.viewCounter)||1))*90);
+  return score
+}
+function searchSortTie124(a,b,sort){
+  if(sort==="+viewCounter")return (+a.viewCounter||0)-(+b.viewCounter||0);
+  if(sort==="-startTime")return new Date(b.startTime||0)-new Date(a.startTime||0);
+  if(sort==="+startTime")return new Date(a.startTime||0)-new Date(b.startTime||0);
+  if(sort==="-mylistCounter")return (+b.mylistCounter||0)-(+a.mylistCounter||0);
+  if(sort==="-likeCounter")return (+b.likeCounter||0)-(+a.likeCounter||0);
+  if(sort==="-commentCounter")return (+b.commentCounter||0)-(+a.commentCounter||0);
+  return (+b.viewCounter||0)-(+a.viewCounter||0)
+}
+function searchRelevanceSort124(rows,q,sort){
+  return (rows||[]).slice().sort(function(a,b){
+    var d=searchRelevanceScore124(b,q)-searchRelevanceScore124(a,q);
+    return d||searchSortTie124(a,b,sort)
+  })
+}
+window.VSAQueryScore124=searchRelevanceScore124;
+window.VSAQuerySort124=searchRelevanceSort124;
+
 async function freeSearch(reset=false){
   if(state.freeBusy&&!reset)return;
   const searchSeq=(Number(window.__VSA_FREE_SEARCH_SEQ)||0)+1;
@@ -8205,6 +8273,23 @@ async function freeSearch(reset=false){
       else if(sort==="-commentCounter")rawRows.sort((a,b)=>(+b.commentCounter||0)-(+a.commentCounter||0));
     }
 
+    if(reset&&fetchOffset===0&&searchQuery){
+      const titleProbe124=await fetchNico({
+        tier,year,sort:"-viewCounter",limit:100,offset:0,
+        mode:"free",query:searchQuery,scope:"all",queryTargets:"title",
+        applyYear,applyTier
+      }).catch(()=>({data:[]}));
+      if(searchSeq!==(Number(window.__VSA_FREE_SEARCH_SEQ)||0)||state.listMode!=="free")return;
+      const titleMerged124=new Map();
+      for(const s of rawRows){if(s?.contentId)titleMerged124.set(s.contentId,s)}
+      for(const s of (titleProbe124.data||[])){
+        if(!s?.contentId)continue;
+        const rel=searchRelevanceScore124(s,searchQuery);
+        if(searchScope==="all"||songMatchesScope(s,searchScope)||rel>=65000)titleMerged124.set(s.contentId,s)
+      }
+      rawRows=[...titleMerged124.values()]
+    }
+
     if(searchSeq!==(Number(window.__VSA_FREE_SEARCH_SEQ)||0)||state.listMode!=="free")return;
 
     rawRows=filterAdultRows37(rawRows,"search").rows;
@@ -8213,7 +8298,8 @@ async function freeSearch(reset=false){
       if(!s?.contentId)continue;
       existing.set(s.contentId,s);
     }
-    state.songs=[...existing.values()].map((x,i)=>({...x,__rank:i+1}));
+    const relevanceRows124=searchRelevanceSort124([...existing.values()],searchQuery,sort);
+    state.songs=relevanceRows124.map((x,i)=>({...x,__rank:i+1,__searchRelevance124:searchRelevanceScore124(x,searchQuery)}));
     state.freeFetchOffset=fetchOffset+100;
     state.offset=state.songs.length;
     state.freeHasMore=pageHasMore;
@@ -12238,7 +12324,7 @@ else setTimeout(function(){ensure("pwa")},12000);
 <script src="./account-v3962.js?v=39.120.0"></script>
 <script src="./native-shell-v3963.js?v=39.120.0"></script>
 <script src="./app-update-v3966.js?v=39.120.0"></script>
-<script src="./i18n-v3918.js?v=39.106.0"></script>\n<script src="./search-live-v3969.js?v=39.120.0"></script>
+<script src="./i18n-v3918.js?v=39.106.0"></script>\n<script src="./search-live-v3969.js?v=39.124.0"></script>
 
 <style id="v3946DivePathStyle">
 /* v39.46 · Dive Path 1.0 — graph-free guided discovery */
@@ -15243,5 +15329,5 @@ body.mr74-transitioning{overflow:hidden!important}
 }
 </style>
 
-<script src="./vocadive-ui-v3980.js?v=39.117.0"></script>\n<script src="./skin-studio-v39119.js?v=39.119.0"></script>\n<script src="./skin-experience-v39120.js?v=39.120.0"></script>\n<script src="./skin-showcase-v39121.js?v=39.122.0"></script>\n</body>
+<script src="./vocadive-ui-v3980.js?v=39.117.0"></script>\n<script src="./skin-studio-v39119.js?v=39.119.0"></script>\n<script src="./skin-experience-v39120.js?v=39.120.0"></script>\n<script src="./skin-showcase-v39121.js?v=39.123.0"></script>\n<script src="./vocadive-layout-v39124.js?v=39.124.0"></script>\n</body>
 </html>
