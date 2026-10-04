@@ -403,3 +403,7 @@ button:active,.player-rank-card:active,.track-main:active{transform:scale(.985)}
 .mode-tab[data-mode="fan-original"].is-active{background:linear-gradient(135deg,#79d8ff,#9c7dff);color:#07111c}
 .work-select:disabled{opacity:.45;cursor:not-allowed}
 .type-badge.fan-original{background:rgba(79,191,255,.13);color:#9beaff;border-color:rgba(143,232,255,.34)}
+
+/* v0.9.24 input hardening */
+button,a,[role="button"],.mode-tab,.nav-item,.filter-chip{touch-action:manipulation}
+.mode-tab,.nav-item,.filter-chip,button{pointer-events:auto}
