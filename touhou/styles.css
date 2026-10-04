@@ -765,3 +765,18 @@ html[data-skin="custom"] .hero-visual{display:flex}
   .trusted-link-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
   .platform-link{width:100%}
 }
+
+
+/* v0.9.31 beginner discovery */
+.beginner-mode-tab{font-weight:900}
+.beginner-mode-tab.is-active{
+  background:linear-gradient(135deg,#f5d989,#f0a56f)!important;color:#191005!important;
+  box-shadow:0 5px 18px rgba(240,165,111,.16)
+}
+.beginner-note{
+  margin-top:5px;color:var(--gold);font-size:8.5px;font-weight:850;letter-spacing:-.015em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+html[data-skin="station"] .beginner-note{
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#dec987
+}
