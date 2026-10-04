@@ -1,8 +1,9 @@
 import fs from "node:fs/promises";
 
 const KEY=String(process.env.YOUTUBE_API_KEY||"").trim();
-const LIMIT=Math.max(0,Math.min(90,Number(process.env.YOUTUBE_SEARCH_LIMIT)||75));
-const MATCHER_VERSION=3;
+const LIMIT=Math.max(0,Math.min(90,Number(process.env.YOUTUBE_SEARCH_LIMIT)||90));
+const MATCHER_VERSION=4;
+const FULL_DIR="touhou/data/full";
 const SEEDS="touhou/data/fan-originals.json";
 const ALBUMS="touhou/data/fan-original-albums.json";
 const OUT="touhou/data/fan-youtube.json";
@@ -29,6 +30,29 @@ function flatten(seeds,manifest){
   }
   return out;
 }
+async function flattenDbFanOriginals(){
+  let files=[];
+  try{files=(await fs.readdir(FULL_DIR)).filter(x=>/^shard-\d+\.json$/.test(x)).sort()}catch{return[]}
+  const out=[];
+  for(const file of files){
+    let rows=[];try{rows=JSON.parse(await fs.readFile(FULL_DIR+"/"+file,"utf8"))}catch{continue}
+    for(const r of Array.isArray(rows)?rows:[]){
+      const raw=clean(r?.k).toLowerCase();
+      if(!r?.t||raw!=="original")continue;
+      const hasYoutube=(Array.isArray(r?.p)?r.p:[]).some(p=>clean(p?.[0])==="youtube"&&clean(p?.[1]||p?.[2]));
+      if(hasYoutube)continue;
+      out.push({
+        id:"tdb-"+String(r.i),
+        title:clean(r.n)||("TouhouDB #"+String(r.i)),
+        artist:clean(r.a||r.c),
+        album:clean(r.l),
+        sourceKind:"touhoudb-fan-original"
+      });
+    }
+  }
+  return out;
+}
+
 function overlap(a,b){
   const A=new Set(words(a)),B=new Set(words(b));if(!A.size||!B.size)return 0;
   let hit=0;for(const x of A)if(B.has(x))hit++;
@@ -117,20 +141,26 @@ async function main(){
   try{cache=JSON.parse(await fs.readFile(OUT,"utf8"))}catch{}
   if(!cache||typeof cache!=="object")cache={version:1,updated:"",items:{}};
   if(!cache.items||typeof cache.items!=="object")cache.items={};
-  const tracks=flatten(seeds,manifest);
-  const retry=tracks.filter(t=>{
-    const row=cache.items[t.id];
-    return row&&!row.videoId&&Number(row.matcherVersion||0)<MATCHER_VERSION;
-  });
-  const fresh=tracks.filter(t=>!cache.items[t.id]);
-  const pending=[...retry,...fresh].slice(0,LIMIT);
+  const curated=flatten(seeds,manifest).map(x=>({...x,sourceKind:"curated"}));
+  const dbFan=await flattenDbFanOriginals();
+  const pendingFor=tracks=>[
+    ...tracks.filter(t=>{const row=cache.items[t.id];return row&&!row.videoId&&Number(row.matcherVersion||0)<MATCHER_VERSION}),
+    ...tracks.filter(t=>!cache.items[t.id])
+  ];
+  const cp=pendingFor(curated),dp=pendingFor(dbFan),pending=[];
+  let ci=0,di=0;
+  while(pending.length<LIMIT&&(ci<cp.length||di<dp.length)){
+    if(ci<cp.length&&pending.length<LIMIT)pending.push(cp[ci++]);
+    if(di<dp.length&&pending.length<LIMIT)pending.push(dp[di++]);
+  }
+  const tracks=[...curated,...dbFan];
   let matched=0,checked=0;
   for(const track of pending){
     try{
       const hit=await youtubeSearch(track);checked++;
       cache.items[track.id]=hit
-        ?{...hit,title:track.title,artist:track.artist}
-        :{videoId:"",score:0,title:track.title,artist:track.artist,matchedAt:new Date().toISOString(),matcherVersion:MATCHER_VERSION};
+        ?{...hit,title:track.title,artist:track.artist,sourceKind:track.sourceKind||"curated"}
+        :{videoId:"",score:0,title:track.title,artist:track.artist,sourceKind:track.sourceKind||"curated",matchedAt:new Date().toISOString(),matcherVersion:MATCHER_VERSION};
       if(hit)matched++;
     }catch(e){
       console.warn("youtube match failed",track.id,e?.message||e);
@@ -139,15 +169,26 @@ async function main(){
     await sleep(80);
   }
   const stats=await refreshYoutubeStats(cache);
-  cache.version=3;
+  const values=Object.entries(cache.items||{});
+  const usable=([,x])=>x?.videoId&&!x?.videoUnavailable;
+  const measured=([,x])=>usable([null,x])&&Number.isFinite(Number(x?.viewCount));
+  cache.version=4;
   cache.matcherVersion=MATCHER_VERSION;
   cache.updated=new Date().toISOString();
   cache.totalTracks=tracks.length;
-  cache.checkedTracks=Object.keys(cache.items).length;
-  cache.matchedTracks=Object.values(cache.items).filter(x=>x?.videoId&&!x?.videoUnavailable).length;
-  cache.viewCountTracks=Object.values(cache.items).filter(x=>x?.videoId&&Number.isFinite(Number(x?.viewCount))).length;
-  cache.policy="Exact/near-exact title + artist/channel checks; embeddable syndicated YouTube videos only. Public views/likes/comments refreshed for every cached match.";
+  cache.curatedTotalTracks=curated.length;
+  cache.dbFanMissingYoutubeTargets=dbFan.length;
+  cache.checkedTracks=values.length;
+  cache.matchedTracks=values.filter(usable).length;
+  cache.viewCountTracks=values.filter(measured).length;
+  cache.curatedCheckedTracks=values.filter(([id])=>!id.startsWith("tdb-")).length;
+  cache.curatedMatchedTracks=values.filter(([id,x])=>!id.startsWith("tdb-")&&usable([id,x])).length;
+  cache.curatedViewCountTracks=values.filter(([id,x])=>!id.startsWith("tdb-")&&measured([id,x])).length;
+  cache.dbFanFallbackChecked=values.filter(([id])=>id.startsWith("tdb-")).length;
+  cache.dbFanFallbackMatched=values.filter(([id,x])=>id.startsWith("tdb-")&&usable([id,x])).length;
+  cache.dbFanFallbackViewCountTracks=values.filter(([id,x])=>id.startsWith("tdb-")&&measured([id,x])).length;
+  cache.policy="Curated Touhou-style plus TouhouDB fan-original tracks missing an existing YouTube PV. Exact/near-exact title + artist/channel checks; embeddable syndicated videos only. Views/likes/comments refreshed for every cached match.";
   await fs.writeFile(OUT,JSON.stringify(cache,null,2)+"\n");
-  console.log(JSON.stringify({checked,matched,total:tracks.length,cached:cache.checkedTracks,video:cache.matchedTracks,viewCountTracks:cache.viewCountTracks,stats},null,2));
+  console.log(JSON.stringify({checked,matched,curated:curated.length,dbFanMissingYoutubeTargets:dbFan.length,cached:cache.checkedTracks,video:cache.matchedTracks,viewCountTracks:cache.viewCountTracks,stats},null,2));
 }
 main().catch(err=>{console.error(err);process.exit(1)});
