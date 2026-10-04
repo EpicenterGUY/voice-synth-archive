@@ -1521,3 +1521,150 @@ html[data-skin="custom"] .station-player-face{display:none!important}
     width:30px!important;height:30px!important;flex-basis:30px!important
   }
 }
+
+
+/* v0.9.41 tablet orientation player fix */
+/* Portrait/mobile: media switch belongs to the document flow, never follows scrolling. */
+@media(max-width:860px){
+  .player-media-toggle{
+    position:relative!important;
+    top:auto!important;
+    left:auto!important;
+    transform:none!important;
+    z-index:12!important;
+    margin:2px auto 8px!important;
+  }
+}
+
+/* Tablet landscape: avoid desktop min-width collision and keep the whole player visible. */
+@media (min-width:861px) and (max-width:1180px) and (orientation:landscape){
+  .player-shell.is-active:not(.is-mini){
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) 280px!important;
+    grid-template-rows:auto!important;
+    align-items:start!important;
+    justify-content:stretch!important;
+    gap:12px!important;
+    padding:10px!important;
+    overflow:auto!important;
+  }
+  html[data-skin="station"] .player-shell.is-active:not(.is-mini){
+    grid-template-columns:minmax(0,1fr) 280px!important;
+    gap:12px!important;
+    padding:10px!important;
+  }
+  .player-shell.is-active:not(.is-mini) .player-watch{
+    min-width:0!important;
+    width:100%!important;
+    max-width:none!important;
+    gap:8px!important;
+  }
+  .player-full-head{
+    position:relative!important;
+    top:auto!important;
+    padding:0!important;
+    margin:0 0 2px!important;
+  }
+  .player-media-toggle{
+    position:relative!important;
+    top:auto!important;
+    margin:0 auto 6px!important;
+  }
+
+  /* Compact the station face so the transport/artwork cannot be pushed below the fold. */
+  html[data-skin="station"] .station-player-face{
+    margin:0!important;
+    padding:7px!important;
+    gap:5px!important;
+    border-radius:12px!important;
+  }
+  .station-player-screen{
+    grid-template-columns:58px minmax(0,1fr) 42px!important;
+    min-height:72px!important;
+    padding:6px!important;
+    gap:7px!important;
+  }
+  .station-player-art{width:58px!important}
+  .station-player-copy strong{font-size:13px!important}
+  .station-player-copy span,.station-player-copy em{font-size:7.5px!important}
+  .station-vu{height:42px!important}
+
+  /* Song artwork is sized by viewport height in landscape, not by desktop width. */
+  .player-song-mode .player-media-stage{
+    min-height:0!important;
+    height:min(44dvh,340px)!important;
+    aspect-ratio:auto!important;
+    overflow:hidden!important;
+    border-radius:16px!important;
+  }
+  .player-song-mode .player-artwork-stage{
+    width:100%!important;
+    height:100%!important;
+    aspect-ratio:auto!important;
+  }
+  .player-song-mode .player-artwork-disc{
+    width:min(42dvh,320px)!important;
+    max-width:100%!important;
+    aspect-ratio:1!important;
+  }
+
+  /* Video keeps a normal 16:9 frame inside the left column. */
+  .player-video-mode .player-media-stage{
+    width:100%!important;
+    max-width:100%!important;
+    aspect-ratio:16/9!important;
+    min-height:0!important;
+    margin:0!important;
+    left:auto!important;
+    border-radius:14px!important;
+  }
+  .player-video-mode .player-media-stage>.player-video{
+    position:absolute!important;
+    inset:0!important;
+    width:100%!important;
+    height:100%!important;
+    border-radius:14px!important;
+  }
+
+  .player-info-row{
+    grid-template-columns:minmax(0,1fr) auto!important;
+    gap:10px!important;
+    padding:0 2px!important;
+  }
+  .player-shell:not(.is-mini) .player-copy strong{font-size:18px!important}
+  .player-shell:not(.is-mini) .player-copy small{font-size:9px!important}
+  .player-shell:not(.is-mini) .player-controls{gap:6px!important}
+  .player-shell:not(.is-mini) .player-controls button,
+  .player-shell:not(.is-mini) .player-source{width:38px!important;height:38px!important}
+  .player-shell:not(.is-mini) .player-controls .player-main-play{width:48px!important;height:48px!important}
+
+  .player-timeline{padding:0 2px!important}
+  .player-primary-actions{gap:6px!important;padding:0 2px!important}
+  .player-primary-actions button{min-height:36px!important}
+  .player-ranks{grid-template-columns:repeat(2,minmax(0,1fr))!important;padding:0 2px!important}
+
+  .player-side{
+    position:sticky!important;
+    top:10px!important;
+    width:100%!important;
+    max-height:calc(100dvh - 20px)!important;
+    margin:0!important;
+    min-height:0!important;
+    border-radius:14px!important;
+    overflow:hidden!important;
+  }
+  .player-side-head{padding:10px 10px 7px!important}
+  .player-tabs{padding:0 7px 7px!important}
+  .player-tabs button{height:32px!important}
+  .player-side-body{
+    max-height:calc(100dvh - 110px)!important;
+    overflow:auto!important;
+    padding:6px!important;
+  }
+  .player-related-item{
+    grid-template-columns:72px minmax(0,1fr)!important;
+    gap:7px!important;
+    padding:5px!important;
+  }
+  .player-related-thumb{width:72px!important}
+}
