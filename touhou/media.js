@@ -4,7 +4,7 @@ const NICO_ORIGIN="https://embed.nicovideo.jp";
 const PLAYER_ID="touhouDivePlayer";
 const AUTO_KEY="touhoudive:player:autoNext";
 const PLAYBACK_MODE_KEY="touhoudive:player:youtubeMode";
-const PLAYBACK_POLICY_KEY="touhoudive:player:youtubeInlinePolicy:v2";
+const PLAYBACK_POLICY_KEY="touhoudive:player:youtubeInlinePolicy:v3";
 const BAD_MEDIA_KEY="touhoudive:media:unavailable:v1";
 
 function clean(v){return String(v??"").trim()}
@@ -60,12 +60,12 @@ class TouhouMediaPlayer{
     this.current=null;this.queue=[];this.index=-1;this.frame=null;this.yt=null;this.playing=true;this.activeTab="related";
     this.pipWindow=null;this.pipHome=null;this.backgroundActive=false;
     this.autoNext=localStorage.getItem(AUTO_KEY)!=="0";
-    const migrated=localStorage.getItem(PLAYBACK_POLICY_KEY)==="2";
+    const migrated=localStorage.getItem(PLAYBACK_POLICY_KEY)==="3";
     this.youtubeMode=migrated&&localStorage.getItem(PLAYBACK_MODE_KEY)==="youtube"?"youtube":"inline";
     if(!migrated){
       try{
         localStorage.setItem(PLAYBACK_MODE_KEY,"inline");
-        localStorage.setItem(PLAYBACK_POLICY_KEY,"2");
+        localStorage.setItem(PLAYBACK_POLICY_KEY,"3");
       }catch(_){}
     }
     try{this.badMedia=new Set(JSON.parse(localStorage.getItem(BAD_MEDIA_KEY)||"[]"))}catch(_){this.badMedia=new Set()}
