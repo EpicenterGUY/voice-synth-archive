@@ -1,9 +1,635 @@
 {
   "version": 2,
-  "updated": "2026-10-04T00:00:00.000Z",
+  "updated": "2026-10-04T07:05:15.321Z",
   "totalTracks": 583,
-  "checkedTracks": 0,
-  "matchedTracks": 0,
+  "checkedTracks": 75,
+  "matchedTracks": 50,
   "policy": "Exact/near-exact title match with artist/context checks; only embeddable syndicated YouTube videos.",
-  "items": {}
+  "items": {
+    "fan-sparxe-switcheroo": {
+      "videoId": "",
+      "score": 0,
+      "title": "Switcheroo",
+      "artist": "Sparxe",
+      "matchedAt": "2026-10-04T07:04:51.771Z"
+    },
+    "fan-akakyu-the-theorists-interpretation-of-fantasia": {
+      "videoId": "OYWlMiD1XAk",
+      "score": 7.5,
+      "videoTitle": "[Touhou-Style Original] ToUC Track 1: The Theorists&#39; Interpretation of &quot;Fantasia&quot;",
+      "channelTitle": "Aka Kyuketsuki",
+      "matchedAt": "2026-10-04T07:04:52.090Z",
+      "title": "The Theorists' Interpretation of \"Fantasia\"",
+      "artist": "Aka Kyuketsuki"
+    },
+    "fan-akakyu-refreshing-earth-of-krummholz": {
+      "videoId": "aQwPvY1dNlA",
+      "score": 20.5,
+      "videoTitle": "[Touhou-Style Original] ToUC Track 2: Refreshing Earth of Krummholz",
+      "channelTitle": "Aka Kyuketsuki",
+      "matchedAt": "2026-10-04T07:04:52.430Z",
+      "title": "Refreshing Earth of Krummholz",
+      "artist": "Aka Kyuketsuki"
+    },
+    "fan-akakyu-hidden-under-the-willows-ancient-backwoods": {
+      "videoId": "2T5hKXwttEc",
+      "score": 20.5,
+      "videoTitle": "[Touhou-Style Original] ToUC Track 3: Hidden Under the Willows ~ Ancient Backwoods",
+      "channelTitle": "Aka Kyuketsuki",
+      "matchedAt": "2026-10-04T07:04:52.796Z",
+      "title": "Hidden Under the Willows ~ Ancient Backwoods",
+      "artist": "Aka Kyuketsuki"
+    },
+    "fan-akakyu-curious-capital-of-sheen-and-beauty": {
+      "videoId": "6iFBXzPHsWI",
+      "score": 20.5,
+      "videoTitle": "[Touhou-Style Original] Curious Capital of Sheen and Beauty",
+      "channelTitle": "Aka Kyuketsuki",
+      "matchedAt": "2026-10-04T07:04:53.146Z",
+      "title": "Curious Capital of Sheen and Beauty",
+      "artist": "Aka Kyuketsuki"
+    },
+    "fan-akakyu-orwell-s-quarantined-utopia": {
+      "videoId": "AW5u8-Jf3zM",
+      "score": 7.5,
+      "videoTitle": "[Touhou-Style Original] ToUC Track 5: Orwell&#39;s Quarantined Utopia",
+      "channelTitle": "Aka Kyuketsuki",
+      "matchedAt": "2026-10-04T07:04:53.507Z",
+      "title": "Orwell's Quarantined Utopia",
+      "artist": "Aka Kyuketsuki"
+    },
+    "fan-akakyu-undecided-fate-of-the-altered-strings": {
+      "videoId": "RZDCjYQB4fA",
+      "score": 20.5,
+      "videoTitle": "[Touhou-Style Original] ToUC Track 6: Undecided Fate of the Altered Strings",
+      "channelTitle": "Aka Kyuketsuki",
+      "matchedAt": "2026-10-04T07:04:53.873Z",
+      "title": "Undecided Fate of the Altered Strings",
+      "artist": "Aka Kyuketsuki"
+    },
+    "fan-akakyu-a-maiden-s-nonsensical-bunraku": {
+      "videoId": "gnfk_Cn5b4A",
+      "score": 7.5,
+      "videoTitle": "[Touhou-Style Original] ToUC Track 7: A Maiden&#39;s Nonsensical Bunraku",
+      "channelTitle": "Aka Kyuketsuki",
+      "matchedAt": "2026-10-04T07:04:54.234Z",
+      "title": "A Maiden's Nonsensical Bunraku",
+      "artist": "Aka Kyuketsuki"
+    },
+    "fan-akakyu-diamond-tears-in-the-palace": {
+      "videoId": "CkeP-pbgQFo",
+      "score": 20.5,
+      "videoTitle": "[2015 ver.] UotAR Stage 5 Theme: Diamond Tears in the Palace",
+      "channelTitle": "Aka Kyuketsuki",
+      "matchedAt": "2026-10-04T07:04:54.574Z",
+      "title": "Diamond Tears in the Palace",
+      "artist": "Aka Kyuketsuki"
+    },
+    "fan-akakyu-unseen-madness": {
+      "videoId": "dszx8Owa3JA",
+      "score": 20.5,
+      "videoTitle": "[Touhou-Style Original] ToUC Track 9: Unseen Madness",
+      "channelTitle": "Aka Kyuketsuki",
+      "matchedAt": "2026-10-04T07:04:54.917Z",
+      "title": "Unseen Madness",
+      "artist": "Aka Kyuketsuki"
+    },
+    "fan-akakyu-two-snowflakes-wafting-above-one-big-world": {
+      "videoId": "TgqCEEhXAWM",
+      "score": 20.5,
+      "videoTitle": "[Touhou-Style Original] ToUC Track 10: Two Snowflakes Wafting Above One Big World",
+      "channelTitle": "Aka Kyuketsuki",
+      "matchedAt": "2026-10-04T07:04:55.213Z",
+      "title": "Two Snowflakes Wafting Above One Big World",
+      "artist": "Aka Kyuketsuki"
+    },
+    "fan-album-drillimation-struggle-mollusk-01": {
+      "videoId": "y8MVnCq3IGU",
+      "score": 20.5,
+      "videoTitle": "Oriental Genesis (Touhou-style Original)",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:04:55.543Z",
+      "title": "Oriental Genesis",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-02": {
+      "videoId": "fGtGCjYQtPA",
+      "score": 17,
+      "videoTitle": "Rag of Lotus Love (Original PC-98 Arrange)",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:04:55.877Z",
+      "title": "Rag of Lotus Love",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-03": {
+      "videoId": "W15Xiqv-wJg",
+      "score": 20.5,
+      "videoTitle": "Royal Scroll of Unity ~ Profound Love (PC-98 Touhou-style Original)",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:04:56.186Z",
+      "title": "Royal Scroll of Unity",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-04": {
+      "videoId": "t-t0pxGe2to",
+      "score": 20.5,
+      "videoTitle": "The Swedish Settle in Gensokyo (PC-98 Touhou-style Original)",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:04:56.540Z",
+      "title": "The Swedish Settle in Gensokyo",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-05": {
+      "videoId": "2Hm875GgCrI",
+      "score": 17,
+      "videoTitle": "Tomorrow I Will Become a Noble, Yesterday I was a Peasant (Original PC-98 Arrange)",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:04:56.867Z",
+      "title": "Tomorrow I Will Become a Noble, Yesterday I was a Peasant",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-06": {
+      "videoId": "BLm9fmArIUU",
+      "score": 20.5,
+      "videoTitle": "Perpetual Scarlet of an Oriental Orléans (PC-98 Touhou-style Original)",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:04:57.225Z",
+      "title": "Perpetual Scarlet of an Oriental Orléans",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-07": {
+      "videoId": "jONyE4KU77Y",
+      "score": 20.5,
+      "videoTitle": "The Super Long-Haired Siren of the Phantasmal Waters (PC-98 Touhou-style Original)",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:04:57.594Z",
+      "title": "Super Long-Haired Siren of the Phantasmal Waters",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-08": {
+      "videoId": "MT-r680Al0I",
+      "score": 8.5,
+      "videoTitle": "A Youkai-born&#39;s Beautiful and Spiritual Kingdom (Original PC-98 Arrange)",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:04:57.922Z",
+      "title": "A Youkai-born's Beautiful and Spiritual Kingdom",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-09": {
+      "videoId": "Z2jRJtEZ1yQ",
+      "score": 20.5,
+      "videoTitle": "The Victorian Princess Sets Afoot ~ The Half Youkai Magician (PC-98 Touhou-style Original)",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:04:58.198Z",
+      "title": "The Victorian Princess Sets Afoot ~ The Half Youkai Magician",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-10": {
+      "videoId": "y1ERpSh7u5E",
+      "score": 20.5,
+      "videoTitle": "Grand Debut On Air (PC-98 Touhou-style Original)",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:04:58.538Z",
+      "title": "Grand Debut On Air",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-11": {
+      "videoId": "1OOMqBmFGpc",
+      "score": 18.5,
+      "videoTitle": "Chocobo de Norou (Original PC-98 Touhou-style Arrange)",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:04:58.835Z",
+      "title": "Chocobo de Norou",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-12": {
+      "videoId": "",
+      "score": 0,
+      "title": "The Princess Who Slays Ender Dragons",
+      "artist": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:04:59.102Z"
+    },
+    "fan-album-drillimation-struggle-mollusk-13": {
+      "videoId": "5iNa7PG43n4",
+      "score": 19,
+      "videoTitle": "Scrambling in the Waters (FamiTracker Original, S5B)",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:04:59.374Z",
+      "title": "Scrambling in the Waters",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-14": {
+      "videoId": "-6CJlcORxNU",
+      "score": 20.5,
+      "videoTitle": "An Evening With the Half-Youkai Crown Princess (PC-98 Touhou-style Original)",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:04:59.684Z",
+      "title": "An Evening With the Half-Youkai Crown Princess",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-15": {
+      "videoId": "M_TUpE0-0Fk",
+      "score": 17,
+      "videoTitle": "Strawberry Waltz (Original PC-98 Arrange)",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:05:00.012Z",
+      "title": "Strawberry Waltz",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-16": {
+      "videoId": "J-B2kWN9qNI",
+      "score": 18.5,
+      "videoTitle": "A Nostalgic Dream Express (Original PC-98 Arrange)",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:05:00.292Z",
+      "title": "A Nostalgic Dream Express",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-17": {
+      "videoId": "GhSr-zRtkMQ",
+      "score": 18.5,
+      "videoTitle": "The Town Where Young Apples Grow (Original PC-98 Arrange)",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:05:00.607Z",
+      "title": "The Town Where Young Apples Grow",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-18": {
+      "videoId": "acKUXA7riB0",
+      "score": 18.5,
+      "videoTitle": "Living in the Endless Village (Original PC-98 Arrange)",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:05:00.942Z",
+      "title": "Living in the Endless Village",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-19": {
+      "videoId": "wVUL6BI2nBk",
+      "score": 18.5,
+      "videoTitle": "Kids Run Through the Aether City (Original PC-98 Arrange)",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:05:01.246Z",
+      "title": "Kids Run Through the Aether City",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-20": {
+      "videoId": "yCvgLgXifUw",
+      "score": 20.5,
+      "videoTitle": "Scarlet Wildfire Over the Mountainous Prairies (PC-98 Touhou-style Original)",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:05:01.585Z",
+      "title": "Scarlet Wildfire Over the Mountainous Prairies",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-21": {
+      "videoId": "AvdGhBrqpgk",
+      "score": 20.5,
+      "videoTitle": "Blade of the Bearded Ronin ~ American Tanabata (PC-98 Touhou-style Original)",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:05:01.932Z",
+      "title": "Blade of the Bearded Ronin ~ American Tanabata",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-22": {
+      "videoId": "IROZdeVdazk",
+      "score": 20.5,
+      "videoTitle": "A Phoenix Born From a Heat Wave (PC-98 Touhou-style Original)",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:05:02.267Z",
+      "title": "A Phoenix Born From a Heat Wave",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-23": {
+      "videoId": "T59cOt-nbZg",
+      "score": 20.5,
+      "videoTitle": "Mushroom Fantasma (PC-98 Touhou-style Original)",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:05:02.588Z",
+      "title": "Mushroom Fantasma",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-24": {
+      "videoId": "T5bnJ_u7fYE",
+      "score": 20.5,
+      "videoTitle": "Hakurei Circuit (PC-98 Touhou-style Original)",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:05:02.909Z",
+      "title": "Hakurei Circuit",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-25": {
+      "videoId": "w8RSjeEgtHc",
+      "score": 17.5,
+      "videoTitle": "The Misty Lake Voyage of Miho the Mermaid",
+      "channelTitle": "Susumu Takajima - Topic",
+      "matchedAt": "2026-10-04T07:05:03.238Z",
+      "title": "Misty Lake Voyage",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-26": {
+      "videoId": "c0Nj7mzATqc",
+      "score": 20.5,
+      "videoTitle": "Autumn Heat Wave ~ Extended Summer (PC-98 Touhou-style Original)",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:05:03.580Z",
+      "title": "Autumn Heat Wave ~ Extended Summer",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-27": {
+      "videoId": "Odzbi9VbkNs",
+      "score": 20.5,
+      "videoTitle": "The Harbor Where Autumn Sails (PC-98 Touhou-style Original)",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:05:03.907Z",
+      "title": "The Harbor Where Autumn Sails",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-28": {
+      "videoId": "IH_FgcLwH4k",
+      "score": 20.5,
+      "videoTitle": "A Primal Dance to the Shrine of Faith (PC-98 Touhou-style Original)",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:05:04.273Z",
+      "title": "A Primal Dance to the Shrine of Faith",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-29": {
+      "videoId": "PGpkU3Z0Avo",
+      "score": 7,
+      "videoTitle": "Reincarnation of Marisa&#39;s Mother (Original PC-98 Arrange) | Mythos of Phantasmagoria",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:05:04.609Z",
+      "title": "Reincarnation of Marisa's Mother",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-30": {
+      "videoId": "_OQfxy3DO3g",
+      "score": 20.5,
+      "videoTitle": "Arrow of Konpaku ~ Watchtower Archer (PC-98 Touhou-style Original) | 400 Subscriber Special",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:05:04.929Z",
+      "title": "Arrow of Konpaku ~ Watchtower Archer",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-31": {
+      "videoId": "E7VZlReXU6U",
+      "score": 20.5,
+      "videoTitle": "A Girl Livestreaming Under a Cherry Tree (PC-98 Touhou-style Original)",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:05:05.214Z",
+      "title": "A Girl Livestreaming Under a Cherry Tree",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-32": {
+      "videoId": "p8uTc4AYMfc",
+      "score": 20.5,
+      "videoTitle": "A Cozy and Pleasant Winter Spirit (PC-98 Touhou-style Original)",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:05:05.517Z",
+      "title": "A Cozy and Pleasant Winter Spirit",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-33": {
+      "videoId": "X3CyjbonhZQ",
+      "score": 20.5,
+      "videoTitle": "A Cat Spirit With a Jar of Sugar (PC-98 Touhou-style Original)",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:05:05.818Z",
+      "title": "A Cat Spirit With a Jar of Sugar",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-34": {
+      "videoId": "9EVdMDgYr1c",
+      "score": 17,
+      "videoTitle": "Amidst the Musical Tempest (PC-98 Remix) | Song of Divine Tempest",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:05:06.153Z",
+      "title": "Amidst the Musical Tempest",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-drillimation-struggle-mollusk-35": {
+      "videoId": "99OJmz6k0SA",
+      "score": 20.5,
+      "videoTitle": "Mollusk (PC-98 Touhou-style Original)",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:05:06.547Z",
+      "title": "Mollusk",
+      "artist": "Drillimation Systems"
+    },
+    "fan-album-orange-whispers-parallel-world-01": {
+      "videoId": "",
+      "score": 0,
+      "title": "Will the Eastern World Exist That Day (Menu)",
+      "artist": "OrangeBlugt",
+      "matchedAt": "2026-10-04T07:05:06.855Z"
+    },
+    "fan-album-orange-whispers-parallel-world-02": {
+      "videoId": "",
+      "score": 0,
+      "title": "Oriental Society Is No Longer There, But Here (ST1)",
+      "artist": "OrangeBlugt",
+      "matchedAt": "2026-10-04T07:05:07.143Z"
+    },
+    "fan-album-orange-whispers-parallel-world-03": {
+      "videoId": "",
+      "score": 0,
+      "title": "Otter Attack! ~ Be Careful (ST1 BOSS)",
+      "artist": "OrangeBlugt",
+      "matchedAt": "2026-10-04T07:05:07.441Z"
+    },
+    "fan-album-orange-whispers-parallel-world-04": {
+      "videoId": "",
+      "score": 0,
+      "title": "Komorebi Dance (ST2)",
+      "artist": "OrangeBlugt",
+      "matchedAt": "2026-10-04T07:05:07.705Z"
+    },
+    "fan-album-orange-whispers-parallel-world-05": {
+      "videoId": "",
+      "score": 0,
+      "title": "Enlightenment Haunting Dance (ST2 BOSS)",
+      "artist": "OrangeBlugt",
+      "matchedAt": "2026-10-04T07:05:08.016Z"
+    },
+    "fan-album-orange-whispers-parallel-world-06": {
+      "videoId": "",
+      "score": 0,
+      "title": "Forgotten Road From Giant Rocks (ST3)",
+      "artist": "OrangeBlugt",
+      "matchedAt": "2026-10-04T07:05:08.285Z"
+    },
+    "fan-album-orange-whispers-parallel-world-07": {
+      "videoId": "",
+      "score": 0,
+      "title": "Powerful Competition of Feng Shui ~ Wind (ST3 BOSS)",
+      "artist": "OrangeBlugt",
+      "matchedAt": "2026-10-04T07:05:08.565Z"
+    },
+    "fan-album-orange-whispers-parallel-world-08": {
+      "videoId": "",
+      "score": 0,
+      "title": "Abyss of Memories (ST4)",
+      "artist": "OrangeBlugt",
+      "matchedAt": "2026-10-04T07:05:08.802Z"
+    },
+    "fan-album-orange-whispers-parallel-world-09": {
+      "videoId": "",
+      "score": 0,
+      "title": "Dancing Maiden (ST4 A BOSS)",
+      "artist": "OrangeBlugt",
+      "matchedAt": "2026-10-04T07:05:09.054Z"
+    },
+    "fan-album-orange-whispers-parallel-world-10": {
+      "videoId": "",
+      "score": 0,
+      "title": "The Beasts of Ancient War (ST4 B BOSS)",
+      "artist": "OrangeBlugt",
+      "matchedAt": "2026-10-04T07:05:09.337Z"
+    },
+    "fan-album-orange-whispers-parallel-world-11": {
+      "videoId": "",
+      "score": 0,
+      "title": "Invincible MindGame ~ Advanced Technology (ST4 C BOSS)",
+      "artist": "OrangeBlugt",
+      "matchedAt": "2026-10-04T07:05:09.632Z"
+    },
+    "fan-album-orange-whispers-parallel-world-12": {
+      "videoId": "",
+      "score": 0,
+      "title": "Abandonment Dreams and Reality (ST5)",
+      "artist": "OrangeBlugt",
+      "matchedAt": "2026-10-04T07:05:09.925Z"
+    },
+    "fan-album-orange-whispers-parallel-world-13": {
+      "videoId": "",
+      "score": 0,
+      "title": "Fleeing Ancient Dreams ~ Look Away! (ST5 BOSS)",
+      "artist": "OrangeBlugt",
+      "matchedAt": "2026-10-04T07:05:10.204Z"
+    },
+    "fan-album-orange-whispers-parallel-world-14": {
+      "videoId": "",
+      "score": 0,
+      "title": "Fire Dove (ST6)",
+      "artist": "OrangeBlugt",
+      "matchedAt": "2026-10-04T07:05:10.513Z"
+    },
+    "fan-album-orange-whispers-parallel-world-15": {
+      "videoId": "",
+      "score": 0,
+      "title": "Unfinished Alienated Scholar Poem ~ Fire Dove (ST6 BOSS)",
+      "artist": "OrangeBlugt",
+      "matchedAt": "2026-10-04T07:05:10.791Z"
+    },
+    "fan-album-orange-whispers-parallel-world-16": {
+      "videoId": "",
+      "score": 0,
+      "title": "Night Times (ENDING)",
+      "artist": "OrangeBlugt",
+      "matchedAt": "2026-10-04T07:05:11.049Z"
+    },
+    "fan-album-orange-whispers-parallel-world-17": {
+      "videoId": "",
+      "score": 0,
+      "title": "Ending the Last Dream (STAFF ROLL)",
+      "artist": "OrangeBlugt",
+      "matchedAt": "2026-10-04T07:05:11.322Z"
+    },
+    "fan-album-orange-whispers-parallel-world-18": {
+      "videoId": "",
+      "score": 0,
+      "title": "Into Discord's Core ~ Dream Traveler (ST EX)",
+      "artist": "OrangeBlugt",
+      "matchedAt": "2026-10-04T07:05:11.635Z"
+    },
+    "fan-album-orange-whispers-parallel-world-19": {
+      "videoId": "",
+      "score": 0,
+      "title": "Shattering the 第三 Gate in 4D Core ~ Last Think (ST EX BOSS)",
+      "artist": "OrangeBlugt",
+      "matchedAt": "2026-10-04T07:05:11.951Z"
+    },
+    "fan-album-wanwan-hollow-song-birds-01": {
+      "videoId": "zPqPLjs_cBs",
+      "score": 20.5,
+      "videoTitle": "[神授ノ書 HSoB OST] 幻想郷の一番長い日 - Title Screen",
+      "channelTitle": "gdsfdg",
+      "matchedAt": "2026-10-04T07:05:12.294Z",
+      "title": "幻想郷の一番長い日",
+      "artist": "Wanwan"
+    },
+    "fan-album-wanwan-hollow-song-birds-02": {
+      "videoId": "TUwRpL5KQj0",
+      "score": 20.5,
+      "videoTitle": "[神授ノ書 HSoB OST] 沈黙の春景 - Stage 1 Theme",
+      "channelTitle": "gdsfdg",
+      "matchedAt": "2026-10-04T07:05:12.663Z",
+      "title": "沈黙の春景",
+      "artist": "Wanwan"
+    },
+    "fan-album-wanwan-hollow-song-birds-03": {
+      "videoId": "WFHHZ58QWs0",
+      "score": 20.5,
+      "videoTitle": "[神授ノ書 HSoB OST] スカーレットランラン - Ranran&#39;s Theme (Stage 1 Boss)",
+      "channelTitle": "gdsfdg",
+      "matchedAt": "2026-10-04T07:05:12.996Z",
+      "title": "スカーレットランラン",
+      "artist": "Wanwan"
+    },
+    "fan-album-wanwan-hollow-song-birds-04": {
+      "videoId": "",
+      "score": 0,
+      "title": "末法の夜は来たれり",
+      "artist": "Wanwan",
+      "matchedAt": "2026-10-04T07:05:13.278Z"
+    },
+    "fan-album-wanwan-hollow-song-birds-05": {
+      "videoId": "dHvTq7jJOm8",
+      "score": 20.5,
+      "videoTitle": "[神授ノ書 HSoB OST] ちいちい墓場へご招待！ - Chii&#39;s Theme (Stage 2 Boss)",
+      "channelTitle": "gdsfdg",
+      "matchedAt": "2026-10-04T07:05:13.629Z",
+      "title": "ちいちい墓場へご招待！",
+      "artist": "Wanwan"
+    },
+    "fan-album-wanwan-hollow-song-birds-06": {
+      "videoId": "62HKJZa06yc",
+      "score": 20.5,
+      "videoTitle": "[神授ノ書 HSoB OST] ロータスメイズ - Stage 3 Theme",
+      "channelTitle": "gdsfdg",
+      "matchedAt": "2026-10-04T07:05:14.020Z",
+      "title": "ロータスメイズ",
+      "artist": "Wanwan"
+    },
+    "fan-album-wanwan-hollow-song-birds-07": {
+      "videoId": "",
+      "score": 0,
+      "title": "気高き翠の灰被姫",
+      "artist": "Wanwan",
+      "matchedAt": "2026-10-04T07:05:14.310Z"
+    },
+    "fan-album-wanwan-hollow-song-birds-08": {
+      "videoId": "7PvO6XYRxu0",
+      "score": 20.5,
+      "videoTitle": "[神授ノ書 HSoB OST] メメントの森 - Stage 4 Theme",
+      "channelTitle": "gdsfdg",
+      "matchedAt": "2026-10-04T07:05:14.638Z",
+      "title": "メメントの森",
+      "artist": "Wanwan"
+    },
+    "fan-album-wanwan-hollow-song-birds-09": {
+      "videoId": "",
+      "score": 0,
+      "title": "飛翔八十億劫 〜 Sinful Rampage",
+      "artist": "Wanwan",
+      "matchedAt": "2026-10-04T07:05:14.942Z"
+    },
+    "fan-album-wanwan-hollow-song-birds-10": {
+      "videoId": "",
+      "score": 0,
+      "title": "ファーイーストエルドラド",
+      "artist": "Wanwan",
+      "matchedAt": "2026-10-04T07:05:15.242Z"
+    }
+  }
 }
