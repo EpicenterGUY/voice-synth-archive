@@ -1,5 +1,5 @@
 {
-  "version": "0.9.26",
+  "version": "0.9.27",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-10-04",
@@ -202,6 +202,11 @@
     "unmeasured-track-rank-suppression",
     "daily-fan-youtube-metrics-refresh",
     "youtube-inline-policy-v3",
-    "curated-583-only-style-tab"
+    "curated-583-only-style-tab",
+    "split-fan-original-vs-curated-style-stats",
+    "fan-original-category-media-coverage",
+    "touhoudb-fan-original-youtube-fallback-search",
+    "fan-youtube-overlay-on-full-index",
+    "curated-style-rank-isolation"
   ]
 }
