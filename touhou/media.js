@@ -87,6 +87,7 @@ class TouhouMediaPlayer{
     this.lyricsTab=document.getElementById("playerTabLyrics");
     this.infoTab=document.getElementById("playerTabInfo");
     this.visualMode=localStorage.getItem(VISUAL_MODE_KEY)==="video"?"video":"song";
+    this.artworkCache=new Map();this.artworkSeq=0;
     this.current=null;this.queue=[];this.index=-1;this.frame=null;this.yt=null;this.playing=true;this.activeTab="related";
     this.pipWindow=null;this.pipHome=null;this.backgroundActive=false;
     this.autoNext=localStorage.getItem(AUTO_KEY)!=="0";
@@ -255,12 +256,25 @@ class TouhouMediaPlayer{
                   iframe.setAttribute("allowfullscreen","");
                 }
               }catch(_){}
+              try{
+                const levels=e.target.getAvailableQualityLevels?.()||[];
+                const preferred=["highres","hd2160","hd1440","hd1080","hd720","large"].find(q=>levels.includes(q));
+                if(preferred)e.target.setPlaybackQuality?.(preferred);
+              }catch(_){}
               if(autoplay)try{e.target.playVideo()}catch(_){}
               this.syncPipAvailability();this.syncTimeline();
             },
             onStateChange:e=>{
               if(!window.YT)return;
-              if(e.data===YT.PlayerState.PLAYING){this.playing=true;this.syncControls();this.setPlaybackState("playing")}
+              if(e.data===YT.PlayerState.PLAYING){
+                this.playing=true;
+                try{
+                  const levels=e.target.getAvailableQualityLevels?.()||[];
+                  const preferred=["highres","hd2160","hd1440","hd1080","hd720","large"].find(q=>levels.includes(q));
+                  if(preferred)e.target.setPlaybackQuality?.(preferred);
+                }catch(_){}
+                this.syncControls();this.setPlaybackState("playing")
+              }
               else if(e.data===YT.PlayerState.PAUSED){this.playing=false;this.syncControls();this.setPlaybackState("paused")}
               else if(e.data===YT.PlayerState.ENDED){this.playing=false;this.syncControls();this.setPlaybackState("none");if(this.autoNext)this.relative(1,true)}
             },
@@ -272,23 +286,83 @@ class TouhouMediaPlayer{
       this.renderIframeFallback();
     }
   }
+  youtubeThumbId(track){
+    const direct=this.candidates(track).find(x=>x.provider==="youtube"&&x.id)?.id;
+    if(direct)return String(direct);
+    const thumb=String(track?.thumb||"");
+    const m=thumb.match(/i\.ytimg\.com\/vi\/([^/]+)\//i);
+    return m?decodeURIComponent(m[1]):"";
+  }
+  thumbCandidates(track){
+    const out=[],seen=new Set(),push=url=>{
+      url=String(url||"").trim();if(!url||seen.has(url))return;seen.add(url);out.push(url);
+    };
+    const id=this.youtubeThumbId(track);
+    if(id){
+      const base="https://i.ytimg.com/vi/"+encodeURIComponent(id)+"/";
+      push(base+"maxresdefault.jpg");
+      push(base+"sddefault.jpg");
+      push(base+"hqdefault.jpg");
+      push(base+"mqdefault.jpg");
+    }
+    const raw=String(track?.thumb||"");
+    if(raw&&!/i\.ytimg\.com\/vi\/[^/]+\/(?:maxresdefault|sddefault|hqdefault|mqdefault)\.jpg/i.test(raw))push(raw);
+    else if(raw)push(raw);
+    return out;
+  }
   thumbFor(track){
-    if(track?.thumb)return track.thumb;
-    const m=this.candidates(track).find(x=>x.provider==="youtube"&&x.id);
-    return m?"https://i.ytimg.com/vi/"+encodeURIComponent(m.id)+"/mqdefault.jpg":"";
+    const key=String(track?.id||this.youtubeThumbId(track)||"");
+    return this.artworkCache.get(key)||this.thumbCandidates(track)[0]||"";
+  }
+  loadImageMeta(url){
+    return new Promise(resolve=>{
+      const img=new Image();
+      img.decoding="async";img.referrerPolicy="no-referrer";
+      const timer=setTimeout(()=>{img.src="";resolve(null)},6500);
+      img.onload=()=>{clearTimeout(timer);resolve({url,width:img.naturalWidth||0,height:img.naturalHeight||0})};
+      img.onerror=()=>{clearTimeout(timer);resolve(null)};
+      img.src=url;
+    });
+  }
+  async resolveArtwork(track){
+    const key=String(track?.id||this.youtubeThumbId(track)||"");
+    if(key&&this.artworkCache.has(key))return this.artworkCache.get(key);
+    const candidates=this.thumbCandidates(track);
+    let fallback="";
+    for(const url of candidates){
+      const meta=await this.loadImageMeta(url);
+      if(!meta||meta.width<200||meta.height<120)continue;
+      if(!fallback)fallback=url;
+      // Prefer genuinely useful large artwork. maxres is normally 1280×720,
+      // sddefault 640×480, hqdefault 480×360.
+      if(meta.width>=600||meta.height>=480){if(key)this.artworkCache.set(key,url);return url}
+    }
+    if(key&&fallback)this.artworkCache.set(key,fallback);
+    return fallback;
+  }
+  applyArtwork(url){
+    const safe=String(url||"").replace(/"/g,"%22");
+    const targets=[this.artwork,this.miniArt];
+    for(const el of targets){
+      if(!el)continue;
+      el.style.backgroundImage=safe?'url("'+safe+'")':"";
+      el.style.setProperty("--art-url",safe?'url("'+safe+'")':"none");
+      el.classList.toggle("has-art",!!safe);
+    }
+    if(this.ambient){
+      this.ambient.style.backgroundImage=safe?'url("'+safe+'")':"";
+      this.ambient.classList.toggle("has-art",!!safe);
+    }
   }
   syncArtwork(){
     if(!this.current)return;
-    const art=this.thumbFor(this.current),targets=[this.artwork,this.miniArt];
-    for(const el of targets){
-      if(!el)continue;
-      el.style.backgroundImage=art?'url("'+String(art).replace(/"/g,"%22")+'")':"";
-      el.classList.toggle("has-art",!!art);
-    }
-    if(this.ambient){
-      this.ambient.style.backgroundImage=art?'url("'+String(art).replace(/"/g,"%22")+'")':"";
-      this.ambient.classList.toggle("has-art",!!art);
-    }
+    const seq=++this.artworkSeq,track=this.current;
+    const immediate=String(track?.thumb||"");
+    if(immediate)this.applyArtwork(immediate);
+    this.resolveArtwork(track).then(url=>{
+      if(seq!==this.artworkSeq||!this.current||this.current.id!==track.id)return;
+      if(url)this.applyArtwork(url);
+    }).catch(()=>{});
   }
   canVideoVisual(){
     return !!this.current?.media&&["youtube","niconico","bilibili"].includes(this.current.media.provider);
