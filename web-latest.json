@@ -1,6 +1,6 @@
 {
-  "version": "39.130.1",
+  "version": "39.130.2",
   "channel": "web",
-  "publishedAt": "2026-10-05T03:30:00+09:00",
-  "notes": "Fixes the Update menu so it opens the update panel instead of instantly refreshing, updates the updater's own version from stale 39.122, adds a web-version check action, and applies the actual latest web version when refreshing."
+  "publishedAt": "2026-10-05T03:42:00+09:00",
+  "notes": "Adds a cache/service-worker rescue update path and hardens original-song filters. Gameplay/live-stream/commentary/cover/MMD/karaoke/derivative videos are rejected from original-only scopes, including title-rescue search results."
 }
