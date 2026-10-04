@@ -43,11 +43,12 @@ function scoreCandidate(track,item){
   const hay=norm(title+" "+channel+" "+desc);
   if(artistTokens.some(x=>hay.includes(norm(x))))score+=3;
   if(/touhou|東方/i.test(title+" "+desc))score+=1.5;
+  if(track.artist&&norm(channel).includes(norm(track.artist)))score+=4;
   if(/remix|arrange|cover/i.test(title)&&!/remix|arrange|cover/i.test(track.title))score-=2;
   return score;
 }
 async function youtubeSearch(track){
-  const q=[track.title,track.artist,"Touhou"].filter(Boolean).join(" ");
+  const q=[track.title,track.artist].filter(Boolean).join(" ");
   const p=new URLSearchParams({
     part:"snippet",type:"video",maxResults:"5",q,key:KEY,
     videoEmbeddable:"true",videoSyndicated:"true",safeSearch:"none"
