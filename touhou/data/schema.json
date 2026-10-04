@@ -1,5 +1,5 @@
 {
-  "version": 11,
+  "version": 12,
   "entities": {
     "track": [
       "id",
@@ -102,6 +102,25 @@
         "piapro"
       ],
       "note": "Measured public view counts are primary. Platforms without a stable public count contribute only a low-weight source-presence signal."
+    },
+    "beginnerDiscovery": {
+      "filters": [
+        "all",
+        "famous-originals",
+        "iosys",
+        "famous-arrangements",
+        "vocal",
+        "playable"
+      ],
+      "signals": [
+        "curated-famous-title",
+        "known-circle",
+        "verified-platform-views",
+        "stored-popularity-rank",
+        "stored-overall-rank",
+        "in-app-playable",
+        "multi-platform-presence"
+      ]
     }
   },
   "notes": [
@@ -133,6 +152,9 @@
     "Custom background artwork is stored locally in IndexedDB and resized/compressed client-side before persistence; it is not uploaded by TouhouDive.",
     "Every indexed track uses the same ranking-v6 cross-platform source logic when corresponding platform data exists.",
     "Platform direct links are exposed from verified media candidates plus TouhouDB/source links.",
-    "SoundCloud, Bandcamp and Piapro presence never fabricates a view count; it contributes only low-weight distribution breadth."
+    "SoundCloud, Bandcamp and Piapro presence never fabricates a view count; it contributes only low-weight distribution breadth.",
+    "Beginner discovery is a separate recommendation layer and does not alter the canonical all-catalog ranking.",
+    "IOSYS tracks receive a strong beginner-accessibility boost while other established circles and iconic official originals are also eligible.",
+    "Beginner recommendations prioritize recognizability and immediate playback in addition to popularity."
   ]
 }
