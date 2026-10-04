@@ -86,7 +86,7 @@ async function boot(){
     setDataHealth("error","UI 초기화 오류 · 새로고침 필요");
   }
   if("serviceWorker" in navigator){
-    navigator.serviceWorker.register("./sw.js?v=0.9.23").then(r=>r.update()).catch(err=>console.warn("service worker",err));
+    navigator.serviceWorker.register("./sw.js?v=0.9.24").then(r=>r.update()).catch(err=>console.warn("service worker",err));
   }
 
   const [or,ar,fr,far,wr,sr]=await Promise.all([
@@ -209,14 +209,19 @@ function bind(){
       player.updateCurrentData?.({...merged,_playerRanks:playerRankMeta(merged)});
     }catch(_){}
   });
-  $("#modeTabs .mode-tab").forEach(btn=>btn.onclick=()=>{
-    state.mode=btn.dataset.mode;state.filter="전체";
-    if(state.mode==="fan-original"){state.workFilter="";$("#workSelect").value=""}
-    syncModeTabs();
-    requestAnimationFrame(()=>state.view==="iceberg"?renderIceberg():renderCatalog());
-    loadRemote(true);
+  document.addEventListener("click",e=>{
+    const modeBtn=e.target.closest?.("#modeTabs .mode-tab");
+    if(modeBtn){
+      state.mode=modeBtn.dataset.mode;state.filter="전체";
+      if(state.mode==="fan-original"){state.workFilter="";$("#workSelect").value=""}
+      syncModeTabs();
+      requestAnimationFrame(()=>state.view==="iceberg"?renderIceberg():renderCatalog());
+      loadRemote(true);
+      return;
+    }
+    const navBtn=e.target.closest?.(".nav-item[data-view]");
+    if(navBtn)nav(navBtn.dataset.view);
   });
-  $$(".nav-item[data-view]").forEach(btn=>btn.onclick=()=>nav(btn.dataset.view));
   document.addEventListener("keydown",e=>{
     if(e.key==="/"&&document.activeElement!==$("#searchInput")){e.preventDefault();$("#searchInput").focus();}
     if(e.key==="Escape"){closePanel();closeMenu();if(!player.shell.classList.contains("is-mini")&&!player.shell.hidden)player.minimize();}
