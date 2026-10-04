@@ -435,24 +435,32 @@ async function loadRemote(reset=false,force=false){
     return;
   }
   if(state.full.loaded)return;
-  if(!state.remote.available)return;
+  const query=$("#searchInput").value.trim();
+  const canFullQuery=!!(query&&fullIndex?.searchByQuery);
+  if(!state.remote.available&&!canFullQuery)return;
   if(!reset&&state.remote.loading)return;
   const key=remoteKey();
   if(reset||key!==state.remote.key){state.remote.start=0;state.remoteItems=[];state.remote.key=key}
   const seq=++state.remote.seq;
   const start=state.remote.start;
   state.remote.loading=true;
-  setDataHealth("loading",state.full.streaming?"모바일 스트리밍 로딩 · 전체 "+fmt(state.full.manifest?.indexed||state.remote.catalogTotal||0)+"곡":"TouhouDB 불러오는 중");
+  setDataHealth("loading",query&&canFullQuery?"전체 인덱스 유연 검색 중":state.full.streaming?"모바일 스트리밍 로딩 · 전체 "+fmt(state.full.manifest?.indexed||state.remote.catalogTotal||0)+"곡":"TouhouDB 불러오는 중");
   syncCatalogFooter();
   if(force&&catalog?.clearCache)catalog.clearCache();
   try{
     const work=selectedWork();
-    const res=await catalog.search({
-      query:$("#searchInput").value.trim(),mode:remoteMode(),start,maxResults:50,
-      sort:remoteSort(),onlyWithPvs:state.filter==="인앱 재생"||state.filter==="영상 있음",tagName:work?.tag||"",force
-    });
+    const remotePromise=state.remote.available
+      ?catalog.search({
+        query,mode:remoteMode(),start,maxResults:50,
+        sort:remoteSort(),onlyWithPvs:state.filter==="인앱 재생"||state.filter==="영상 있음",tagName:work?.tag||"",force
+      }).catch(err=>({items:[],total:0,consumed:0,error:err}))
+      :Promise.resolve({items:[],total:0,consumed:0});
+    const fuzzyPromise=canFullQuery
+      ?fullIndex.searchByQuery(query,{limit:260,concurrency:3,force:!!force}).catch(err=>({tracks:[],total:0,error:err}))
+      :Promise.resolve({tracks:[],total:0});
+    const [res,fuzzy]=await Promise.all([remotePromise,fuzzyPromise]);
     if(seq!==state.remote.seq||key!==remoteKey())return;
-    let incoming=(res.items||[]).map(t=>{const work=selectedWork();return remember(work?{...t,workId:work.id,work:t.work||work.title}:t)});
+    let incoming=[...(fuzzy.tracks||[]),...(res.items||[])].map(t=>{const work=selectedWork();return remember(work?{...t,workId:t.workId||work.id,work:t.work||work.title}:t)});
     if(state.mode==="original")incoming=incoming.filter(t=>t.type==="original");
     if(state.mode==="arrangement")incoming=incoming.filter(t=>t.type==="arrangement");
     if(state.mode==="db-fan-original")incoming=incoming.filter(t=>isFanOriginal(t)&&!isCuratedStyle(t));
@@ -460,15 +468,21 @@ async function loadRemote(reset=false,force=false){
     state.remoteItems=dedupe([...state.remoteItems,...incoming]);
     if(state.view==="home")state.homeMixIds=[];
     state.remote.start=start+(Number(res.consumed)||Number(res.raw?.items?.length)||res.items?.length||0);
-    state.remote.total=Number(res.total)||state.remote.total;
-    state.remote.error="";
+    if(Number(res.total)>0)state.remote.total=Number(res.total);
+    state.remote.error=res.error?String(res.error?.message||res.error):"";
     renderCatalog(force?"새 추천":undefined);
-    setDataHealth("ok",state.full.streaming?"모바일 스트리밍 · 전체 "+fmt(state.full.manifest?.indexed||state.remote.catalogTotal)+"곡 · 현재 "+fmt(state.remoteItems.length)+"곡 캐시":"TouhouDB LIVE · "+fmt(state.remoteItems.length)+"곡 로드");
+    const fuzzyCount=Number(fuzzy.total)||0;
+    setDataHealth(res.error&&!fuzzyCount?"error":"ok",
+      query&&canFullQuery
+        ?"유연 검색 · 전체 인덱스 "+fmt(fuzzyCount)+"개 후보"+(res.items?.length?" · LIVE 병합":"")
+        :state.full.streaming
+          ?"모바일 스트리밍 · 전체 "+fmt(state.full.manifest?.indexed||state.remote.catalogTotal)+"곡 · 현재 "+fmt(state.remoteItems.length)+"곡 캐시"
+          :"TouhouDB LIVE · "+fmt(state.remoteItems.length)+"곡 로드");
     updateCatalogTotal();
   }catch(e){
     if(seq!==state.remote.seq)return;
     state.remote.error=String(e?.message||e);
-    setDataHealth("error","TouhouDB 요청 실패 · 캐시 유지");
+    setDataHealth("error","검색/DB 요청 실패 · 캐시 유지");
   }finally{
     if(seq===state.remote.seq){state.remote.loading=false;syncCatalogFooter()}
   }
@@ -1015,9 +1029,22 @@ function renderCatalog(title){
   }else if(state.filter!=="전체")list=list.filter(t=>(state.mode==="fan-original"||state.mode==="db-fan-original")?(t.artistString===state.filter||t.circle===state.filter):t.circle===state.filter);
   const work=selectedWork();
   if(work)list=list.filter(t=>trackMatchesWork(t,work));
-  const q=$("#searchInput").value.trim().toLowerCase();
-  if(q)list=list.filter(t=>searchBlob(t).includes(q));
+  const q=$("#searchInput").value.trim();
+  let searchScores=null;
+  if(q){
+    searchScores=new Map();
+    list=list.filter(t=>{
+      const score=searchScore(t,q);
+      if(!score)return false;
+      searchScores.set(resolveId(t.id),score);
+      return true;
+    });
+  }
   list=sortList(list,state.sort);
+  if(q&&searchScores){
+    // Relevance first; the selected catalog sort remains the tie-breaker.
+    list=[...list].sort((a,b)=>(searchScores.get(resolveId(b.id))||0)-(searchScores.get(resolveId(a.id))||0));
+  }
   const homeStation=state.view==="home"&&state.mode==="all"&&state.filter==="전체"&&state.sort==="recommend"&&!q&&!work;
   const homeVisible=homeStation?balancedHomeMix(list,18):null;
   const pagedRender=state.full.loaded||state.full.streaming;
@@ -1866,10 +1893,57 @@ function countChildren(id){
   if(state.full.loaded)return state.childCounts.get(target)||0;
   return [...state.known.values()].filter(a=>originalIds(a).includes(target)).length;
 }
+function searchFields(t){
+  const originals=originalNames(t).join(" "),artists=t.artists?Object.values(t.artists).flat().join(" "):"";
+  return [t.title,...(t.aliases||[]),t.work,t.role,t.character,t.circle,t.album,t.artistString,artists,originals,t.styleClass,...(t.moods||[])].filter(Boolean);
+}
 function searchBlob(t){
   if(t._search)return t._search;
-  const originals=originalNames(t).join(" "),artists=t.artists?Object.values(t.artists).flat().join(" "):"";
-  return [t.title,...(t.aliases||[]),t.work,t.role,t.character,t.circle,t.album,t.artistString,artists,originals,t.styleClass,...(t.moods||[])].filter(Boolean).join(" ").toLowerCase();
+  return searchFields(t).join(" ").normalize("NFKC").toLowerCase();
+}
+function searchLooseNorm(v){
+  return String(v||"").normalize("NFKC").toLowerCase().replace(/[\s\u3000\p{P}\p{S}]+/gu,"");
+}
+function searchTokens(v){
+  return String(v||"").normalize("NFKC").toLowerCase().split(/[\s\u3000\p{P}\p{S}]+/u).map(searchLooseNorm).filter(Boolean);
+}
+function searchBigrams(v){
+  const s=searchLooseNorm(v),out=[];if(s.length<2)return out;
+  for(let i=0;i<s.length-1;i++)out.push(s.slice(i,i+2));
+  return [...new Set(out)];
+}
+function searchScore(t,query){
+  const raw=String(query||"").trim();if(!raw)return 1;
+  const qLower=raw.normalize("NFKC").toLowerCase(),qn=searchLooseNorm(raw);if(!qn)return 0;
+  const titleForms=[t?.title,...(t?.aliases||[])].filter(Boolean);
+  const titleNorms=titleForms.map(searchLooseNorm).filter(Boolean);
+  if(titleNorms.some(x=>x===qn))return 1000;
+  if(titleNorms.some(x=>x.startsWith(qn)))return 930;
+  if(titleNorms.some(x=>x.includes(qn)))return 890;
+
+  const blob=searchBlob(t);
+  if(blob.includes(qLower))return 820;
+  const loose=t._searchLoose||(t._searchLoose=searchLooseNorm(searchFields(t).join(" ")));
+  if(loose.includes(qn))return 780;
+
+  const tokens=searchTokens(raw);
+  if(tokens.length>1&&tokens.every(x=>loose.includes(x)))return 710;
+
+  // Small typo tolerance is intentionally limited to title/aliases.
+  // Two-character overlap is cheap enough for the full catalog and avoids
+  // fuzzy matches against unrelated artist/album metadata.
+  if(qn.length>=4){
+    const grams=searchBigrams(qn);
+    let best=0;
+    for(const key of titleNorms){
+      if(!key)continue;
+      let hit=0;for(const g of grams)if(key.includes(g))hit++;
+      best=Math.max(best,grams.length?hit/grams.length:0);
+    }
+    if(best>=.82)return 640+Math.round(best*40);
+    if(qn.length>=6&&best>=.68)return 560+Math.round(best*40);
+  }
+  return 0;
 }
 function isFanOriginal(t){return !!t&&(t.type==="fan-original"||t.category==="fan-original")}
 function isCuratedStyle(t){return !!t&&!String(t.id||"").startsWith("tdb-")&&(!!t.touhouStyle||!!t.styleClass||!!t.classification?.sourceKind)}
