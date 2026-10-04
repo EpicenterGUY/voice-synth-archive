@@ -2,7 +2,7 @@
 (function(){
 "use strict";
 
-var VERSION="39.122.0";
+var VERSION="39.130.1";
 var RELEASE_API="https://api.github.com/repos/EpicenterGUY/voice-synth-archive/releases/latest";
 var PREF_CHECK="vocadive.update.autoCheck";
 var PREF_WIFI="vocadive.update.autoDownloadWifi";
@@ -122,13 +122,18 @@ function ensureSettingsCard(){
   ensureStyle();
   var grid=document.querySelector("#settingsPanel .settings-grid");if(!grid||document.getElementById("v3966UpdateCard"))return;
   var card=document.createElement("div");card.id="v3966UpdateCard";card.className="v3966-update-card";
-  card.innerHTML='<div class="v3966-update-card-head"><h3>앱 업데이트</h3><span data-v3966-current>웹 v'+esc(VERSION)+'</span></div><p data-v3966-status>앱 셸과 웹 UI 버전을 확인합니다.</p><div class="row"><label><input type="checkbox" data-v3966-auto-check> 시작할 때 자동 확인</label><label><input type="checkbox" data-v3966-auto-wifi> Wi-Fi에서 APK 자동 다운로드</label><button type="button" data-v3966-web-refresh>웹 업데이트 적용</button><button type="button" data-v3966-check>APK 확인</button></div>';
+  card.innerHTML='<div class="v3966-update-card-head"><h3>앱 업데이트</h3><span data-v3966-current>웹 v'+esc(VERSION)+'</span></div><p data-v3966-status>앱 셸과 웹 UI 버전을 확인합니다.</p><div class="row"><label><input type="checkbox" data-v3966-auto-check> 시작할 때 자동 확인</label><label><input type="checkbox" data-v3966-auto-wifi> Wi-Fi에서 APK 자동 다운로드</label><button type="button" data-v3966-web-check>웹 최신버전 확인</button><button type="button" data-v3966-web-refresh>웹 업데이트 적용</button><button type="button" data-v3966-check>APK 확인</button></div>';
   grid.appendChild(card);
   var ac=card.querySelector("[data-v3966-auto-check]"),aw=card.querySelector("[data-v3966-auto-wifi]");
   ac.checked=pref(PREF_CHECK,true);aw.checked=pref(PREF_WIFI,true);
   ac.addEventListener("change",function(){setPref(PREF_CHECK,ac.checked)});
   aw.addEventListener("change",function(){setPref(PREF_WIFI,aw.checked)});
   card.querySelector("[data-v3966-check]").addEventListener("click",function(){checkForUpdate(true)});
+  card.querySelector("[data-v3966-web-check]").addEventListener("click",async function(){
+    var v=await latestWebVersion3966();
+    if(compareVersion(v,VERSION)>0)toast3966("웹 UI v"+v+" 업데이트가 있습니다.");
+    else toast3966("웹 UI v"+VERSION+" · 최신 버전입니다.");
+  });
   card.querySelector("[data-v3966-web-refresh]").addEventListener("click",function(){applyWebUpdate()});
   updateSettings()
 }
@@ -157,13 +162,24 @@ async function getAppInfo(){
   try{state.appInfo=await p.getAppInfo();return state.appInfo}catch(_){return null}
 }
 
-async function applyWebUpdate(){
+async function latestWebVersion3966(){
   try{
-    toast3966("최신 웹 UI를 적용하는 중…");
+    var r=await fetch("./web-latest.json?t="+Date.now(),{cache:"no-store"});
+    if(!r.ok)return VERSION;
+    var info=await r.json(),v=String(info&&info.version||"");
+    return /^\d+\.\d+\.\d+/.test(v)?v:VERSION
+  }catch(_){return VERSION}
+}
+async function applyWebUpdate(){
+  var target=VERSION;
+  try{
+    target=await latestWebVersion3966();
+    toast3966("웹 UI v"+target+" 적용 준비 중…");
     if("serviceWorker" in navigator){
       try{
         var regs=await navigator.serviceWorker.getRegistrations();
-        await Promise.all(regs.map(function(r){try{return r.update()}catch(_){return null}}))
+        await Promise.all(regs.map(function(r){try{return r.update()}catch(_){return null}}));
+        await new Promise(function(resolve){setTimeout(resolve,350)})
       }catch(_){}
     }
     try{
@@ -172,12 +188,13 @@ async function applyWebUpdate(){
         await Promise.all(keys.filter(function(k){return /voca|vocadive|app-shell/i.test(k)}).map(function(k){return caches.delete(k)}))
       }
     }catch(_){}
+    try{sessionStorage.setItem("vocadive.web.manualTarget",target)}catch(_){}
     var u=new URL(location.href);
-    u.searchParams.set("ui",VERSION);
+    u.searchParams.set("ui",target);
     u.searchParams.set("_refresh",String(Date.now()));
     location.replace(u.toString())
   }catch(e){
-    try{location.reload()}catch(_){}
+    toast3966("웹 업데이트 적용에 실패했습니다. 다시 시도해주세요.");
   }
 }
 
