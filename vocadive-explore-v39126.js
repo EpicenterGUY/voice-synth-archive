@@ -1,7 +1,7 @@
 /* VocaDive 39.126.0 · music-first Explore + simplified Dive route cards */
 (function(){
 "use strict";
-var VER="39.126.0",mode="recommend",seed=0,obs=null,busy=false;
+var VER="39.129.1",mode="recommend",seed=0,obs=null,busy=false;
 function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 function fmt(v){var n=Number(v);return Number.isFinite(n)?n.toLocaleString("ko-KR"):"-"}
 function year(s){try{return s&&s.startTime?new Date(s.startTime).getFullYear():"-"}catch(_){return"-"}}
@@ -307,13 +307,16 @@ function sync(){
 }
 function boot(){
  addStyle();sync();
- var root=document.getElementById("toolsModal")||document.body;
- if(root){
-  obs=new MutationObserver(function(){requestAnimationFrame(sync)});
-  obs.observe(root,{childList:true,subtree:true})
+ var body=document.querySelector("#toolsModal .tools-body");
+ if(body){
+  var pending=0;
+  obs=new MutationObserver(function(){
+   clearTimeout(pending);pending=setTimeout(sync,80)
+  });
+  obs.observe(body,{childList:true})
  }
  window.addEventListener("vsa:route-change",function(){setTimeout(sync,0)});
- document.addEventListener("visibilitychange",function(){if(!document.hidden)setTimeout(sync,0)})
+ document.addEventListener("visibilitychange",function(){if(!document.hidden)setTimeout(sync,80)})
 }
 window.VSAExploreDive39126={version:VER,refresh:sync};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
