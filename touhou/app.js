@@ -659,7 +659,9 @@ function renderCatalog(title){
   renderFilters();
   let list=currentPool();
   if(state.filter==="영상 있음")list=list.filter(t=>hasMediaCandidate(t));
-  else if(state.filter!=="전체")list=list.filter(t=>state.mode==="fan-original"?(t.artistString===state.filter||t.circle===state.filter):t.circle===state.filter);
+  else if(state.filter.startsWith("category:")){
+    const key=state.filter.slice(9);list=list.filter(t=>relationCategory(t)===key);
+  }else if(state.filter!=="전체")list=list.filter(t=>state.mode==="fan-original"?(t.artistString===state.filter||t.circle===state.filter):t.circle===state.filter);
   const work=selectedWork();
   if(work)list=list.filter(t=>trackMatchesWork(t,work));
   const q=$("#searchInput").value.trim().toLowerCase();
@@ -691,16 +693,21 @@ function trackMatchesWork(t,work){
   return [work.title,work.tag,...(work.aliases||[])].some(v=>v&&hay.includes(String(v).normalize("NFKC").toLowerCase()));
 }
 function renderFilters(){
-  const base=currentPool(),out=["전체","영상 있음"];
+  const base=currentPool(),out=[{key:"전체",label:"전체"},{key:"영상 있음",label:"영상 있음"}];
+  if(state.mode==="all"||state.mode==="arrangement"){
+    const order=["official-original","fan-original","touhou-style","arrangement","rearrangement","remix","cover","remaster","instrumental","mashup","short-version","other-related"];
+    const present=new Set(base.map(relationCategory));
+    order.filter(x=>present.has(x)).forEach(x=>out.push({key:"category:"+x,label:relationLabel(x)}));
+  }
   if(state.mode==="arrangement"){
-    uniq(base.map(x=>x.circle).filter(Boolean)).slice(0,10).forEach(x=>out.push(x));
+    uniq(base.map(x=>x.circle).filter(Boolean)).slice(0,8).forEach(x=>out.push({key:x,label:x}));
   }
   if(state.mode==="fan-original"){
-    uniq(base.map(x=>x.artistString||x.circle).filter(Boolean)).slice(0,10).forEach(x=>out.push(x));
+    uniq(base.map(x=>x.artistString||x.circle).filter(Boolean)).slice(0,10).forEach(x=>out.push({key:x,label:x}));
   }
-  if(!out.includes(state.filter))state.filter="전체";
-  $("#quickFilters").innerHTML=out.map(x=>'<button class="filter-chip '+(x===state.filter?"is-active":"")+'" data-filter="'+escAttr(x)+'">'+esc(x)+'</button>').join("");
-  $$("#quickFilters .filter-chip").forEach(b=>b.onclick=()=>{state.filter=b.dataset.filter;requestAnimationFrame(()=>renderCatalog());loadRemote(true);});
+  if(!out.some(x=>x.key===state.filter))state.filter="전체";
+  $("#quickFilters").innerHTML=out.map(x=>'<button class="filter-chip '+(x.key===state.filter?"is-active":"")+'" data-filter="'+escAttr(x.key)+'">'+esc(x.label)+'</button>').join("");
+  $("#quickFilters .filter-chip").forEach(b=>b.onclick=()=>{state.filter=b.dataset.filter;requestAnimationFrame(()=>renderCatalog());loadRemote(true);});
 }
 function updateStats(){
   const meta=state.full.manifest;
@@ -773,6 +780,7 @@ function catalogTitle(q,count){
   if(q)return `전체 DB 검색 · ${count}곡 표시`;
   const work=selectedWork();
   if(work)return "TH"+work.number+" · "+work.title;
+  if(state.filter.startsWith("category:"))return relationLabel(state.filter.slice(9));
   if(state.filter!=="전체")return state.filter;
   if(state.mode==="original")return "동방 공식 원곡 전체 탐색";
   if(state.mode==="arrangement")return "동방 2차창작 전체 탐색";
@@ -792,17 +800,8 @@ function renderGrid(list){
   grid.querySelectorAll("[data-origin]").forEach(b=>b.onclick=e=>{e.stopPropagation();goToOriginal(byId(b.dataset.origin))});
   grid.querySelectorAll("[data-external]").forEach(b=>b.onclick=e=>{e.stopPropagation();openTrustedExternal(byId(b.dataset.external))});
 }
-function typeLabel(t){
-  if(t?.category==="official-original"||t?.type==="original")return"OFFICIAL ORIGINAL";
-  if(isFanOriginal(t))return"TOUHOU-STYLE";
-  if(t?.category==="other")return"OTHER";
-  return"ARRANGE";
-}
-function typeClass(t){
-  if(isFanOriginal(t))return"fan-original";
-  if(t?.category==="other")return"other";
-  return t?.type==="original"?"original":"arrangement";
-}
+function typeLabel(t){return RELATION_BADGES[relationCategory(t)]||"TOUHOU RELATED"}
+function typeClass(t){return relationCategory(t)}
 function card(t){
   const playable=player.playable(t),external=trustedExternalMedia(t),canLookup=!isFanOriginal(t)&&!playable&&!external&&state.remote.available,origins=originalNames(t);
   const rank=trackRank(t);
@@ -828,7 +827,7 @@ function card(t){
       '</div>'+
     '</button>'+
     '<div class="card-actions '+(originButton?"has-origin":"")+'">'+
-      (playable?'<button class="play-btn" data-play="'+escAttr(t.id)+'">▶ 재생</button>':external?'<button class="play-btn external-play" data-external="'+escAttr(t.id)+'">↗ 외부 재생</button>':'<button class="play-btn" data-play="'+escAttr(t.id)+'" '+(canLookup?"":"disabled")+'>'+(canLookup?"⌕ 영상 찾기":"영상 없음")+'</button>')+
+      (playable?'<button class="play-btn" data-play="'+escAttr(t.id)+'">▶ 재생</button>':canLookup?'<button class="play-btn" data-play="'+escAttr(t.id)+'">⌕ YouTube/영상 찾기</button>':external?'<button class="play-btn external-play" data-external="'+escAttr(t.id)+'">↗ 외부 재생</button>':'<button class="play-btn" disabled>영상 없음</button>')+
       originButton+'<button class="dive-btn" data-dive="'+escAttr(t.id)+'">⌁ 다이브</button></div>'+
   '</article>';
 }
@@ -846,7 +845,7 @@ function openTrack(t,opts={}){
   const source=t.media?.url||external?.url||t.source?.url||"";
   const rank=trackRank(t),popRank=popularityRankInfo(t),infRank=influenceRankInfo(t),links=trustedLinks(t);
   const fan=isFanOriginal(t),rankLabel=fan?"동방풍 순위":"종합";
-  const canLookup=!fan&&!player.playable(t)&&!external&&state.remote.available;
+  const canLookup=!player.playable(t)&&state.remote.available;
   const missing=(t.originalIds||[]).filter(id=>!byId(id));
   $("#detailContent").innerHTML=`
     <div class="detail-hero"><div class="detail-kicker">${typeLabel(t)} · ${fan?"CURATED STYLE INDEX":t.touhoudbId?(t.remote?"TOUHOUDB LIVE":"LOCAL + TOUHOUDB"):"LOCAL VERIFIED"}</div><div class="detail-rank"><strong>${rankLabel} · ${rankText(rank)}</strong><span>${rankPercentText(rank)} · ${fan?"동방풍 카테고리 내부":rank.fullScale?"전수 "+fmt(rank.total)+"곡 기준":rank.sampleRank?"현재 로드 표본 "+fmt(rank.sampleTotal)+"곡 중 "+fmt(rank.sampleRank)+"위":"전수 순위 준비 중"} · ${rank.score.toFixed(1)}pt</span></div>
@@ -855,9 +854,9 @@ function openTrack(t,opts={}){
       ${infRank?'<div><label>원곡 영향력</label><strong>'+fmt(infRank.total)+'원곡 중 '+(infRank.rank?fmt(infRank.rank)+'위':"집계 중")+'</strong><small>파생 '+fmt(infRank.children)+'곡 · '+fmt(infRank.circles)+'서클 · '+fmt(infRank.albums)+'앨범</small></div>':""}
     </div><h2>${esc(t.title)}</h2><div class="detail-meta">${artistLine}<br>${t.year||""}${t.album?" · "+esc(t.album):""}</div></div>
     <div class="tag-row">${(t.moods||[]).map(x=>`<span class="tag">${esc(x)}</span>`).join("")}</div>
-    <div class="detail-actions"><button class="hot" id="detailPlay" ${player.playable(t)||external||canLookup?"":"disabled"}>${player.playable(t)?(player.getYoutubeMode?.()==="youtube"&&player.candidates?.(t).some(x=>x.provider==="youtube")?"▶ YouTube 앱 재생":"▶ 앱에서 재생"):external?"↗ 외부 재생":canLookup?"⌕ 영상 찾기":"영상 없음"}</button><button id="detailDive">⌁ 다이브</button>${t.type==="arrangement"?'<button class="origin-jump" id="detailOrigin"><span>↖</span><strong>원곡으로</strong></button>':""}<button id="favBtn">${fav?"♥ 보관됨":"♡ 보관하기"}</button>${source?`<a href="${escAttr(source)}" target="_blank" rel="noopener">원본 링크 ↗</a>`:'<button disabled>원본 링크 없음</button>'}</div>
-    ${fan?'<div class="fact-box"><label>분류</label><div class="detail-meta">공식 동방 원곡을 직접 사용하지 않는 동방풍 오리지널입니다. 공식 원곡·2차창작 계보와 분리해 표시합니다.</div></div>':t.type==="arrangement"?lineageBox("이 어레인지의 원곡",origins,missing):lineageBox("이 원곡을 사용한 현재 로드 어레인지",children,[])}
-    <div class="fact-box"><label>순위 기준</label><div class="detail-meta">${fan?"동방풍 순위는 동방풍 큐레이션 내부에서 인기 점수를 기준으로 비교합니다. 공식 원곡·2차창작 FULL INDEX 순위에는 끼워 넣지 않습니다.":"종합 = 인기 + 원곡 영향력. 종합·인기 순위의 분모는 FULL INDEX 전체 등록곡 "+fmt(fullRankTotal())+"곡을 그대로 사용하며, 현재 로드된 표본 순위를 전수 순위처럼 환산하지 않습니다. 플랫폼 조회수 순위는 실제 조회수 확인에 성공한 곡만 별도로 집계합니다."}</div></div>
+    <div class="detail-actions"><button class="hot" id="detailPlay" ${player.playable(t)||external||canLookup?"":"disabled"}>${player.playable(t)?(player.getYoutubeMode?.()==="youtube"&&player.candidates?.(t).some(x=>x.provider==="youtube")?"▶ YouTube 앱 재생":"▶ 앱에서 재생"):canLookup?"⌕ YouTube/영상 찾기":external?"↗ 외부 재생":"영상 없음"}</button><button id="detailDive">⌁ 다이브</button>${t.type==="arrangement"?'<button class="origin-jump" id="detailOrigin"><span>↖</span><strong>원곡으로</strong></button>':""}<button id="favBtn">${fav?"♥ 보관됨":"♡ 보관하기"}</button>${source?`<a href="${escAttr(source)}" target="_blank" rel="noopener">원본 링크 ↗</a>`:'<button disabled>원본 링크 없음</button>'}</div>
+    ${fan?'<div class="fact-box"><label>분류</label><div class="detail-meta">공식 동방 원곡을 직접 사용하지 않는 동방풍 오리지널입니다. 통합 검색에는 포함하고, 계보·분류·순위 축은 별도로 유지합니다.</div></div>':t.type==="arrangement"?lineageBox("이 어레인지의 원곡",origins,missing):lineageBox("이 원곡을 사용한 현재 로드 어레인지",children,[])}
+    <div class="fact-box"><label>순위 기준</label><div class="detail-meta">${fan?"동방풍 순위는 동방풍 큐레이션 내부에서 비교합니다. 곡 자체는 동방 관련 전체 검색에 포함되며 공식 원곡·파생곡 랭킹 축과는 분리합니다.":"종합 = 인기 + 원곡 영향력. 종합·인기 순위의 분모는 FULL INDEX 전체 등록곡 "+fmt(fullRankTotal())+"곡을 그대로 사용하며, 현재 로드된 표본 순위를 전수 순위처럼 환산하지 않습니다. 플랫폼 조회수 순위는 실제 조회수 확인에 성공한 곡만 별도로 집계합니다."}</div></div>
     ${links.length?'<div class="fact-box trusted-links"><label>확인된 링크</label><div class="trusted-link-list">'+links.slice(0,12).map(x=>'<a href="'+escAttr(x.url)+'" target="_blank" rel="noopener noreferrer">'+esc(x.provider)+' ↗</a>').join("")+'</div></div>':""}
     <div class="fact-box"><label>다이브 기준</label><div class="detail-meta">${esc(relationText(t))}</div></div>
     ${!fan&&!opts.skipEnrich&&!t.touhoudbId&&state.remote.available?'<div class="detail-sync">TouhouDB에서 영상·통계를 보강하는 중…</div>':""}`;
@@ -878,7 +877,7 @@ function openTrack(t,opts={}){
   }
 }
 async function enrichTrack(t){
-  if(!t||isFanOriginal(t)||!catalog?.lookupByTitle)return t;
+  if(!t||!catalog?.lookupByTitle)return t;
   const id=resolveId(t.id);
   if(t.touhoudbId)return t;
   if(state.enriching.has(id))return state.enriching.get(id);
@@ -939,7 +938,6 @@ function openTrustedExternal(t){
 }
 async function hydratePlayingTrack(base){
   let t=byId(base.id)||base;
-  if(isFanOriginal(t))return t;
   try{
     if(state.remote.available&&catalog){
       let candidate=null;
@@ -980,7 +978,10 @@ async function playTrack(t){
     toast("재생 가능한 영상을 찾는 중…");
     try{t=await enrichTrack(t)}catch(_){}
   }
-  if(!player.playable(t)){toast("재생 가능한 공개 영상이 없습니다.");return false}
+  if(!player.playable(t)){
+    if(trustedExternalMedia(t)){openTrustedExternal(t);toast("인앱 영상이 없어 확인된 외부 소스를 열었습니다.");return true}
+    toast("재생 가능한 공개 영상이 없습니다.");return false
+  }
   const current={...t,_playerRanks:playerRankMeta(t)};
   const externalYoutube=player.getYoutubeMode?.()==="youtube"&&player.candidates?.(t).some(x=>x.provider==="youtube");
   const ok=player.play(current,[current]);
@@ -1265,6 +1266,26 @@ function searchBlob(t){
   return [t.title,...(t.aliases||[]),t.work,t.role,t.character,t.circle,t.album,t.artistString,artists,originals,t.styleClass,...(t.moods||[])].filter(Boolean).join(" ").toLowerCase();
 }
 function isFanOriginal(t){return !!t&&(t.type==="fan-original"||t.category==="fan-original")}
+const RELATION_LABELS={
+  "official-original":"공식 원곡","fan-original":"팬 오리지널","touhou-style":"동방풍 오리지널",
+  "arrangement":"어레인지","rearrangement":"재어레인지","remix":"리믹스","cover":"커버",
+  "remaster":"리마스터","instrumental":"인스트·오프보컬","mashup":"매시업",
+  "short-version":"숏버전·게임컷","other-related":"기타 동방 연관"
+};
+const RELATION_BADGES={
+  "official-original":"OFFICIAL ORIGINAL","fan-original":"FAN ORIGINAL","touhou-style":"TOUHOU-STYLE",
+  "arrangement":"ARRANGE","rearrangement":"RE-ARRANGE","remix":"REMIX","cover":"COVER",
+  "remaster":"REMASTER","instrumental":"INSTRUMENTAL","mashup":"MASHUP",
+  "short-version":"SHORT VERSION","other-related":"TOUHOU RELATED"
+};
+function relationCategory(t){
+  if(!t)return"other-related";
+  if(isFanOriginal(t)&&(t.touhouStyle||t.styleClass))return"touhou-style";
+  if(isFanOriginal(t))return"fan-original";
+  if(t.category)return t.category;
+  return t.type==="original"?"official-original":t.type==="arrangement"?"arrangement":"other-related";
+}
+function relationLabel(key){return RELATION_LABELS[key]||key||"기타 동방 연관"}
 function fanOriginalPool(){
   return dedupe([...state.localFanOriginals,...[...state.known.values()].filter(isFanOriginal)]).filter(isFanOriginal);
 }
