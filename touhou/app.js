@@ -729,15 +729,15 @@ function updateStats(){
   const localOrig=state.localOriginals.length,localArr=state.localArrangements.length,localFan=state.localFanOriginals.length;
   const originalCount=meta?.counts?.original||state.remote.counts.original||loaded.filter(x=>x.type==="original").length||localOrig;
   const arrangementCount=meta?.counts?.arrangement||state.remote.counts.arrangement||loaded.filter(x=>x.type==="arrangement").length||localArr;
-  const fanOriginalCount=loaded.filter(isFanOriginal).length||localFan;
+  const fanOriginalCount=Math.max(Number(meta?.counts?.fanOriginal)||0,loaded.filter(isFanOriginal).length,localFan);
   const mediaCount=meta?.counts?.mediaCandidates??null;
   $("#statOriginal").textContent=fmt(originalCount);
   $("#statArrangement").textContent=fmt(arrangementCount);
   $("#statFanOriginal").textContent=fmt(fanOriginalCount);
   $("#statMedia").textContent=mediaCount===null?"집계 중":fmt(mediaCount);
   $("#statOriginalMeta").textContent=meta?"공식 작품/ZUN 기준":"TouhouDB 공식 원곡 분류";
-  $("#statArrangementMeta").textContent=meta?"전체 인덱스":"TouhouDB 어레인지 분류";
-  $("#statFanOriginalMeta").textContent="공식 원곡·어레인지와 별도 큐레이션";
+  $("#statArrangementMeta").textContent=meta?"어레인지·리믹스·커버 등 전체 파생":"TouhouDB 파생곡 분류";
+  $("#statFanOriginalMeta").textContent=meta?"TouhouDB 팬 원곡 + 동방풍 큐레이션":"팬 원곡 + 동방풍 큐레이션";
   $("#statMediaMeta").textContent=meta?"전체 "+fmt(meta.indexed)+"곡에서 PV 후보 확인":"전수 인덱스 생성 후 확정";
   updateCatalogTotal();
 }
@@ -901,9 +901,9 @@ async function enrichTrack(t){
     if(!candidate)return t;
     const exact=normKey(candidate.title)===normKey(t.title)||(candidate.aliases||[]).some(a=>normKey(a)===normKey(t.title));
     if(!exact)return t;
-    remember(candidate);
+    const merged=mergeRemoteIntoTrack(t,candidate);
     refreshRanks();
-    return byId(id)||byId(candidate.id)||t;
+    return merged||byId(id)||byId(candidate.id)||t;
   })().finally(()=>state.enriching.delete(id));
   state.enriching.set(id,promise);
   return promise;
