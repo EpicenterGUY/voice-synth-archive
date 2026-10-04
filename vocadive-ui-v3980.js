@@ -4,7 +4,7 @@
 (function(){
 "use strict";
 
-var VERSION="39.125.0";
+var VERSION="39.130.1";
 var raf=0,observer=null,lastRoute="home",navSeq3985=0,workerCheckTimer3986=0;
 var workerState3986={ok:null,reason:"",endpoint:"",at:0};
 
@@ -550,6 +550,7 @@ body.v37-ready #songList+.loadmore{
  box-shadow:0 18px 50px rgba(0,0,0,.46);backdrop-filter:blur(16px)
 }
 #v3982Menu[hidden]{display:none!important}
+.v3983-update-focus{outline:2px solid rgba(112,221,211,.52)!important;outline-offset:3px!important}
 #v3982Menu button{
  width:100%;min-height:44px;display:grid;grid-template-columns:31px minmax(0,1fr) auto;gap:9px;align-items:center;
  padding:0 10px;border:0;border-radius:10px;background:transparent;color:var(--vd-text);text-align:left
@@ -1601,7 +1602,8 @@ function openSettingsDetails3983(){
         }catch(_){}
         setTimeout(openSettingsDetails3983,0)
       }else if(v==="web"){
-        if(window.VocaDiveUpdater&&window.VocaDiveUpdater.applyWebUpdate)window.VocaDiveUpdater.applyWebUpdate()
+        var card=document.getElementById("v3966UpdateCard");
+        if(card){card.scrollIntoView({behavior:"smooth",block:"center"});card.classList.add("v3983-update-focus");setTimeout(function(){card.classList.remove("v3983-update-focus")},1400)}
       }else{
         var c=document.getElementById("v3966UpdateCard");if(c)c.scrollIntoView({behavior:"smooth",block:"center"})
       }
@@ -1630,8 +1632,20 @@ function ensureMenu3982(){
     if(v==="diagnostics"){closeMenu3982();openRoute("diagnostics37");return}
     if(v==="update"){
       closeMenu3982();
-      if(window.VocaDiveUpdater&&window.VocaDiveUpdater.applyWebUpdate){window.VocaDiveUpdater.applyWebUpdate();return}
-      openSettings3982()
+      openSettings3982();
+      var tries=0;
+      (function aimUpdate(){
+        openSettingsDetails3983();
+        var card=document.getElementById("v3966UpdateCard");
+        if(card){
+          try{var d=card.closest("details");if(d)d.open=true}catch(_){}
+          card.scrollIntoView({behavior:"smooth",block:"center"});
+          card.classList.add("v3983-update-focus");
+          setTimeout(function(){card.classList.remove("v3983-update-focus")},1400);
+          return
+        }
+        if(++tries<8)setTimeout(aimUpdate,120)
+      })()
     }
   });
   return m
