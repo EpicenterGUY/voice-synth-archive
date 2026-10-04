@@ -412,19 +412,39 @@ async function main(){
   const viewCoverage=await enrichPlatformViews(tracks);
   console.log("view coverage",viewCoverage);
   const byId=new Map(tracks.map(x=>[x.i,x]));
+  const rootMemo=new Map();
+  const canonicalRootId=t=>{
+    if(!t?.o)return 0;
+    if(rootMemo.has(t.i))return rootMemo.get(t.i);
+    const seen=new Set([t.i]);
+    let parentId=Number(t.o)||0,root=0;
+    for(let depth=0;parentId&&depth<48;depth++){
+      if(seen.has(parentId)){root=0;break}
+      seen.add(parentId);
+      const parent=byId.get(parentId);
+      if(!parent){root=0;break}
+      if(!parent.t&&!parent.o){root=parent.i;break}
+      parentId=Number(parent.o)||0;
+    }
+    rootMemo.set(t.i,root);
+    return root;
+  };
+  // Attribute every descendant branch to its canonical parentless official
+  // source, not just the immediate parent. This prevents alternate ZUN
+  // versions/re-arrangements from splitting an original's influence graph.
   const relations=new Map(),childCircles=new Map(),childAlbums=new Map(),childMedia=new Map();
   for(const t of tracks){
-    if(!t.o)continue;
-    relations.set(t.o,(relations.get(t.o)||0)+1);
+    const rootId=canonicalRootId(t);if(!rootId)continue;
+    relations.set(rootId,(relations.get(rootId)||0)+1);
     if(t.c){
-      if(!childCircles.has(t.o))childCircles.set(t.o,new Set());
-      childCircles.get(t.o).add(t.c);
+      if(!childCircles.has(rootId))childCircles.set(rootId,new Set());
+      childCircles.get(rootId).add(t.c);
     }
     if(t.l){
-      if(!childAlbums.has(t.o))childAlbums.set(t.o,new Set());
-      childAlbums.get(t.o).add(t.l);
+      if(!childAlbums.has(rootId))childAlbums.set(rootId,new Set());
+      childAlbums.get(rootId).add(t.l);
     }
-    if(t.p?.length)childMedia.set(t.o,(childMedia.get(t.o)||0)+1);
+    if(t.p?.length)childMedia.set(rootId,(childMedia.get(rootId)||0)+1);
   }
   const popularity=t=>{
     const community=communitySignal(t),spread=sourceSpreadSignal(t);
@@ -516,7 +536,7 @@ async function main(){
       ratingMeaning:"TouhouDB RatingScore is a cumulative vote score: Favorite +3, Like +2, Dislike -1; it is not a 10-point average rating",
       views:"log10(total verified views+1)*6 + log10(max video views+1)*1.5 + per-platform log view contributions + verified-platform breadth; same-song distinct media IDs are deduplicated",
       viewPolicy:"YouTube, NicoNico and Bilibili verified counts feed view ranking; SoundCloud, Bandcamp and Piapro are reflected as source-spread links unless a stable public count is available",
-      influence:"official original only: log-weighted derivative tracks + distinct circles + distinct albums + playable derivative count",
+      influence:"official parentless original only: log-weighted transitive descendant tracks + distinct descendant circles + distinct descendant albums + playable descendant count; intermediate versions roll up to the canonical root",
       denominator:"overall/popularity ranks use the full indexed song count directly; no archive-scale projection"
     },
     classification:{
