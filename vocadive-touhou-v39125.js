@@ -1,7 +1,7 @@
 /* VocaDive 39.125.0 · TouhouDive-first information architecture + YouTube Music shell */
 (function(){
 "use strict";
-var VER="39.125.0",muting=false,observer=null,resizeTimer=0;
+var VER="39.129.1",muting=false,observer=null,resizeTimer=0;
 function addStyle(){
   if(document.getElementById("v39125TouhouStyle"))return;
   var s=document.createElement("style");s.id="v39125TouhouStyle";s.textContent=`
@@ -231,7 +231,7 @@ function watch(){
     if(muting)return;
     requestAnimationFrame(sync)
   });
-  roots.forEach(function(r){observer.observe(r,{childList:true,subtree:true})});
+  roots.forEach(function(r){observer.observe(r,{childList:true})});
   return true
 }
 function boot(){
