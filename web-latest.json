@@ -1,6 +1,6 @@
 {
-  "version": "39.120.0",
+  "version": "39.121.0",
   "channel": "web",
-  "publishedAt": "2026-10-04T18:02:00+09:00",
-  "notes": "Skin Experience adds distinct device identities: MP3 station LCD, Walkman display, cassette reels, Aqua glass motion, Neon spectrum, Pocket Mono, and skin-specific backgrounds/cards/player surfaces."
+  "publishedAt": "2026-10-04T18:28:00+09:00",
+  "notes": "Makes skins visually obvious like TouhouDive: large bottom-sheet picker with preview cards, always-visible skin control, full home device showcase, and stronger page-wide ambient backgrounds."
 }
