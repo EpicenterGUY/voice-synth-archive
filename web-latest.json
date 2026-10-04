@@ -1,6 +1,6 @@
 {
-  "version": "39.130.0",
+  "version": "39.130.1",
   "channel": "web",
-  "publishedAt": "2026-10-05T03:18:00+09:00",
-  "notes": "MY is simplified around listening, saved playlists appear directly in MY with instant in-app playback, Playlist Lab can play drafts and saved lists through the unified player, and playlist playback now feeds the shared Up Next queue."
+  "publishedAt": "2026-10-05T03:30:00+09:00",
+  "notes": "Fixes the Update menu so it opens the update panel instead of instantly refreshing, updates the updater's own version from stale 39.122, adds a web-version check action, and applies the actual latest web version when refreshing."
 }
