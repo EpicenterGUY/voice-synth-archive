@@ -1,5 +1,5 @@
 {
-  "version": "0.9.28",
+  "version": "0.9.29",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-10-04",
@@ -216,6 +216,12 @@
     "db-fan-original-tab",
     "true-inline-playable-filter",
     "mobile-2x3-stat-dashboard",
-    "fan-original-api-original-filter"
+    "fan-original-api-original-filter",
+    "custom-skin",
+    "custom-only-user-artwork",
+    "indexeddb-local-background",
+    "custom-background-dimming",
+    "custom-background-fit",
+    "built-in-skins-artwork-free"
   ]
 }
