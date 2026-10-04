@@ -2,7 +2,7 @@
 (function(){
 "use strict";
 
-var VERSION="39.122.0";
+var VERSION="39.124.0";
 var QUICK_DELAY=320;
 var FULL_DELAY=720;
 var QUICK_TTL=5*60*1000;
@@ -74,16 +74,17 @@ function ensureHint(){
   else main.insertAdjacentElement("afterend",box)
 }
 function scoreSong(song,q){
+  try{if(typeof window.VSAQueryScore124==="function")return window.VSAQueryScore124(song,q)}catch(_){}
   var nq=norm(q),title=norm(song&&song.title),id=norm(song&&song.contentId),score=0;
   if(!nq)return 0;
-  if(title===nq||id===nq)score+=1000;
-  else if(title.startsWith(nq)||id.startsWith(nq))score+=650;
-  else if(title.includes(nq)||id.includes(nq))score+=420;
+  if(title===nq||id===nq)score+=100000;
+  else if(title.startsWith(nq)||id.startsWith(nq))score+=76000;
+  else if(title.includes(nq)||id.includes(nq))score+=62000;
   else{
     var blob=norm([song&&song.description,song&&song.tags].filter(Boolean).join(" "));
-    if(blob.includes(nq))score+=180
+    if(blob.includes(nq))score+=9000
   }
-  score+=Math.min(150,Math.log10(Math.max(1,Number(song&&song.viewCounter)||1))*20);
+  score+=Math.min(600,Math.log10(Math.max(1,Number(song&&song.viewCounter)||1))*80);
   return score
 }
 function cacheGet(q){
@@ -104,18 +105,19 @@ async function fetchQuick(q){
   var cached=cacheGet(q);
   if(cached)return cached.slice();
   if(typeof window.fetchNico!=="function")return [];
-  var d=await window.fetchNico({
-    year:"all",
-    limit:40,
-    offset:0,
-    mode:"free",
-    query:q,
-    scope:"all",
-    sort:"-viewCounter",
-    applyYear:false,
-    applyTier:false
-  });
-  var rows=Array.isArray(d&&d.data)?d.data.slice():[];
+  var pair=await Promise.all([
+    window.fetchNico({
+      year:"all",limit:60,offset:0,mode:"free",query:q,scope:"all",
+      sort:"-viewCounter",applyYear:false,applyTier:false
+    }).catch(function(){return{data:[]}}),
+    window.fetchNico({
+      year:"all",limit:60,offset:0,mode:"free",query:q,scope:"all",queryTargets:"title",
+      sort:"-viewCounter",applyYear:false,applyTier:false
+    }).catch(function(){return{data:[]}})
+  ]);
+  var merged124=new Map();
+  pair.forEach(function(d){(Array.isArray(d&&d.data)?d.data:[]).forEach(function(s){if(s&&s.contentId)merged124.set(s.contentId,s)})});
+  var rows=[...merged124.values()];
   try{
     if(typeof window.songMatchesScope==="function"){
       var scoped=rows.filter(function(s){return window.songMatchesScope(s,"all_voice_synth")});
