@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>VocaDive Update Rescue</title>
+<style>
+html,body{margin:0;min-height:100%;background:#071518;color:#eaf7f5;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+main{min-height:100vh;display:grid;place-items:center;padding:24px;box-sizing:border-box}
+.card{width:min(520px,100%);padding:20px;border:1px solid rgba(139,219,209,.15);border-radius:20px;background:#0b1d21}
+small{color:#6fd8cf;font-weight:900;letter-spacing:.08em}h1{font-size:24px;margin:8px 0}p{color:#8fa5a1;line-height:1.6}.bar{height:4px;background:#132b2f;border-radius:99px;overflow:hidden;margin-top:16px}.bar i{display:block;height:100%;width:15%;background:#70ddd2;animation:a 1.2s infinite alternate}.status{margin-top:10px;font-size:13px;color:#b8cfcb}@keyframes a{to{width:100%}}
+button{margin-top:14px;min-height:42px;padding:0 14px;border:0;border-radius:999px;background:#eaf7f5;color:#071210;font-weight:900}
+</style>
+</head>
+<body>
+<main><section class="card">
+<small>VOCADIVE · UPDATE RESCUE</small>
+<h1>최신 웹 UI를 다시 불러오는 중</h1>
+<p>오래된 서비스워커와 앱 셸 캐시를 정리한 뒤 최신 VocaDive로 이동합니다.</p>
+<div class="bar"><i></i></div>
+<div class="status" id="st">캐시 정리 중…</div>
+<button id="retry" hidden>다시 시도</button>
+</section></main>
+<script>
+(async function(){
+  const st=document.getElementById("st"),retry=document.getElementById("retry");
+  async function run(){
+    retry.hidden=true;
+    try{
+      st.textContent="서비스워커 정리 중…";
+      if("serviceWorker" in navigator&&navigator.serviceWorker.getRegistrations){
+        const regs=await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map(r=>r.unregister().catch(()=>false)));
+      }
+      st.textContent="캐시 정리 중…";
+      if(window.caches&&caches.keys){
+        const keys=await caches.keys();
+        await Promise.all(keys.map(k=>caches.delete(k).catch(()=>false)));
+      }
+      try{localStorage.removeItem("vsa.pwa.runningVersion");localStorage.removeItem("vsa.pwa.dismissedUpdate")}catch(e){}
+      st.textContent="최신 버전 확인 중…";
+      let target=new URL(location.href).searchParams.get("target")||"";
+      try{
+        const r=await fetch("./web-latest.json?t="+Date.now(),{cache:"no-store"});
+        if(r.ok){const j=await r.json();if(j&&j.version)target=String(j.version)}
+      }catch(e){}
+      await new Promise(r=>setTimeout(r,250));
+      const u=new URL("./index.html",location.href);
+      if(target)u.searchParams.set("ui",target);
+      u.searchParams.set("_fresh",String(Date.now()));
+      st.textContent="최신 VocaDive로 이동 중…";
+      location.replace(u.toString());
+    }catch(e){
+      st.textContent="자동 복구에 실패했습니다. 다시 시도해주세요.";
+      retry.hidden=false;
+    }
+  }
+  retry.addEventListener("click",run);
+  run();
+})();
+</script>
+</body>
+</html>
