@@ -20,16 +20,30 @@ function mediaOf(p){
     provider==="bandcamp"?numeric:false;
   return{provider,id,url,name,viewCount:Number.isFinite(viewCount)&&viewCount>=0?viewCount:null,mode:embeddable?"embed":"external"};
 }
+function relationCategory(r){
+  const raw=clean(r?.k).toLowerCase();
+  if(!r?.t)return"official-original";
+  if(raw==="original")return"fan-original";
+  if(/rearrangement/.test(raw))return"rearrangement";
+  if(/remix/.test(raw))return"remix";
+  if(/cover/.test(raw))return"cover";
+  if(/remaster/.test(raw))return"remaster";
+  if(/instrumental|off.?vocal/.test(raw))return"instrumental";
+  if(/mashup/.test(raw))return"mashup";
+  if(/short/.test(raw))return"short-version";
+  if(/arrangement/.test(raw))return"arrangement";
+  return"other-related";
+}
 function toTrack(r){
   const work=inferWork(r),mediaCandidates=arr(r.p).map(mediaOf).filter(Boolean);
-  const search=[r.n,...arr(r.x),r.c,r.a,r.l,...arr(r.g)].filter(Boolean).join(" ").normalize("NFKC").toLowerCase();
-  const rawType=clean(r.k),rawNorm=rawType.toLowerCase();
-  const category=!r.t?"official-original":rawNorm==="original"?"fan-original":/arrangement|rearrangement|remix|cover|remaster|instrumental|mashup|short/.test(rawNorm)?"arrangement":"other";
+  const search=[r.n,...arr(r.x),r.c,r.a,r.l,...arr(r.g),r.k].filter(Boolean).join(" ").normalize("NFKC").toLowerCase();
+  const rawType=clean(r.k),category=relationCategory(r);
+  const type=category==="official-original"?"original":category==="fan-original"?"fan-original":"arrangement";
   return{
-    id:"tdb-"+r.i,touhoudbId:Number(r.i)||0,type:r.t?"arrangement":"original",category,songTypeRaw:rawType,
+    id:"tdb-"+r.i,touhoudbId:Number(r.i)||0,type,category,songTypeRaw:rawType,
     title:clean(r.n)||("TouhouDB #"+r.i),aliases:arr(r.x),year:Number(r.y)||null,
     work:work?.title||"",workId:work?.id||"",workIds:work?[work.id]:[],
-    role:category==="official-original"?"Official Original":category==="fan-original"?"Fan Original":category==="arrangement"?"Arrangement":"Other",character:"",
+    role:category==="official-original"?"Official Original":category==="fan-original"?"Fan Original":rawType||"Touhou Related",character:"",
     circle:clean(r.c)||(r.t?"":"ZUN"),album:clean(r.l),moods:arr(r.g),
     originalIds:r.o?["tdb-"+r.o]:[],artists:r.ar||{},artistString:clean(r.a),
     media:mediaCandidates[0]||null,mediaCandidates,
