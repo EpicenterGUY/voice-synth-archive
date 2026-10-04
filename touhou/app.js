@@ -1665,7 +1665,7 @@ function normalizePersistentIds(){
   writeJson("touhoudive:history",state.history);
 }
 function syncModeTabs(){
-  $("#modeTabs .mode-tab").forEach(x=>x.classList.toggle("is-active",x.dataset.mode===state.mode));
+  $$("#modeTabs .mode-tab").forEach(x=>x.classList.toggle("is-active",x.dataset.mode===state.mode));
   const work=$("#workSelect");if(work){work.disabled=state.mode==="fan-original";work.title=work.disabled?"동방풍 오리지널은 공식 작품 필터와 별도입니다.":""}
 }
 function setDataHealth(kind,text){
