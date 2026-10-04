@@ -16,6 +16,8 @@ const state={
 };
 let searchTimer=0,localSearchTimer=0,uiBound=false;
 
+document.documentElement.dataset.theme=localStorage.getItem("touhoudive:theme")||"dark";
+document.documentElement.dataset.skin=localStorage.getItem("touhoudive:skin")||"station";
 boot();
 
 async function loadLocalJson(path,fallback){
@@ -239,7 +241,7 @@ function bind(){
     const modeBtn=e.target.closest?.("#modeTabs .mode-tab");
     if(modeBtn){
       state.mode=modeBtn.dataset.mode;state.filter="전체";state.homeMixIds=[];
-      if(state.mode==="fan-original"){state.workFilter="";$("#workSelect").value=""}
+      if(state.mode==="fan-original"||state.mode==="db-fan-original"){state.workFilter="";$("#workSelect").value=""}
       syncModeTabs();
       requestAnimationFrame(()=>state.view==="iceberg"?renderIceberg():renderCatalog());
       loadRemote(true);
@@ -695,6 +697,7 @@ function balancedHomeMix(list,limit=18){
   if(validSaved.length>=Math.min(10,limit))return validSaved.slice(0,limit);
   const used=new Set(),out=[];
   const take=(pool,n)=>{
+    if(n<=0)return;
     const candidates=shuffle(pool.slice(0,Math.max(n*8,24)));
     for(const t of candidates){
       const id=resolveId(t.id);if(used.has(id))continue;
