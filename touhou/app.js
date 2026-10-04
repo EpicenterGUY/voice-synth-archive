@@ -89,7 +89,7 @@ async function boot(){
     setDataHealth("error","UI 초기화 오류 · 새로고침 필요");
   }
   if("serviceWorker" in navigator){
-    navigator.serviceWorker.register("./sw.js?v=0.9.34").then(r=>r.update()).catch(err=>console.warn("service worker",err));
+    navigator.serviceWorker.register("./sw.js?v=0.9.35").then(r=>r.update()).catch(err=>console.warn("service worker",err));
   }
 
   const [or,ar,fr,far,fy,wr,sr]=await Promise.all([
@@ -264,6 +264,28 @@ function bind(){
       }
       player.updateCurrentData?.({...merged,_playerRanks:playerRankMeta(merged)});
     }catch(_){}
+  });
+  window.addEventListener("touhoudive:player-action",async e=>{
+    const action=e.detail?.action,id=e.detail?.trackId,t=byId(id)||player.current;
+    if(!t)return;
+    if(action==="favorite"){
+      toggleFavorite(t,{open:false});
+      player.setFavoriteState?.(state.favorites.has(resolveId(t.id)));
+      return;
+    }
+    if(action==="origin"){
+      await goToOriginal(t);
+      return;
+    }
+    if(action==="dive"){
+      player.minimize?.();
+      startDive(t,{fresh:true});
+      return;
+    }
+    if(action==="detail"){
+      player.minimize?.();
+      openTrack(t);
+    }
   });
   document.addEventListener("click",e=>{
     const modeBtn=e.target.closest?.("#modeTabs .mode-tab");
@@ -1293,6 +1315,7 @@ async function playTrack(t){
   const externalYoutube=player.getYoutubeMode?.()==="youtube"&&player.candidates?.(t).some(x=>x.provider==="youtube");
   const ok=player.play(current,[current]);
   if(!ok)return false;
+  player.setFavoriteState?.(state.favorites.has(resolveId(t.id)));
   pushHistory(t.id,t);
   if(externalYoutube){
     toast("YouTube 앱/브라우저로 열었습니다 · 로그인된 Premium 계정이 적용됩니다.");
@@ -2052,11 +2075,12 @@ function persistSnapshot(t){
   if(keys.length>120)for(const k of keys.slice(0,keys.length-120))delete state.snapshots[k];
   writeJson("touhoudive:snapshots",state.snapshots);
 }
-function toggleFavorite(t){
+function toggleFavorite(t,opts={}){
   const id=resolveId(t.id);
   state.favorites.has(id)?state.favorites.delete(id):state.favorites.add(id);
   persistSnapshot(t);writeJson("touhoudive:favorites",[...state.favorites]);
-  openTrack(byId(id)||t);
+  if(opts.open!==false)openTrack(byId(id)||t);
+  player.setFavoriteState?.(state.favorites.has(id));
   toast(state.favorites.has(id)?"보관함에 저장했습니다.":"보관함에서 제거했습니다.");
 }
 function pushHistory(id,t){
