@@ -1,5 +1,5 @@
 {
-  "version": 20,
+  "version": 21,
   "entities": {
     "track": [
       "id",
@@ -198,6 +198,11 @@
         "mqdefault"
       ],
       "fallback": "original source thumbnail"
+    },
+    "tabletExpandedPlayer": {
+      "portrait": "single-column scroll layout; song/video switch is normal-flow, not sticky",
+      "landscape": "left playback + 280px info rail; artwork constrained by viewport height",
+      "orientationChange": "expanded player scroll resets to top and visual mode is resynced"
     }
   },
   "notes": [
@@ -254,6 +259,9 @@
     "On mobile the media-mode toggle stays below the full-player header and above the video frame.",
     "Mini-player mode never displays the song/video switcher; it is reserved for the expanded player.",
     "Tablet portrait and landscape use separate mini-player sizing/position rules to avoid navigation overlap and edge-to-edge stretching.",
-    "Catalog cards use a layered YouTube thumbnail fallback chain so large tablet cards prefer maxres/sd/hq assets before mqdefault."
+    "Catalog cards use a layered YouTube thumbnail fallback chain so large tablet cards prefer maxres/sd/hq assets before mqdefault.",
+    "The song/video switch no longer follows scrolling on portrait/mobile layouts.",
+    "Tablet landscape has a dedicated expanded-player layout so desktop minimum column widths cannot overlap playback controls or the info rail.",
+    "When device orientation changes while the expanded player is open, its internal scroll position is reset and the visual mode is re-synchronized."
   ]
 }
