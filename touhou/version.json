@@ -1,8 +1,8 @@
 {
-  "version": "0.9.21",
+  "version": "0.9.22",
   "name": "TouhouDive",
   "channel": "alpha",
-  "updated": "2026-09-30",
+  "updated": "2026-10-04",
   "dataset": "TouhouDB-full-sharded-index",
   "features": [
     "ui-rebuild",
@@ -176,6 +176,11 @@
     "overall-influence-25pct",
     "youtube-premium-playback-mode",
     "account-aware-external-youtube",
-    "playback-mode-persistence"
+    "playback-mode-persistence",
+    "touhou-style-tab",
+    "curated-fan-original-dataset",
+    "separate-touhou-style-ranking",
+    "switcheroo-seed",
+    "touhou-style-lineage-separation"
   ]
 }
