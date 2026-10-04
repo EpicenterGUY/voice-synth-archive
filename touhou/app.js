@@ -89,7 +89,7 @@ async function boot(){
     setDataHealth("error","UI 초기화 오류 · 새로고침 필요");
   }
   if("serviceWorker" in navigator){
-    navigator.serviceWorker.register("./sw.js?v=0.9.37").then(r=>r.update()).catch(err=>console.warn("service worker",err));
+    navigator.serviceWorker.register("./sw.js?v=0.9.38").then(r=>r.update()).catch(err=>console.warn("service worker",err));
   }
 
   const [or,ar,fr,far,fy,wr,sr]=await Promise.all([
