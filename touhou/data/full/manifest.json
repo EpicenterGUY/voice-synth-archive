@@ -2,7 +2,7 @@
   "schema": 3,
   "source": "TouhouDB",
   "api": "https://touhoudb.com/api",
-  "generatedAt": "2026-10-04T07:04:51.389Z",
+  "generatedAt": "2026-10-04T07:39:59.751Z",
   "totalCount": 189241,
   "indexed": 189241,
   "shardSize": 1000,
@@ -994,9 +994,9 @@
   ],
   "viewCoverage": {
     "providers": {
-      "youtube": 63340,
-      "niconico": 875,
-      "bilibili": 9
+      "youtube": 63374,
+      "niconico": 879,
+      "bilibili": 21
     },
     "candidates": {
       "youtube": 65079,
@@ -1004,16 +1004,16 @@
       "bilibili": 766
     },
     "ratios": {
-      "youtube": 0.9732786305874399,
-      "niconico": 0.09218289085545722,
-      "bilibili": 0.01174934725848564
+      "youtube": 0.9738010725426021,
+      "niconico": 0.09260429835651074,
+      "bilibili": 0.02741514360313316
     },
-    "tracks": 56507,
-    "media": 64224,
+    "tracks": 56550,
+    "media": 64274,
     "youtubeKeyConfigured": true,
     "popularityEligible": true,
     "mode": "youtube-major",
-    "rankedTracks": 56507,
+    "rankedTracks": 56550,
     "supportedProviders": [
       "youtube",
       "niconico",
