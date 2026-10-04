@@ -2,7 +2,7 @@
 "use strict";
 const BASE="./data/full/";
 let manifestCache=null,works=[],fanVideoOverlay=null;
-const lookupCache=new Map(),circleSearchCache=new Map();
+const lookupCache=new Map(),circleSearchCache=new Map(),beginnerSearchCache=new Map();
 const clean=v=>String(v??"").trim();
 const arr=v=>Array.isArray(v)?v:[];
 async function loadFanVideoOverlay(force=false){
@@ -222,6 +222,94 @@ async function searchByCircleAliases(aliases,opts={}){
   circleSearchCache.set(key,promise);
   try{return await promise}catch(err){circleSearchCache.delete(key);throw err}
 }
+function rawMediaProviders(r){
+  return new Set(arr(r?.p).map(p=>clean(p?.[0])).filter(Boolean));
+}
+function rawHasVideo(r){
+  const providers=rawMediaProviders(r);
+  return providers.has("youtube")||providers.has("niconico")||providers.has("bilibili");
+}
+function rawHasExplicitMv(r){
+  return arr(r?.p).some(p=>{
+    const provider=clean(p?.[0]),name=clean(p?.[3]),url=clean(p?.[2]);
+    if(!["youtube","niconico","bilibili"].includes(provider))return false;
+    return /(?:^|\b)(?:mv|pv)(?:\b|$)|music\s*video|official\s*(?:video|mv|pv)|公式(?:mv|pv|動画|映像)|ミュージック(?:ビデオ|ビデオ)|映像作品/i.test(name+" "+url);
+  });
+}
+function rawTitleHay(r){
+  return [r?.n,...arr(r?.x)].filter(Boolean).map(normCircle).join(" ");
+}
+function rawBeginnerRankScore(r){
+  const gr=Number(r?.q)||0,pr=Number(r?.qp)||0,vr=Number(r?.qv)||0,views=Math.max(0,Number(r?.vt)||0);
+  let score=0;
+  if(gr>0)score+=Math.max(0,72-Math.log10(gr+1)*14);
+  if(pr>0)score+=Math.max(0,78-Math.log10(pr+1)*15);
+  if(vr>0)score+=Math.max(0,62-Math.log10(vr+1)*12);
+  if(views>0)score+=Math.min(38,Math.log10(views+1)*6);
+  return score;
+}
+async function searchBeginnerCandidates(opts={}){
+  const meta=await manifest(!!opts.force);
+  await prepareCache(meta);
+  const titleSeeds=arr(opts.titleSeeds).map(normCircle).filter(Boolean);
+  const circleAliases=arr(opts.circleAliases).map(normCircle).filter(Boolean);
+  const limit=Math.max(300,Math.min(6000,Number(opts.limit)||3200));
+  const key=meta.generatedAt+"|"+limit+"|"+titleSeeds.slice().sort().join(",")+"|"+circleAliases.slice().sort().join(",");
+  if(beginnerSearchCache.has(key)&&!opts.force)return beginnerSearchCache.get(key);
+  const promise=(async()=>{
+    const files=meta.files.slice(),candidates=[];
+    let cursor=0,scanned=0;
+    const concurrency=Math.max(1,Math.min(5,Number(opts.concurrency)||3));
+    const worker=async()=>{
+      while(true){
+        const idx=cursor++;if(idx>=files.length)return;
+        const cfg=files[idx],rows=await fetchShardRows(cfg.file,meta.generatedAt,Number(cfg.count)||0);
+        for(const r of rows){
+          const titleHay=rawTitleHay(r),circleHay=rawCircleHay(r);
+          const iconic=titleSeeds.some(x=>x&&titleHay.includes(x));
+          const knownCircle=circleAliases.some(x=>x&&circleHay.includes(x));
+          const video=rawHasVideo(r),explicitMv=rawHasExplicitMv(r);
+          const gr=Number(r?.q)||0,pr=Number(r?.qp)||0,vr=Number(r?.qv)||0;
+          const official=!r?.t;
+          const ranked=(gr>0&&gr<=40000)||(pr>0&&pr<=40000)||(vr>0&&vr<=40000);
+          const videoRanked=video&&((gr>0&&gr<=80000)||(pr>0&&pr<=80000)||(vr>0&&vr<=80000));
+          if(!(iconic||knownCircle||official||ranked||videoRanked))continue;
+          let score=rawBeginnerRankScore(r);
+          if(explicitMv)score+=125;
+          else if(video)score+=72;
+          if(iconic)score+=100;
+          if(knownCircle)score+=46;
+          if(official)score+=30;
+          const providers=rawMediaProviders(r);
+          if(providers.has("youtube"))score+=10;
+          if(providers.has("niconico"))score+=9;
+          if(providers.has("bilibili"))score+=7;
+          score+=Math.min(12,providers.size*3);
+          candidates.push({r,score,explicitMv,video});
+        }
+        scanned+=rows.length;
+        opts.onProgress?.({scanned,total:meta.indexed,candidates:candidates.length,shards:idx+1,shardCount:files.length});
+      }
+    };
+    await Promise.all(Array.from({length:concurrency},worker));
+    candidates.sort((a,b)=>b.score-a.score||(Number(a.r?.qp)||9999999)-(Number(b.r?.qp)||9999999)||(Number(a.r?.q)||9999999)-(Number(b.r?.q)||9999999));
+    const picked=candidates.slice(0,limit).map(x=>{
+      const t=toTrack(x.r);
+      t.beginnerIndexScore=x.score;
+      t.beginnerExplicitMv=!!x.explicitMv;
+      t.beginnerVideo=!!x.video;
+      return t;
+    });
+    return{
+      manifest:meta,tracks:picked,total:picked.length,
+      explicitMv:picked.filter(x=>x.beginnerExplicitMv).length,
+      video:picked.filter(x=>x.beginnerVideo).length,
+      scanned:meta.indexed
+    };
+  })();
+  beginnerSearchCache.set(key,promise);
+  try{return await promise}catch(err){beginnerSearchCache.delete(key);throw err}
+}
 async function loadAll(opts={}){
   const meta=await manifest(!!opts.force),files=meta.files.slice();
   await prepareCache(meta);
@@ -240,5 +328,5 @@ async function loadAll(opts={}){
   return{manifest:meta,tracks:chunks.flat()};
 }
 function setWorks(v){works=Array.isArray(v)?v:[]}
-window.TouhouFullIndex={manifest,loadAll,lookupStats,enrichTrack,toTrack,setWorks,loadFanVideoOverlay,searchByCircleAliases,base:BASE};
+window.TouhouFullIndex={manifest,loadAll,lookupStats,enrichTrack,toTrack,setWorks,loadFanVideoOverlay,searchByCircleAliases,searchBeginnerCandidates,base:BASE};
 })();
