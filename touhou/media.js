@@ -175,9 +175,14 @@ class TouhouMediaPlayer{
     return out.sort((a,b)=>this.fallbackPriority(a.provider)-this.fallbackPriority(b.provider));
   }
   fallbackPriority(provider,failedProvider=""){
-    const order=failedProvider==="youtube"
-      ? ["niconico","soundcloud","bandcamp","bilibili","piapro","touhoudb","youtube"]
-      : ["youtube","niconico","soundcloud","bandcamp","bilibili","piapro","touhoudb"];
+    let order;
+    if(failedProvider==="youtube"){
+      order=["bandcamp","soundcloud","niconico","bilibili","piapro","touhoudb","youtube"];
+    }else if(this.visualMode!=="video"){
+      order=["bandcamp","soundcloud","niconico","bilibili","youtube","piapro","touhoudb"];
+    }else{
+      order=["youtube","niconico","bilibili","soundcloud","bandcamp","piapro","touhoudb"];
+    }
     const i=order.indexOf(provider);
     return i<0?999:i;
   }
@@ -192,7 +197,7 @@ class TouhouMediaPlayer{
     track.mediaCandidates=out;
     return out;
   }
-  playable(track){return this.candidates(track).length>0}
+  playable(track){return !track?.mediaUnavailable&&this.candidates(track).length>0}
   selectPlayableMedia(track){
     const media=this.candidates(track)[0]||null;
     if(track)track.media=media;
@@ -305,7 +310,9 @@ class TouhouMediaPlayer{
     if(direct)return String(direct);
     const thumb=String(track?.thumb||"");
     const m=thumb.match(/i\.ytimg\.com\/vi\/([^/]+)\//i);
-    return m?decodeURIComponent(m[1]):"";
+    if(!m)return"";
+    const id=decodeURIComponent(m[1]);
+    return this.badMedia.has("youtube:"+id)?"":id;
   }
   thumbCandidates(track){
     const out=[],seen=new Set(),push=url=>{
@@ -320,8 +327,10 @@ class TouhouMediaPlayer{
       push(base+"mqdefault.jpg");
     }
     const raw=String(track?.thumb||"");
-    if(raw&&!/i\.ytimg\.com\/vi\/[^/]+\/(?:maxresdefault|sddefault|hqdefault|mqdefault)\.jpg/i.test(raw))push(raw);
-    else if(raw)push(raw);
+    const rm=raw.match(/i\.ytimg\.com\/vi\/([^/]+)\//i);
+    const rawBad=rm&&this.badMedia.has("youtube:"+decodeURIComponent(rm[1]));
+    if(raw&&!rawBad&&!/i\.ytimg\.com\/vi\/[^/]+\/(?:maxresdefault|sddefault|hqdefault|mqdefault)\.jpg/i.test(raw))push(raw);
+    else if(raw&&!rawBad)push(raw);
     return out;
   }
   thumbFor(track){
@@ -527,7 +536,7 @@ class TouhouMediaPlayer{
     const order=[];
     for(let i=this.index+1;i<this.queue.length;i++)order.push(i);
     for(let i=0;i<this.index;i++)order.push(i);
-    const rows=order.slice(0,24).map(i=>{
+    const rows=order.filter(i=>this.playable(this.queue[i])).slice(0,24).map(i=>{
       const t=this.queue[i],thumb=this.thumbFor(t);
       const by=t.type==="arrangement"?(t.circle||t.artistString||"Arrangement"):(t.work||t.artistString||"Original");
       return '<button class="player-related-item" data-player-index="'+i+'">'+
@@ -536,7 +545,15 @@ class TouhouMediaPlayer{
       '</button>';
     });
     this.relatedEl.innerHTML=rows.length?rows.join(""):'<div class="player-panel-empty">재생 가능한 연관곡이 없습니다.</div>';
-    this.relatedEl.querySelectorAll("[data-player-index]").forEach(btn=>btn.onclick=()=>this.jumpTo(Number(btn.dataset.playerIndex)));
+    this.relatedEl.querySelectorAll("[data-player-index]").forEach(btn=>{
+      const i=Number(btn.dataset.playerIndex);btn.onclick=()=>this.jumpTo(i);
+      const thumbEl=btn.querySelector(".player-related-thumb"),track=this.queue[i];
+      if(thumbEl&&track)this.resolveArtwork(track).then(url=>{
+        if(!url)return;
+        thumbEl.style.backgroundImage='url("'+String(url).replace(/"/g,"%22")+'")';
+        thumbEl.classList.remove("no-image");thumbEl.classList.add("has-art");
+      }).catch(()=>{});
+    });
   }
   renderInfo(){
     if(!this.infoEl||!this.current)return;
