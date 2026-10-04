@@ -1,9 +1,9 @@
-const CACHE="touhoudive-v0.9.24";
+const CACHE="touhoudive-v0.9.25";
 const FULL_CACHE="touhoudive-full-index-v5";
 const CORE=[
   "./","./index.html",
-  "./styles.css?v=0.9.24","./app.js?v=0.9.24","./catalog.js?v=0.9.24","./media.js?v=0.9.24","./full-index.js?v=0.9.24",
-  "./data/originals.json","./data/works.json","./data/archive-sources.json","./data/arrangements.json","./data/fan-originals.json","./data/fan-original-albums.json","./data/schema.json",
+  "./styles.css?v=0.9.25","./app.js?v=0.9.25","./catalog.js?v=0.9.25","./media.js?v=0.9.25","./full-index.js?v=0.9.25",
+  "./data/originals.json","./data/works.json","./data/archive-sources.json","./data/arrangements.json","./data/fan-originals.json","./data/fan-original-albums.json","./data/fan-youtube.json","./data/schema.json",
   "./manifest.webmanifest","./icon.svg","./version.json"
 ];
 self.addEventListener("install",e=>e.waitUntil(
