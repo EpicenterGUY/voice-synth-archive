@@ -37,6 +37,47 @@ async function loadLocalJson(path,fallback){
   console.warn("local data unavailable",path,lastError);
   return{ok:false,data:fallback,source:"fallback",error:String(lastError?.message||lastError||"unknown")};
 }
+function expandFanAlbums(raw){
+  const albums=Array.isArray(raw?.albums)?raw.albums:Array.isArray(raw)?raw:[];
+  const out=[];
+  for(const album of albums){
+    const tracks=Array.isArray(album?.tracks)?album.tracks:[];
+    tracks.forEach((row,i)=>{
+      const item=typeof row==="string"?{title:row}:row||{};
+      const title=String(item.title||"").trim();if(!title)return;
+      const artist=String(item.artist||album.artist||"").trim();
+      const provider=album.provider||"bandcamp";
+      const mediaUrl=String(item.url||album.url||"").trim();
+      const sourceKind=String(album.sourceKind||"touhou-style-catalog");
+      out.push({
+        id:"fan-album-"+String(album.id||"collection")+"-"+String(i+1).padStart(2,"0"),
+        type:"fan-original",category:"fan-original",title,
+        year:Number(item.year||album.year)||null,
+        circle:String(album.artist||artist||"Touhou-style").trim(),
+        artistString:artist||String(album.artist||"").trim(),
+        album:String(album.title||"").trim(),
+        role:"Touhou-style original",
+        moods:uniq(["동방풍","Touhou-style",sourceKind,...(album.tags||[]),...(item.tags||[])]),
+        originalIds:[],
+        artists:{composer:artist?[artist]:[]},
+        aliases:Array.isArray(item.aliases)?item.aliases:[],
+        touhouStyle:true,styleClass:"touhou-style-catalog",
+        classification:{
+          basis:String(album.evidence||"verified-album-source"),
+          note:"검증된 동방풍 자작곡/동방 팬게임 오리지널 OST 컬렉션. 공식 동방 원곡·어레인지와 별도 집계.",
+          evidenceUrl:String(album.url||""),
+          sourceKind
+        },
+        media:mediaUrl?{provider,url:mediaUrl,mode:"external",name:title+" · "+String(album.title||"source")}:null,
+        mediaCandidates:mediaUrl?[{provider,url:mediaUrl,mode:"external",name:title+" · "+String(album.title||"source")}]:[],
+        source:mediaUrl?{name:(artist||album.artist||"Touhou-style")+" · "+String(album.title||"source"),url:mediaUrl}:null,
+        publishDate:album.year?String(album.year)+"-01-01":"",
+        remote:false
+      });
+    });
+  }
+  return out;
+}
 async function boot(){
   try{
     bind();
@@ -45,13 +86,14 @@ async function boot(){
     setDataHealth("error","UI 초기화 오류 · 새로고침 필요");
   }
   if("serviceWorker" in navigator){
-    navigator.serviceWorker.register("./sw.js?v=0.9.21").then(r=>r.update()).catch(err=>console.warn("service worker",err));
+    navigator.serviceWorker.register("./sw.js?v=0.9.23").then(r=>r.update()).catch(err=>console.warn("service worker",err));
   }
 
-  const [or,ar,fr,wr,sr]=await Promise.all([
+  const [or,ar,fr,far,wr,sr]=await Promise.all([
     loadLocalJson("./data/originals.json",[]),
     loadLocalJson("./data/arrangements.json",[]),
     loadLocalJson("./data/fan-originals.json",[]),
+    loadLocalJson("./data/fan-original-albums.json",{albums:[]}),
     loadLocalJson("./data/works.json",[]),
     loadLocalJson("./data/archive-sources.json",null)
   ]);
@@ -62,7 +104,10 @@ async function boot(){
   fullIndex?.setWorks?.(state.works);
   state.localOriginals=(Array.isArray(or.data)?or.data:[]).map(x=>({...x,type:"original",circle:"ZUN",album:x.work,originalIds:[],remote:false}));
   state.localArrangements=(Array.isArray(ar.data)?ar.data:[]).map(x=>({...x,type:"arrangement",remote:false}));
-  state.localFanOriginals=(Array.isArray(fr.data)?fr.data:[]).map(x=>({...x,type:"fan-original",category:"fan-original",originalIds:[],remote:false}));
+  state.localFanOriginals=[
+    ...(Array.isArray(fr.data)?fr.data:[]).map(x=>({...x,type:"fan-original",category:"fan-original",originalIds:[],remote:false})),
+    ...expandFanAlbums(far.data)
+  ];
   [...state.localOriginals,...state.localArrangements,...state.localFanOriginals].forEach(remember);
   Object.values(state.snapshots||{}).forEach(x=>x&&remember({...x,snapshot:true}));
   normalizePersistentIds();
@@ -76,9 +121,9 @@ async function boot(){
     $("#trackGrid").innerHTML='<div class="empty-state" style="grid-column:1/-1;min-height:220px"><strong>초기 화면 구성 중 오류가 발생했습니다.</strong><span>라이브 DB 연결은 계속 시도합니다.</span></div>';
   }
 
-  const criticalFailed=!or.ok||!ar.ok||!fr.ok||!wr.ok;
+  const criticalFailed=!or.ok||!ar.ok||!fr.ok||!far.ok||!wr.ok;
   if(criticalFailed){
-    const failed=[!or.ok&&"원곡",!ar.ok&&"2차창작",!fr.ok&&"동방풍",!wr.ok&&"작품"].filter(Boolean).join(" · ");
+    const failed=[!or.ok&&"원곡",!ar.ok&&"2차창작",!fr.ok&&"동방풍 시드",!far.ok&&"동방풍 대량목록",!wr.ok&&"작품"].filter(Boolean).join(" · ");
     setDataHealth("loading","로컬 일부 재시도 필요("+failed+") · 라이브 DB 연결 중");
   }
 
