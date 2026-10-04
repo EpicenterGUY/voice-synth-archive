@@ -2,7 +2,7 @@
   "schema": 3,
   "source": "TouhouDB",
   "api": "https://touhoudb.com/api",
-  "generatedAt": "2026-10-04T08:17:14.063Z",
+  "generatedAt": "2026-10-04T09:36:50.194Z",
   "totalCount": 189241,
   "indexed": 189241,
   "shardSize": 1000,
@@ -966,8 +966,8 @@
     "mediaCandidates": 72872,
     "categories": {
       "official-original": 593,
-      "arrangement": 145510,
       "other-related": 4513,
+      "arrangement": 145510,
       "rearrangement": 13593,
       "short-version": 2330,
       "cover": 2833,
@@ -977,8 +977,8 @@
     },
     "categoryMediaCandidates": {
       "official-original": 557,
-      "arrangement": 59305,
       "other-related": 736,
+      "arrangement": 59305,
       "rearrangement": 5169,
       "short-version": 561,
       "cover": 686,
@@ -988,8 +988,8 @@
     },
     "categoryYoutubeCandidates": {
       "official-original": 557,
-      "arrangement": 47326,
       "other-related": 480,
+      "arrangement": 47326,
       "rearrangement": 4200,
       "short-version": 413,
       "cover": 624,
@@ -999,14 +999,14 @@
     },
     "categoryViewTracks": {
       "official-original": 551,
-      "arrangement": 46483,
-      "other-related": 482,
-      "rearrangement": 4087,
+      "other-related": 481,
+      "arrangement": 46337,
+      "rearrangement": 4080,
       "short-version": 348,
-      "cover": 608,
+      "cover": 607,
       "instrumental": 905,
-      "remaster": 463,
-      "fan-original": 2626
+      "remaster": 461,
+      "fan-original": 2628
     }
   },
   "providers": {
@@ -1028,26 +1028,40 @@
   "viewCoverage": {
     "providers": {
       "youtube": 63374,
-      "niconico": 901,
-      "bilibili": 18
+      "niconico": 579,
+      "bilibili": 16
     },
     "candidates": {
       "youtube": 65079,
       "niconico": 9492,
-      "bilibili": 766
+      "soundcloud": 3542,
+      "piapro": 7,
+      "bilibili": 766,
+      "bandcamp": 12405
     },
     "ratios": {
       "youtube": 0.9738010725426021,
-      "niconico": 0.0949220396123051,
-      "bilibili": 0.02349869451697128
+      "niconico": 0.060998735777496836,
+      "soundcloud": 0,
+      "piapro": 0,
+      "bilibili": 0.020887728459530026,
+      "bandcamp": 0
     },
-    "tracks": 56553,
-    "media": 64293,
+    "tracks": 56398,
+    "media": 63969,
     "youtubeKeyConfigured": true,
     "popularityEligible": true,
     "mode": "youtube-major",
-    "rankedTracks": 56553,
+    "rankedTracks": 56398,
     "supportedProviders": [
+      "youtube",
+      "niconico",
+      "bilibili",
+      "soundcloud",
+      "bandcamp",
+      "piapro"
+    ],
+    "measuredViewProviders": [
       "youtube",
       "niconico",
       "bilibili"
@@ -1060,13 +1074,14 @@
     "format": "[id,q,s,qp,sp,qi,si,qv,sv,vt,vm,vp,vc,dc,dsc,da,dm,viewMedia]"
   },
   "ranking": {
-    "version": 5,
+    "version": 6,
     "composite": "popularity + original influence*0.25",
-    "popularity": "verified platform view signal + community correction*0.35 when views exist; otherwise community fallback*0.45",
-    "community": "log10(TouhouDB cumulative vote score+1)*8 + log10(favorites+1)*8 + log10(TouhouDB hits+1)*2 + media-provider count",
+    "popularity": "cross-platform verified view signal + source-spread signal + TouhouDB community correction",
+    "community": "log10(TouhouDB cumulative vote score+1)*8 + log10(favorites+1)*8 + log10(TouhouDB hits+1)*2",
+    "sourceSpread": "registered platform presence: YouTube 1.0, NicoNico 1.25, Bilibili 1.0, SoundCloud 0.75, Bandcamp 1.0, Piapro 0.9; low-weight only",
     "ratingMeaning": "TouhouDB RatingScore is a cumulative vote score: Favorite +3, Like +2, Dislike -1; it is not a 10-point average rating",
-    "views": "log10(sum verified views+1)*8 + log10(max video views+1)*2 + verified-platform bonus; same-song distinct video IDs are summed",
-    "viewPolicy": "platform views become a primary popularity signal when YouTube collection coverage is >=65%; NicoNico/Bilibili supplement totals when available",
+    "views": "log10(total verified views+1)*6 + log10(max video views+1)*1.5 + per-platform log view contributions + verified-platform breadth; same-song distinct media IDs are deduplicated",
+    "viewPolicy": "YouTube, NicoNico and Bilibili verified counts feed view ranking; SoundCloud, Bandcamp and Piapro are reflected as source-spread links unless a stable public count is available",
     "influence": "official original only: log-weighted derivative tracks + distinct circles + distinct albums + playable derivative count",
     "denominator": "overall/popularity ranks use the full indexed song count directly; no archive-scale projection"
   },
