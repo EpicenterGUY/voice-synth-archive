@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "entities": {
     "track": [
       "id",
@@ -25,6 +25,12 @@
       "id",
       "url",
       "viewCount"
+    ],
+    "fanOriginal": [
+      "artistString",
+      "styleClass",
+      "touhouStyle",
+      "classification"
     ]
   },
   "notes": [
@@ -33,6 +39,8 @@
     "The client only embeds media when a verified media object exists.",
     "Large-scale ingestion should move arrangement search to Worker/API paging.",
     "Ranking v3 can include verified YouTube, NicoNico and Bilibili view-count signals when available.",
-    "Unsupported or unavailable platform view counts are treated as unmeasured rather than fabricated zero-view observations."
+    "Unsupported or unavailable platform view counts are treated as unmeasured rather than fabricated zero-view observations.",
+    "Touhou-style fan originals are classified separately from official originals and arrangements.",
+    "Touhou-style ranking is category-local and must not change the FULL INDEX denominator used by official/arrangement rankings."
   ]
 }
