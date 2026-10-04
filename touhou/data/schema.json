@@ -1,5 +1,5 @@
 {
-  "version": 12,
+  "version": 13,
   "entities": {
     "track": [
       "id",
@@ -121,7 +121,12 @@
         "in-app-playable",
         "multi-platform-presence"
       ]
-    }
+    },
+    "beginnerCircleGroup": [
+      "key",
+      "label",
+      "aliases"
+    ]
   },
   "notes": [
     "Original and arrangement entries stay separate.",
@@ -155,6 +160,9 @@
     "SoundCloud, Bandcamp and Piapro presence never fabricates a view count; it contributes only low-weight distribution breadth.",
     "Beginner discovery is a separate recommendation layer and does not alter the canonical all-catalog ranking.",
     "IOSYS tracks receive a strong beginner-accessibility boost while other established circles and iconic official originals are also eligible.",
-    "Beginner recommendations prioritize recognizability and immediate playback in addition to popularity."
+    "Beginner recommendations prioritize recognizability and immediate playback in addition to popularity.",
+    "Beginner circle filters can scan the complete sharded full index instead of depending on whichever tracks have streamed into memory first.",
+    "Beginner filters are grouped into recommendation type and circle/doujin/band sections; mobile uses a non-horizontal two-column circle grid.",
+    "Circle aliases cover major Touhou doujin circles and bands including IOSYS, Yuuhei Satellite, Shinra-Bansho, COOL&CREATE, SOUND HOLIC and others."
   ]
 }
