@@ -1,5 +1,5 @@
 {
-  "version": "0.9.22",
+  "version": "0.9.23",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-10-04",
@@ -181,6 +181,11 @@
     "curated-fan-original-dataset",
     "separate-touhou-style-ranking",
     "switcheroo-seed",
-    "touhou-style-lineage-separation"
+    "touhou-style-lineage-separation",
+    "touhou-style-429-track-catalog",
+    "fan-original-album-manifest",
+    "verified-touhou-style-sources",
+    "fangame-original-ost-catalog",
+    "mixed-arrangement-album-exclusion"
   ]
 }
