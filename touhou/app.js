@@ -89,7 +89,7 @@ async function boot(){
     setDataHealth("error","UI 초기화 오류 · 새로고침 필요");
   }
   if("serviceWorker" in navigator){
-    navigator.serviceWorker.register("./sw.js?v=0.9.39").then(r=>r.update()).catch(err=>console.warn("service worker",err));
+    navigator.serviceWorker.register("./sw.js?v=0.9.40").then(r=>r.update()).catch(err=>console.warn("service worker",err));
   }
 
   const [or,ar,fr,far,fy,wr,sr]=await Promise.all([
@@ -130,7 +130,7 @@ async function boot(){
       ...x,
       mediaCandidates:uniqMedia([yt,...(x.mediaCandidates||[]),x.media]),
       media:yt,
-      thumb:x.thumb||("https://i.ytimg.com/vi/"+encodeURIComponent(hit.videoId)+"/mqdefault.jpg"),
+      thumb:x.thumb||("https://i.ytimg.com/vi/"+encodeURIComponent(hit.videoId)+"/hqdefault.jpg"),
       youtubeMatched:true
     };
   });
@@ -1132,6 +1132,26 @@ function renderGrid(list){
 }
 function typeLabel(t){return RELATION_BADGES[relationCategory(t)]||"TOUHOU RELATED"}
 function typeClass(t){return relationCategory(t)}
+function trackYoutubeId(t){
+  const m=(t?.mediaCandidates||[]).find(x=>x?.provider==="youtube"&&x?.id);
+  if(m?.id)return String(m.id);
+  const raw=String(t?.thumb||"");
+  const hit=raw.match(/i\.ytimg\.com\/vi\/([^/]+)\//i);
+  return hit?decodeURIComponent(hit[1]):"";
+}
+function cssUrl(url){
+  return 'url("'+String(url||"").replace(/\\/g,"\\\\").replace(/"/g,'\\"')+'")';
+}
+function cardThumbStyle(t){
+  const id=trackYoutubeId(t),urls=[];
+  if(id){
+    const base="https://i.ytimg.com/vi/"+encodeURIComponent(id)+"/";
+    urls.push(base+"maxresdefault.jpg",base+"sddefault.jpg",base+"hqdefault.jpg",base+"mqdefault.jpg");
+  }
+  const raw=String(t?.thumb||"").trim();
+  if(raw&&!urls.includes(raw))urls.push(raw);
+  return urls.length?' style="background-image:'+urls.map(cssUrl).join(",")+'"':"";
+}
 function card(t){
   const playable=player.playable(t),external=trustedExternalMedia(t),canLookup=!playable&&state.remote.available,origins=originalNames(t);
   const beginner=state.mode==="beginner";
@@ -1139,7 +1159,7 @@ function card(t){
   const by=t.type==="arrangement"
     ? [t.circle,(t.artists?.vocal||[]).join(", ")].filter(Boolean).join(" · ")
     : [t.work||t.artistString,t.role,t.character].filter(Boolean).join(" · ");
-  const thumb=t.thumb?' style="background-image:url(&quot;'+escAttr(t.thumb)+'&quot;)"':"";
+  const thumb=cardThumbStyle(t),hasThumb=!!(t.thumb||trackYoutubeId(t));
   const originLine=t.type==="arrangement"
     ? "원곡 · "+(origins.join(" / ")||(t.originalIds?.length?"계보 연결 가능":"원곡 정보 확인 가능"))
     : isCuratedStyle(t)
@@ -1150,7 +1170,7 @@ function card(t){
     : "";
   return '<article class="track-card">'+
     '<button class="track-main" data-open="'+escAttr(t.id)+'">'+
-      '<div class="track-thumb '+(t.thumb?"":"no-image")+'"'+thumb+'>'+
+      '<div class="track-thumb '+(hasThumb?"":"no-image")+'"'+thumb+'>'+
         '<div class="track-badges"><span class="type-badge '+escAttr(typeClass(t))+'">'+esc(typeLabel(t))+'</span><span class="rank-badge">'+esc(rankText(rank))+'</span><span class="percent-badge">'+esc(rankPercentText(rank))+'</span>'+(playable?'<span class="media-badge">▶ VIDEO</span>':'')+'</div>'+
       '</div>'+
       '<div class="track-copy"><h3>'+esc(t.title)+'</h3><div class="byline">'+esc(by||"정보 준비 중")+'</div>'+(beginner?'<div class="beginner-note">★ '+esc(beginnerReason(t))+'</div>':'')+'<div class="origin-line">'+esc(originLine)+'</div>'+
