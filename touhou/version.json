@@ -1,5 +1,5 @@
 {
-  "version": "0.9.45",
+  "version": "0.9.46",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-10-05",
@@ -328,6 +328,14 @@
     "stable-random-order",
     "derived-reshuffle",
     "random-derived-dive",
-    "derived-type-filter"
+    "derived-type-filter",
+    "legacy-web-medley-layer",
+    "un-owen-mixed-theme-pin",
+    "normalized-search",
+    "punctuation-insensitive-search",
+    "fuzzy-title-search",
+    "search-relevance-ranking",
+    "full-index-query-scan",
+    "mobile-full-index-search"
   ]
 }
