@@ -709,7 +709,7 @@ function trackMatchesWork(t,work){
 function renderFilters(){
   const base=currentPool(),out=[{key:"전체",label:"전체"},{key:"영상 있음",label:"영상 있음"}];
   if(state.mode==="all"||state.mode==="arrangement"){
-    const order=["official-original","fan-original","touhou-style","arrangement","rearrangement","remix","cover","remaster","instrumental","mashup","short-version","other-related"];
+    const order=["official-original","fan-original","touhou-style","fan-game-ost","arrangement","rearrangement","remix","cover","remaster","instrumental","mashup","short-version","other-related"];
     const present=new Set(base.map(relationCategory));
     order.filter(x=>present.has(x)).forEach(x=>out.push({key:"category:"+x,label:relationLabel(x)}));
   }
@@ -1281,19 +1281,20 @@ function searchBlob(t){
 }
 function isFanOriginal(t){return !!t&&(t.type==="fan-original"||t.category==="fan-original")}
 const RELATION_LABELS={
-  "official-original":"공식 원곡","fan-original":"팬 오리지널","touhou-style":"동방풍 오리지널",
+  "official-original":"공식 원곡","fan-original":"팬 오리지널","touhou-style":"동방풍 오리지널","fan-game-ost":"팬게임 OST",
   "arrangement":"어레인지","rearrangement":"재어레인지","remix":"리믹스","cover":"커버",
   "remaster":"리마스터","instrumental":"인스트·오프보컬","mashup":"매시업",
   "short-version":"숏버전·게임컷","other-related":"기타 동방 연관"
 };
 const RELATION_BADGES={
-  "official-original":"OFFICIAL ORIGINAL","fan-original":"FAN ORIGINAL","touhou-style":"TOUHOU-STYLE",
+  "official-original":"OFFICIAL ORIGINAL","fan-original":"FAN ORIGINAL","touhou-style":"TOUHOU-STYLE","fan-game-ost":"FANGAME OST",
   "arrangement":"ARRANGE","rearrangement":"RE-ARRANGE","remix":"REMIX","cover":"COVER",
   "remaster":"REMASTER","instrumental":"INSTRUMENTAL","mashup":"MASHUP",
   "short-version":"SHORT VERSION","other-related":"TOUHOU RELATED"
 };
 function relationCategory(t){
   if(!t)return"other-related";
+  if(isFanOriginal(t)&&t.classification?.sourceKind==="fangame-ost")return"fan-game-ost";
   if(isFanOriginal(t)&&(t.touhouStyle||t.styleClass))return"touhou-style";
   if(isFanOriginal(t))return"fan-original";
   if(t.category)return t.category;
