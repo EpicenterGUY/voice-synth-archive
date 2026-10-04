@@ -1,9 +1,9 @@
 {
   "version": 4,
-  "updated": "2026-10-04T08:15:25.343Z",
+  "updated": "2026-10-04T08:16:07.003Z",
   "totalTracks": 5967,
-  "checkedTracks": 91,
-  "matchedTracks": 63,
+  "checkedTracks": 96,
+  "matchedTracks": 65,
   "policy": "Curated Touhou-style plus TouhouDB fan-original tracks missing an existing YouTube PV. Exact/near-exact title + artist/channel checks; embeddable syndicated videos only. Views/likes/comments refreshed for every cached match.",
   "items": {
     "fan-sparxe-switcheroo": {
@@ -21,7 +21,7 @@
       "commentCount": 8,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-akakyu-the-theorists-interpretation-of-fantasia": {
@@ -37,7 +37,7 @@
       "commentCount": 4,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-akakyu-refreshing-earth-of-krummholz": {
@@ -53,7 +53,7 @@
       "commentCount": 4,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-akakyu-hidden-under-the-willows-ancient-backwoods": {
@@ -69,7 +69,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-akakyu-curious-capital-of-sheen-and-beauty": {
@@ -85,7 +85,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-akakyu-orwell-s-quarantined-utopia": {
@@ -101,7 +101,7 @@
       "commentCount": 4,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-akakyu-undecided-fate-of-the-altered-strings": {
@@ -117,7 +117,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-akakyu-a-maiden-s-nonsensical-bunraku": {
@@ -133,7 +133,7 @@
       "commentCount": 3,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-akakyu-diamond-tears-in-the-palace": {
@@ -149,7 +149,7 @@
       "commentCount": 3,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-akakyu-unseen-madness": {
@@ -165,7 +165,7 @@
       "commentCount": 3,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-akakyu-two-snowflakes-wafting-above-one-big-world": {
@@ -181,7 +181,7 @@
       "commentCount": 3,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-01": {
@@ -197,7 +197,7 @@
       "commentCount": 2,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-02": {
@@ -213,7 +213,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-03": {
@@ -229,7 +229,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-04": {
@@ -245,7 +245,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-05": {
@@ -261,7 +261,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-06": {
@@ -277,7 +277,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-07": {
@@ -293,7 +293,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-08": {
@@ -309,7 +309,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-09": {
@@ -325,7 +325,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-10": {
@@ -341,7 +341,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-11": {
@@ -357,7 +357,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-12": {
@@ -374,7 +374,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-13": {
@@ -390,7 +390,7 @@
       "commentCount": 3,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-14": {
@@ -406,7 +406,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-15": {
@@ -422,7 +422,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-16": {
@@ -438,7 +438,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-17": {
@@ -454,7 +454,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-18": {
@@ -470,7 +470,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-19": {
@@ -486,7 +486,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-20": {
@@ -502,7 +502,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-21": {
@@ -518,7 +518,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-22": {
@@ -534,7 +534,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-23": {
@@ -550,7 +550,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-24": {
@@ -566,7 +566,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-25": {
@@ -582,7 +582,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-26": {
@@ -598,7 +598,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-27": {
@@ -614,7 +614,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-28": {
@@ -630,7 +630,7 @@
       "commentCount": 2,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-29": {
@@ -646,7 +646,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-30": {
@@ -662,7 +662,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-31": {
@@ -678,7 +678,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-32": {
@@ -694,7 +694,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-33": {
@@ -710,7 +710,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-34": {
@@ -726,7 +726,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-35": {
@@ -742,7 +742,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-orange-whispers-parallel-world-01": {
@@ -785,8 +785,9 @@
       "score": 0,
       "title": "Enlightenment Haunting Dance (ST2 BOSS)",
       "artist": "OrangeBlugt",
-      "matchedAt": "2026-10-04T07:37:10.621Z",
-      "matcherVersion": 3
+      "sourceKind": "curated",
+      "matchedAt": "2026-10-04T08:15:54.825Z",
+      "matcherVersion": 4
     },
     "fan-album-orange-whispers-parallel-world-06": {
       "videoId": "",
@@ -801,8 +802,9 @@
       "score": 0,
       "title": "Powerful Competition of Feng Shui ~ Wind (ST3 BOSS)",
       "artist": "OrangeBlugt",
-      "matchedAt": "2026-10-04T07:37:11.220Z",
-      "matcherVersion": 3
+      "sourceKind": "curated",
+      "matchedAt": "2026-10-04T08:15:55.670Z",
+      "matcherVersion": 4
     },
     "fan-album-orange-whispers-parallel-world-08": {
       "videoId": "",
@@ -841,8 +843,9 @@
       "score": 0,
       "title": "Abandonment Dreams and Reality (ST5)",
       "artist": "OrangeBlugt",
-      "matchedAt": "2026-10-04T07:37:12.522Z",
-      "matcherVersion": 3
+      "sourceKind": "curated",
+      "matchedAt": "2026-10-04T08:15:57.087Z",
+      "matcherVersion": 4
     },
     "fan-album-orange-whispers-parallel-world-13": {
       "videoId": "",
@@ -856,8 +859,9 @@
       "score": 0,
       "title": "Fire Dove (ST6)",
       "artist": "OrangeBlugt",
-      "matchedAt": "2026-10-04T07:37:12.896Z",
-      "matcherVersion": 3
+      "sourceKind": "curated",
+      "matchedAt": "2026-10-04T08:15:57.774Z",
+      "matcherVersion": 4
     },
     "fan-album-orange-whispers-parallel-world-15": {
       "videoId": "",
@@ -908,7 +912,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-wanwan-hollow-song-birds-02": {
@@ -924,7 +928,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-wanwan-hollow-song-birds-03": {
@@ -940,7 +944,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-wanwan-hollow-song-birds-04": {
@@ -957,7 +961,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-wanwan-hollow-song-birds-05": {
@@ -973,7 +977,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-wanwan-hollow-song-birds-06": {
@@ -989,7 +993,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-wanwan-hollow-song-birds-07": {
@@ -1013,7 +1017,7 @@
       "commentCount": 3,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-wanwan-hollow-song-birds-09": {
@@ -1045,7 +1049,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-wanwan-hollow-song-birds-13": {
@@ -1057,12 +1061,12 @@
       "matcherVersion": 3,
       "title": "黄金讃歌 〜 アイビストリスメギストス",
       "artist": "Wanwan",
-      "viewCount": 135851,
+      "viewCount": 135845,
       "likeCount": 1293,
       "commentCount": 98,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-wanwan-hollow-song-birds-16": {
@@ -1079,7 +1083,7 @@
       "commentCount": 3,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-wanwan-tri-focuser-03": {
@@ -1120,7 +1124,7 @@
       "commentCount": 19,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-djabner-servants-harvest-wish-13": {
@@ -1137,7 +1141,7 @@
       "commentCount": 17,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-altend-glory-deep-skies-05": {
@@ -1154,7 +1158,7 @@
       "commentCount": 5,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-altend-glory-deep-skies-07": {
@@ -1171,7 +1175,7 @@
       "commentCount": 7,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-altend-glory-deep-skies-08": {
@@ -1188,7 +1192,7 @@
       "commentCount": 13,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "fan-album-altend-glory-deep-skies-10": {
@@ -1205,7 +1209,7 @@
       "commentCount": 36,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "tdb-76794": {
@@ -1223,7 +1227,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-04T08:15:25.343Z",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
       "videoUnavailable": false
     },
     "tdb-117551": {
@@ -1252,16 +1256,79 @@
       "sourceKind": "touhoudb-fan-original",
       "matchedAt": "2026-10-04T08:15:22.607Z",
       "matcherVersion": 4
+    },
+    "tdb-79103": {
+      "videoId": "azSwKf__SB8",
+      "score": 13,
+      "videoTitle": "【メイガスナイト風】エインシェントドリーム【二色蓮花蝶】[REUPLOAD]",
+      "channelTitle": "Naomi",
+      "matchedAt": "2026-10-04T08:15:54.515Z",
+      "matcherVersion": 4,
+      "title": "エインシェントドリーム",
+      "artist": "湯月",
+      "sourceKind": "touhoudb-fan-original",
+      "viewCount": 181,
+      "likeCount": 4,
+      "commentCount": 1,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
+      "videoUnavailable": false
+    },
+    "tdb-74169": {
+      "videoId": "",
+      "score": 0,
+      "title": "不灭之魂　～　Everlasting Volition",
+      "artist": "11",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-04T08:15:55.161Z",
+      "matcherVersion": 4
+    },
+    "tdb-79070": {
+      "videoId": "",
+      "score": 0,
+      "title": "BEYOND PHANTASMAGORIA",
+      "artist": "kobito",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-04T08:15:59.122Z",
+      "matcherVersion": 4
+    },
+    "fan-album-wanwan-hollow-song-birds-17": {
+      "videoId": "L7SHoy-a6Zo",
+      "score": 24.5,
+      "videoTitle": "[HSoB OST DL] グラスハートシュバリエ [Original]",
+      "channelTitle": "Wanwan",
+      "matchedAt": "2026-10-04T08:16:01.785Z",
+      "matcherVersion": 4,
+      "title": "グラスハートシュバリエ",
+      "artist": "Wanwan",
+      "sourceKind": "curated",
+      "viewCount": 35683,
+      "likeCount": 457,
+      "commentCount": 34,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T08:16:07.003Z",
+      "videoUnavailable": false
+    },
+    "tdb-8634": {
+      "videoId": "",
+      "score": 0,
+      "title": "Sayonara, Farewell (Ending)",
+      "artist": "Sasi",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-04T08:16:04.569Z",
+      "matcherVersion": 4
     }
   },
   "matcherVersion": 4,
-  "viewCountTracks": 63,
+  "viewCountTracks": 65,
   "curatedTotalTracks": 583,
   "dbFanMissingYoutubeTargets": 5384,
-  "curatedCheckedTracks": 87,
-  "curatedMatchedTracks": 62,
-  "curatedViewCountTracks": 62,
-  "dbFanFallbackChecked": 4,
-  "dbFanFallbackMatched": 1,
-  "dbFanFallbackViewCountTracks": 1
+  "curatedCheckedTracks": 88,
+  "curatedMatchedTracks": 63,
+  "curatedViewCountTracks": 63,
+  "dbFanFallbackChecked": 8,
+  "dbFanFallbackMatched": 2,
+  "dbFanFallbackViewCountTracks": 2
 }
