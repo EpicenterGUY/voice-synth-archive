@@ -1023,6 +1023,7 @@ function renderCatalog(title){
     list=dedupe([...list,...state.beginnerIndex.tracks]).filter(beginnerEligible);
   }
   if(state.filter==="인앱 재생"||state.filter==="영상 있음")list=list.filter(t=>player.playable(t));
+  else if(state.filter==="legacy:web")list=list.filter(t=>(t.moods||[]).includes("레거시 웹"));
   else if(state.filter.startsWith("beginner:"))list=list.filter(t=>beginnerFilterMatch(t,state.filter));
   else if(state.filter.startsWith("category:")){
     const key=state.filter.slice(9);list=list.filter(t=>relationCategory(t)===key);
@@ -1093,6 +1094,7 @@ function renderFilters(){
       '<div class="beginner-filter-group"><span class="beginner-filter-label">프로듀서 · 아티스트</span><div class="beginner-chip-grid beginner-creator-grid">'+buttons(creatorGroups)+'</div></div>';
   }else{
     const out=[{key:"전체",label:"전체"},{key:"인앱 재생",label:"인앱 재생"}];
+    if(base.some(t=>(t.moods||[]).includes("레거시 웹")))out.push({key:"legacy:web",label:"레거시 웹·메들리"});
     if(state.mode==="all"||state.mode==="arrangement"){
       const order=["official-original","fan-original","touhou-style","fan-game-ost","arrangement","rearrangement","remix","cover","remaster","instrumental","mashup","short-version","other-related"];
       const present=new Set(base.map(relationCategory));
