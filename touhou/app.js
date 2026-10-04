@@ -89,7 +89,7 @@ async function boot(){
     setDataHealth("error","UI 초기화 오류 · 새로고침 필요");
   }
   if("serviceWorker" in navigator){
-    navigator.serviceWorker.register("./sw.js?v=0.9.42").then(r=>r.update()).catch(err=>console.warn("service worker",err));
+    navigator.serviceWorker.register("./sw.js?v=0.9.43").then(r=>r.update()).catch(err=>console.warn("service worker",err));
   }
 
   const [or,ar,fr,far,fy,wr,sr]=await Promise.all([
@@ -546,6 +546,40 @@ function relationCandidatePool(t){
   if(state.full.loaded&&!idx.ready)out.push(...state.fullItems.slice(0,900));
   return dedupe(out).filter(x=>resolveId(x.id)!==resolveId(t.id));
 }
+function localOriginalMatch(t){
+  if(!t)return null;
+  const titleKeys=new Set([t.title,...(t.aliases||[])].map(normKey).filter(Boolean));
+  if(!titleKeys.size)return null;
+  const sourceKey=normKey([t.circle,t.artistString,...Object.values(t.artists||{}).flat()].filter(Boolean).join(" "));
+  if(sourceKey&&!sourceKey.includes("zun"))return null;
+  const year=Number(t.year)||0;
+  const incomingWork=normKey([t.work,t.album].filter(Boolean).join(" "));
+  for(const local of state.localOriginals||[]){
+    const localKeys=[local.title,...(local.aliases||[])].map(normKey).filter(Boolean);
+    if(!localKeys.some(k=>titleKeys.has(k)))continue;
+    if(year&&local.year&&Number(local.year)!==year)continue;
+    const localWork=normKey(local.work||"");
+    if(localWork&&incomingWork&&!incomingWork.includes(localWork)&&!localWork.includes(incomingWork))continue;
+    return local;
+  }
+  return null;
+}
+function normalizeOfficialOriginalCandidate(t){
+  if(!t||t.type==="original")return t;
+  const local=localOriginalMatch(t);
+  if(!local)return t;
+  return{
+    ...t,
+    type:"original",
+    category:"official-original",
+    work:t.work||local.work||"",
+    workId:t.workId||local.workId||"",
+    role:t.role||local.role||"",
+    character:t.character||local.character||"",
+    originalIds:[],
+    aliases:uniq([...(t.aliases||[]),local.title,...(local.aliases||[])])
+  };
+}
 function identityKey(t){
   if(!t)return"";
   const title=normKey(t.title);
@@ -616,6 +650,7 @@ function mergeTrack(base,incoming){
 }
 function remember(t){
   if(!t?.id)return t;
+  t=normalizeOfficialOriginalCandidate(t);
   const direct=state.known.get(t.id);
   if(direct){
     const merged=mergeTrack(direct,t);
