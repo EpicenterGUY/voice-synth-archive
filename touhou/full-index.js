@@ -2,7 +2,7 @@
 "use strict";
 const BASE="./data/full/";
 let manifestCache=null,works=[],fanVideoOverlay=null;
-const lookupCache=new Map(),circleSearchCache=new Map(),beginnerSearchCache=new Map();
+const lookupCache=new Map(),circleSearchCache=new Map(),beginnerSearchCache=new Map(),derivedSearchCache=new Map();
 const clean=v=>String(v??"").trim();
 const arr=v=>Array.isArray(v)?v:[];
 async function loadFanVideoOverlay(force=false){
@@ -248,6 +248,40 @@ function rawBeginnerRankScore(r){
   if(views>0)score+=Math.min(38,Math.log10(views+1)*6);
   return score;
 }
+
+async function searchByOriginalId(originalId,opts={}){
+  const id=Number(String(originalId||"").replace(/^tdb-/,""));
+  const meta=await manifest(!!opts.force);
+  if(!id)return{manifest:meta,tracks:[],total:0,scanned:0};
+  await prepareCache(meta);
+  const key=meta.generatedAt+"|original:"+id;
+  if(derivedSearchCache.has(key)&&!opts.force)return derivedSearchCache.get(key);
+  const promise=(async()=>{
+    const files=meta.files.slice(),hits=[];
+    let cursor=0,scanned=0,completed=0;
+    const concurrency=Math.max(1,Math.min(6,Number(opts.concurrency)||4));
+    const worker=async()=>{
+      while(true){
+        const idx=cursor++;if(idx>=files.length)return;
+        const cfg=files[idx],rows=await fetchShardRows(cfg.file,meta.generatedAt,Number(cfg.count)||0);
+        for(const r of rows)if(Number(r?.o)===id)hits.push(r);
+        scanned+=rows.length;completed++;
+        opts.onProgress?.({scanned,total:meta.indexed,hits:hits.length,shards:completed,shardCount:files.length});
+      }
+    };
+    await Promise.all(Array.from({length:concurrency},worker));
+    const tracks=hits.map(toTrack);
+    tracks.sort((a,b)=>
+      (Number(a.popularityRank)||1e12)-(Number(b.popularityRank)||1e12)||
+      (Number(b.popularityScore)||0)-(Number(a.popularityScore)||0)||
+      String(a.title||"").localeCompare(String(b.title||""),"ja")
+    );
+    return{manifest:meta,tracks,total:tracks.length,scanned};
+  })();
+  derivedSearchCache.set(key,promise);
+  try{return await promise}catch(err){derivedSearchCache.delete(key);throw err}
+}
+
 async function searchBeginnerCandidates(opts={}){
   const meta=await manifest(!!opts.force);
   await prepareCache(meta);
@@ -328,5 +362,5 @@ async function loadAll(opts={}){
   return{manifest:meta,tracks:chunks.flat()};
 }
 function setWorks(v){works=Array.isArray(v)?v:[]}
-window.TouhouFullIndex={manifest,loadAll,lookupStats,enrichTrack,toTrack,setWorks,loadFanVideoOverlay,searchByCircleAliases,searchBeginnerCandidates,base:BASE};
+window.TouhouFullIndex={manifest,loadAll,lookupStats,enrichTrack,toTrack,setWorks,loadFanVideoOverlay,searchByCircleAliases,searchByOriginalId,searchBeginnerCandidates,base:BASE};
 })();
