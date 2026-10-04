@@ -317,6 +317,8 @@
     "parented-original-invariant",
     "zun-arrangement-original-hijack-fix",
     "stale-original-snapshot-guard",
-    "full-index-v6-cache-reset"
+    "full-index-v6-cache-reset",
+    "canonical-root-transitive-influence",
+    "contaminated-original-rank-invalidation"
   ]
 }
