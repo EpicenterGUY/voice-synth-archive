@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "updated": "2026-10-04",
   "classification": "Touhou-style original / Touhou fangame original OST only",
   "note": "Official Touhou source arrangements and mixed albums with uncertain provenance are excluded from this catalog.",
@@ -1159,6 +1159,317 @@
         "アリスメティシャン・パティー〜Augmented Reality",
         "極光は燈火か、隧道の果てか ～Light of Mystery?",
         "D.C.Dream"
+      ]
+    },
+    {
+      "id": "sylvysprit-phantasm-eternity",
+      "title": "Touhou: Phantasm of Eternity",
+      "artist": "Princess Sylvysprit",
+      "year": 2017,
+      "url": "https://sylvysprit.bandcamp.com/album/touhou-phantasm-of-eternity",
+      "sourceKind": "original-touhou-style-album",
+      "evidence": "creator-described-touhou-style",
+      "tracks": [
+        "Lucid Dream of Alternating Coordinations",
+        "Romantique Passage ~ Endless Road",
+        "Absolute Encore ~ Messenger of the Fantastic Realm",
+        "Dreamworld of Transcendence ~ Infinite Sky",
+        "Materiality of Life ~ Multitrajectionary Spirituality",
+        "Final Love Resolution",
+        "Unlimited Idol Festival ~ Do Dodo Dododo Do Dododo Dodododo Duuuuuuuuuu"
+      ]
+    },
+    {
+      "id": "shinkonet-multi-dimensional-fantasy-story1",
+      "title": "無限境 ~ Multi-Dimensional Fantasy - Original Soundtrack (Story 1)",
+      "artist": "ShinkoNet",
+      "year": 2020,
+      "url": "https://shinkonet.bandcamp.com/album/multi-dimensional-fantasy-original-soundtrack-story-1",
+      "sourceKind": "original-touhou-style-album",
+      "evidence": "creator-described-touhou-style",
+      "tracks": [
+        "Eastern Deity Frontier ~ Night Aftermath Mix",
+        "Candid Sunset Pastures",
+        "Ball of Origin ~ Player Escapism",
+        "Youkai Avenue",
+        "Natural Affairs Under The Inspector's Glass",
+        "Transient Courtyard of Rulers, Now Spirited Away",
+        "The Stuck Thief's Short-Tempered Tirade",
+        "Pathway Across Spacetime To A New Reality",
+        "Armoury Of The Other World ~ Boundary Tech",
+        "Chaotic Void Within The Dark Abyss",
+        "The Mad Hatter's Apprentice",
+        "Frontier of Breathless Mystery",
+        "Breathless Light ~ Darkness Dimension"
+      ]
+    },
+    {
+      "id": "orange-origin-dragon-dharma",
+      "title": "東方鯉祭章 ~ Origin of Dragon Dharma (Full Release + αExtra)",
+      "artist": "OrangeBlugt & friends",
+      "year": 2024,
+      "url": "https://orangeblugt.bandcamp.com/album/origin-of-dragon-dharma-full-release-extra",
+      "sourceKind": "original-touhou-style-album",
+      "evidence": "creator-described-touhou-style",
+      "tracks": [
+        {
+          "title": "The Untold Legend of the Dragon's Origin",
+          "artist": "Orange"
+        },
+        {
+          "title": "Oriental Society Is Neither There, nor Anywhere",
+          "artist": "Orange"
+        },
+        {
+          "title": "Succulent Serenade ~ Harmful Substances",
+          "artist": "Orange"
+        },
+        {
+          "title": "The Forest Where There is No Return",
+          "artist": "Orange"
+        },
+        {
+          "title": "Echoes of the Enchanted Woods",
+          "artist": "Orange"
+        },
+        {
+          "title": "Aquatic Symphony of Lake",
+          "artist": "Orange"
+        },
+        {
+          "title": "Ethereal Convergence ~ Knowledge Power",
+          "artist": "Orange"
+        },
+        {
+          "title": "God's Beloved Waterfall ~ Strolling Around",
+          "artist": "Orange"
+        },
+        {
+          "title": "Aquamatic of Dissonance Symbol",
+          "artist": "FanTouhouMusic"
+        },
+        {
+          "title": "Burning Water of Faith",
+          "artist": "Orange, Arplane"
+        },
+        {
+          "title": "Magic Ring Of Clone Disease Control ~ Legend about an Unnamed Hero",
+          "artist": "Kaioshi K"
+        },
+        {
+          "title": "Divine Magic Of Red Falls",
+          "artist": "Orange"
+        },
+        {
+          "title": "Chronicles of Celestial Vengeance ~ Origin of Dragon Dharma",
+          "artist": "Orange"
+        },
+        {
+          "title": "The Legend about Dragon Dharma (Full Version)",
+          "artist": "Socrus"
+        },
+        {
+          "title": "Do Old Dreams Come True",
+          "artist": "Orange"
+        },
+        {
+          "title": "Last Time ~ Aquatic Lake",
+          "artist": "Orange"
+        },
+        {
+          "title": "Running Along the Discord Border ~ Right or Left (Full Version)",
+          "artist": "Kaioshi K"
+        },
+        {
+          "title": "The Deadly Backward Clock Touch ~ Five Seconds To Demise",
+          "artist": "Orange"
+        },
+        {
+          "title": "Wake up!",
+          "artist": "Kaioshi K"
+        },
+        {
+          "title": "Legend of Forgotten Ancient Dynasty",
+          "artist": "Orange"
+        },
+        {
+          "title": "Beast Who Lead the Undead War ~ Immediately",
+          "artist": "Orange, Bianvenu Miko"
+        },
+        {
+          "title": "Rest in Last Time",
+          "artist": "Orange"
+        }
+      ]
+    },
+    {
+      "id": "orange-twilight-zone-clouds",
+      "title": "東方神世界 ~ Twilight Zone Above the Clouds (Pre-Release OST)",
+      "artist": "OrangeBlugt",
+      "year": 2023,
+      "url": "https://orangeblugt.bandcamp.com/album/twilight-zone-above-the-clouds-pre-release-ost",
+      "sourceKind": "fangame-ost",
+      "evidence": "creator-described-touhou-style",
+      "tracks": [
+        "Paradise Drifting in the Sea ~ Oriental Clouds",
+        "Flying Through the Oriental Clouds",
+        "Ushinagi's Theme: Magnificent Lightning",
+        "Mellifluous Japanese Skies",
+        "Hitomi Furukawa's Theme: Luminous Stars",
+        "Boundaries Between Light and Darkness",
+        "Piero Hoshikawa's Them: Emotion Outbreak ~ Phenomenal Circus",
+        "Lullaby Sea ~ Can't See Anything!!!!",
+        "Tayako Ebisu's Theme: Jellyfish Strike Back ~ Lithe Dancing",
+        "Incandescent Darkness",
+        "Momodoku Amatsuka's Theme: The Abandoned Sun and Moon Stealer ~ Quintessential World In My Hand!!!!",
+        "Tranquility Deep Skies",
+        "Tennyo Umikazu's Theme: Quintessential of Aeonian Ocean ~ Eudaimonia",
+        "Is Pure Beauty Still There?",
+        "Pure Sea ~ Watching Everything",
+        "Untold Story About Picturesque Sky",
+        {
+          "title": "Kurotako Kuragekai's Theme: Organismic Dysfunction Syndrome ~ Deep Dark Soul",
+          "artist": "Orange, Chris Kushi"
+        },
+        "Is It Over?",
+        "Umimimi Rabimaru's Theme: Nefelibata Dreams ~ Ethereal Rabbit"
+      ]
+    },
+    {
+      "id": "orange-imperial-abyss-relics",
+      "title": "東方城海宝 ~ Imperial Abyss Relics (Full Release)",
+      "artist": "OrangeBlugt",
+      "year": 2025,
+      "url": "https://orangeblugt.bandcamp.com/album/imperial-abyss-relics-full-release",
+      "sourceKind": "original-touhou-style-album",
+      "evidence": "creator-tagged-touhou-style",
+      "tracks": [
+        "New Born Color, Western Sea.",
+        "River of 19th Bloom.",
+        "Jelly Liquor.",
+        "Blooming Flowers in the Hell-Side.",
+        "A Gardener Job.",
+        "Legend of the 9th Night of The Blood Moon.",
+        "Calamity Calm.",
+        "Forget the Sign ~ Chasing the Bell.",
+        "Chaotic Flute Concerto ~ Scary.",
+        "Strange Past From The Realm.",
+        "Will be None? - Not - So - Fast - Xiàng Yi",
+        "Let's and Go! New Start for A New Day!",
+        "Glory Of The World ~ Chance to Fight, Chance To Life",
+        "Mist Fall",
+        "The 6th Molecule of the Sand ~ Salty",
+        "Let's draw a Maiden in Red ~ Who know?",
+        "Realm of a Born Sea, Colorful."
+      ]
+    },
+    {
+      "id": "kazuki-forsaken-knowledge",
+      "title": "〖東方福楽園 〜 Forsaken Knowledge〗",
+      "artist": "kazuki abzurdd",
+      "year": 2026,
+      "url": "https://kazukiabzurdd.bandcamp.com/album/forsaken-knowledge",
+      "sourceKind": "original-touhou-style-album",
+      "evidence": "creator-described-touhou-style",
+      "tracks": [
+        "Brilliant Evenly Patterned Stars",
+        "Descending Sunset Rays",
+        "Fairy Awoken by Supernatural Sounds",
+        "The Moonlight Pierces Through the Trees",
+        "Bake-danuki Gazing at the Full Moon",
+        "Mystic Flame Festival in the Village",
+        "Fox Fire Kagura",
+        "Fleeting Sea of Rainy Mist",
+        "Drifting Girl in Light Rain",
+        "Extraterrestrial Spring Water ~ Lost Life",
+        "Sacred Fairies' Transcendence ~ Supernatural Esoterica",
+        "Into the Garden of Eden",
+        "Above All Unreachable Thoughts of Humanity and Earth ~ Quintessential Knowledge",
+        "Rampage of a Thousand Lunatic Souls",
+        "Disturbance Around the Clock ~ 24 Hours",
+        "Transcending Garden",
+        "To the Fox Festival We Go! ~ Fruit Dream"
+      ]
+    },
+    {
+      "id": "kazuki-astral-planetary-rhapsody",
+      "title": "〖東方宇宙境 ~ Astral Planetary Rhapsody〗",
+      "artist": "kazuki abzurdd",
+      "year": 2026,
+      "url": "https://kazukiabzurdd.bandcamp.com/album/astral-planetary-rhapsody",
+      "sourceKind": "original-touhou-style-album",
+      "evidence": "creator-described-touhou-style",
+      "tracks": [
+        "Theme of Eastern Voyage",
+        "A Merry Morning Stroll",
+        "Fantasy Symphony",
+        "Bizarre Adversity of the Fleeting Plates",
+        "Lunatic Constellations",
+        "Orchids' Labyrinth",
+        "The Vaporization of Wrath ~ Ransom Calamity",
+        "Autumnal Melody of Tranquility",
+        "Covalent Hydride Irrigation",
+        "Incandescent Perfect Nightfall ~ Oumagatoki Dragon?",
+        "Ouroboros ~ The Girl Who Seeks the End of the World",
+        "Heaven's Sunrise",
+        "A Star Grows to Be a Supernova of Pride ~ Celestial's Ego",
+        "To the Unreachable Aurora",
+        "The Falsity Running Through the Cavern Crevices",
+        "Boundary Belt Imaginary Hoax",
+        "Redolent Volcanic Ash, Discarded Dust ~ Sunken Topography",
+        "Wonderfully Forbidden Universe ~ Exiled Goddess",
+        "Lunar Ebb of 53 Minutes",
+        "While Her Pureness is Still Raging ~ Impure Furies",
+        "The Ostracized Moon Princess ~ CHANGE",
+        "The Fleeting Ice Borderline",
+        "Self Consciousness Division Syndrome ~ HGW Theory",
+        "Izanami Stone",
+        "The Land Unshaken by Raging Currents ~ Onogoro Island",
+        "Fading Illusion",
+        "Eternal Gensokyo",
+        "Player's Score (Astral Mix)",
+        "Eastern Voyager ~ Cosmic Dream",
+        "Dust Pirouette",
+        "Release to Empty Space ~ Quasi-Zenith",
+        "Covalent Hydride Irrigation (OLD)",
+        "Ouroboros ~ The Girl Who Seeks the End of the World (OLD)"
+      ]
+    },
+    {
+      "id": "kazuki-body-of-the-swarm",
+      "title": "〖東方古美国 ~ Body of the Swarm〗",
+      "artist": "kazuki abzurdd",
+      "year": 2025,
+      "url": "https://kazukiabzurdd.bandcamp.com/album/body-of-the-swarm",
+      "sourceKind": "original-touhou-style-album",
+      "evidence": "creator-described-touhou-style",
+      "tracks": [
+        "Gensokyo Actually Looks Off, Right ~ A Ravaging Beelzebub",
+        "Lost Natural Beauty of Flowers ~ Stepped on a Sunflower",
+        "Bug Catching Season!!",
+        "Refracted Light Upon the Dawn",
+        "Wings of the Forbidden",
+        "Deep Waterfall Blue Gem",
+        "Fierce Waters of the Raging Lake ~ Water Bender",
+        "Pestilence Express",
+        "Demon Sealing Ritual on the Lake ~ Lunatic Shrine Maiden",
+        "Hill of the Lost Souls ~ Suzuran Victim",
+        "Flight of the Overdrive ~ Lunatic Sense",
+        "Sky of Uncountable Locusts",
+        "Infinite Boundary of the Transcending Universe ~ Another Infinity",
+        "Gensokyo?",
+        "The Patent Legacy of the Original Land of Illusions ~ Oriental Umbrella",
+        "May, Fly Again",
+        "The Sunflower Shining Upon the Flower Field",
+        "Stage of Lunatic Phantasm ~ Phantasmagoria of Pestilence Express",
+        "There's No Turning Back! The Vessel Has Awakened!",
+        "The Divine Sword that Awakens Deities ~ Short-Life Almighty",
+        "The Earthshaker Who Started the Ultimate Flood ~ UNSTOPPABLE WRATH",
+        "Calm Sun",
+        "Dawn Ceremony",
+        "Augmented Youkai Mountain Alpenglow",
+        "Inanimate Nightmare",
+        "Resting in an Extirpated Necropolis"
       ]
     }
   ]
