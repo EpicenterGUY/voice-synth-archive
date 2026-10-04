@@ -4,6 +4,7 @@ const NICO_ORIGIN="https://embed.nicovideo.jp";
 const PLAYER_ID="touhouDivePlayer";
 const AUTO_KEY="touhoudive:player:autoNext";
 const PLAYBACK_MODE_KEY="touhoudive:player:youtubeMode";
+const PLAYBACK_POLICY_KEY="touhoudive:player:youtubeInlinePolicy:v2";
 const BAD_MEDIA_KEY="touhoudive:media:unavailable:v1";
 
 function clean(v){return String(v??"").trim()}
@@ -59,7 +60,14 @@ class TouhouMediaPlayer{
     this.current=null;this.queue=[];this.index=-1;this.frame=null;this.yt=null;this.playing=true;this.activeTab="related";
     this.pipWindow=null;this.pipHome=null;this.backgroundActive=false;
     this.autoNext=localStorage.getItem(AUTO_KEY)!=="0";
-    this.youtubeMode=localStorage.getItem(PLAYBACK_MODE_KEY)==="youtube"?"youtube":"inline";
+    const migrated=localStorage.getItem(PLAYBACK_POLICY_KEY)==="2";
+    this.youtubeMode=migrated&&localStorage.getItem(PLAYBACK_MODE_KEY)==="youtube"?"youtube":"inline";
+    if(!migrated){
+      try{
+        localStorage.setItem(PLAYBACK_MODE_KEY,"inline");
+        localStorage.setItem(PLAYBACK_POLICY_KEY,"2");
+      }catch(_){}
+    }
     try{this.badMedia=new Set(JSON.parse(localStorage.getItem(BAD_MEDIA_KEY)||"[]"))}catch(_){this.badMedia=new Set()}
     document.getElementById("playerClose").onclick=()=>this.close();
     if(this.pipBtn)this.pipBtn.onclick=()=>this.requestPip();
@@ -87,7 +95,7 @@ class TouhouMediaPlayer{
       if(!media||!srcFor(media)||!key||seen.has(key)||this.badMedia.has(key))continue;
       seen.add(key);out.push(media);
     }
-    return out;
+    return out.sort((a,b)=>this.fallbackPriority(a.provider)-this.fallbackPriority(b.provider));
   }
   fallbackPriority(provider,failedProvider=""){
     const order=failedProvider==="youtube"
