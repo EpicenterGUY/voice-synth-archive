@@ -993,9 +993,11 @@ html[data-skin="station"] .beginner-filter-group{
 .player-video-mode .player-artwork-stage{opacity:0;transform:scale(.96);pointer-events:none}
 .player-video-mode .player-media-stage>.player-video{opacity:1;pointer-events:auto;transform:none;z-index:3}
 .player-media-toggle{
-  position:absolute;z-index:5;top:12px;left:50%;transform:translateX(-50%);
+  position:relative;z-index:12;
+  width:max-content;max-width:100%;
+  margin:2px auto 10px;
   display:grid;grid-template-columns:1fr 1fr;gap:3px;
-  padding:3px;border-radius:999px;background:rgba(18,20,25,.78);
+  padding:3px;border-radius:999px;background:rgba(18,20,25,.88);
   border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(14px)
 }
 .player-media-toggle button{
@@ -1245,9 +1247,6 @@ html[data-skin="custom"] .station-player-face{display:none!important}
   .player-video-mode .player-media-stage>.player-video{
     border-radius:0!important
   }
-  .player-video-mode .player-media-toggle{
-    top:8px
-  }
 }
 
 
@@ -1345,4 +1344,26 @@ html[data-skin="custom"] .station-player-face{display:none!important}
 .player-mini-art.has-art{
   background-size:cover!important;
   background-position:center!important;
+}
+
+
+/* v0.9.39 media toggle clearance */
+.player-video-mode .player-media-toggle{
+  margin-bottom:10px;
+}
+.player-song-mode .player-media-toggle{
+  margin-bottom:6px;
+}
+@media(max-width:860px){
+  .player-media-toggle{
+    position:sticky;
+    top:54px;
+    z-index:55;
+    margin-top:2px;
+    margin-bottom:8px;
+    background:rgba(18,20,25,.94);
+  }
+  .player-video-mode .player-media-toggle{
+    margin-bottom:8px;
+  }
 }
