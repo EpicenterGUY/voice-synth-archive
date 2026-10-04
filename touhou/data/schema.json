@@ -81,6 +81,11 @@
       "station",
       "graph",
       "custom"
+    ],
+    "customSkin": [
+      "backgroundImage(local IndexedDB)",
+      "dim",
+      "fit"
     ]
   },
   "notes": [
@@ -107,6 +112,8 @@
     "The in-app playable filter requires an embeddable provider supported by the TouhouDive player; external-only links no longer count as in-app playable.",
     "User-supplied background artwork is available only in the CUSTOM skin; built-in STATION and GRAPH skins never display it.",
     "Custom artwork is stored locally as a Blob in IndexedDB and is not uploaded by TouhouDive.",
-    "CUSTOM background dimming and cover/contain fit settings persist in local storage independently of the image Blob."
+    "CUSTOM background dimming and cover/contain fit settings persist in local storage independently of the image Blob.",
+    "User-provided artwork is available only in the CUSTOM skin and is never applied to built-in STATION or GRAPH skins.",
+    "Custom background artwork is stored locally in IndexedDB and resized/compressed client-side before persistence; it is not uploaded by TouhouDive."
   ]
 }
