@@ -35,7 +35,7 @@ jobs:
       - name: Match videos and refresh public metrics
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
-          YOUTUBE_SEARCH_LIMIT: "75"
+          YOUTUBE_SEARCH_LIMIT: "90"
         run: node tools/build-touhou-fan-youtube.mjs
 
       - name: Commit refreshed fan video index
