@@ -420,14 +420,26 @@ async function main(){
     const name="lookup-"+String(bucket).padStart(4,"0")+".json";
     await fs.writeFile(path.join(lookupDir,name),JSON.stringify(rows));
   }
-  const providers={},counts={original:0,fanOriginal:0,arrangement:0,mediaCandidates:0,categories:{}};
+  const providers={},counts={
+    original:0,fanOriginal:0,arrangement:0,mediaCandidates:0,categories:{},
+    categoryMediaCandidates:{},categoryYoutubeCandidates:{},categoryViewTracks:{}
+  };
   for(const t of tracks){
     const category=relationCategoryCompact(t);
     counts.categories[category]=(counts.categories[category]||0)+1;
     if(category==="official-original")counts.original++;
     else if(category==="fan-original")counts.fanOriginal++;
     else counts.arrangement++;
-    if(t.p.length)counts.mediaCandidates++;
+    if(t.p.length){
+      counts.mediaCandidates++;
+      counts.categoryMediaCandidates[category]=(counts.categoryMediaCandidates[category]||0)+1;
+    }
+    if(arr(t.p).some(p=>p?.[0]==="youtube"&&(p?.[1]||p?.[2]))){
+      counts.categoryYoutubeCandidates[category]=(counts.categoryYoutubeCandidates[category]||0)+1;
+    }
+    if(platformViewStats(t).mediaCount>0){
+      counts.categoryViewTracks[category]=(counts.categoryViewTracks[category]||0)+1;
+    }
     for(const p of t.p)providers[p[0]]=(providers[p[0]]||0)+1;
   }
   const shardCount=Math.ceil(tracks.length/SHARD_SIZE),files=[];
