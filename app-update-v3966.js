@@ -2,7 +2,7 @@
 (function(){
 "use strict";
 
-var VERSION="39.130.2";
+var VERSION="39.130.3";
 var RELEASE_API="https://api.github.com/repos/EpicenterGUY/voice-synth-archive/releases/latest";
 var PREF_CHECK="vocadive.update.autoCheck";
 var PREF_WIFI="vocadive.update.autoDownloadWifi";
