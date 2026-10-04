@@ -1,6 +1,6 @@
 {
-  "version": "39.130.2",
+  "version": "39.130.3",
   "channel": "web",
-  "publishedAt": "2026-10-05T03:42:00+09:00",
-  "notes": "Adds a cache/service-worker rescue update path and hardens original-song filters. Gameplay/live-stream/commentary/cover/MMD/karaoke/derivative videos are rejected from original-only scopes, including title-rescue search results."
+  "publishedAt": "2026-10-05T03:08:00+09:00",
+  "notes": "Emergency stale-PWA rescue: the service worker now navigates old open clients through update-rescue on activation. Original-only search scopes now require exact original-song proof tags, with a second render-time guard preventing leaked gameplay/cover/derivative results."
 }
