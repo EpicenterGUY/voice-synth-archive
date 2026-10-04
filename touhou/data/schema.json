@@ -1,5 +1,5 @@
 {
-  "version": 6,
+  "version": 7,
   "entities": {
     "track": [
       "id",
@@ -62,6 +62,12 @@
       "score",
       "videoTitle",
       "channelTitle",
+      "viewCount",
+      "likeCount",
+      "commentCount",
+      "embeddable",
+      "privacyStatus",
+      "statsUpdatedAt",
       "matchedAt"
     ]
   },
@@ -77,6 +83,9 @@
     "Large Touhou-style collections are stored as compact album manifests and expanded into track objects at client boot.",
     "Mixed albums containing official Touhou source arrangements are excluded from the fan-original catalog unless individual provenance is verified.",
     "Touhou-related entries are included first and separated by relation category instead of being dropped because they are not a standard arrangement.",
-    "When an embeddable YouTube match is verified, TouhouDive prefers it for in-app playback while retaining alternate sources as fallbacks."
+    "When an embeddable YouTube match is verified, TouhouDive prefers it for in-app playback while retaining alternate sources as fallbacks.",
+    "Touhou-style rankings use measured platform views as the primary signal and YouTube likes/comments as secondary engagement signals.",
+    "Touhou-style tracks without measured views or genuine TouhouDB reaction data are not assigned a fabricated zero-view rank.",
+    "The curated Touhou-style tab contains only the curated local catalog; generic TouhouDB fan originals remain available through the inclusive all-catalog view."
   ]
 }
