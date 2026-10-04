@@ -1,8 +1,8 @@
 {
-  "version": "0.9.44",
+  "version": "0.9.45",
   "name": "TouhouDive",
   "channel": "alpha",
-  "updated": "2026-10-04",
+  "updated": "2026-10-05",
   "dataset": "TouhouDB-full-sharded-index",
   "features": [
     "ui-rebuild",
@@ -319,6 +319,15 @@
     "stale-original-snapshot-guard",
     "full-index-v6-cache-reset",
     "canonical-root-transitive-influence",
-    "contaminated-original-rank-invalidation"
+    "contaminated-original-rank-invalidation",
+    "original-derived-works-browser",
+    "full-index-original-derivative-lookup",
+    "derived-popularity-sort",
+    "derived-view-sort",
+    "derived-random-sort",
+    "stable-random-order",
+    "derived-reshuffle",
+    "random-derived-dive",
+    "derived-type-filter"
   ]
 }
