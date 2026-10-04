@@ -1,5 +1,5 @@
 {
-  "version": "0.9.42",
+  "version": "0.9.43",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-10-04",
@@ -307,6 +307,12 @@
     "unavailable-related-filter",
     "card-artwork-hydration",
     "thumbnail-aspect-ratio-preserve",
-    "dead-youtube-thumbnail-skip"
+    "dead-youtube-thumbnail-skip",
+    "responsive-dive-detail-docking",
+    "tablet-dive-detail-grid",
+    "canonical-original-reconciliation",
+    "misclassified-zun-original-recovery",
+    "dream-battle-rank-recovery",
+    "full-index-rank-hydration-after-recovery"
   ]
 }
