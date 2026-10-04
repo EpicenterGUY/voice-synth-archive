@@ -1,7 +1,7 @@
 /* VocaDive 39.127.0 · unified search filters + exhaustive title relation rescue */
 (function(){
 "use strict";
-var VER="39.127.0",baseFreeSearch127=null,searchToken127=0,titleState127={query:"",key:"",total:0,seen:0,nextOffset:300,loading:false,done:false};
+var VER="39.129.0",baseFreeSearch127=null,searchToken127=0,titleState127={query:"",key:"",total:0,seen:0,nextOffset:300,loading:false,done:false};
 function q(sel,root){return (root||document).querySelector(sel)}
 function qa(sel,root){return Array.prototype.slice.call((root||document).querySelectorAll(sel))}
 function norm(v){
@@ -83,6 +83,10 @@ function addStyle(){
 .v398-filter-sheet .v127-scope-status span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#86aaa6;font-size:7px}
 .v398-filter-sheet .v127-scope-status button{min-height:27px;padding:0 8px;border:0;border-radius:999px;background:#123138;color:#b9d7d3;font-size:6.5px;font-weight:900}
 .v398-search-page #v398FilterToggle .v127-filter-label{max-width:88px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v398-search-page #v398FilterToggle{position:relative!important;z-index:6!important;pointer-events:auto!important;touch-action:manipulation!important}
+.v398-filter-backdrop{pointer-events:none!important}
+.v398-filter-backdrop.open{pointer-events:auto!important}
+.v398-filter-sheet.open{pointer-events:auto!important}
 .v398-search-page #songList .song.v127-exact-title{border-color:rgba(104,225,213,.23)!important;background:linear-gradient(90deg,rgba(11,49,55,.72),transparent)!important}
 .v398-search-page #songList .song.v127-title-related:not(.v127-exact-title){background:linear-gradient(90deg,rgba(8,35,40,.34),transparent)!important}
 .v398-search-page #songList .v127-match-badge{
@@ -250,8 +254,11 @@ function updateMore(){
 function patchResults(){
   upgradeFilter();
   var list=document.getElementById("songList");if(!list||typeof state==="undefined")return;
+  var query=String(state.freeQuery||"").trim(),sig=query+"|"+(state.songs||[]).map(function(x){return x&&x.contentId||""}).join(",");
+  if(list.dataset.v127PatchSig===sig)return;
+  list.dataset.v127PatchSig=sig;
   qa(".v127-result-divider",list).forEach(function(x){x.remove()});
-  var query=String(state.freeQuery||"").trim(),cards=qa(".song[data-content-id]",list),firstWeak=null,titleCount=0,exactCount=0;
+  var cards=qa(".song[data-content-id]",list),firstWeak=null,titleCount=0,exactCount=0;
   cards.forEach(function(card){
     var s=(state.songs||[]).find(function(x){return x&&x.contentId===card.dataset.contentId}),tier=titleTier(s,query);
     card.classList.toggle("v127-exact-title",tier===6);
@@ -294,13 +301,36 @@ function improveLiveScore(){
   window.VSAQueryScore124=function(song,query){return titleTier(song,query)*1000000+old(song,query)}
 }
 function observe(){
-  var root=document.getElementById("toolsModal")||document.body;if(!root)return;
-  var timer=0,mo=new MutationObserver(function(){clearTimeout(timer);timer=setTimeout(function(){upgradeFilter();patchResults()},20)});
-  mo.observe(root,{childList:true,subtree:true});return mo
+  var list=document.getElementById("songList"),page=document.querySelector(".v398-search-page");if(!list&&!page)return;
+  var timer=0,mo=new MutationObserver(function(muts){
+    var relevant=muts.some(function(m){return m.target===list||m.target&&m.target.closest&&m.target.closest("#songList")});
+    if(!relevant)return;
+    clearTimeout(timer);timer=setTimeout(function(){
+      if(list)delete list.dataset.v127PatchSig;
+      patchResults()
+    },90)
+  });
+  if(list)mo.observe(list,{childList:true});
+  if(page&&!list)mo.observe(page,{childList:true,subtree:true});
+  return mo
 }
 function boot(){
   addStyle();patchFreeSearch();improveLiveScore();upgradeFilter();patchResults();obs=observe();
-  window.addEventListener("vsa:route-change",function(e){if(!e||!e.detail||e.detail.route==="search29")setTimeout(function(){patchFreeSearch();upgradeFilter();patchResults()},0)});
+  document.addEventListener("click",function(e){
+    var b=e.target&&e.target.closest&&e.target.closest("#v398FilterToggle");
+    if(!b)return;
+    e.preventDefault();e.stopPropagation();
+    var s=document.getElementById("v398FilterSheet"),bd=document.getElementById("v398FilterBackdrop");if(!s)return;
+    var open=!s.classList.contains("open");s.classList.toggle("open",open);if(bd)bd.classList.toggle("open",open);
+    try{renderSearchFilterChips398()}catch(_){}
+  },true);
+  window.addEventListener("vsa:route-change",function(e){if(!e||!e.detail||e.detail.route==="search29")setTimeout(function(){
+    patchFreeSearch();upgradeFilter();
+    var list=document.getElementById("songList");if(list)delete list.dataset.v127PatchSig;
+    patchResults();
+    if(obs)try{obs.disconnect()}catch(_){}
+    obs=observe()
+  },0)});
 }
 window.VSASearch39127={version:VER,refresh:function(){patchFreeSearch();upgradeFilter();patchResults()},titleTier:titleTier};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
