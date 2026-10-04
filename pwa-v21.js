@@ -1,7 +1,7 @@
 /* Voice Synth Archive PWA v21 */
 (function(){
 "use strict";
-const APP_VERSION="39.122.0";
+const APP_VERSION="39.130.2";
 const CHECK_MS=900000;
 const MIN_CHECK_GAP=45000;
 let lastCheckAt=0;
@@ -212,9 +212,20 @@ async function applyUpdate(){
       registration.waiting.postMessage({type:"SKIP_WAITING"});
       return;
     }
-    location.reload();
+    try{
+      if(window.caches){
+        const keys=await caches.keys();
+        await Promise.all(keys.map(k=>caches.delete(k)))
+      }
+    }catch{}
+    const u=new URL("./update-rescue.html",location.href);
+    u.searchParams.set("target",latestMeta?.current?.version||APP_VERSION);
+    u.searchParams.set("_refresh",String(Date.now()));
+    location.replace(u.toString())
   }catch{
-    location.reload();
+    const u=new URL("./update-rescue.html",location.href);
+    u.searchParams.set("_refresh",String(Date.now()));
+    location.replace(u.toString())
   }finally{
     if(!registration?.waiting&&btn){btn.disabled=false;btn.textContent="업데이트"}
     if(bar&&!registration?.waiting)bar.hidden=true;
