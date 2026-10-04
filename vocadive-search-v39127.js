@@ -171,7 +171,7 @@ function keyFor(query){
   return [String(query||""),o.year,o.tier&&o.tier.id||"",o.sort].join("|")
 }
 function mergeTitleRows(rows,query){
-  if(!window.state||String(state.freeQuery||"")!==String(query||"")||state.listMode!=="free")return 0;
+  if(typeof state==="undefined"||String(state.freeQuery||"")!==String(query||"")||state.listMode!=="free")return 0;
   var map=new Map((state.songs||[]).map(function(x){return[x.contentId,x]})),added=0;
   (rows||[]).forEach(function(s){
     if(!s||!s.contentId)return;
@@ -249,7 +249,7 @@ function updateMore(){
 }
 function patchResults(){
   upgradeFilter();
-  var list=document.getElementById("songList");if(!list||!window.state)return;
+  var list=document.getElementById("songList");if(!list||typeof state==="undefined")return;
   qa(".v127-result-divider",list).forEach(function(x){x.remove()});
   var query=String(state.freeQuery||"").trim(),cards=qa(".song[data-content-id]",list),firstWeak=null,titleCount=0,exactCount=0;
   cards.forEach(function(card){
