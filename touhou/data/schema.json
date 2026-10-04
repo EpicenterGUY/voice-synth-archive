@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "entities": {
     "track": [
       "id",
@@ -31,6 +31,16 @@
       "styleClass",
       "touhouStyle",
       "classification"
+    ],
+    "fanOriginalAlbum": [
+      "id",
+      "title",
+      "artist",
+      "year",
+      "url",
+      "sourceKind",
+      "evidence",
+      "tracks"
     ]
   },
   "notes": [
@@ -41,6 +51,8 @@
     "Ranking v3 can include verified YouTube, NicoNico and Bilibili view-count signals when available.",
     "Unsupported or unavailable platform view counts are treated as unmeasured rather than fabricated zero-view observations.",
     "Touhou-style fan originals are classified separately from official originals and arrangements.",
-    "Touhou-style ranking is category-local and must not change the FULL INDEX denominator used by official/arrangement rankings."
+    "Touhou-style ranking is category-local and must not change the FULL INDEX denominator used by official/arrangement rankings.",
+    "Large Touhou-style collections are stored as compact album manifests and expanded into track objects at client boot.",
+    "Mixed albums containing official Touhou source arrangements are excluded from the fan-original catalog unless individual provenance is verified."
   ]
 }
