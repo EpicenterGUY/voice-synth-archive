@@ -1367,3 +1367,157 @@ html[data-skin="custom"] .station-player-face{display:none!important}
     margin-bottom:8px;
   }
 }
+
+
+/* v0.9.40 tablet mini player + HQ cards */
+.player-shell.is-mini .player-media-toggle{
+  display:none!important;
+}
+.player-shell.is-mini .player-media-stage,
+.player-shell.is-mini .station-player-face,
+.player-shell.is-mini .player-full-head,
+.player-shell.is-mini .player-timeline,
+.player-shell.is-mini .player-primary-actions,
+.player-shell.is-mini .player-ranks,
+.player-shell.is-mini .player-rank-detail,
+.player-shell.is-mini .player-side{
+  display:none!important;
+}
+.player-shell.is-mini .player-watch{
+  height:100%!important;
+  display:block!important;
+  min-width:0!important;
+}
+.player-shell.is-mini .player-info-row{
+  height:100%!important;
+  display:grid!important;
+  grid-template-columns:50px minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:10px!important;
+  padding:0!important;
+}
+.player-shell.is-mini .player-mini-art{
+  display:grid!important;
+  width:50px!important;
+  height:50px!important;
+  border-radius:9px!important;
+  flex:0 0 auto!important;
+}
+.player-shell.is-mini .player-copy{
+  min-width:0!important;
+  overflow:hidden!important;
+}
+.player-shell.is-mini .player-copy strong,
+.player-shell.is-mini .player-copy small{
+  display:block!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.player-shell.is-mini .player-controls{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  flex-wrap:nowrap!important;
+  gap:4px!important;
+  padding:0!important;
+  overflow:visible!important;
+}
+.player-shell.is-mini .player-controls button,
+.player-shell.is-mini .player-controls .player-source{
+  display:none!important;
+}
+.player-shell.is-mini #playerPlay,
+.player-shell.is-mini #playerExpand,
+.player-shell.is-mini #playerClose{
+  display:grid!important;
+  place-items:center!important;
+  width:34px!important;
+  height:34px!important;
+  flex:0 0 34px!important;
+  border-radius:50%!important;
+}
+.player-shell.is-mini #playerPlay{
+  background:#f4f4f4!important;
+  color:#111!important;
+}
+
+/* YouTube card thumbnails: the first available layer wins.
+   maxres/sd/hq stay sharp on tablets; mq/raw are fallback only. */
+.track-thumb{
+  background-color:var(--panel2);
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:cover;
+}
+
+/* iPad / tablet portrait: compact bar above bottom navigation */
+@media (min-width:600px) and (max-width:860px){
+  .player-shell.is-mini{
+    left:14px!important;
+    right:14px!important;
+    bottom:calc(78px + env(safe-area-inset-bottom))!important;
+    width:auto!important;
+    height:68px!important;
+    padding:8px 10px!important;
+    border-radius:16px!important;
+  }
+  .player-shell.is-mini .player-info-row{
+    grid-template-columns:52px minmax(0,1fr) auto!important;
+    gap:11px!important;
+  }
+  .player-shell.is-mini .player-mini-art{
+    width:52px!important;
+    height:52px!important;
+  }
+  .player-shell.is-mini .player-copy strong{font-size:11px!important}
+  .player-shell.is-mini .player-copy small{font-size:8px!important}
+}
+
+/* iPad / tablet landscape: keep mini player in the content area instead of stretching edge-to-edge */
+@media (min-width:861px) and (max-width:1180px){
+  .player-shell.is-mini{
+    left:auto!important;
+    right:18px!important;
+    bottom:18px!important;
+    width:min(720px,calc(100vw - 220px))!important;
+    height:70px!important;
+    padding:8px 10px!important;
+    border-radius:16px!important;
+  }
+  .player-shell.is-mini .player-info-row{
+    grid-template-columns:52px minmax(0,1fr) auto!important;
+    gap:11px!important;
+  }
+  .player-shell.is-mini .player-mini-art{
+    width:52px!important;
+    height:52px!important;
+  }
+  .player-shell.is-mini .player-copy strong{font-size:11px!important}
+  .player-shell.is-mini .player-copy small{font-size:8px!important}
+}
+
+/* narrow phones keep the same clean 3-part layout */
+@media(max-width:599px){
+  .player-shell.is-mini{
+    left:8px!important;
+    right:8px!important;
+    bottom:calc(76px + env(safe-area-inset-bottom))!important;
+    width:auto!important;
+    height:62px!important;
+    padding:6px 8px!important;
+  }
+  .player-shell.is-mini .player-info-row{
+    grid-template-columns:46px minmax(0,1fr) auto!important;
+    gap:8px!important;
+  }
+  .player-shell.is-mini .player-mini-art{
+    width:46px!important;
+    height:46px!important;
+  }
+  .player-shell.is-mini #playerPlay,
+  .player-shell.is-mini #playerExpand,
+  .player-shell.is-mini #playerClose{
+    width:30px!important;height:30px!important;flex-basis:30px!important
+  }
+}
