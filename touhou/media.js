@@ -388,11 +388,20 @@ class TouhouMediaPlayer{
     }).catch(()=>{});
   }
   canVideoVisual(){
-    return !!this.current?.media&&["youtube","niconico","bilibili"].includes(this.current.media.provider);
+    return this.candidates(this.current).some(m=>["youtube","niconico","bilibili"].includes(m?.provider));
   }
   setVisualMode(mode,persist=true){
-    this.visualMode=mode==="video"&&this.canVideoVisual()?"video":"song";
+    const next=mode==="video"&&this.canVideoVisual()?"video":"song";
+    this.visualMode=next;
     if(persist)try{localStorage.setItem(VISUAL_MODE_KEY,this.visualMode)}catch(_){}
+    if(this.current){
+      const preferred=this.candidates(this.current)[0]||null;
+      if(preferred&&this.mediaKey(preferred)!==this.mediaKey(this.current.media)){
+        this.current.media=preferred;
+        this.renderCurrent(true);
+        return;
+      }
+    }
     this.syncVisualMode();
   }
   syncVisualMode(){
