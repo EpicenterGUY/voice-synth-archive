@@ -436,7 +436,7 @@ async function loadRemote(reset=false,force=false){
   }
   if(state.full.loaded)return;
   const query=$("#searchInput").value.trim();
-  const canFullQuery=!!(query&&fullIndex?.searchByQuery);
+  const canFullQuery=!!(query&&searchLooseNorm(query).length>=3&&fullIndex?.searchByQuery);
   if(!state.remote.available&&!canFullQuery)return;
   if(!reset&&state.remote.loading)return;
   const key=remoteKey();
