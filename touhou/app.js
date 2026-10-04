@@ -9,6 +9,7 @@ const state={
   mode:"all",filter:"전체",workFilter:"",sort:"recommend",selected:null,view:"home",diveDepth:0,diveRoot:null,icebergMode:"visibility",rankIndex:new Map(),rankTotal:0,enriching:new Map(),homeMixIds:[],beginnerCircleCache:new Map(),beginnerCircleLoading:new Set(),beginnerIndex:{loaded:false,loading:false,tracks:[],total:0,video:0,explicitMv:0,error:""},
   full:{available:false,loading:false,loaded:false,streaming:false,manifest:null,loadedCount:0,error:""},displayLimit:60,renderKey:"",lastMatchCount:0,childCounts:new Map(),
   relations:{ready:false,building:false,byOriginal:new Map(),byWork:new Map(),byCircle:new Map(),byVocal:new Map(),byMood:new Map()},
+  derived:{cache:new Map(),loading:new Map(),complete:new Set(),sort:new Map(),filter:new Map(),random:new Map(),limit:new Map()},
   remote:{available:false,loading:false,start:0,total:0,catalogTotal:0,key:"",error:"",counts:{},seq:0},
   favorites:new Set(readJson("touhoudive:favorites",[])),
   history:readJson("touhoudive:history",[]),
@@ -1287,7 +1288,7 @@ function openTrack(t,opts={}){
     </div><h2>${esc(t.title)}</h2><div class="detail-meta">${artistLine}<br>${t.year||""}${t.album?" · "+esc(t.album):""}</div></div>
     <div class="tag-row">${(t.moods||[]).map(x=>`<span class="tag">${esc(x)}</span>`).join("")}</div>
     <div class="detail-actions"><button class="hot" id="detailPlay" ${player.playable(t)||external||canLookup?"":"disabled"}>${player.playable(t)?(player.getYoutubeMode?.()==="youtube"&&player.candidates?.(t).some(x=>x.provider==="youtube")?"▶ YouTube 앱 재생":"▶ 앱에서 재생"):canLookup?"⌕ YouTube/영상 찾기":external?"↗ 외부 재생":"영상 없음"}</button><button id="detailDive">⌁ 다이브</button>${t.type==="arrangement"?'<button class="origin-jump" id="detailOrigin"><span>↖</span><strong>원곡으로</strong></button>':""}<button id="favBtn">${fav?"♥ 보관됨":"♡ 보관하기"}</button>${source?`<a href="${escAttr(source)}" target="_blank" rel="noopener">원본 링크 ↗</a>`:'<button disabled>원본 링크 없음</button>'}</div>
-    ${fan?'<div class="fact-box"><label>분류</label><div class="detail-meta">공식 동방 원곡을 직접 사용하지 않는 동방풍 오리지널입니다. 통합 검색에는 포함하고, 계보·분류·순위 축은 별도로 유지합니다.</div></div>':t.type==="arrangement"?lineageBox("이 어레인지의 원곡",origins,missing):lineageBox("이 원곡을 사용한 현재 로드 어레인지",children,[])}
+    ${fan?'<div class="fact-box"><label>분류</label><div class="detail-meta">공식 동방 원곡을 직접 사용하지 않는 동방풍 오리지널입니다. 통합 검색에는 포함하고, 계보·분류·순위 축은 별도로 유지합니다.</div></div>':t.type==="arrangement"?lineageBox("이 어레인지의 원곡",origins,missing):derivedWorksBox(t,children)}
     <div class="fact-box"><label>순위 기준</label><div class="detail-meta">${fan?"동방풍 순위는 동방풍 큐레이션 내부에서 비교합니다. 곡 자체는 동방 관련 전체 검색에 포함되며 공식 원곡·파생곡 랭킹 축과는 분리합니다.":"종합 = 인기 + 원곡 영향력. 종합·인기 순위의 분모는 FULL INDEX 전체 등록곡 "+fmt(fullRankTotal())+"곡을 그대로 사용하며, 현재 로드된 표본 순위를 전수 순위처럼 환산하지 않습니다. 플랫폼 조회수 순위는 실제 조회수 확인에 성공한 곡만 별도로 집계합니다."}</div></div>
     ${links.length?'<div class="fact-box trusted-links"><label>플랫폼 바로가기</label><div class="trusted-link-list">'+links.slice(0,18).map(x=>'<a class="platform-link platform-'+escAttr(x.provider)+'" href="'+escAttr(x.url)+'" target="_blank" rel="noopener noreferrer"><span>'+esc(platformLabel(x.provider))+'</span><b>↗</b></a>').join("")+'</div></div>':""}
     <div class="fact-box"><label>다이브 기준</label><div class="detail-meta">${esc(relationText(t))}</div></div>
@@ -1302,6 +1303,7 @@ function openTrack(t,opts={}){
   $("#favBtn").onclick=()=>toggleFavorite(t);
   $("#detailContent").querySelectorAll("[data-lineage]").forEach(b=>b.onclick=()=>openTrack(byId(b.dataset.lineage)));
   $("#detailContent").querySelectorAll("[data-hydrate]").forEach(b=>b.onclick=()=>hydrateAndOpen(b.dataset.hydrate));
+  if(!fan&&t.type==="original"){bindDerivedWorksPanel(t);loadDerivedWorksFor(t)}
   if(!fan&&!opts.skipEnrich&&!t.touhoudbId&&state.remote.available){
     enrichTrack(t).then(enriched=>{
       if(enriched&&state.selected&&resolveId(state.selected.id)===resolveId(t.id)&&$("#detailPanel").classList.contains("is-open"))openTrack(enriched,{skipEnrich:true});
@@ -1365,6 +1367,163 @@ async function goToOriginal(t){
   renderCatalog("원곡으로 이동");
   openTrack(original);
 }
+
+function derivedStateKey(t){return resolveId(t?.id||"")}
+function derivedFilterRows(rows,filter){
+  if(filter==="vocal")return rows.filter(x=>(x.artists?.vocal||[]).length>0);
+  if(filter==="instrumental")return rows.filter(x=>relationCategory(x)==="instrumental"||(x.artists?.vocal||[]).length===0);
+  if(filter==="remix")return rows.filter(x=>["remix","rearrangement"].includes(relationCategory(x)));
+  if(filter==="cover")return rows.filter(x=>relationCategory(x)==="cover");
+  return rows;
+}
+function ensureDerivedRandomOrder(key,rows,force=false){
+  const ids=rows.map(x=>resolveId(x.id)),idSet=new Set(ids);
+  let order=state.derived.random.get(key)||[];
+  const valid=!force&&order.length===ids.length&&order.every(id=>idSet.has(id));
+  if(!valid){
+    order=[...ids];
+    for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]]}
+    state.derived.random.set(key,order);
+  }
+  return order;
+}
+function derivedSortRows(original,rows){
+  const key=derivedStateKey(original),sort=state.derived.sort.get(key)||"popularity",list=[...rows];
+  const num=(v,fallback=0)=>Number.isFinite(Number(v))?Number(v):fallback;
+  const rank=(t,field)=>num(t?.[field],1e12)||1e12;
+  if(sort==="random"){
+    const order=ensureDerivedRandomOrder(key,rows),pos=new Map(order.map((id,i)=>[id,i]));
+    return list.sort((a,b)=>(pos.get(resolveId(a.id))??1e12)-(pos.get(resolveId(b.id))??1e12));
+  }
+  if(sort==="overall")return list.sort((a,b)=>rank(a,"globalRank")-rank(b,"globalRank")||num(b.globalScore)-num(a.globalScore)||popularityScore(b)-popularityScore(a));
+  if(sort==="views")return list.sort((a,b)=>rank(a,"viewRank")-rank(b,"viewRank")||num(b.viewTotal)-num(a.viewTotal)||viewSignal(b)-viewSignal(a));
+  if(sort==="newest")return list.sort((a,b)=>num(b.year)-num(a.year)||popularityScore(b)-popularityScore(a));
+  if(sort==="oldest")return list.sort((a,b)=>(num(a.year,9999)||9999)-(num(b.year,9999)||9999)||popularityScore(b)-popularityScore(a));
+  if(sort==="title")return list.sort((a,b)=>String(a.title||"").localeCompare(String(b.title||""),"ja"));
+  return list.sort((a,b)=>rank(a,"popularityRank")-rank(b,"popularityRank")||num(b.popularityScore)-num(a.popularityScore)||popularityScore(b)-popularityScore(a));
+}
+function derivedWorksBox(t,seed=[]){
+  const key=derivedStateKey(t);
+  if(!state.derived.sort.has(key))state.derived.sort.set(key,"popularity");
+  if(!state.derived.filter.has(key))state.derived.filter.set(key,"all");
+  if(!state.derived.limit.has(key))state.derived.limit.set(key,18);
+  if(!state.derived.cache.has(key)&&seed.length)state.derived.cache.set(key,dedupe(seed.filter(x=>x?.type==="arrangement")));
+  return '<section class="derived-box" data-derived-root="'+escAttr(key)+'">'+
+    '<div class="derived-head"><div><label>이 원곡에서 파생된 작품</label><strong data-derived-count>'+(seed.length?fmt(seed.length)+"곡 이상":"연결 확인 중")+'</strong></div>'+
+    '<button type="button" class="derived-dive" data-derived-dive>🎲 랜덤 파생작 다이브</button></div>'+
+    '<div class="derived-tools">'+
+      '<select data-derived-filter aria-label="파생작 유형"><option value="all">전체 유형</option><option value="vocal">보컬</option><option value="instrumental">비보컬 · 인스트</option><option value="remix">리믹스 · 재어레인지</option><option value="cover">커버</option></select>'+
+      '<select data-derived-sort aria-label="파생작 정렬"><option value="popularity">인기순</option><option value="overall">종합순</option><option value="views">조회수순</option><option value="newest">최신순</option><option value="oldest">오래된순</option><option value="random">랜덤</option><option value="title">제목순</option></select>'+
+      '<button type="button" class="derived-shuffle" data-derived-shuffle hidden>↻ 다시 섞기</button>'+
+    '</div>'+
+    '<div class="derived-status" data-derived-status>현재 연결 데이터를 먼저 표시합니다.</div>'+
+    '<div class="derived-list" data-derived-list></div>'+
+    '<button type="button" class="derived-more" data-derived-more hidden>더 보기</button>'+
+  '</section>';
+}
+function derivedDisplayRank(t,sort){
+  if(sort==="views"&&t.viewRank)return"조회 #"+fmt(t.viewRank);
+  if(sort==="overall"&&t.globalRank)return"종합 #"+fmt(t.globalRank);
+  if(t.popularityRank)return"인기 #"+fmt(t.popularityRank);
+  if(Number(t.viewTotal)>0)return fmt(t.viewTotal)+"회";
+  return relationLabel(relationCategory(t));
+}
+function renderDerivedWorksPanel(original){
+  const key=derivedStateKey(original),content=$("#detailContent");if(!content)return;
+  const root=[...content.querySelectorAll("[data-derived-root]")].find(x=>x.dataset.derivedRoot===key);if(!root)return;
+  const all=(state.derived.cache.get(key)||[]).filter(x=>x?.type==="arrangement");
+  const filter=state.derived.filter.get(key)||"all",sort=state.derived.sort.get(key)||"popularity";
+  const filtered=derivedFilterRows(all,filter),rows=derivedSortRows(original,filtered);
+  const limit=Math.max(12,Number(state.derived.limit.get(key))||18),visible=rows.slice(0,limit);
+  const circles=new Set(all.map(x=>x.circle).filter(Boolean)),albums=new Set(all.map(x=>x.album).filter(Boolean));
+  const count=root.querySelector("[data-derived-count]");
+  if(count)count.textContent=fmt(all.length)+"곡 · "+fmt(circles.size)+"서클 · "+fmt(albums.size)+"앨범";
+  const filterEl=root.querySelector("[data-derived-filter]"),sortEl=root.querySelector("[data-derived-sort]");
+  if(filterEl)filterEl.value=filter;if(sortEl)sortEl.value=sort;
+  const shuffle=root.querySelector("[data-derived-shuffle]");if(shuffle)shuffle.hidden=sort!=="random";
+  const list=root.querySelector("[data-derived-list]");
+  if(list){
+    list.innerHTML=visible.length?visible.map(x=>{
+      const meta=[x.circle||x.artistString,x.album,x.year].filter(Boolean).join(" · ");
+      return '<button type="button" class="derived-item" data-derived-open="'+escAttr(x.id)+'">'+
+        '<span class="derived-copy"><strong>'+esc(x.title)+'</strong><small>'+esc(meta||"파생작 정보")+'</small></span>'+
+        '<span class="derived-rank"><em>'+esc(relationLabel(relationCategory(x)))+'</em><b>'+esc(derivedDisplayRank(x,sort))+'</b></span>'+
+      '</button>';
+    }).join(""):'<div class="derived-empty">'+(state.derived.loading.has(key)?"파생작 전체 목록을 찾는 중…":"이 조건에 맞는 파생작이 없습니다.")+'</div>';
+    list.querySelectorAll("[data-derived-open]").forEach(btn=>btn.onclick=()=>{
+      const hit=all.find(x=>resolveId(x.id)===resolveId(btn.dataset.derivedOpen));if(hit)openTrack(remember(hit));
+    });
+  }
+  const more=root.querySelector("[data-derived-more]");
+  if(more){more.hidden=visible.length>=rows.length;more.textContent="더 보기 · "+fmt(Math.max(0,rows.length-visible.length))+"곡 남음"}
+  const status=root.querySelector("[data-derived-status]");
+  if(status){
+    if(state.derived.loading.has(key))status.textContent="FULL INDEX에서 이 원곡의 파생작을 전수 검색 중…";
+    else if(state.derived.complete.has(key))status.textContent="FULL INDEX 연결 기준 · 정렬을 바꿔도 목록 위치와 랜덤 순서를 유지합니다.";
+    else status.textContent="현재 로드된 연결부터 표시 중 · 전수 인덱스 연결 대기";
+  }
+}
+function bindDerivedWorksPanel(original){
+  const key=derivedStateKey(original),content=$("#detailContent");if(!content)return;
+  const root=[...content.querySelectorAll("[data-derived-root]")].find(x=>x.dataset.derivedRoot===key);if(!root)return;
+  const filter=root.querySelector("[data-derived-filter]"),sort=root.querySelector("[data-derived-sort]");
+  if(filter)filter.onchange=()=>{state.derived.filter.set(key,filter.value);state.derived.limit.set(key,18);renderDerivedWorksPanel(original)};
+  if(sort)sort.onchange=()=>{
+    state.derived.sort.set(key,sort.value);state.derived.limit.set(key,18);
+    if(sort.value==="random")ensureDerivedRandomOrder(key,state.derived.cache.get(key)||[]);
+    renderDerivedWorksPanel(original);
+  };
+  const shuffle=root.querySelector("[data-derived-shuffle]");
+  if(shuffle)shuffle.onclick=()=>{ensureDerivedRandomOrder(key,state.derived.cache.get(key)||[],true);renderDerivedWorksPanel(original)};
+  const more=root.querySelector("[data-derived-more]");
+  if(more)more.onclick=()=>{state.derived.limit.set(key,(Number(state.derived.limit.get(key))||18)+24);renderDerivedWorksPanel(original)};
+  const dive=root.querySelector("[data-derived-dive]");
+  if(dive)dive.onclick=()=>{
+    const rows=derivedFilterRows(state.derived.cache.get(key)||[],state.derived.filter.get(key)||"all");
+    if(!rows.length){toast("이 조건의 파생작이 아직 없습니다.");return}
+    const pick=rows[Math.floor(Math.random()*rows.length)];
+    startDive(remember(pick),{fresh:true});closePanel();
+  };
+  renderDerivedWorksPanel(original);
+}
+async function loadDerivedWorksFor(original){
+  const key=derivedStateKey(original);
+  if(!key||state.derived.complete.has(key)){renderDerivedWorksPanel(original);return}
+  if(state.derived.loading.has(key))return state.derived.loading.get(key);
+  const task=(async()=>{
+    let rows=state.derived.cache.get(key)||[],scanned=false;
+    try{
+      let found=[];
+      const remoteId=Number(original.touhoudbId)||Number(String(key).replace(/^tdb-/,""))||0;
+      const targets=new Set([key,remoteId?"tdb-"+remoteId:""].filter(Boolean).map(resolveId));
+      if(state.full.loaded){
+        found=state.fullItems.filter(x=>x?.type==="arrangement"&&originalIds(x).some(id=>targets.has(resolveId(id))));
+        scanned=true;
+      }else if(remoteId&&fullIndex?.searchByOriginalId){
+        const result=await fullIndex.searchByOriginalId(remoteId,{concurrency:4,onProgress:p=>{
+          const content=$("#detailContent");if(!content)return;
+          const root=[...content.querySelectorAll("[data-derived-root]")].find(x=>x.dataset.derivedRoot===key);
+          const status=root?.querySelector("[data-derived-status]");
+          if(status)status.textContent="파생작 전수 검색 · "+fmt(p.scanned||0)+" / "+fmt(p.total||0)+"곡 확인 · "+fmt(p.hits||0)+"곡 발견";
+        }});
+        found=result?.tracks||[];scanned=true;
+      }
+      rows=dedupe([...rows,...found]).filter(x=>x?.type==="arrangement"&&originalIds(x).some(id=>targets.has(resolveId(id))));
+      state.derived.cache.set(key,rows);
+      state.derived.random.delete(key);
+      if(scanned)state.derived.complete.add(key);
+    }catch(err){
+      console.warn("derived works lookup failed",err);
+    }finally{
+      state.derived.loading.delete(key);
+      renderDerivedWorksPanel(original);
+    }
+  })();
+  state.derived.loading.set(key,task);
+  renderDerivedWorksPanel(original);
+  return task;
+}
+
 function lineageBox(label,tracks,missing){
   const rows=tracks.slice(0,12).map(x=>`<button class="lineage-link" data-lineage="${x.id}"><strong>${esc(x.title)}</strong><small>${esc(x.type==="arrangement"?(x.circle||""):(x.work||x.artistString||""))}</small></button>`);
   for(const id of missing.slice(0,5))rows.push(`<button class="lineage-link" data-hydrate="${escAttr(id)}"><strong>원곡 정보 불러오기</strong><small>${esc(id)} · TouhouDB</small></button>`);
