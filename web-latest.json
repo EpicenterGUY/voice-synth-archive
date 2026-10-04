@@ -1,6 +1,6 @@
 {
-  "version": "39.121.0",
+  "version": "39.122.0",
   "channel": "web",
-  "publishedAt": "2026-10-04T18:28:00+09:00",
-  "notes": "Makes skins visually obvious like TouhouDive: large bottom-sheet picker with preview cards, always-visible skin control, full home device showcase, and stronger page-wide ambient backgrounds."
+  "publishedAt": "2026-10-04T18:52:00+09:00",
+  "notes": "Fixes Skin Studio on the current Discovery Ocean home. Applied skins now transform the actual v3989 home hero, entry controls, gateway buttons, recommendation surfaces, and show a large MP3/Walkman/Aqua/Cassette/Neon/Mono device panel."
 }
