@@ -743,7 +743,17 @@ const BEGINNER_CIRCLE_GROUPS=[
   {key:"tamusic",label:"TAMUSIC",aliases:["tamusic"]},
   {key:"cclays",label:"C-CLAYS",aliases:["c-clays","c clays","cclays"]},
   {key:"syncarts",label:"SYNC.ART'S",aliases:["sync.art's","sync arts","syncarts"]},
-  {key:"innocentkey",label:"Innocent Key",aliases:["innocent key","innocentkey"]}
+  {key:"innocentkey",label:"Innocent Key",aliases:["innocent key","innocentkey"]},
+  {key:"beatmario",label:"beatMARIO",kind:"creator",aliases:["beatmario","ビートまりお"]},
+  {key:"minoshima",label:"Masayoshi Minoshima",kind:"creator",aliases:["masayoshi minoshima","minoshima masayoshi"]},
+  {key:"rdsounds",label:"RD-Sounds",kind:"creator",aliases:["rd-sounds","rdsounds"]},
+  {key:"shibayan-creator",label:"Shibayan",kind:"creator",aliases:["shibayan"]},
+  {key:"redalice",label:"REDALiCE",kind:"creator",aliases:["redalice"]},
+  {key:"djcommand",label:"DJ Command",kind:"creator",aliases:["dj command","djcommand"]},
+  {key:"elementas",label:"ELEMENTAS",kind:"creator",aliases:["elementas"]},
+  {key:"tracy",label:"Tracy",kind:"creator",aliases:["tracy amateras","tracy"]},
+  {key:"actrock",label:"ACTRock",kind:"creator",aliases:["actrock"]},
+  {key:"kaztora",label:"kaztora",kind:"creator",aliases:["kaztora"]}
 ];
 const BEGINNER_CIRCLES=BEGINNER_CIRCLE_GROUPS.flatMap(x=>x.aliases).map(x=>String(x).normalize("NFKC").toLowerCase());
 function beginnerNorm(v){return String(v||"").normalize("NFKC").toLowerCase().replace(/[\s\u3000~～・_\-—:：!?！？.,'"“”‘’()[\]{}&＋+]+/g,"")}
@@ -922,9 +932,12 @@ function renderFilters(){
     const valid=new Set(["전체","인앱 재생",...primary.map(x=>x.key),...BEGINNER_CIRCLE_GROUPS.map(x=>"beginner-circle:"+x.key)]);
     if(!valid.has(state.filter))state.filter="전체";
     const buttons=rows=>rows.map(x=>'<button class="filter-chip '+(x.key===state.filter?"is-active":"")+'" data-filter="'+escAttr(x.key)+'" title="'+escAttr(x.label)+'">'+esc(x.label)+'</button>').join("");
+    const circleGroups=BEGINNER_CIRCLE_GROUPS.filter(x=>x.kind!=="creator").map(x=>({key:"beginner-circle:"+x.key,label:x.label}));
+    const creatorGroups=BEGINNER_CIRCLE_GROUPS.filter(x=>x.kind==="creator").map(x=>({key:"beginner-circle:"+x.key,label:x.label}));
     quick.innerHTML=
       '<div class="beginner-filter-group"><span class="beginner-filter-label">추천 유형</span><div class="beginner-chip-grid beginner-type-grid">'+buttons(primary)+'</div></div>'+
-      '<div class="beginner-filter-group"><span class="beginner-filter-label">서클 · 동인 · 밴드</span><div class="beginner-chip-grid beginner-circle-grid">'+buttons(BEGINNER_CIRCLE_GROUPS.map(x=>({key:"beginner-circle:"+x.key,label:x.label})))+'</div></div>';
+      '<div class="beginner-filter-group"><span class="beginner-filter-label">서클 · 동인 · 밴드</span><div class="beginner-chip-grid beginner-circle-grid">'+buttons(circleGroups)+'</div></div>'+
+      '<div class="beginner-filter-group"><span class="beginner-filter-label">프로듀서 · 아티스트</span><div class="beginner-chip-grid beginner-creator-grid">'+buttons(creatorGroups)+'</div></div>';
   }else{
     const out=[{key:"전체",label:"전체"},{key:"인앱 재생",label:"인앱 재생"}];
     if(state.mode==="all"||state.mode==="arrangement"){
