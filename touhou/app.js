@@ -227,7 +227,8 @@ function bind(){
     if(!String(file.type||"").startsWith("image/")){toast("이미지 파일만 사용할 수 있습니다.");return}
     if(file.size>25*1024*1024){toast("이미지는 25MB 이하로 선택해 주세요.");return}
     try{
-      await putCustomSkinImage(file);
+      const optimized=await optimizeCustomSkinImage(file);
+      await putCustomSkinImage(optimized);
       setSkin("custom");
       await loadCustomSkinImage();
       toast("내 그림을 CUSTOM 배경으로 저장했습니다.");
@@ -1903,6 +1904,22 @@ function customSkinDb(){
     req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains("assets"))db.createObjectStore("assets")};
     req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error||new Error("IndexedDB open failed"));
   });
+}
+async function optimizeCustomSkinImage(file){
+  const src=URL.createObjectURL(file);
+  try{
+    const img=new Image();
+    await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=src});
+    const maxSide=2400,rawW=Math.max(1,img.naturalWidth||1),rawH=Math.max(1,img.naturalHeight||1);
+    const scale=Math.min(1,maxSide/Math.max(rawW,rawH));
+    const width=Math.max(1,Math.round(rawW*scale)),height=Math.max(1,Math.round(rawH*scale));
+    if(scale===1&&file.size<=3*1024*1024)return file;
+    const canvas=document.createElement("canvas");canvas.width=width;canvas.height=height;
+    const ctx=canvas.getContext("2d",{alpha:false});
+    ctx.fillStyle="#0b0e12";ctx.fillRect(0,0,width,height);ctx.drawImage(img,0,0,width,height);
+    const blob=await new Promise(resolve=>canvas.toBlob(resolve,"image/webp",.88));
+    return blob||file;
+  }finally{URL.revokeObjectURL(src)}
 }
 async function putCustomSkinImage(blob){
   const db=await customSkinDb();
