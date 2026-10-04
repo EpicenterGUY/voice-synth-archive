@@ -1,7 +1,7 @@
 /* Voice Synth Archive PWA v21 */
 (function(){
 "use strict";
-const APP_VERSION="39.130.2";
+const APP_VERSION="39.130.3";
 const CHECK_MS=900000;
 const MIN_CHECK_GAP=45000;
 let lastCheckAt=0;
@@ -263,12 +263,14 @@ navigator.serviceWorker?.addEventListener("controllerchange",()=>{
   if(reloading)return;
   reloading=true;
   hideUpdate();
-  if(applyingUpdate){
-    setTimeout(()=>location.reload(),120);
-  }else{
-    // 백그라운드에서 같은 버전 SW가 교체된 경우 팝업을 다시 띄우지 않는다.
-    setTimeout(()=>{reloading=false},300);
-  }
+  setTimeout(()=>{
+    try{
+      const u=new URL("./update-rescue.html",location.href);
+      u.searchParams.set("target",APP_VERSION);
+      u.searchParams.set("_controller",String(Date.now()));
+      location.replace(u.toString())
+    }catch(_){location.reload()}
+  },120);
 });
 
 async function boot(){
