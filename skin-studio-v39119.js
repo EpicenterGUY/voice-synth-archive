@@ -165,7 +165,10 @@ function apply(emit){
   b.dataset.vsaEq=String(state.eq?1:0);
   b.dataset.vsaAmbient=String(state.ambient?1:0);
   b.dataset.vsaCompactMeta=String(state.compactMeta?1:0);
-  var vars=variables();Object.keys(vars).forEach(function(k){b.style.setProperty(k,vars[k])});
+  var vars=variables();
+  var skinVars=["--vd-bg","--vd-surface","--vd-surface-2","--vd-elevated","--vd-control","--vd-hover","--vd-line","--vd-line-strong","--vd-text","--vd-muted","--vd-soft","--vd-accent","--vd-accent-2","--vd-radius","--skin-bg","--skin-surface","--skin-surface-2","--skin-control","--skin-topbar","--skin-dock","--skin-line","--skin-line-strong","--skin-glow","--skin-radius","--skin-blur"];
+  if(state.preset==="classic")skinVars.forEach(function(k){b.style.removeProperty(k)});
+  else Object.keys(vars).forEach(function(k){b.style.setProperty(k,vars[k])});
   syncEq();
   refreshUi();
   if(emit!==false){save();try{window.dispatchEvent(new CustomEvent("vsa:skin-change",{detail:Object.assign({version:VERSION},state)}))}catch(_){}}
