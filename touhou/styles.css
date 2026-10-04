@@ -1668,3 +1668,36 @@ html[data-skin="custom"] .station-player-face{display:none!important}
   }
   .player-related-thumb{width:72px!important}
 }
+
+
+/* v0.9.42 tablet mini position + artwork quality */
+/* Tablet landscape: keep the mini-player close to the bottom; overlaying content is intentional. */
+@media (min-width:861px) and (max-width:1180px){
+  .player-shell.is-mini{
+    bottom:6px!important;
+    right:10px!important;
+  }
+}
+
+/* Preserve artwork aspect ratio on large cards instead of stretching square/low-res art. */
+.track-thumb.has-art{
+  background-color:#0b0d12!important;
+  background-position:center!important;
+  background-repeat:no-repeat!important;
+  background-size:contain!important;
+}
+.player-related-thumb.has-art{
+  background-color:#0b0d12!important;
+  background-position:center!important;
+  background-repeat:no-repeat!important;
+  background-size:contain!important;
+}
+.track-thumb.no-image{
+  background:linear-gradient(135deg,var(--panel3),var(--panel2))!important;
+}
+.track-thumb.no-image:before{
+  content:"NO ART"!important;
+  color:rgba(255,255,255,.18)!important;
+  font:800 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace!important;
+  letter-spacing:.12em!important;
+}
