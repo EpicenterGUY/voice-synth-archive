@@ -1,5 +1,5 @@
 {
-  "version": 16,
+  "version": 17,
   "entities": {
     "track": [
       "id",
@@ -214,6 +214,8 @@
     "Player actions preserve playback while navigating to origin, dive, or detail by minimizing the player first.",
     "The player shell is hidden unless it has an active playback session, preventing restored/cached DOM from exposing an empty full player.",
     "Close and minimize controls are guarded with capture-phase handlers; minimizing an empty player closes it.",
-    "Video mode uses a dedicated 16:9 stage and expands edge-to-edge on mobile while song mode keeps square artwork."
+    "Video mode uses a dedicated 16:9 stage and expands edge-to-edge on mobile while song mode keeps square artwork.",
+    "Folded/mobile video mode is centered against the viewport using a 100vw stage rather than parent padding arithmetic.",
+    "Full-screen mobile playback uses an opaque background so the underlying catalog cannot show through."
   ]
 }
