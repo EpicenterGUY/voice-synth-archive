@@ -1410,10 +1410,10 @@ function fanPopularityEvidence(t){
   return views.mediaCount>0||db>0;
 }
 function fanPopularityScore(t){
-  const views=mediaViewStats(t),eng=fanEngagementStats(t),community=communitySignal(t);
+  const views=mediaViewStats(t),eng=fanEngagementStats(t),community=communitySignal(t),spread=sourceSpreadSignal(t);
   const engagementPts=Math.log10(eng.likes+1)*2+Math.log10(eng.comments+1)*0.8;
-  if(views.mediaCount)return viewSignal(t)+engagementPts+community*0.25;
-  if(community>0&&fanPopularityEvidence(t))return community*0.35;
+  if(views.mediaCount)return viewSignal(t)+spread*.8+engagementPts+community*.25;
+  if((community>0||spread>0)&&fanPopularityEvidence(t))return community*.35+spread*.9;
   return 0;
 }
 function fanOriginalRankInfo(t){
