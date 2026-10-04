@@ -1305,3 +1305,44 @@ html[data-skin="custom"] .station-player-face{display:none!important}
     padding-right:10px;
   }
 }
+
+
+/* v0.9.38 high quality artwork */
+.player-artwork-disc.has-art{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  background-image:none!important;
+  background-color:#0b0d12!important;
+}
+.player-artwork-disc.has-art::before,
+.player-artwork-disc.has-art::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}
+.player-artwork-disc.has-art::before{
+  z-index:0;
+  inset:-8%;
+  background-image:var(--art-url);
+  background-position:center;
+  background-size:cover;
+  background-repeat:no-repeat;
+  filter:blur(24px) saturate(1.05) brightness(.58);
+  opacity:.72;
+  transform:scale(1.08);
+}
+.player-artwork-disc.has-art::after{
+  z-index:1;
+  background-image:var(--art-url);
+  background-position:center;
+  background-size:contain;
+  background-repeat:no-repeat;
+  filter:none;
+}
+.player-artwork-disc.has-art span{display:none!important}
+.player-mini-art.has-art{
+  background-size:cover!important;
+  background-position:center!important;
+}
