@@ -1,5 +1,5 @@
 {
-  "version": "0.9.47",
+  "version": "0.9.48",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-10-05",
@@ -339,6 +339,12 @@
     "mobile-full-index-search",
     "legacy-web-medley-pack-21",
     "legacy-web-quick-filter",
-    "archive-medley-lineage-links"
+    "archive-medley-lineage-links",
+    "external-web-audio-policy",
+    "soundcloud-external-playback",
+    "bandcamp-external-playback",
+    "piapro-external-playback",
+    "touhoudb-external-fallback",
+    "inline-player-provider-whitelist"
   ]
 }
