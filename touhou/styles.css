@@ -407,3 +407,10 @@ button:active,.player-rank-card:active,.track-main:active{transform:scale(.985)}
 /* v0.9.24 input hardening */
 button,a,[role="button"],.mode-tab,.nav-item,.filter-chip{touch-action:manipulation}
 .mode-tab,.nav-item,.filter-chip,button{pointer-events:auto}
+
+/* v0.9.25 relation taxonomy */
+.type-badge.rearrangement,.type-badge.remix{color:#c8a8ff;border-color:rgba(200,168,255,.28)}
+.type-badge.cover,.type-badge.remaster{color:#ffd59a;border-color:rgba(255,213,154,.28)}
+.type-badge.instrumental,.type-badge.short-version{color:#b8f5d2;border-color:rgba(184,245,210,.25)}
+.type-badge.mashup,.type-badge.other-related{color:#ffb6cf;border-color:rgba(255,182,207,.26)}
+.filter-scroller{overscroll-behavior-x:contain}
