@@ -792,3 +792,114 @@ html[data-skin="station"] .station-console,
 html[data-skin="custom"] .hero-copy,
 html[data-skin="custom"] .hero-visual{position:relative;z-index:1}
 html[data-skin="station"] .station-console{overflow:hidden}
+
+
+/* v0.9.33 beginner filter layout */
+.toolbar-row.is-beginner{
+  align-items:stretch;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.toolbar-row.is-beginner .filter-scroller{
+  order:1;
+  flex:0 0 100%;
+  width:100%;
+  display:grid;
+  gap:9px;
+  overflow:visible;
+  padding:0;
+}
+.toolbar-row.is-beginner .work-select{display:none}
+.toolbar-row.is-beginner .sort-select{
+  order:2;
+  margin-left:auto;
+  min-width:150px;
+}
+.beginner-filter-group{
+  min-width:0;
+  display:grid;
+  grid-template-columns:92px minmax(0,1fr);
+  gap:8px;
+  align-items:start;
+  padding:9px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:var(--panel);
+}
+.beginner-filter-label{
+  min-height:34px;
+  display:flex;
+  align-items:center;
+  color:var(--muted);
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.04em;
+}
+.beginner-chip-grid{
+  min-width:0;
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+.beginner-chip-grid .filter-chip{
+  flex:0 0 auto;
+  min-height:34px;
+  max-width:240px;
+  padding:8px 11px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.beginner-circle-grid .filter-chip{background:var(--panel2)}
+.beginner-circle-grid .filter-chip.is-active{
+  background:linear-gradient(135deg,#a9decf,#d5c78a);
+  color:#0b1110;
+}
+html[data-skin="station"] .beginner-filter-group{
+  background:linear-gradient(180deg,#12191c,#0d1215);
+  border-color:rgba(176,216,200,.11);
+}
+@media(max-width:860px){
+  .toolbar-row.is-beginner{
+    position:relative;
+    top:auto;
+    margin-top:10px;
+    padding:0;
+    background:transparent;
+  }
+  .toolbar-row.is-beginner .sort-select{
+    width:100%;
+    min-width:0;
+    height:38px;
+  }
+  .beginner-filter-group{
+    grid-template-columns:1fr;
+    gap:7px;
+    padding:10px;
+  }
+  .beginner-filter-label{
+    min-height:0;
+    padding:0 2px;
+    font-size:8px;
+  }
+  .beginner-type-grid{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+  .beginner-circle-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  .beginner-chip-grid .filter-chip{
+    width:100%;
+    max-width:none;
+    min-width:0;
+    min-height:38px;
+    padding:8px 9px;
+    white-space:normal;
+    line-height:1.15;
+    text-align:center;
+  }
+}
+@media(max-width:390px){
+  .beginner-type-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
