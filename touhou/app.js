@@ -6,7 +6,7 @@ const player=new window.TouhouMediaPlayer();
 
 const state={
   localOriginals:[],localArrangements:[],localFanOriginals:[],known:new Map(),aliases:new Map(),identities:new Map(),remoteItems:[],fullItems:[],works:[],archiveSource:null,fanYoutubeMeta:null,
-  mode:"all",filter:"전체",workFilter:"",sort:"recommend",selected:null,view:"home",diveDepth:0,diveRoot:null,icebergMode:"visibility",rankIndex:new Map(),rankTotal:0,enriching:new Map(),
+  mode:"all",filter:"전체",workFilter:"",sort:"recommend",selected:null,view:"home",diveDepth:0,diveRoot:null,icebergMode:"visibility",rankIndex:new Map(),rankTotal:0,enriching:new Map(),homeMixIds:[],
   full:{available:false,loading:false,loaded:false,streaming:false,manifest:null,loadedCount:0,error:""},displayLimit:60,renderKey:"",lastMatchCount:0,childCounts:new Map(),
   relations:{ready:false,building:false,byOriginal:new Map(),byWork:new Map(),byCircle:new Map(),byVocal:new Map(),byMood:new Map()},
   remote:{available:false,loading:false,start:0,total:0,catalogTotal:0,key:"",error:"",counts:{},seq:0},
@@ -86,7 +86,7 @@ async function boot(){
     setDataHealth("error","UI 초기화 오류 · 새로고침 필요");
   }
   if("serviceWorker" in navigator){
-    navigator.serviceWorker.register("./sw.js?v=0.9.27").then(r=>r.update()).catch(err=>console.warn("service worker",err));
+    navigator.serviceWorker.register("./sw.js?v=0.9.28").then(r=>r.update()).catch(err=>console.warn("service worker",err));
   }
 
   const [or,ar,fr,far,fy,wr,sr]=await Promise.all([
@@ -202,8 +202,8 @@ function bind(){
     loadRemote(false);
   };
   $("#randomBtn").onclick=randomDive;$("#heroDiveBtn").onclick=randomDive;
-  $("#playableBtn").onclick=()=>{state.mode="all";state.filter="영상 있음";syncModeTabs();renderCatalog("인앱 재생 가능한 곡");loadRemote(true);};
-  $("#refreshBtn").onclick=()=>loadRemote(true,true);
+  $("#playableBtn").onclick=()=>{state.mode="all";state.filter="인앱 재생";syncModeTabs();renderCatalog("인앱 재생 가능한 곡");loadRemote(true);};
+  $("#refreshBtn").onclick=()=>{state.homeMixIds=[];renderCatalog(state.view==="home"?"오늘의 스테이션 믹스":undefined);loadRemote(true,true);};
   $("#icebergRefresh").onclick=()=>renderIceberg();
   $$("#icebergModeTabs [data-ice-mode]").forEach(btn=>btn.onclick=()=>{
     state.icebergMode=btn.dataset.iceMode;
@@ -214,6 +214,9 @@ function bind(){
   $("#scrim").onclick=()=>{closePanel();closeMenu();};
   $("#menuBtn").onclick=()=>{$("#sidebar").classList.toggle("is-open");syncScrim();};
   $("#themeBtn").onclick=toggleTheme;
+  $("#skinBtn").onclick=toggleSkin;
+  $("#skinTopBtn").onclick=toggleSkin;
+  syncSkinButtons();
   window.addEventListener("touhoudive:media-unavailable",e=>{
     const t=byId(e.detail?.trackId);if(t)t.mediaUnavailable=true;
     if(state.view==="discover"||state.view==="home")renderCatalog();
@@ -235,7 +238,7 @@ function bind(){
   document.addEventListener("click",e=>{
     const modeBtn=e.target.closest?.("#modeTabs .mode-tab");
     if(modeBtn){
-      state.mode=modeBtn.dataset.mode;state.filter="전체";
+      state.mode=modeBtn.dataset.mode;state.filter="전체";state.homeMixIds=[];
       if(state.mode==="fan-original"){state.workFilter="";$("#workSelect").value=""}
       syncModeTabs();
       requestAnimationFrame(()=>state.view==="iceberg"?renderIceberg():renderCatalog());
@@ -297,6 +300,7 @@ async function connectFullDataset(){
       }
     });
     state.fullItems=result.tracks.map(t=>remember(t));
+    state.homeMixIds=[];
     state.childCounts=new Map();
     for(const t of state.fullItems){
       for(const oid of (t.originalIds||[])){
@@ -354,6 +358,9 @@ function remoteFail(msg){
   $("#catalogMeta").textContent="라이브 카탈로그 연결 실패 · 로컬 데이터로 계속 사용 가능";
   $("#loadMoreBtn").disabled=true;$("#loadMoreBtn").textContent="라이브 DB 연결 안 됨";
 }
+function remoteMode(){
+  return state.mode==="db-fan-original"?"fan-original":state.mode;
+}
 function remoteKey(){
   return JSON.stringify({q:$("#searchInput").value.trim(),mode:state.mode,filter:state.filter,work:state.workFilter,sort:state.sort});
 }
@@ -383,15 +390,17 @@ async function loadRemote(reset=false,force=false){
   try{
     const work=selectedWork();
     const res=await catalog.search({
-      query:$("#searchInput").value.trim(),mode:state.mode,start,maxResults:50,
-      sort:remoteSort(),onlyWithPvs:state.filter==="영상 있음",tagName:work?.tag||"",force
+      query:$("#searchInput").value.trim(),mode:remoteMode(),start,maxResults:50,
+      sort:remoteSort(),onlyWithPvs:state.filter==="인앱 재생"||state.filter==="영상 있음",tagName:work?.tag||"",force
     });
     if(seq!==state.remote.seq||key!==remoteKey())return;
     let incoming=(res.items||[]).map(t=>{const work=selectedWork();return remember(work?{...t,workId:work.id,work:t.work||work.title}:t)});
     if(state.mode==="original")incoming=incoming.filter(t=>t.type==="original");
     if(state.mode==="arrangement")incoming=incoming.filter(t=>t.type==="arrangement");
+    if(state.mode==="db-fan-original")incoming=incoming.filter(t=>isFanOriginal(t)&&!isCuratedStyle(t));
     if(state.mode==="fan-original")incoming=[];
     state.remoteItems=dedupe([...state.remoteItems,...incoming]);
+    if(state.view==="home")state.homeMixIds=[];
     state.remote.start=start+(Number(res.consumed)||Number(res.raw?.items?.length)||res.items?.length||0);
     state.remote.total=Number(res.total)||state.remote.total;
     state.remote.error="";
@@ -667,7 +676,7 @@ function dedupe(list){
 }
 function currentPool(){
   if(state.mode==="fan-original"){
-    return dedupe(state.localFanOriginals.map(x=>byId(x.id)||x)).filter(isFanOriginal);
+    return dedupe(state.localFanOriginals.map(x=>byId(x.id)||x)).filter(isCuratedStyle);
   }
   let pool;
   if(state.full.loaded)pool=dedupe([...state.fullItems,...state.localFanOriginals.map(x=>byId(x.id)||x)]);
@@ -677,29 +686,53 @@ function currentPool(){
   }
   if(state.mode==="original")pool=pool.filter(t=>t.type==="original");
   if(state.mode==="arrangement")pool=pool.filter(t=>t.type==="arrangement");
+  if(state.mode==="db-fan-original")pool=pool.filter(t=>isFanOriginal(t)&&!isCuratedStyle(t));
   return pool;
+}
+function balancedHomeMix(list,limit=18){
+  const rows=dedupe(list),byIdMap=new Map(rows.map(x=>[resolveId(x.id),x]));
+  const validSaved=(state.homeMixIds||[]).map(id=>byIdMap.get(resolveId(id))).filter(Boolean);
+  if(validSaved.length>=Math.min(10,limit))return validSaved.slice(0,limit);
+  const used=new Set(),out=[];
+  const take=(pool,n)=>{
+    const candidates=shuffle(pool.slice(0,Math.max(n*8,24)));
+    for(const t of candidates){
+      const id=resolveId(t.id);if(used.has(id))continue;
+      used.add(id);out.push(t);if(--n<=0)break;
+    }
+  };
+  const official=rows.filter(t=>relationCategory(t)==="official-original");
+  const derivatives=rows.filter(t=>["arrangement","rearrangement","remix","cover","remaster","instrumental","mashup","short-version"].includes(relationCategory(t)));
+  const dbFan=rows.filter(t=>relationCategory(t)==="fan-original"&&!isCuratedStyle(t));
+  const curated=rows.filter(isCuratedStyle);
+  const hidden=rows.filter(t=>player.playable(t)&&popularityScore(t)>0&&(!t.globalRank||Number(t.globalRank)>5000));
+  take(official,3);take(derivatives,7);take(dbFan,3);take(curated,3);take(hidden,2);
+  take(rows,Math.max(0,limit-out.length));
+  state.homeMixIds=out.map(x=>resolveId(x.id));
+  return out.slice(0,limit);
 }
 function renderCatalog(title){
   refreshRanks();
   renderFilters();
   let list=currentPool();
-  if(state.filter==="영상 있음")list=list.filter(t=>hasMediaCandidate(t));
+  if(state.filter==="인앱 재생"||state.filter==="영상 있음")list=list.filter(t=>player.playable(t));
   else if(state.filter.startsWith("category:")){
     const key=state.filter.slice(9);list=list.filter(t=>relationCategory(t)===key);
-  }else if(state.filter!=="전체")list=list.filter(t=>state.mode==="fan-original"?(t.artistString===state.filter||t.circle===state.filter):t.circle===state.filter);
+  }else if(state.filter!=="전체")list=list.filter(t=>(state.mode==="fan-original"||state.mode==="db-fan-original")?(t.artistString===state.filter||t.circle===state.filter):t.circle===state.filter);
   const work=selectedWork();
   if(work)list=list.filter(t=>trackMatchesWork(t,work));
   const q=$("#searchInput").value.trim().toLowerCase();
   if(q)list=list.filter(t=>searchBlob(t).includes(q));
   list=sortList(list,state.sort);
+  const homeStation=state.view==="home"&&state.mode==="all"&&state.filter==="전체"&&state.sort==="recommend"&&!q&&!work;
+  const homeVisible=homeStation?balancedHomeMix(list,18):null;
   const pagedRender=state.full.loaded||state.full.streaming;
   const key=JSON.stringify({q,mode:state.mode,filter:state.filter,work:state.workFilter,sort:state.sort,full:state.full.loaded,streaming:state.full.streaming});
   if(key!==state.renderKey){state.renderKey=key;state.displayLimit=pagedRender?60:Math.max(60,list.length)}
   state.lastMatchCount=list.length;
-  const visible=pagedRender?list.slice(0,state.displayLimit):list;
-  if(!q&&state.filter==="전체"&&state.sort==="recommend"&&!state.remoteItems.length&&!state.full.loaded)renderGrid(shuffle(visible).slice(0,12));
-  else renderGrid(visible);
-  $("#sectionTitle").textContent=title||catalogTitle(q,list.length);
+  const visible=homeVisible||(pagedRender?list.slice(0,state.displayLimit):list);
+  renderGrid(visible);
+  $("#sectionTitle").textContent=title||(homeStation?"오늘의 스테이션 믹스":catalogTitle(q,list.length));
   updateStats();syncCatalogFooter();
 }
 function renderWorkSelect(){
@@ -718,7 +751,7 @@ function trackMatchesWork(t,work){
   return [work.title,work.tag,...(work.aliases||[])].some(v=>v&&hay.includes(String(v).normalize("NFKC").toLowerCase()));
 }
 function renderFilters(){
-  const base=currentPool(),out=[{key:"전체",label:"전체"},{key:"영상 있음",label:"영상 있음"}];
+  const base=currentPool(),out=[{key:"전체",label:"전체"},{key:"인앱 재생",label:"인앱 재생"}];
   if(state.mode==="all"||state.mode==="arrangement"){
     const order=["official-original","fan-original","touhou-style","fan-game-ost","arrangement","rearrangement","remix","cover","remaster","instrumental","mashup","short-version","other-related"];
     const present=new Set(base.map(relationCategory));
@@ -727,7 +760,7 @@ function renderFilters(){
   if(state.mode==="arrangement"){
     uniq(base.map(x=>x.circle).filter(Boolean)).slice(0,8).forEach(x=>out.push({key:x,label:x}));
   }
-  if(state.mode==="fan-original"){
+  if(state.mode==="fan-original"||state.mode==="db-fan-original"){
     uniq(base.map(x=>x.artistString||x.circle).filter(Boolean)).slice(0,10).forEach(x=>out.push({key:x,label:x}));
   }
   if(!out.some(x=>x.key===state.filter))state.filter="전체";
@@ -759,6 +792,7 @@ function updateStats(){
     :"TouhouDB 비공식 Original · 동방풍 큐레이션과 별도";
   $("#statCuratedStyleMeta").textContent=fmt(curatedMeasured)+" / "+fmt(localFan)+"곡 영상·반응 실측";
   $("#statMediaMeta").textContent=meta?"전체 "+fmt(meta.indexed)+"곡에서 PV 후보 확인":"전수 인덱스 생성 후 확정";
+  const stationCount=$("#stationCatalogCount");if(stationCount)stationCount.textContent=meta?fmt(meta.indexed):fmt(state.known.size);
   updateCatalogTotal();
 }
 function updateCatalogTotal(){
@@ -818,6 +852,7 @@ function catalogTitle(q,count){
   if(state.filter!=="전체")return state.filter;
   if(state.mode==="original")return "동방 공식 원곡 전체 탐색";
   if(state.mode==="arrangement")return "동방 2차창작 전체 탐색";
+  if(state.mode==="db-fan-original")return "TouhouDB 팬 원곡 전체 탐색";
   if(state.mode==="fan-original")return "동방풍 오리지널 전체 탐색";
   return state.view==="home"?"오늘의 다이브 입구":"전체 카탈로그";
 }
@@ -962,7 +997,7 @@ async function hydrateAndOpen(id){
   if(!catalog||!String(id).startsWith("tdb-"))return;
   try{const t=await catalog.hydrate(id);if(t){remember(t);openTrack(t);renderCatalog();}}catch(e){toast("원곡 계보를 불러오지 못했습니다.");}
 }
-function hasMediaCandidate(t){return !!(t&&(player.playable(t)||trustedExternalMedia(t)||(t.mediaCandidates||[]).length))}
+function hasMediaCandidate(t){return !!(t&&player.playable(t))}
 function trustedExternalMedia(t){
   return (t?.mediaCandidates||[]).find(m=>m?.mode==="external"&&/^https?:\/\//.test(String(m.url||"")))||null;
 }
@@ -1716,7 +1751,7 @@ function orderByStoredRank(list,field,totalHint=0){
   return out;
 }
 function sortList(list,sort){
-  const fanOnly=list.length>0&&list.every(isFanOriginal);
+  const fanOnly=list.length>0&&list.every(isCuratedStyle);
   if(sort==="year-desc")return [...list].sort((a,b)=>(b.year||0)-(a.year||0));
   if(sort==="year-asc")return [...list].sort((a,b)=>(a.year||9999)-(b.year||9999));
   if(sort==="title")return [...list].sort((a,b)=>a.title.localeCompare(b.title,"ja"));
@@ -1772,7 +1807,7 @@ function normalizePersistentIds(){
 }
 function syncModeTabs(){
   $$("#modeTabs .mode-tab").forEach(x=>x.classList.toggle("is-active",x.dataset.mode===state.mode));
-  const work=$("#workSelect");if(work){work.disabled=state.mode==="fan-original";work.title=work.disabled?"동방풍 오리지널은 공식 작품 필터와 별도입니다.":""}
+  const work=$("#workSelect");if(work){work.disabled=state.mode==="fan-original"||state.mode==="db-fan-original";work.title=work.disabled?"팬 원곡/동방풍은 공식 작품 필터와 별도입니다.":""}
 }
 function setDataHealth(kind,text){
   const el=$("#dataHealth");
@@ -1784,6 +1819,17 @@ function closePanel(){$("#detailPanel").classList.remove("is-open");$("#detailPa
 function closeMenu(){$("#sidebar").classList.remove("is-open");syncScrim();}
 function syncScrim(){const on=$("#detailPanel").classList.contains("is-open")||$("#sidebar").classList.contains("is-open");$("#scrim").classList.toggle("is-open",on);}
 function toggleTheme(){const html=document.documentElement,next=html.dataset.theme==="light"?"dark":"light";html.dataset.theme=next;localStorage.setItem("touhoudive:theme",next);}
+function syncSkinButtons(){
+  const station=document.documentElement.dataset.skin==="station";
+  const side=$("#skinBtn"),top=$("#skinTopBtn");
+  if(side)side.textContent=station?"▣ STATION 스킨":"◇ GRAPH 스킨";
+  if(top){top.textContent=station?"▣":"◇";top.setAttribute("aria-pressed",station?"true":"false")}
+}
+function toggleSkin(){
+  const html=document.documentElement,next=html.dataset.skin==="station"?"graph":"station";
+  html.dataset.skin=next;localStorage.setItem("touhoudive:skin",next);syncSkinButtons();
+  toast(next==="station"?"STATION · MP3 스킨으로 전환했습니다.":"GRAPH · 아카이브 스킨으로 전환했습니다.");
+}
 function toast(msg){const el=$("#toast");el.textContent=msg;el.classList.add("show");clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove("show"),1700);}
 function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
 function uniq(a){return [...new Set((a||[]).filter(Boolean))]}
@@ -1795,3 +1841,4 @@ function normKey(v){return String(v||"").normalize("NFKC").toLowerCase().replace
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}
 function escAttr(v){return esc(v)}
 document.documentElement.dataset.theme=localStorage.getItem("touhoudive:theme")||"dark";
+document.documentElement.dataset.skin=localStorage.getItem("touhoudive:skin")||"station";
