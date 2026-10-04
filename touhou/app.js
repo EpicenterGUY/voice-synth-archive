@@ -14,7 +14,8 @@ const state={
   history:readJson("touhoudive:history",[]),
   snapshots:readJson("touhoudive:snapshots",{})
 };
-let searchTimer=0,localSearchTimer=0,uiBound=false;
+let searchTimer=0,localSearchTimer=0,uiBound=false,customBgObjectUrl="";
+const CUSTOM_SKIN_SETTINGS_KEY="touhoudive:customSkin:v1";
 
 document.documentElement.dataset.theme=localStorage.getItem("touhoudive:theme")||"dark";
 document.documentElement.dataset.skin=localStorage.getItem("touhoudive:skin")||"station";
@@ -88,7 +89,7 @@ async function boot(){
     setDataHealth("error","UI 초기화 오류 · 새로고침 필요");
   }
   if("serviceWorker" in navigator){
-    navigator.serviceWorker.register("./sw.js?v=0.9.28").then(r=>r.update()).catch(err=>console.warn("service worker",err));
+    navigator.serviceWorker.register("./sw.js?v=0.9.29").then(r=>r.update()).catch(err=>console.warn("service worker",err));
   }
 
   const [or,ar,fr,far,fy,wr,sr]=await Promise.all([
@@ -213,12 +214,38 @@ function bind(){
     renderIceberg();
   });
   $("#panelClose").onclick=closePanel;
-  $("#scrim").onclick=()=>{closePanel();closeMenu();};
+  $("#skinPanelClose").onclick=closeSkinPanel;
+  $("#scrim").onclick=()=>{closePanel();closeMenu();closeSkinPanel();};
   $("#menuBtn").onclick=()=>{$("#sidebar").classList.toggle("is-open");syncScrim();};
   $("#themeBtn").onclick=toggleTheme;
-  $("#skinBtn").onclick=toggleSkin;
-  $("#skinTopBtn").onclick=toggleSkin;
+  $("#skinBtn").onclick=openSkinPanel;
+  $("#skinTopBtn").onclick=openSkinPanel;
+  $("#skinPanel [data-skin-choice]").forEach(btn=>btn.onclick=()=>setSkin(btn.dataset.skinChoice));
+  $("#customBgInput").addEventListener("change",async e=>{
+    const file=e.target.files?.[0];e.target.value="";
+    if(!file)return;
+    if(!String(file.type||"").startsWith("image/")){toast("이미지 파일만 사용할 수 있습니다.");return}
+    if(file.size>25*1024*1024){toast("이미지는 25MB 이하로 선택해 주세요.");return}
+    try{
+      await putCustomSkinImage(file);
+      setSkin("custom");
+      await loadCustomSkinImage();
+      toast("내 그림을 CUSTOM 배경으로 저장했습니다.");
+    }catch(err){
+      console.warn("custom skin image save failed",err);
+      toast("이미지를 저장하지 못했습니다.");
+    }
+  });
+  $("#customBgDim").addEventListener("input",e=>updateCustomSkinSetting("dim",Number(e.target.value)||0));
+  $("#customBgFit").addEventListener("change",e=>updateCustomSkinSetting("fit",e.target.value==="contain"?"contain":"cover"));
+  $("#customBgRemove").onclick=async()=>{
+    try{await deleteCustomSkinImage();await loadCustomSkinImage();toast("CUSTOM 배경 그림을 제거했습니다.");}
+    catch(err){console.warn(err);toast("그림을 제거하지 못했습니다.");}
+  };
+  applyCustomSkinSettings();
+  loadCustomSkinImage().catch(()=>{});
   syncSkinButtons();
+  syncSkinPanel();
   window.addEventListener("touhoudive:media-unavailable",e=>{
     const t=byId(e.detail?.trackId);if(t)t.mediaUnavailable=true;
     if(state.view==="discover"||state.view==="home")renderCatalog();
@@ -252,7 +279,7 @@ function bind(){
   });
   document.addEventListener("keydown",e=>{
     if(e.key==="/"&&document.activeElement!==$("#searchInput")){e.preventDefault();$("#searchInput").focus();}
-    if(e.key==="Escape"){closePanel();closeMenu();if(!player.shell.classList.contains("is-mini")&&!player.shell.hidden)player.minimize();}
+    if(e.key==="Escape"){closePanel();closeMenu();closeSkinPanel();if(!player.shell.classList.contains("is-mini")&&!player.shell.hidden)player.minimize();}
   });
   if("IntersectionObserver" in window){
     const io=new IntersectionObserver(entries=>{
@@ -1820,18 +1847,98 @@ function setDataHealth(kind,text){
 }
 function closePanel(){$("#detailPanel").classList.remove("is-open");$("#detailPanel").setAttribute("aria-hidden","true");syncScrim();}
 function closeMenu(){$("#sidebar").classList.remove("is-open");syncScrim();}
-function syncScrim(){const on=$("#detailPanel").classList.contains("is-open")||$("#sidebar").classList.contains("is-open");$("#scrim").classList.toggle("is-open",on);}
-function toggleTheme(){const html=document.documentElement,next=html.dataset.theme==="light"?"dark":"light";html.dataset.theme=next;localStorage.setItem("touhoudive:theme",next);}
-function syncSkinButtons(){
-  const station=document.documentElement.dataset.skin==="station";
-  const side=$("#skinBtn"),top=$("#skinTopBtn");
-  if(side)side.textContent=station?"▣ STATION 스킨":"◇ GRAPH 스킨";
-  if(top){top.textContent=station?"▣":"◇";top.setAttribute("aria-pressed",station?"true":"false")}
+function openSkinPanel(){
+  closeMenu();
+  const panel=$("#skinPanel");panel.classList.add("is-open");panel.setAttribute("aria-hidden","false");
+  syncSkinPanel();syncScrim();
 }
-function toggleSkin(){
-  const html=document.documentElement,next=html.dataset.skin==="station"?"graph":"station";
-  html.dataset.skin=next;localStorage.setItem("touhoudive:skin",next);syncSkinButtons();
-  toast(next==="station"?"STATION · MP3 스킨으로 전환했습니다.":"GRAPH · 아카이브 스킨으로 전환했습니다.");
+function closeSkinPanel(){
+  const panel=$("#skinPanel");if(!panel)return;
+  panel.classList.remove("is-open");panel.setAttribute("aria-hidden","true");syncScrim();
+}
+function syncScrim(){
+  const on=$("#detailPanel").classList.contains("is-open")||$("#sidebar").classList.contains("is-open")||$("#skinPanel")?.classList.contains("is-open");
+  $("#scrim").classList.toggle("is-open",!!on);
+}
+function toggleTheme(){const html=document.documentElement,next=html.dataset.theme==="light"?"dark":"light";html.dataset.theme=next;localStorage.setItem("touhoudive:theme",next);}
+function currentSkin(){const s=document.documentElement.dataset.skin;return["station","graph","custom"].includes(s)?s:"station"}
+function setSkin(skin){
+  if(!["station","graph","custom"].includes(skin))skin="station";
+  document.documentElement.dataset.skin=skin;localStorage.setItem("touhoudive:skin",skin);
+  syncSkinButtons();syncSkinPanel();
+  toast(skin==="custom"?"CUSTOM · 내 배경 스킨":skin==="station"?"STATION · MP3 스킨":"GRAPH · 아카이브 스킨");
+}
+function syncSkinButtons(){
+  const skin=currentSkin(),side=$("#skinBtn"),top=$("#skinTopBtn");
+  const label=skin==="station"?"STATION":skin==="graph"?"GRAPH":"CUSTOM";
+  if(side)side.textContent="▣ 스킨 설정 · "+label;
+  if(top){top.textContent=skin==="custom"?"▦":skin==="station"?"▣":"◇";top.setAttribute("aria-label","스킨 설정 · "+label)}
+}
+function customSkinSettings(){
+  const raw=readJson(CUSTOM_SKIN_SETTINGS_KEY,{});
+  return{dim:Number.isFinite(Number(raw.dim))?Math.max(0,Math.min(80,Number(raw.dim))):46,fit:raw.fit==="contain"?"contain":"cover"};
+}
+function applyCustomSkinSettings(){
+  const cfg=customSkinSettings(),root=document.documentElement;
+  root.style.setProperty("--custom-bg-dim",String(cfg.dim/100));
+  root.style.setProperty("--custom-bg-fit",cfg.fit);
+  const dim=$("#customBgDim"),fit=$("#customBgFit");
+  if(dim)dim.value=String(cfg.dim);if(fit)fit.value=cfg.fit;
+}
+function updateCustomSkinSetting(key,value){
+  const cfg=customSkinSettings();cfg[key]=value;writeJson(CUSTOM_SKIN_SETTINGS_KEY,cfg);applyCustomSkinSettings();
+}
+function syncSkinPanel(){
+  const skin=currentSkin();
+  $("#skinPanel [data-skin-choice]").forEach(btn=>{
+    const on=btn.dataset.skinChoice===skin;btn.classList.toggle("is-active",on);btn.setAttribute("aria-checked",on?"true":"false");
+  });
+  const custom=$("#customSkinOptions");if(custom)custom.hidden=skin!=="custom";
+  applyCustomSkinSettings();
+}
+function customSkinDb(){
+  return new Promise((resolve,reject)=>{
+    if(!("indexedDB" in window)){reject(new Error("IndexedDB unavailable"));return}
+    const req=indexedDB.open("touhoudive-skin-assets",1);
+    req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains("assets"))db.createObjectStore("assets")};
+    req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error||new Error("IndexedDB open failed"));
+  });
+}
+async function putCustomSkinImage(blob){
+  const db=await customSkinDb();
+  await new Promise((resolve,reject)=>{
+    const tx=db.transaction("assets","readwrite");tx.objectStore("assets").put(blob,"custom-background");
+    tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error||new Error("IndexedDB aborted"));
+  });db.close();
+}
+async function getCustomSkinImage(){
+  const db=await customSkinDb();
+  const value=await new Promise((resolve,reject)=>{
+    const tx=db.transaction("assets","readonly"),req=tx.objectStore("assets").get("custom-background");
+    req.onsuccess=()=>resolve(req.result||null);req.onerror=()=>reject(req.error);
+  });db.close();return value;
+}
+async function deleteCustomSkinImage(){
+  const db=await customSkinDb();
+  await new Promise((resolve,reject)=>{
+    const tx=db.transaction("assets","readwrite");tx.objectStore("assets").delete("custom-background");
+    tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);
+  });db.close();
+}
+async function loadCustomSkinImage(){
+  let blob=null;try{blob=await getCustomSkinImage()}catch(_){}
+  if(customBgObjectUrl){URL.revokeObjectURL(customBgObjectUrl);customBgObjectUrl=""}
+  const root=document.documentElement,preview=$("#customImagePreview"),remove=$("#customBgRemove");
+  if(blob instanceof Blob){
+    customBgObjectUrl=URL.createObjectURL(blob);
+    root.style.setProperty("--custom-bg-image",'url("'+customBgObjectUrl+'")');
+    if(preview){preview.style.backgroundImage='url("'+customBgObjectUrl+'")';preview.classList.add("has-image")}
+    if(remove)remove.disabled=false;
+  }else{
+    root.style.setProperty("--custom-bg-image","none");
+    if(preview){preview.style.backgroundImage="";preview.classList.remove("has-image")}
+    if(remove)remove.disabled=true;
+  }
 }
 function toast(msg){const el=$("#toast");el.textContent=msg;el.classList.add("show");clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove("show"),1700);}
 function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
