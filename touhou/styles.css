@@ -849,8 +849,8 @@ html[data-skin="station"] .station-console{overflow:hidden}
   overflow:hidden;
   text-overflow:ellipsis;
 }
-.beginner-circle-grid .filter-chip{background:var(--panel2)}
-.beginner-circle-grid .filter-chip.is-active{
+.beginner-circle-grid .filter-chip,.beginner-creator-grid .filter-chip{background:var(--panel2)}
+.beginner-circle-grid .filter-chip.is-active,.beginner-creator-grid .filter-chip.is-active{
   background:linear-gradient(135deg,#a9decf,#d5c78a);
   color:#0b1110;
 }
@@ -885,7 +885,7 @@ html[data-skin="station"] .beginner-filter-group{
     display:grid;
     grid-template-columns:repeat(3,minmax(0,1fr));
   }
-  .beginner-circle-grid{
+  .beginner-circle-grid,.beginner-creator-grid{
     display:grid;
     grid-template-columns:repeat(2,minmax(0,1fr));
   }
