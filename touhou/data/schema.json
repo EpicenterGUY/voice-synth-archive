@@ -1,5 +1,5 @@
 {
-  "version": 21,
+  "version": 22,
   "entities": {
     "track": [
       "id",
@@ -203,6 +203,23 @@
       "portrait": "single-column scroll layout; song/video switch is normal-flow, not sticky",
       "landscape": "left playback + 280px info rail; artwork constrained by viewport height",
       "orientationChange": "expanded player scroll resets to top and visual mode is resynced"
+    },
+    "songModeSourcePolicy": {
+      "song": [
+        "bandcamp",
+        "soundcloud",
+        "niconico",
+        "bilibili",
+        "youtube"
+      ],
+      "video": [
+        "youtube",
+        "niconico",
+        "bilibili",
+        "soundcloud",
+        "bandcamp"
+      ],
+      "note": "YouTube ads cannot be suppressed by TouhouDive; song mode prefers alternate embedded sources when available."
     }
   },
   "notes": [
@@ -262,6 +279,9 @@
     "Catalog cards use a layered YouTube thumbnail fallback chain so large tablet cards prefer maxres/sd/hq assets before mqdefault.",
     "The song/video switch no longer follows scrolling on portrait/mobile layouts.",
     "Tablet landscape has a dedicated expanded-player layout so desktop minimum column widths cannot overlap playback controls or the info rail.",
-    "When device orientation changes while the expanded player is open, its internal scroll position is reset and the visual mode is re-synchronized."
+    "When device orientation changes while the expanded player is open, its internal scroll position is reset and the visual mode is re-synchronized.",
+    "Tablet landscape mini-player is intentionally allowed to overlay content and is positioned closer to the bottom edge.",
+    "Catalog and related-list thumbnails asynchronously resolve the best available artwork and preserve aspect ratio.",
+    "Known locally unavailable YouTube media is excluded from thumbnail selection and related playback candidates."
   ]
 }
