@@ -1,11 +1,28 @@
 {
   "current": {
-    "version": "39.116.0",
-    "releasedAt": "2026-09-30",
-    "title": "Home Explorer · Watch History Split",
-    "summary": "홈 추천/숨은곡 수를 대폭 늘리고 기준별 검색·필터·정렬을 추가했으며, 시청기록을 홈에서 분리해 독립 WATCH HISTORY 페이지로 개편했습니다."
+    "version": "39.119.0",
+    "releasedAt": "2026-10-04",
+    "title": "Skin Studio · MP3 Music Station",
+    "summary": "MP3 플레이어와 음악 스테이션 감성의 스킨 프리셋, 세부 꾸미기, 플레이어 EQ, 스킨 코드 공유 시스템을 추가했습니다."
   },
   "entries": [
+    {
+      "version": "39.119.0",
+      "date": "2026-10-04",
+      "title": "Skin Studio · MP3 Music Station",
+      "changes": [
+        "기존 VocaDive UI를 유지한 채 선택해서 적용할 수 있는 스킨 스튜디오 추가",
+        "Music Station 2000, Night Walkman, Aqua Glass, Cassette Warm, Neon Deck, Pocket Mono 프리셋 추가",
+        "강조색·보조색·배경색·모서리 둥글기·블러 강도·정보 밀도를 실시간 조절 가능",
+        "미니 플레이어와 전체 플레이어에 스킨별 MP3/워크맨/카세트/네온 장비 감성을 연동",
+        "미니 플레이어 4밴드 EQ 애니메이션, 앰비언트 글로우, 메타 정보 절제, 아날로그 그레인 토글 추가",
+        "스킨 설정을 로컬에 저장해 새로고침과 PWA 재실행 뒤에도 유지",
+        "스킨 코드를 JSON으로 복사하고 다른 기기에서 붙여넣어 같은 꾸미기를 재사용 가능",
+        "기본 Classic 선택 시 기존 다크/라이트 테마 변수를 건드리지 않도록 호환 처리",
+        "상단 스킨 버튼과 설정 페이지의 스킨 스튜디오 진입 카드를 추가",
+        "웹 업데이트·서비스워커 캐시 세대를 v39.119.0으로 동기화"
+      ]
+    },
     {
       "version": "39.116.0",
       "date": "2026-09-30",
