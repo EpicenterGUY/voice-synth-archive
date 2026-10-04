@@ -4626,7 +4626,7 @@ function isUnionSourceMode(mode=state.sourceMode){
 function normalizeSourceTag37(tag){
   try{return String(tag||"").normalize("NFKC").trim().toLowerCase()}catch(_){return String(tag||"").trim().toLowerCase()}
 }
-const ORIGINAL_DERIVATIVE_RE37=/(?:off[\s._-]*vocal|off[\s._-]*vo\b|no[\s._-]*vocal|instrumental(?:\s*(?:ver\.?|version|mix))?|\binst\.?\s*(?:ver\.?|version)?\b|オフ[\s_-]*ボ(?:ーカル)?|オフボ(?:ーカル)?|インスト(?:版|ver\.?)?|カラオケ|ニコカラ|karaoke|伴奏|歌ってみた|歌わせてみた|cover(?:ed)?|カバー曲|踊ってみた|演奏してみた|弾いてみた|吹いてみた|叩いてみた|MMD|MAD)/i;
+const ORIGINAL_DERIVATIVE_RE37=/(?:off[\s._-]*vocal|off[\s._-]*vo\b|no[\s._-]*vocal|instrumental(?:\s*(?:ver\.?|version|mix))?|\binst\.?\s*(?:ver\.?|version)?\b|オフ[\s_-]*ボ(?:ーカル)?|オフボ(?:ーカル)?|インスト(?:版|ver\.?)?|カラオケ|ニコカラ|karaoke|伴奏|歌ってみた|歌わせてみた|cover(?:ed)?|カバー曲|踊ってみた|演奏してみた|弾いてみた|吹いてみた|叩いてみた|MMD|MAD|ゲーム実況|実況プレイ|実況動画|プレイ動画|ゲーム配信|生配信|生放送|配信切り抜き|切り抜き|RTA|TAS|攻略(?:動画)?|解説(?:動画)?|reaction|リアクション|gameplay|lets[\s_-]*play)/i;
 function originalDerivativeInfo37(song){
   const text=[song&&song.title,song&&song.description].concat(parseTags(song&&song.tags)).filter(Boolean).join(" ");
   const m=text.match(ORIGINAL_DERIVATIVE_RE37);return {hit:!!m,reason:m&&m[0]||""}
@@ -4841,28 +4841,38 @@ window.VSA37AdultFilterRows=filterAdultRows37;
 window.VSA37AdultMode=adultFilterMode37;
 window.VSA37AdultInfo=adultContentInfo37;
 
+function searchScopeOriginalMode37(scope){
+  return {
+    all_voice_synth:"all_voice_synth_union",
+    voice_synth:"voice_synth_union",
+    vocaloid:"original_union",
+    utau:"utau_union",
+    synthv:"synthv_union",
+    cevio:"cevio_union",
+    voisona:"voisona_union",
+    neutrino:"neutrino_union",
+    voicevox:"voicevox_union"
+  }[scope]||""
+}
 function songMatchesScope(song,scope){
   if(!scope || scope==="all") return true;
-  const full=fullScopeTags(scope);
-  if(!full) return true;
-  const tags=parseTags(song.tags);
-  const set=new Set(tags);
-  if(full.some(t=>set.has(t))) return true;
+  const mode=searchScopeOriginalMode37(scope);
+  if(!mode)return true;
 
-  // 니코동의 표기 흔들림을 고려한 엔진명 보조 판정.
-  const all=tags.join(" ");
-  if(scope==="all_voice_synth"){
-    return /VOCALOID|UTAU|Synthesizer ?V|SynthV|CeVIO|VoiSona|NEUTRINO|VOICEVOX|ACE ?Studio/i.test(all);
-  }
-  if(scope==="voice_synth") return /VOCALOID|UTAU|Synthesizer ?V|SynthV/i.test(all);
-  if(scope==="vocaloid") return /VOCALOID/i.test(all);
-  if(scope==="utau") return /UTAU/i.test(all);
-  if(scope==="synthv") return /Synthesizer ?V|SynthV/i.test(all);
-  if(scope==="cevio") return /CeVIO/i.test(all);
-  if(scope==="voisona") return /VoiSona/i.test(all);
-  if(scope==="neutrino") return /NEUTRINO/i.test(all);
-  if(scope==="voicevox") return /VOICEVOX/i.test(all);
-  return true;
+  if(discoveryOriginalProof37(song,mode).ok)return true;
+
+  const text=[song&&song.title,song&&song.description].concat(parseTags(song&&song.tags)).filter(Boolean).join(" ");
+  if(originalDerivativeInfo37(song).hit)return false;
+  const explicit=/(?:オリジナル(?:曲)?|original(?:\s+song)?|書き下ろし|自作曲)/i.test(text);
+  if(!explicit)return false;
+  if(scope==="vocaloid")return /VOCALOID|初音ミク|鏡音|巡音ルカ|MEIKO|KAITO|GUMI|IA|flower|音街ウナ|結月ゆかり|歌愛ユキ/i.test(text);
+  if(scope==="utau")return /UTAU|重音テト|波音リツ|デフォ子|足立レイ/i.test(text);
+  if(scope==="synthv")return /Synthesizer ?V|SynthV|小春六花|夏色花梨|花隈千冬|宮舞モカ|重音テトSV/i.test(text);
+  if(scope==="cevio")return /CeVIO|可不|星界|裏命|狐子|羽累/i.test(text);
+  if(scope==="voisona")return /VoiSona|知声|機流音|双葉湊音|AiSuu/i.test(text);
+  if(scope==="neutrino")return /NEUTRINO|きりたん|めろう|ナクモ|ずん子|No\.7/i.test(text);
+  if(scope==="voicevox")return /VOICEVOX|ずんだもん/i.test(text);
+  return /VOCALOID|UTAU|Synthesizer ?V|SynthV|CeVIO|VoiSona|NEUTRINO|VOICEVOX|ACE ?Studio/i.test(text)
 }
 
 
@@ -8285,13 +8295,20 @@ async function freeSearch(reset=false){
       for(const s of (titleProbe124.data||[])){
         if(!s?.contentId)continue;
         const rel=searchRelevanceScore124(s,searchQuery);
-        if(searchScope==="all"||songMatchesScope(s,searchScope)||rel>=65000)titleMerged124.set(s.contentId,s)
+        if(searchScope==="all"||songMatchesScope(s,searchScope))titleMerged124.set(s.contentId,s)
       }
       rawRows=[...titleMerged124.values()]
     }
 
     if(searchSeq!==(Number(window.__VSA_FREE_SEARCH_SEQ)||0)||state.listMode!=="free")return;
 
+    if(searchScope!=="all"){
+      const beforeScope37=rawRows.length;
+      rawRows=rawRows.filter(function(s){return songMatchesScope(s,searchScope)});
+      state.sourceRejectStats.search_scope_original={
+        checked:beforeScope37,kept:rawRows.length,rejected:beforeScope37-rawRows.length,scope:searchScope,at:Date.now()
+      }
+    }
     rawRows=filterAdultRows37(rawRows,"search").rows;
     const existing=new Map(priorSongs.map(x=>[x.contentId,x]));
     for(const s of rawRows){
