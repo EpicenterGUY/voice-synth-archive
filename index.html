@@ -12283,7 +12283,7 @@ function ensure(name){
   else if(name==="universe")base=load("./universe-search-v28.js?v=39.106.0");
   else if(name==="player")base=load("./nico-player-v32.js?v=39.128.0");
   else if(name==="deviceSync")base=window.VSADeviceTransfer3938?Promise.resolve(true):load("./device-sync-v3938.js?v=39.120.0");
-  else if(name==="pwa")base=load("./pwa-v21.js?v=39.130.2");
+  else if(name==="pwa")base=load("./pwa-v21.js?v=39.130.3");
   else if(name==="v33")base=Promise.all([ensure("personal"),ensure("discovery")]).then(function(rows){
     if(rows.some(function(x){return x===false}))return false;
     return seq(["./voca-app-v33.js?v=39.106.0","./voca-app-v33-1.js?v=39.106.0","./voca-app-v33-2.js?v=39.106.0","./voca-app-v33-3.js?v=39.106.0"]);
@@ -12339,7 +12339,7 @@ else setTimeout(function(){ensure("pwa")},12000);
 <script src="./entitlements-v3962.js?v=39.120.0"></script>
 <script src="./account-v3962.js?v=39.120.0"></script>
 <script src="./native-shell-v3963.js?v=39.120.0"></script>
-<script src="./app-update-v3966.js?v=39.130.2"></script>
+<script src="./app-update-v3966.js?v=39.130.3"></script>
 <script src="./i18n-v3918.js?v=39.106.0"></script>\n<script src="./search-live-v3969.js?v=39.124.0"></script>
 
 <style id="v3946DivePathStyle">
