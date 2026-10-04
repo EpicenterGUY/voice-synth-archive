@@ -1,5 +1,5 @@
 {
-  "version": 5,
+  "version": 6,
   "entities": {
     "track": [
       "id",
@@ -41,6 +41,27 @@
       "sourceKind",
       "evidence",
       "tracks"
+    ],
+    "relationCategory": [
+      "official-original",
+      "fan-original",
+      "touhou-style",
+      "arrangement",
+      "rearrangement",
+      "remix",
+      "cover",
+      "remaster",
+      "instrumental",
+      "mashup",
+      "short-version",
+      "other-related"
+    ],
+    "fanYoutubeMatch": [
+      "videoId",
+      "score",
+      "videoTitle",
+      "channelTitle",
+      "matchedAt"
     ]
   },
   "notes": [
@@ -53,6 +74,8 @@
     "Touhou-style fan originals are classified separately from official originals and arrangements.",
     "Touhou-style ranking is category-local and must not change the FULL INDEX denominator used by official/arrangement rankings.",
     "Large Touhou-style collections are stored as compact album manifests and expanded into track objects at client boot.",
-    "Mixed albums containing official Touhou source arrangements are excluded from the fan-original catalog unless individual provenance is verified."
+    "Mixed albums containing official Touhou source arrangements are excluded from the fan-original catalog unless individual provenance is verified.",
+    "Touhou-related entries are included first and separated by relation category instead of being dropped because they are not a standard arrangement.",
+    "When an embeddable YouTube match is verified, TouhouDive prefers it for in-app playback while retaining alternate sources as fallbacks."
   ]
 }
