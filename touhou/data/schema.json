@@ -1,5 +1,5 @@
 {
-  "version": 22,
+  "version": 23,
   "entities": {
     "track": [
       "id",
@@ -220,6 +220,16 @@
         "bandcamp"
       ],
       "note": "YouTube ads cannot be suppressed by TouhouDive; song mode prefers alternate embedded sources when available."
+    },
+    "officialOriginalRecovery": {
+      "canonicalSource": "touhou/data/originals.json",
+      "rules": [
+        "normalized title/alias match",
+        "ZUN source",
+        "year match when present",
+        "official work/album match when present"
+      ],
+      "effect": "coerce known misclassified TouhouDB entries to official-original before identity merge"
     }
   },
   "notes": [
@@ -282,6 +292,9 @@
     "When device orientation changes while the expanded player is open, its internal scroll position is reset and the visual mode is re-synchronized.",
     "Tablet landscape mini-player is intentionally allowed to overlay content and is positioned closer to the bottom edge.",
     "Catalog and related-list thumbnails asynchronously resolve the best available artwork and preserve aspect ratio.",
-    "Known locally unavailable YouTube media is excluded from thumbnail selection and related playback candidates."
+    "Known locally unavailable YouTube media is excluded from thumbnail selection and related playback candidates.",
+    "The detail drawer reserves space in Dive on desktop; tablet landscape switches Dive nodes to a two-column grid while the drawer is open; phone detail remains full-screen.",
+    "Known canonical ZUN originals can recover TouhouDB metadata even when the upstream SongType is incorrectly Arrangement.",
+    "After a recovered TouhouDB ID is attached, full-index lookup stats are hydrated immediately so stored overall/popularity/view ranks appear without loading all shards."
   ]
 }
