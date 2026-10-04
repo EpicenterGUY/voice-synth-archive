@@ -1,5 +1,5 @@
 {
-  "version": "0.9.39",
+  "version": "0.9.40",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-10-04",
@@ -289,6 +289,12 @@
     "youtube-hd-playback-preference",
     "media-toggle-outside-video",
     "mobile-media-toggle-clearance",
-    "video-overlay-control-fix"
+    "video-overlay-control-fix",
+    "tablet-mini-player-layout",
+    "mini-player-hide-media-toggle",
+    "tablet-portrait-mini-bar",
+    "tablet-landscape-mini-bar",
+    "catalog-hq-youtube-thumbnails",
+    "catalog-thumbnail-fallback-chain"
   ]
 }
