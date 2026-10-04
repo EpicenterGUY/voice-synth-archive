@@ -1206,3 +1206,46 @@ html[data-skin="custom"] .station-player-face{display:none!important}
 @media(prefers-reduced-motion:reduce){
   .player-artwork-stage,.player-media-stage>.player-video,.player-ambient{transition:none!important}
 }
+
+
+/* v0.9.36 player boot/video mode hardening */
+.player-shell:not(.is-active){display:none!important}
+.player-shell.is-active{pointer-events:auto}
+.player-full-head{position:relative;z-index:60;pointer-events:none}
+.player-full-head button{position:relative;z-index:61;pointer-events:auto}
+.player-media-stage{z-index:1}
+.player-video-mode .player-media-stage{
+  min-height:0!important;
+  aspect-ratio:16/9!important;
+  width:100%;
+  max-width:100%;
+  margin-inline:auto;
+  border-radius:22px
+}
+.player-video-mode .player-artwork-stage{display:none!important}
+.player-video-mode .player-media-stage>.player-video{
+  position:relative!important;
+  inset:auto!important;
+  width:100%!important;
+  height:100%!important;
+  aspect-ratio:16/9!important;
+  border-radius:22px!important;
+  opacity:1!important;
+  pointer-events:auto!important;
+  transform:none!important
+}
+@media(max-width:860px){
+  .player-video-mode .player-media-stage{
+    width:calc(100% + 20px)!important;
+    margin-left:-10px!important;
+    margin-right:-10px!important;
+    aspect-ratio:16/9!important;
+    border-radius:0!important
+  }
+  .player-video-mode .player-media-stage>.player-video{
+    border-radius:0!important
+  }
+  .player-video-mode .player-media-toggle{
+    top:8px
+  }
+}
