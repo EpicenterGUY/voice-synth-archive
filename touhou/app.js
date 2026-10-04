@@ -721,7 +721,7 @@ function renderFilters(){
   }
   if(!out.some(x=>x.key===state.filter))state.filter="전체";
   $("#quickFilters").innerHTML=out.map(x=>'<button class="filter-chip '+(x.key===state.filter?"is-active":"")+'" data-filter="'+escAttr(x.key)+'">'+esc(x.label)+'</button>').join("");
-  $("#quickFilters .filter-chip").forEach(b=>b.onclick=()=>{state.filter=b.dataset.filter;requestAnimationFrame(()=>renderCatalog());loadRemote(true);});
+  $$("#quickFilters .filter-chip").forEach(b=>b.onclick=()=>{state.filter=b.dataset.filter;requestAnimationFrame(()=>renderCatalog());loadRemote(true);});
 }
 function updateStats(){
   const meta=state.full.manifest;
