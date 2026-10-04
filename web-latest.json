@@ -1,6 +1,6 @@
 {
-  "version": "39.126.0",
+  "version": "39.127.0",
   "channel": "web",
-  "publishedAt": "2026-10-05T02:18:00+09:00",
-  "notes": "Explore is now music-first with Recommendation/Taste/Popular/New/Hidden/Producer/Vocal tabs, while Dive switches from scattered graph nodes to clean route cards with a prominent center track and larger depth controls."
+  "publishedAt": "2026-10-05T02:31:00+09:00",
+  "notes": "Search filter cleanup: no backdrop blur, duplicate scope buttons merged into the single filter, title-only relation sweep added, exact/canonical title matches pinned to the top, and additional related-title pages can be loaded."
 }
