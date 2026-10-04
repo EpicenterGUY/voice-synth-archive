@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 
 const KEY=String(process.env.YOUTUBE_API_KEY||"").trim();
 const LIMIT=Math.max(0,Math.min(90,Number(process.env.YOUTUBE_SEARCH_LIMIT)||75));
+const MATCHER_VERSION=3;
 const SEEDS="touhou/data/fan-originals.json";
 const ALBUMS="touhou/data/fan-original-albums.json";
 const OUT="touhou/data/fan-youtube.json";
@@ -68,8 +69,43 @@ async function youtubeSearch(track){
     videoId:id,score:Math.round(best.score*100)/100,
     videoTitle:clean(best.item?.snippet?.title),
     channelTitle:clean(best.item?.snippet?.channelTitle),
-    matchedAt:new Date().toISOString()
+    matchedAt:new Date().toISOString(),
+    matcherVersion:MATCHER_VERSION
   };
+}
+
+async function refreshYoutubeStats(cache){
+  const ids=[...new Set(Object.values(cache.items||{}).map(x=>clean(x?.videoId)).filter(Boolean))];
+  if(!ids.length)return {videos:0,updated:0,missing:0};
+  const byId=new Map();
+  for(let i=0;i<ids.length;i+=50){
+    const group=ids.slice(i,i+50);
+    const p=new URLSearchParams({part:"statistics,status",id:group.join(","),key:KEY});
+    const r=await fetch("https://www.googleapis.com/youtube/v3/videos?"+p.toString(),{
+      headers:{Accept:"application/json","User-Agent":"TouhouDive-FanVideoStats/1.0"}
+    });
+    if(!r.ok)throw new Error("YouTube stats HTTP "+r.status);
+    const d=await r.json();
+    for(const item of d.items||[])byId.set(clean(item.id),item);
+    await sleep(50);
+  }
+  let updated=0,missing=0;
+  const now=new Date().toISOString();
+  for(const row of Object.values(cache.items||{})){
+    const id=clean(row?.videoId);if(!id)continue;
+    const item=byId.get(id);
+    if(!item){row.videoUnavailable=true;missing++;continue}
+    const stats=item.statistics||{},status=item.status||{};
+    row.viewCount=Number(stats.viewCount)||0;
+    row.likeCount=Number(stats.likeCount)||0;
+    row.commentCount=Number(stats.commentCount)||0;
+    row.embeddable=status.embeddable!==false;
+    row.privacyStatus=clean(status.privacyStatus);
+    row.statsUpdatedAt=now;
+    row.videoUnavailable=status.embeddable===false||status.privacyStatus==="private";
+    updated++;
+  }
+  return {videos:ids.length,updated,missing};
 }
 async function main(){
   if(!KEY){console.log("No YOUTUBE_API_KEY; preserving fan YouTube cache.");return}
@@ -82,14 +118,19 @@ async function main(){
   if(!cache||typeof cache!=="object")cache={version:1,updated:"",items:{}};
   if(!cache.items||typeof cache.items!=="object")cache.items={};
   const tracks=flatten(seeds,manifest);
-  const pending=tracks.filter(t=>!cache.items[t.id]).slice(0,LIMIT);
+  const retry=tracks.filter(t=>{
+    const row=cache.items[t.id];
+    return row&&!row.videoId&&Number(row.matcherVersion||0)<MATCHER_VERSION;
+  });
+  const fresh=tracks.filter(t=>!cache.items[t.id]);
+  const pending=[...retry,...fresh].slice(0,LIMIT);
   let matched=0,checked=0;
   for(const track of pending){
     try{
       const hit=await youtubeSearch(track);checked++;
       cache.items[track.id]=hit
         ?{...hit,title:track.title,artist:track.artist}
-        :{videoId:"",score:0,title:track.title,artist:track.artist,matchedAt:new Date().toISOString()};
+        :{videoId:"",score:0,title:track.title,artist:track.artist,matchedAt:new Date().toISOString(),matcherVersion:MATCHER_VERSION};
       if(hit)matched++;
     }catch(e){
       console.warn("youtube match failed",track.id,e?.message||e);
@@ -97,13 +138,16 @@ async function main(){
     }
     await sleep(80);
   }
-  cache.version=2;
+  const stats=await refreshYoutubeStats(cache);
+  cache.version=3;
+  cache.matcherVersion=MATCHER_VERSION;
   cache.updated=new Date().toISOString();
   cache.totalTracks=tracks.length;
   cache.checkedTracks=Object.keys(cache.items).length;
-  cache.matchedTracks=Object.values(cache.items).filter(x=>x?.videoId).length;
-  cache.policy="Exact/near-exact title match with artist/context checks; only embeddable syndicated YouTube videos.";
+  cache.matchedTracks=Object.values(cache.items).filter(x=>x?.videoId&&!x?.videoUnavailable).length;
+  cache.viewCountTracks=Object.values(cache.items).filter(x=>x?.videoId&&Number.isFinite(Number(x?.viewCount))).length;
+  cache.policy="Exact/near-exact title + artist/channel checks; embeddable syndicated YouTube videos only. Public views/likes/comments refreshed for every cached match.";
   await fs.writeFile(OUT,JSON.stringify(cache,null,2)+"\n");
-  console.log(JSON.stringify({checked,matched,total:tracks.length,cached:cache.checkedTracks,video:cache.matchedTracks},null,2));
+  console.log(JSON.stringify({checked,matched,total:tracks.length,cached:cache.checkedTracks,video:cache.matchedTracks,viewCountTracks:cache.viewCountTracks,stats},null,2));
 }
 main().catch(err=>{console.error(err);process.exit(1)});
