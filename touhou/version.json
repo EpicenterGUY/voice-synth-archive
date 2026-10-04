@@ -1,5 +1,5 @@
 {
-  "version": "0.9.33",
+  "version": "0.9.34",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-10-04",
@@ -258,6 +258,12 @@
     "beatmario-filter",
     "minoshima-filter",
     "rd-sounds-filter",
-    "creator-full-index-search"
+    "creator-full-index-search",
+    "large-beginner-full-index-pool",
+    "beginner-3600-candidates",
+    "music-video-priority",
+    "explicit-mv-pv-detection",
+    "beginner-mv-filter",
+    "beginner-full-index-scan"
   ]
 }
