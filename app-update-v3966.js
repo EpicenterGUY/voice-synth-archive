@@ -2,7 +2,7 @@
 (function(){
 "use strict";
 
-var VERSION="39.130.1";
+var VERSION="39.130.2";
 var RELEASE_API="https://api.github.com/repos/EpicenterGUY/voice-synth-archive/releases/latest";
 var PREF_CHECK="vocadive.update.autoCheck";
 var PREF_WIFI="vocadive.update.autoDownloadWifi";
@@ -175,24 +175,27 @@ async function applyWebUpdate(){
   try{
     target=await latestWebVersion3966();
     toast3966("웹 UI v"+target+" 적용 준비 중…");
-    if("serviceWorker" in navigator){
-      try{
-        var regs=await navigator.serviceWorker.getRegistrations();
-        await Promise.all(regs.map(function(r){try{return r.update()}catch(_){return null}}));
-        await new Promise(function(resolve){setTimeout(resolve,350)})
-      }catch(_){}
-    }
     try{
       if(window.caches){
         var keys=await caches.keys();
-        await Promise.all(keys.filter(function(k){return /voca|vocadive|app-shell/i.test(k)}).map(function(k){return caches.delete(k)}))
+        await Promise.all(keys.map(function(k){return caches.delete(k)}))
       }
     }catch(_){}
+    if("serviceWorker" in navigator){
+      try{
+        var regs=await navigator.serviceWorker.getRegistrations();
+        if(isLiveShell()){
+          await Promise.all(regs.map(function(r){try{return r.unregister()}catch(_){return false}}))
+        }else{
+          await Promise.all(regs.map(function(r){try{return r.update()}catch(_){return null}}))
+        }
+      }catch(_){}
+    }
     try{sessionStorage.setItem("vocadive.web.manualTarget",target)}catch(_){}
-    var u=new URL(location.href);
-    u.searchParams.set("ui",target);
-    u.searchParams.set("_refresh",String(Date.now()));
-    location.replace(u.toString())
+    var rescue=new URL("./update-rescue.html",location.href);
+    rescue.searchParams.set("target",target);
+    rescue.searchParams.set("_refresh",String(Date.now()));
+    location.replace(rescue.toString())
   }catch(e){
     toast3966("웹 업데이트 적용에 실패했습니다. 다시 시도해주세요.");
   }
