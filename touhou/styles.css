@@ -633,3 +633,20 @@ html[data-skin="station"] .player-shell.is-mini .station-player-face{display:non
   .station-player-bottom span:nth-child(2){display:none}
   html[data-skin="station"] .track-thumb{aspect-ratio:1.38/1}
 }
+
+
+/* v0.9.28 mobile mode rail hardening */
+.mode-tabs{min-width:0}
+.mode-tab{white-space:nowrap}
+@media(max-width:860px){
+  .commandbar{align-items:center}
+  .mode-tabs{
+    max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;
+    scrollbar-width:none;-webkit-overflow-scrolling:touch
+  }
+  .mode-tabs::-webkit-scrollbar{display:none}
+  .mode-tab{flex:0 0 auto}
+}
+@media(prefers-reduced-motion:reduce){
+  .station-eq i,.player-shell.is-playing .station-vu i,.hero-disc{animation:none!important}
+}
