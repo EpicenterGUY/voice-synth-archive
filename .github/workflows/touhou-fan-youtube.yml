@@ -1,0 +1,64 @@
+name: Refresh Touhou-style YouTube matches
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "41 18 * * *"
+  push:
+    branches: [main]
+    paths:
+      - "tools/build-touhou-fan-youtube.mjs"
+      - "touhou/data/fan-originals.json"
+      - "touhou/data/fan-original-albums.json"
+      - ".github/workflows/touhou-fan-youtube.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: touhou-fan-youtube
+  cancel-in-progress: true
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Match videos and refresh public metrics
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          YOUTUBE_SEARCH_LIMIT: "75"
+        run: node tools/build-touhou-fan-youtube.mjs
+
+      - name: Commit refreshed fan video index
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp touhou/data/fan-youtube.json /tmp/fan-youtube.json
+          for attempt in 1 2 3 4; do
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/fan-youtube.json touhou/data/fan-youtube.json
+            git add touhou/data/fan-youtube.json
+            if git diff --cached --quiet; then
+              echo "Fan YouTube index is already current."
+              break
+            fi
+            git commit -m "data(touhou): refresh fan YouTube metrics"
+            if git push origin HEAD:main; then
+              break
+            fi
+            if [ "$attempt" = "4" ]; then
+              echo "Failed to push fan YouTube metrics after 4 attempts" >&2
+              exit 1
+            fi
+            sleep $((attempt * 3))
+          done
