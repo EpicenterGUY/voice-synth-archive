@@ -4,7 +4,7 @@
 (function(){
 "use strict";
 
-var VERSION="39.116.0";
+var VERSION="39.125.0";
 var raf=0,observer=null,lastRoute="home",navSeq3985=0,workerCheckTimer3986=0;
 var workerState3986={ok:null,reason:"",endpoint:"",at:0};
 
@@ -97,7 +97,7 @@ body.v37-ready .topbar .status>.pill:first-child{
 /* One authoritative navigation surface. */
 .v37-dock,.v36-dock,.v34-dock,.v33-dock,#v30BottomDock,#mobileSectionNav,.mobile-section-nav,.mobile-bottom-nav,.bottom-nav,.app-bottom-nav{display:none!important}
 #v3980Dock{
- position:fixed;z-index:23500;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));pointer-events:auto;
+ position:fixed;z-index:23500;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));pointer-events:auto;
  left:12px;right:12px;bottom:max(8px,env(safe-area-inset-bottom));
  min-height:var(--vd-dock-h);padding:5px;gap:3px;
  border:1px solid rgba(176,224,219,.16);border-radius:20px;
@@ -1724,6 +1724,12 @@ function handleDockClick3988(e){
     }).finally(function(){b.classList.remove("loading");b.removeAttribute("aria-busy")})
   }
   else if(v==="library")openLibrary()
+  else if(v==="my"){
+    try{
+      if(typeof window.VSAOpenPersonal395==="function"){window.VSAOpenPersonal395();lastRoute="my";setDock("my");scheduleRepair();return}
+    }catch(_){}
+    openRoute("personal395")
+  }
 }
 function ensureDock(){
   var d=document.getElementById("v3980Dock");
@@ -1733,7 +1739,8 @@ function ensureDock(){
       ["home","⌂","홈"],
       ["explore","✦","탐색"],
       ["dive","◉","다이브"],
-      ["library","♡","보관함"]
+      ["library","♡","보관함"],
+      ["my","●","MY"]
     ].map(function(x){return'<button type="button" data-v3980="'+x[0]+'" aria-label="'+x[2]+'"><i>'+x[1]+'</i><span>'+x[2]+'</span></button>'}).join("");
     document.body.appendChild(d)
   }
@@ -1756,7 +1763,8 @@ function dockForRoute(route){
   route=String(route||"");
   if(!route||route==="home"||route==="home29")return"home";
   if(route==="universe29")return"dive";
-  if(["personal395","taste","tasteHub33","smart23","playlist24","libraryHub33","library22","saved","history"].includes(route))return"library";
+  if(["libraryHub33","library22","saved"].includes(route))return"library";
+  if(["personal395","taste","tasteHub33","smart23","playlist24","history"].includes(route))return"my";
   if(["hub37","explore33","searchHub33","search29","producerDiscover37","producerDetail33","vocalRank37","archive29","detective","gems","guide"].includes(route))return"explore";
   return lastRoute||"home"
 }
