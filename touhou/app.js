@@ -644,14 +644,14 @@ function activeSortRankInfo(t){
   if(state.sort==="popularity"){
     const p=popularityRankInfo(t);
     if(p.rank)return{label:"인기순",value:fmt(p.total)+"곡 중 "+fmt(p.rank)+"위",sub:p.percent!==null?"상위 "+(p.percent<0.01?"<0.01":p.percent.toFixed(2))+"%":""};
-    if(p.stale)return{label:"인기순",value:"v5 재집계 중",sub:"이전 랭킹 숨김"};
+    if(p.stale)return{label:"인기순",value:"v6 재집계 중",sub:"이전 랭킹 숨김"};
     const sample=pool.length>5000?pool.slice(0,1200):pool;
     const r=sampleRankByScore(t,popularityScore,sample);return{label:"인기순",value:fmt(p.total)+"곡 전체 · 순위 준비 중",sub:"현재 로드 표본 "+fmt(r.rank)+"/"+fmt(r.total)};
   }
   if(state.sort==="influence"&&t.type==="original"){
     const i=influenceRankInfo(t);
     if(i?.rank)return{label:"영향력순",value:fmt(i.total)+"원곡 중 "+fmt(i.rank)+"위",sub:"파생 "+fmt(i.children)+"곡"};
-    if(i?.stale)return{label:"영향력순",value:"v5 재집계 중",sub:"현재 파생 점수만 표시"};
+    if(i?.stale)return{label:"영향력순",value:"v6 재집계 중",sub:"현재 파생 점수만 표시"};
     const originals=pool.filter(x=>x.type==="original").slice(0,1200),r=sampleRankByScore(t,influenceScore,originals);return{label:"영향력순",value:fmt(r.total)+"원곡 중 "+fmt(r.rank)+"위",sub:"현재 로드 표본"};
   }
   if(state.sort==="views"){
@@ -676,7 +676,7 @@ function playerRankMeta(t){
   const overall=trackRank(t),pop=popularityRankInfo(t),inf=influenceRankInfo(t),views=viewRankInfo(t);
   let popValue="",popSub="";
   if(pop.rank){popValue=fmt(pop.total)+"곡 중 "+fmt(pop.rank)+"위";popSub=pop.percent!==null?"상위 "+(pop.percent<0.01?"<0.01":pop.percent.toFixed(2))+"%":""}
-  else if(pop.stale){popValue="v5 재집계 중";popSub="이전 랭킹 숨김"}
+  else if(pop.stale){popValue="v6 재집계 중";popSub="이전 랭킹 숨김"}
   else{
     const pool=currentPool(),sample=pool.length>5000?pool.slice(0,1200):pool;
     const r=sampleRankByScore(t,popularityScore,sample);popValue=fmt(pop.total)+"곡 전체 · 순위 준비 중";popSub="현재 로드 표본 "+fmt(r.rank)+"/"+fmt(r.total);
@@ -1542,9 +1542,9 @@ function popularityRankDetail(t){
   if(isCuratedStyle(t)){
     source={label:"동방풍 실측 인기",text:(rank.rank?fmt(rank.total)+"곡 중 "+fmt(rank.rank)+"위":"실측 데이터 집계 중")+" · 전체 "+fmt(rank.catalogTotal||fanOriginalPool().length)+"곡"};
   }else if(rank.rawRank&&state.full.manifest){
-    source={label:"전수 인기순위",text:fmt(rank.total)+"곡 중 "+fmt(rank.rank)+"위 · 랭킹 v5 전수 인덱스"};
+    source={label:"전수 인기순위",text:fmt(rank.total)+"곡 중 "+fmt(rank.rank)+"위 · 랭킹 v6 전수 인덱스"};
   }else{
-    source={label:"현재 로드 기준",text:"랭킹 v5 재빌드가 끝나기 전에는 현재 로드 점수만 임시 표시합니다."};
+    source={label:"현재 로드 기준",text:"랭킹 v6 재빌드가 끝나기 전에는 현재 로드 점수만 임시 표시합니다."};
   }
   return{
     title:"인기순위 산정 근거",
@@ -1684,7 +1684,7 @@ function overallRankDetail(t){
       {label:"원곡 영향력 기여",points:inf.total*0.25,description:t?.type==="original"?"영향력 원점수 "+inf.total.toFixed(2)+"pt의 25%만 종합에 반영":"2차창작에는 0점"}
     ],
     metrics:[...pop.metrics,...inf.metrics],
-    note:"랭킹 v5는 조회수 기반 인기를 중심으로 계산하고, TouhouDB의 소수 투표는 보정치로만 사용합니다. 원곡 영향력은 공식 원곡에 한해 종합점수의 25% 가중치로 반영합니다."
+    note:"랭킹 v6는 조회수 기반 인기를 중심으로 계산하고, TouhouDB의 소수 투표는 보정치로만 사용합니다. 원곡 영향력은 공식 원곡에 한해 종합점수의 25% 가중치로 반영합니다."
   };
 }
 function refreshRanks(){
@@ -1734,7 +1734,7 @@ function rankPercentText(rank){
     if(p===null)return coverage+" · 집계 중";
     return "상위 "+(p<0.01?"<0.01":p.toFixed(2))+"% · "+coverage;
   }
-  if(rank?.stale)return"v5 재집계 중";
+  if(rank?.stale)return"v6 재집계 중";
   if(p===null&&rank?.sampleRank&&rank?.sampleTotal)return"표본 "+fmt(rank.sampleRank)+"/"+fmt(rank.sampleTotal)+" · 전수 집계 중";
   if(p===null)return"전수 순위 준비 중";
   if(p<0.01)return"상위 <0.01%";
