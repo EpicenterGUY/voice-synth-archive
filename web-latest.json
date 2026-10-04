@@ -1,6 +1,6 @@
 {
-  "version": "39.122.0",
+  "version": "39.124.0",
   "channel": "web",
-  "publishedAt": "2026-10-04T18:52:00+09:00",
-  "notes": "Fixes Skin Studio on the current Discovery Ocean home. Applied skins now transform the actual v3989 home hero, entry controls, gateway buttons, recommendation surfaces, and show a large MP3/Walkman/Aqua/Cassette/Neon/Mono device panel."
+  "publishedAt": "2026-10-05T01:42:00+09:00",
+  "notes": "TouhouDive-style zero-action recommendation home, YouTube Music-like tablet portrait/landscape layout, and relevance-first search with exact-title rescue."
 }
