@@ -75,15 +75,15 @@ function mediaCandidates(item){
     }else if(/niconico/i.test(service)&&raw){
       const id=parseNicoId(raw);if(id)add("niconico",id,url||("https://www.nicovideo.jp/watch/"+id),pv?.name);
     }else if(/soundcloud/i.test(service)&&(url||raw)){
-      add("soundcloud",clean(pv?.pvId)||url,url||clean(raw),pv?.name);
+      add("soundcloud",clean(pv?.pvId)||url,url||clean(raw),pv?.name,"external");
     }else if(/piapro/i.test(service)&&raw){
       const id=clean(pv?.pvId)||clean(raw).match(/\/content\/([^/?#]+)/)?.[1]||"";
-      if(id)add("piapro",id,url||("https://piapro.jp/content/"+id),pv?.name);
+      if(id)add("piapro",id,url||("https://piapro.jp/content/"+id),pv?.name,"external");
     }else if(/bilibili/i.test(service)&&raw){
       const id=parseBilibiliId(raw);if(id)add("bilibili",id,url||("https://www.bilibili.com/video/av"+id),pv?.name);
     }else if(/bandcamp/i.test(service)&&raw){
       const id=clean(pv?.pvId)||"";
-      if(id)add("bandcamp",id,url||"https://bandcamp.com",pv?.name);
+      if(id)add("bandcamp",id,url||"https://bandcamp.com",pv?.name,"external");
       else if(url)add("bandcamp-url",url,url,pv?.name,"external");
     }
   }
