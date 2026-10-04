@@ -1,6 +1,6 @@
 {
-  "version": "39.127.0",
+  "version": "39.128.0",
   "channel": "web",
-  "publishedAt": "2026-10-05T02:31:00+09:00",
-  "notes": "Search filter cleanup: no backdrop blur, duplicate scope buttons merged into the single filter, title-only relation sweep added, exact/canonical title matches pinned to the top, and additional related-title pages can be loaded."
+  "publishedAt": "2026-10-05T02:43:00+09:00",
+  "notes": "Unified Home/Explore/MY music cards, playing-state highlights, YouTube Music-style mini/full player, tablet portrait card rails, and player queue discovery expanded to new VocaDive card types."
 }
