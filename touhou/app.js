@@ -255,6 +255,7 @@ function bind(){
   window.addEventListener("touhoudive:pip-hint",e=>toast(e.detail?.message||"이 브라우저에서는 시스템 PiP가 제한됩니다."));
   window.addEventListener("touhoudive:player-track",async e=>{
     const id=e.detail?.trackId,t=byId(id);if(!t)return;
+    player.setFavoriteState?.(state.favorites.has(resolveId(t.id)));
     try{
       let merged=t;
       const alreadyRanked=!!(t.globalRank||t.popularityRank||t.influenceRank||t.viewRank);
@@ -274,6 +275,7 @@ function bind(){
       return;
     }
     if(action==="origin"){
+      player.minimize?.();
       await goToOriginal(t);
       return;
     }
