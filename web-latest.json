@@ -1,6 +1,6 @@
 {
-  "version": "39.128.0",
+  "version": "39.129.3",
   "channel": "web",
-  "publishedAt": "2026-10-05T02:43:00+09:00",
-  "notes": "Unified Home/Explore/MY music cards, playing-state highlights, YouTube Music-style mini/full player, tablet portrait card rails, and player queue discovery expanded to new VocaDive card types."
+  "publishedAt": "2026-10-05T03:02:00+09:00",
+  "notes": "Parallel stability pass: fixed filter tap failures, removed self-triggering MutationObserver loops causing lag, simplified landscape to a stable bottom dock, reduced blur/compositing, cleaned Library, enabled in-app library playback queues, and added a lightweight Up Next drawer."
 }
