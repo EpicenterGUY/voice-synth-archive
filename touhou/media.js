@@ -7,16 +7,27 @@ const PLAYBACK_MODE_KEY="touhoudive:player:youtubeMode";
 const PLAYBACK_POLICY_KEY="touhoudive:player:youtubeInlinePolicy:v3";
 const BAD_MEDIA_KEY="touhoudive:media:unavailable:v1";
 const VISUAL_MODE_KEY="touhoudive:player:visualMode:v1";
+const INLINE_PROVIDERS=new Set(["youtube","niconico","bilibili"]);
+const EXTERNAL_ONLY_PROVIDERS=new Set(["soundcloud","bandcamp","bandcamp-url","piapro"]);
+function isExternalOnlyMedia(media){
+  return !!media&&(media.mode==="external"||EXTERNAL_ONLY_PROVIDERS.has(String(media.provider||"").toLowerCase()));
+}
+function externalMediaUrl(media){
+  if(!media)return"";
+  const provider=String(media.provider||"").toLowerCase();
+  const raw=clean(media.url);
+  if(/^https?:\/\//i.test(raw))return raw;
+  if(provider==="piapro"&&media.id)return "https://piapro.jp/content/"+encodeURIComponent(media.id);
+  if(provider==="bandcamp"&&media.id)return "https://bandcamp.com";
+  return"";
+}
 
 function clean(v){return String(v??"").trim()}
 function srcFor(media){
-  if(!media||media.mode==="external")return"";
+  if(!media||isExternalOnlyMedia(media))return"";
   if(media.provider==="youtube"&&media.id)return "youtube:"+media.id;
   if(media.provider==="niconico"&&media.id)return NICO_ORIGIN+"/watch/"+encodeURIComponent(media.id)+"?jsapi=1&playerId="+encodeURIComponent(PLAYER_ID)+"&autoplay=1";
-  if(media.provider==="soundcloud"&&media.url)return "https://w.soundcloud.com/player/?url="+encodeURIComponent(media.url)+"&auto_play=true&hide_related=true&show_comments=false&show_reposts=false";
-  if(media.provider==="piapro"&&media.id)return "https://piapro.jp/content/"+encodeURIComponent(media.id);
   if(media.provider==="bilibili"&&media.id)return "https://player.bilibili.com/player.html?aid="+encodeURIComponent(media.id)+"&page=1&autoplay=1";
-  if(media.provider==="bandcamp"&&media.id)return "https://bandcamp.com/EmbeddedPlayer/size=large/bgcol=111827/linkcol=ff607b/tracklist=false/artwork=small/track="+encodeURIComponent(media.id)+"/transparent=true/";
   if(media.provider==="touhoudb"&&media.songId)return "https://touhoudb.com/Ext/EmbedSong?songId="+encodeURIComponent(media.songId)+"&lang=Default";
   return clean(media.embed);
 }
@@ -177,11 +188,11 @@ class TouhouMediaPlayer{
   fallbackPriority(provider,failedProvider=""){
     let order;
     if(failedProvider==="youtube"){
-      order=["bandcamp","soundcloud","niconico","bilibili","piapro","touhoudb","youtube"];
+      order=["niconico","bilibili","touhoudb","youtube"];
     }else if(this.visualMode!=="video"){
-      order=["bandcamp","soundcloud","niconico","bilibili","youtube","piapro","touhoudb"];
+      order=["niconico","bilibili","youtube","touhoudb"];
     }else{
-      order=["youtube","niconico","bilibili","soundcloud","bandcamp","piapro","touhoudb"];
+      order=["youtube","niconico","bilibili","touhoudb"];
     }
     const i=order.indexOf(provider);
     return i<0?999:i;
@@ -890,5 +901,6 @@ class TouhouMediaPlayer{
     this.renderPanels();this.syncControls();
   }
 }
+window.TouhouMediaPolicy={isExternalOnlyMedia,externalMediaUrl,inlineProviders:[...INLINE_PROVIDERS],externalOnlyProviders:[...EXTERNAL_ONLY_PROVIDERS]};
 window.TouhouMediaPlayer=TouhouMediaPlayer;
 })();
