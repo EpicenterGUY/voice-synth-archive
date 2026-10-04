@@ -1,10 +1,10 @@
 {
-  "version": 2,
-  "updated": "2026-10-04T07:30:00.000Z",
+  "version": 3,
+  "updated": "2026-10-04T07:37:23.254Z",
   "totalTracks": 583,
-  "checkedTracks": 75,
-  "matchedTracks": 51,
-  "policy": "Exact/near-exact title match with artist/context checks; only embeddable syndicated YouTube videos.",
+  "checkedTracks": 87,
+  "matchedTracks": 62,
+  "policy": "Exact/near-exact title + artist/channel checks; embeddable syndicated YouTube videos only. Public views/likes/comments refreshed for every cached match.",
   "items": {
     "fan-sparxe-switcheroo": {
       "videoId": "lWcN4oJsvps",
@@ -15,7 +15,14 @@
       "channelTitle": "Sparxe Music",
       "matchedAt": "2026-10-04T07:30:00.000Z",
       "verified": true,
-      "basis": "creator-linked"
+      "basis": "creator-linked",
+      "viewCount": 2928,
+      "likeCount": 85,
+      "commentCount": 8,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-akakyu-the-theorists-interpretation-of-fantasia": {
       "videoId": "OYWlMiD1XAk",
@@ -24,7 +31,14 @@
       "channelTitle": "Aka Kyuketsuki",
       "matchedAt": "2026-10-04T07:04:52.090Z",
       "title": "The Theorists' Interpretation of \"Fantasia\"",
-      "artist": "Aka Kyuketsuki"
+      "artist": "Aka Kyuketsuki",
+      "viewCount": 3799,
+      "likeCount": 62,
+      "commentCount": 4,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-akakyu-refreshing-earth-of-krummholz": {
       "videoId": "aQwPvY1dNlA",
@@ -33,7 +47,14 @@
       "channelTitle": "Aka Kyuketsuki",
       "matchedAt": "2026-10-04T07:04:52.430Z",
       "title": "Refreshing Earth of Krummholz",
-      "artist": "Aka Kyuketsuki"
+      "artist": "Aka Kyuketsuki",
+      "viewCount": 2419,
+      "likeCount": 34,
+      "commentCount": 4,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-akakyu-hidden-under-the-willows-ancient-backwoods": {
       "videoId": "2T5hKXwttEc",
@@ -42,7 +63,14 @@
       "channelTitle": "Aka Kyuketsuki",
       "matchedAt": "2026-10-04T07:04:52.796Z",
       "title": "Hidden Under the Willows ~ Ancient Backwoods",
-      "artist": "Aka Kyuketsuki"
+      "artist": "Aka Kyuketsuki",
+      "viewCount": 2545,
+      "likeCount": 44,
+      "commentCount": 1,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-akakyu-curious-capital-of-sheen-and-beauty": {
       "videoId": "6iFBXzPHsWI",
@@ -51,7 +79,14 @@
       "channelTitle": "Aka Kyuketsuki",
       "matchedAt": "2026-10-04T07:04:53.146Z",
       "title": "Curious Capital of Sheen and Beauty",
-      "artist": "Aka Kyuketsuki"
+      "artist": "Aka Kyuketsuki",
+      "viewCount": 1108,
+      "likeCount": 15,
+      "commentCount": 1,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-akakyu-orwell-s-quarantined-utopia": {
       "videoId": "AW5u8-Jf3zM",
@@ -60,7 +95,14 @@
       "channelTitle": "Aka Kyuketsuki",
       "matchedAt": "2026-10-04T07:04:53.507Z",
       "title": "Orwell's Quarantined Utopia",
-      "artist": "Aka Kyuketsuki"
+      "artist": "Aka Kyuketsuki",
+      "viewCount": 3978,
+      "likeCount": 67,
+      "commentCount": 4,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-akakyu-undecided-fate-of-the-altered-strings": {
       "videoId": "RZDCjYQB4fA",
@@ -69,7 +111,14 @@
       "channelTitle": "Aka Kyuketsuki",
       "matchedAt": "2026-10-04T07:04:53.873Z",
       "title": "Undecided Fate of the Altered Strings",
-      "artist": "Aka Kyuketsuki"
+      "artist": "Aka Kyuketsuki",
+      "viewCount": 3021,
+      "likeCount": 58,
+      "commentCount": 1,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-akakyu-a-maiden-s-nonsensical-bunraku": {
       "videoId": "gnfk_Cn5b4A",
@@ -78,7 +127,14 @@
       "channelTitle": "Aka Kyuketsuki",
       "matchedAt": "2026-10-04T07:04:54.234Z",
       "title": "A Maiden's Nonsensical Bunraku",
-      "artist": "Aka Kyuketsuki"
+      "artist": "Aka Kyuketsuki",
+      "viewCount": 2980,
+      "likeCount": 43,
+      "commentCount": 3,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-akakyu-diamond-tears-in-the-palace": {
       "videoId": "CkeP-pbgQFo",
@@ -87,7 +143,14 @@
       "channelTitle": "Aka Kyuketsuki",
       "matchedAt": "2026-10-04T07:04:54.574Z",
       "title": "Diamond Tears in the Palace",
-      "artist": "Aka Kyuketsuki"
+      "artist": "Aka Kyuketsuki",
+      "viewCount": 3467,
+      "likeCount": 36,
+      "commentCount": 3,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-akakyu-unseen-madness": {
       "videoId": "dszx8Owa3JA",
@@ -96,7 +159,14 @@
       "channelTitle": "Aka Kyuketsuki",
       "matchedAt": "2026-10-04T07:04:54.917Z",
       "title": "Unseen Madness",
-      "artist": "Aka Kyuketsuki"
+      "artist": "Aka Kyuketsuki",
+      "viewCount": 3712,
+      "likeCount": 69,
+      "commentCount": 3,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-akakyu-two-snowflakes-wafting-above-one-big-world": {
       "videoId": "TgqCEEhXAWM",
@@ -105,7 +175,14 @@
       "channelTitle": "Aka Kyuketsuki",
       "matchedAt": "2026-10-04T07:04:55.213Z",
       "title": "Two Snowflakes Wafting Above One Big World",
-      "artist": "Aka Kyuketsuki"
+      "artist": "Aka Kyuketsuki",
+      "viewCount": 2656,
+      "likeCount": 47,
+      "commentCount": 3,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-01": {
       "videoId": "y8MVnCq3IGU",
@@ -114,7 +191,14 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:04:55.543Z",
       "title": "Oriental Genesis",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 274,
+      "likeCount": 14,
+      "commentCount": 2,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-02": {
       "videoId": "fGtGCjYQtPA",
@@ -123,7 +207,14 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:04:55.877Z",
       "title": "Rag of Lotus Love",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 137,
+      "likeCount": 6,
+      "commentCount": 0,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-03": {
       "videoId": "W15Xiqv-wJg",
@@ -132,7 +223,14 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:04:56.186Z",
       "title": "Royal Scroll of Unity",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 65,
+      "likeCount": 3,
+      "commentCount": 0,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-04": {
       "videoId": "t-t0pxGe2to",
@@ -141,7 +239,14 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:04:56.540Z",
       "title": "The Swedish Settle in Gensokyo",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 91,
+      "likeCount": 2,
+      "commentCount": 0,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-05": {
       "videoId": "2Hm875GgCrI",
@@ -150,7 +255,14 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:04:56.867Z",
       "title": "Tomorrow I Will Become a Noble, Yesterday I was a Peasant",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 95,
+      "likeCount": 4,
+      "commentCount": 0,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-06": {
       "videoId": "BLm9fmArIUU",
@@ -159,7 +271,14 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:04:57.225Z",
       "title": "Perpetual Scarlet of an Oriental Orléans",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 149,
+      "likeCount": 2,
+      "commentCount": 0,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-07": {
       "videoId": "jONyE4KU77Y",
@@ -168,7 +287,14 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:04:57.594Z",
       "title": "Super Long-Haired Siren of the Phantasmal Waters",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 140,
+      "likeCount": 5,
+      "commentCount": 0,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-08": {
       "videoId": "MT-r680Al0I",
@@ -177,7 +303,14 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:04:57.922Z",
       "title": "A Youkai-born's Beautiful and Spiritual Kingdom",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 46,
+      "likeCount": 2,
+      "commentCount": 0,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-09": {
       "videoId": "Z2jRJtEZ1yQ",
@@ -186,7 +319,14 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:04:58.198Z",
       "title": "The Victorian Princess Sets Afoot ~ The Half Youkai Magician",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 128,
+      "likeCount": 7,
+      "commentCount": 1,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-10": {
       "videoId": "y1ERpSh7u5E",
@@ -195,7 +335,14 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:04:58.538Z",
       "title": "Grand Debut On Air",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 294,
+      "likeCount": 14,
+      "commentCount": 0,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-11": {
       "videoId": "1OOMqBmFGpc",
@@ -204,14 +351,31 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:04:58.835Z",
       "title": "Chocobo de Norou",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 92,
+      "likeCount": 8,
+      "commentCount": 0,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-12": {
-      "videoId": "",
-      "score": 0,
+      "videoId": "cnWUJUji1cQ",
+      "score": 21,
+      "videoTitle": "The Princess Who Slays Ender Dragons (Original PC-98 Arrange)",
+      "channelTitle": "Drillimation Systems",
+      "matchedAt": "2026-10-04T07:37:09.185Z",
+      "matcherVersion": 3,
       "title": "The Princess Who Slays Ender Dragons",
       "artist": "Drillimation Systems",
-      "matchedAt": "2026-10-04T07:04:59.102Z"
+      "viewCount": 111,
+      "likeCount": 6,
+      "commentCount": 1,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-13": {
       "videoId": "5iNa7PG43n4",
@@ -220,7 +384,14 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:04:59.374Z",
       "title": "Scrambling in the Waters",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 240,
+      "likeCount": 8,
+      "commentCount": 3,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-14": {
       "videoId": "-6CJlcORxNU",
@@ -229,7 +400,14 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:04:59.684Z",
       "title": "An Evening With the Half-Youkai Crown Princess",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 91,
+      "likeCount": 6,
+      "commentCount": 0,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-15": {
       "videoId": "M_TUpE0-0Fk",
@@ -238,7 +416,14 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:05:00.012Z",
       "title": "Strawberry Waltz",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 159,
+      "likeCount": 7,
+      "commentCount": 0,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-16": {
       "videoId": "J-B2kWN9qNI",
@@ -247,7 +432,14 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:05:00.292Z",
       "title": "A Nostalgic Dream Express",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 84,
+      "likeCount": 1,
+      "commentCount": 0,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-17": {
       "videoId": "GhSr-zRtkMQ",
@@ -256,7 +448,14 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:05:00.607Z",
       "title": "The Town Where Young Apples Grow",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 87,
+      "likeCount": 8,
+      "commentCount": 1,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-18": {
       "videoId": "acKUXA7riB0",
@@ -265,7 +464,14 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:05:00.942Z",
       "title": "Living in the Endless Village",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 87,
+      "likeCount": 1,
+      "commentCount": 0,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-19": {
       "videoId": "wVUL6BI2nBk",
@@ -274,7 +480,14 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:05:01.246Z",
       "title": "Kids Run Through the Aether City",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 168,
+      "likeCount": 9,
+      "commentCount": 0,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-20": {
       "videoId": "yCvgLgXifUw",
@@ -283,7 +496,14 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:05:01.585Z",
       "title": "Scarlet Wildfire Over the Mountainous Prairies",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 111,
+      "likeCount": 4,
+      "commentCount": 1,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-21": {
       "videoId": "AvdGhBrqpgk",
@@ -292,7 +512,14 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:05:01.932Z",
       "title": "Blade of the Bearded Ronin ~ American Tanabata",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 127,
+      "likeCount": 6,
+      "commentCount": 1,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-22": {
       "videoId": "IROZdeVdazk",
@@ -301,7 +528,14 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:05:02.267Z",
       "title": "A Phoenix Born From a Heat Wave",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 65,
+      "likeCount": 1,
+      "commentCount": 0,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-23": {
       "videoId": "T59cOt-nbZg",
@@ -310,7 +544,14 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:05:02.588Z",
       "title": "Mushroom Fantasma",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 127,
+      "likeCount": 7,
+      "commentCount": 0,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-24": {
       "videoId": "T5bnJ_u7fYE",
@@ -319,7 +560,14 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:05:02.909Z",
       "title": "Hakurei Circuit",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 168,
+      "likeCount": 4,
+      "commentCount": 0,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-25": {
       "videoId": "w8RSjeEgtHc",
@@ -328,7 +576,14 @@
       "channelTitle": "Susumu Takajima - Topic",
       "matchedAt": "2026-10-04T07:05:03.238Z",
       "title": "Misty Lake Voyage",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 1,
+      "likeCount": 0,
+      "commentCount": 0,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-26": {
       "videoId": "c0Nj7mzATqc",
@@ -337,7 +592,14 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:05:03.580Z",
       "title": "Autumn Heat Wave ~ Extended Summer",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 121,
+      "likeCount": 9,
+      "commentCount": 1,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-27": {
       "videoId": "Odzbi9VbkNs",
@@ -346,7 +608,14 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:05:03.907Z",
       "title": "The Harbor Where Autumn Sails",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 112,
+      "likeCount": 6,
+      "commentCount": 1,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-28": {
       "videoId": "IH_FgcLwH4k",
@@ -355,7 +624,14 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:05:04.273Z",
       "title": "A Primal Dance to the Shrine of Faith",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 99,
+      "likeCount": 5,
+      "commentCount": 2,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-29": {
       "videoId": "PGpkU3Z0Avo",
@@ -364,7 +640,14 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:05:04.609Z",
       "title": "Reincarnation of Marisa's Mother",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 129,
+      "likeCount": 8,
+      "commentCount": 0,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-30": {
       "videoId": "_OQfxy3DO3g",
@@ -373,7 +656,14 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:05:04.929Z",
       "title": "Arrow of Konpaku ~ Watchtower Archer",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 77,
+      "likeCount": 8,
+      "commentCount": 0,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-31": {
       "videoId": "E7VZlReXU6U",
@@ -382,7 +672,14 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:05:05.214Z",
       "title": "A Girl Livestreaming Under a Cherry Tree",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 108,
+      "likeCount": 6,
+      "commentCount": 1,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-32": {
       "videoId": "p8uTc4AYMfc",
@@ -391,7 +688,14 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:05:05.517Z",
       "title": "A Cozy and Pleasant Winter Spirit",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 102,
+      "likeCount": 5,
+      "commentCount": 0,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-33": {
       "videoId": "X3CyjbonhZQ",
@@ -400,7 +704,14 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:05:05.818Z",
       "title": "A Cat Spirit With a Jar of Sugar",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 192,
+      "likeCount": 10,
+      "commentCount": 0,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-34": {
       "videoId": "9EVdMDgYr1c",
@@ -409,7 +720,14 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:05:06.153Z",
       "title": "Amidst the Musical Tempest",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 130,
+      "likeCount": 9,
+      "commentCount": 0,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-35": {
       "videoId": "99OJmz6k0SA",
@@ -418,91 +736,110 @@
       "channelTitle": "Drillimation Systems",
       "matchedAt": "2026-10-04T07:05:06.547Z",
       "title": "Mollusk",
-      "artist": "Drillimation Systems"
+      "artist": "Drillimation Systems",
+      "viewCount": 99,
+      "likeCount": 6,
+      "commentCount": 0,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-orange-whispers-parallel-world-01": {
       "videoId": "",
       "score": 0,
       "title": "Will the Eastern World Exist That Day (Menu)",
       "artist": "OrangeBlugt",
-      "matchedAt": "2026-10-04T07:05:06.855Z"
+      "matchedAt": "2026-10-04T07:37:09.497Z",
+      "matcherVersion": 3
     },
     "fan-album-orange-whispers-parallel-world-02": {
       "videoId": "",
       "score": 0,
       "title": "Oriental Society Is No Longer There, But Here (ST1)",
       "artist": "OrangeBlugt",
-      "matchedAt": "2026-10-04T07:05:07.143Z"
+      "matchedAt": "2026-10-04T07:37:09.791Z",
+      "matcherVersion": 3
     },
     "fan-album-orange-whispers-parallel-world-03": {
       "videoId": "",
       "score": 0,
       "title": "Otter Attack! ~ Be Careful (ST1 BOSS)",
       "artist": "OrangeBlugt",
-      "matchedAt": "2026-10-04T07:05:07.441Z"
+      "matchedAt": "2026-10-04T07:37:10.069Z",
+      "matcherVersion": 3
     },
     "fan-album-orange-whispers-parallel-world-04": {
       "videoId": "",
       "score": 0,
       "title": "Komorebi Dance (ST2)",
       "artist": "OrangeBlugt",
-      "matchedAt": "2026-10-04T07:05:07.705Z"
+      "matchedAt": "2026-10-04T07:37:10.313Z",
+      "matcherVersion": 3
     },
     "fan-album-orange-whispers-parallel-world-05": {
       "videoId": "",
       "score": 0,
       "title": "Enlightenment Haunting Dance (ST2 BOSS)",
       "artist": "OrangeBlugt",
-      "matchedAt": "2026-10-04T07:05:08.016Z"
+      "matchedAt": "2026-10-04T07:37:10.621Z",
+      "matcherVersion": 3
     },
     "fan-album-orange-whispers-parallel-world-06": {
       "videoId": "",
       "score": 0,
       "title": "Forgotten Road From Giant Rocks (ST3)",
       "artist": "OrangeBlugt",
-      "matchedAt": "2026-10-04T07:05:08.285Z"
+      "matchedAt": "2026-10-04T07:37:10.931Z",
+      "matcherVersion": 3
     },
     "fan-album-orange-whispers-parallel-world-07": {
       "videoId": "",
       "score": 0,
       "title": "Powerful Competition of Feng Shui ~ Wind (ST3 BOSS)",
       "artist": "OrangeBlugt",
-      "matchedAt": "2026-10-04T07:05:08.565Z"
+      "matchedAt": "2026-10-04T07:37:11.220Z",
+      "matcherVersion": 3
     },
     "fan-album-orange-whispers-parallel-world-08": {
       "videoId": "",
       "score": 0,
       "title": "Abyss of Memories (ST4)",
       "artist": "OrangeBlugt",
-      "matchedAt": "2026-10-04T07:05:08.802Z"
+      "matchedAt": "2026-10-04T07:37:11.480Z",
+      "matcherVersion": 3
     },
     "fan-album-orange-whispers-parallel-world-09": {
       "videoId": "",
       "score": 0,
       "title": "Dancing Maiden (ST4 A BOSS)",
       "artist": "OrangeBlugt",
-      "matchedAt": "2026-10-04T07:05:09.054Z"
+      "matchedAt": "2026-10-04T07:37:11.733Z",
+      "matcherVersion": 3
     },
     "fan-album-orange-whispers-parallel-world-10": {
       "videoId": "",
       "score": 0,
       "title": "The Beasts of Ancient War (ST4 B BOSS)",
       "artist": "OrangeBlugt",
-      "matchedAt": "2026-10-04T07:05:09.337Z"
+      "matchedAt": "2026-10-04T07:37:12.021Z",
+      "matcherVersion": 3
     },
     "fan-album-orange-whispers-parallel-world-11": {
       "videoId": "",
       "score": 0,
       "title": "Invincible MindGame ~ Advanced Technology (ST4 C BOSS)",
       "artist": "OrangeBlugt",
-      "matchedAt": "2026-10-04T07:05:09.632Z"
+      "matchedAt": "2026-10-04T07:37:12.282Z",
+      "matcherVersion": 3
     },
     "fan-album-orange-whispers-parallel-world-12": {
       "videoId": "",
       "score": 0,
       "title": "Abandonment Dreams and Reality (ST5)",
       "artist": "OrangeBlugt",
-      "matchedAt": "2026-10-04T07:05:09.925Z"
+      "matchedAt": "2026-10-04T07:37:12.522Z",
+      "matcherVersion": 3
     },
     "fan-album-orange-whispers-parallel-world-13": {
       "videoId": "",
@@ -516,14 +853,16 @@
       "score": 0,
       "title": "Fire Dove (ST6)",
       "artist": "OrangeBlugt",
-      "matchedAt": "2026-10-04T07:05:10.513Z"
+      "matchedAt": "2026-10-04T07:37:12.896Z",
+      "matcherVersion": 3
     },
     "fan-album-orange-whispers-parallel-world-15": {
       "videoId": "",
       "score": 0,
       "title": "Unfinished Alienated Scholar Poem ~ Fire Dove (ST6 BOSS)",
       "artist": "OrangeBlugt",
-      "matchedAt": "2026-10-04T07:05:10.791Z"
+      "matchedAt": "2026-10-04T07:37:13.186Z",
+      "matcherVersion": 3
     },
     "fan-album-orange-whispers-parallel-world-16": {
       "videoId": "",
@@ -560,7 +899,14 @@
       "channelTitle": "gdsfdg",
       "matchedAt": "2026-10-04T07:05:12.294Z",
       "title": "幻想郷の一番長い日",
-      "artist": "Wanwan"
+      "artist": "Wanwan",
+      "viewCount": 1118,
+      "likeCount": 11,
+      "commentCount": 1,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-wanwan-hollow-song-birds-02": {
       "videoId": "TUwRpL5KQj0",
@@ -569,7 +915,14 @@
       "channelTitle": "gdsfdg",
       "matchedAt": "2026-10-04T07:05:12.663Z",
       "title": "沈黙の春景",
-      "artist": "Wanwan"
+      "artist": "Wanwan",
+      "viewCount": 1829,
+      "likeCount": 22,
+      "commentCount": 1,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-wanwan-hollow-song-birds-03": {
       "videoId": "WFHHZ58QWs0",
@@ -578,14 +931,31 @@
       "channelTitle": "gdsfdg",
       "matchedAt": "2026-10-04T07:05:12.996Z",
       "title": "スカーレットランラン",
-      "artist": "Wanwan"
+      "artist": "Wanwan",
+      "viewCount": 2324,
+      "likeCount": 38,
+      "commentCount": 1,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-wanwan-hollow-song-birds-04": {
-      "videoId": "",
-      "score": 0,
+      "videoId": "fFhjjf8eKDw",
+      "score": 20.5,
+      "videoTitle": "[神授ノ書 HSoB OST] 末法の夜は来たれり - Stage 2 Theme",
+      "channelTitle": "gdsfdg",
+      "matchedAt": "2026-10-04T07:37:13.947Z",
+      "matcherVersion": 3,
       "title": "末法の夜は来たれり",
       "artist": "Wanwan",
-      "matchedAt": "2026-10-04T07:05:13.278Z"
+      "viewCount": 691,
+      "likeCount": 9,
+      "commentCount": 0,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-wanwan-hollow-song-birds-05": {
       "videoId": "dHvTq7jJOm8",
@@ -594,7 +964,14 @@
       "channelTitle": "gdsfdg",
       "matchedAt": "2026-10-04T07:05:13.629Z",
       "title": "ちいちい墓場へご招待！",
-      "artist": "Wanwan"
+      "artist": "Wanwan",
+      "viewCount": 2300,
+      "likeCount": 24,
+      "commentCount": 1,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-wanwan-hollow-song-birds-06": {
       "videoId": "62HKJZa06yc",
@@ -603,14 +980,22 @@
       "channelTitle": "gdsfdg",
       "matchedAt": "2026-10-04T07:05:14.020Z",
       "title": "ロータスメイズ",
-      "artist": "Wanwan"
+      "artist": "Wanwan",
+      "viewCount": 990,
+      "likeCount": 11,
+      "commentCount": 0,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-wanwan-hollow-song-birds-07": {
       "videoId": "",
       "score": 0,
       "title": "気高き翠の灰被姫",
       "artist": "Wanwan",
-      "matchedAt": "2026-10-04T07:05:14.310Z"
+      "matchedAt": "2026-10-04T07:37:14.245Z",
+      "matcherVersion": 3
     },
     "fan-album-wanwan-hollow-song-birds-08": {
       "videoId": "7PvO6XYRxu0",
@@ -619,14 +1004,22 @@
       "channelTitle": "gdsfdg",
       "matchedAt": "2026-10-04T07:05:14.638Z",
       "title": "メメントの森",
-      "artist": "Wanwan"
+      "artist": "Wanwan",
+      "viewCount": 1371,
+      "likeCount": 12,
+      "commentCount": 3,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     },
     "fan-album-wanwan-hollow-song-birds-09": {
       "videoId": "",
       "score": 0,
       "title": "飛翔八十億劫 〜 Sinful Rampage",
       "artist": "Wanwan",
-      "matchedAt": "2026-10-04T07:05:14.942Z"
+      "matchedAt": "2026-10-04T07:37:14.583Z",
+      "matcherVersion": 3
     },
     "fan-album-wanwan-hollow-song-birds-10": {
       "videoId": "",
@@ -634,6 +1027,185 @@
       "title": "ファーイーストエルドラド",
       "artist": "Wanwan",
       "matchedAt": "2026-10-04T07:05:15.242Z"
+    },
+    "fan-album-wanwan-hollow-song-birds-12": {
+      "videoId": "ZBYaQi7L7Yc",
+      "score": 20.5,
+      "videoTitle": "[神授ノ書 HSoB OST] 我は遠方の者を連れ戻す者 - Stage 6 Theme",
+      "channelTitle": "gdsfdg",
+      "matchedAt": "2026-10-04T07:37:15.162Z",
+      "matcherVersion": 3,
+      "title": "我は遠方の者を連れ戻す者",
+      "artist": "Wanwan",
+      "viewCount": 2356,
+      "likeCount": 24,
+      "commentCount": 0,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
+    },
+    "fan-album-wanwan-hollow-song-birds-13": {
+      "videoId": "jIeluUWoj5g",
+      "score": 24.5,
+      "videoTitle": "[HSoB OST DL] 黄金讃歌 〜 アイビストリスメギストス [Original]",
+      "channelTitle": "Wanwan",
+      "matchedAt": "2026-10-04T07:37:15.515Z",
+      "matcherVersion": 3,
+      "title": "黄金讃歌 〜 アイビストリスメギストス",
+      "artist": "Wanwan",
+      "viewCount": 135840,
+      "likeCount": 1293,
+      "commentCount": 98,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
+    },
+    "fan-album-wanwan-hollow-song-birds-16": {
+      "videoId": "l5eABvCFue8",
+      "score": 11.5,
+      "videoTitle": "【アコースティック風アレンジ】千紫万紅の百鬼夜行【東方真珠島】",
+      "channelTitle": "Sharkengo",
+      "matchedAt": "2026-10-04T07:37:16.051Z",
+      "matcherVersion": 3,
+      "title": "千紫万紅の百鬼夜行",
+      "artist": "Wanwan",
+      "viewCount": 592,
+      "likeCount": 14,
+      "commentCount": 3,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
+    },
+    "fan-album-wanwan-tri-focuser-03": {
+      "videoId": "",
+      "score": 0,
+      "title": "アステリズムダンジョン",
+      "artist": "Wanwan",
+      "matchedAt": "2026-10-04T07:37:16.811Z",
+      "matcherVersion": 3
+    },
+    "fan-album-wanwan-tri-focuser-05": {
+      "videoId": "",
+      "score": 0,
+      "title": "天地結ぶビーンストーク",
+      "artist": "Wanwan",
+      "matchedAt": "2026-10-04T07:37:17.210Z",
+      "matcherVersion": 3
+    },
+    "fan-album-wanwan-tri-focuser-08": {
+      "videoId": "",
+      "score": 0,
+      "title": "純真なる徒花 〜 Absolute Lily",
+      "artist": "Wanwan",
+      "matchedAt": "2026-10-04T07:37:17.733Z",
+      "matcherVersion": 3
+    },
+    "fan-album-djabner-servants-harvest-wish-05": {
+      "videoId": "6DedjOX7-iI",
+      "score": 24.5,
+      "videoTitle": "Yosakoi Foxtrot (よさこいフォックストロット) (SoHW Stage 2 Boss Theme)",
+      "channelTitle": "DJ Abner",
+      "matchedAt": "2026-10-04T07:37:18.719Z",
+      "matcherVersion": 3,
+      "title": "Yosakoi Foxtrot",
+      "artist": "DJ Abner",
+      "viewCount": 26821,
+      "likeCount": 350,
+      "commentCount": 19,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
+    },
+    "fan-album-djabner-servants-harvest-wish-13": {
+      "videoId": "a3qw3Z6-v8w",
+      "score": 24.5,
+      "videoTitle": "Vulpecula et Anser (ヴルペクラ・エト・アンサー) (SoHW Stage 6 Theme)",
+      "channelTitle": "DJ Abner",
+      "matchedAt": "2026-10-04T07:37:19.841Z",
+      "matcherVersion": 3,
+      "title": "Vulpecula et Anser",
+      "artist": "DJ Abner",
+      "viewCount": 13583,
+      "likeCount": 180,
+      "commentCount": 17,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
+    },
+    "fan-album-altend-glory-deep-skies-05": {
+      "videoId": "BuRiQYUAtes",
+      "score": 16,
+      "videoTitle": "GoDS Theone &amp; Aiguillon&#39;s Theme : Stardust Shambler (Alien Ver.)",
+      "channelTitle": "Haru TH",
+      "matchedAt": "2026-10-04T07:37:21.535Z",
+      "matcherVersion": 3,
+      "title": "Stardust Shambler",
+      "artist": "Mana Kazami, Tokiko Tatsunagi",
+      "viewCount": 4278,
+      "likeCount": 53,
+      "commentCount": 5,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
+    },
+    "fan-album-altend-glory-deep-skies-07": {
+      "videoId": "aVeHrjBql1g",
+      "score": 24.5,
+      "videoTitle": "GoDS Stage 3 Theme: Kadath, the Giant Castle of Dreams (Remastered)",
+      "channelTitle": "Aka Kyuketsuki",
+      "matchedAt": "2026-10-04T07:37:21.942Z",
+      "matcherVersion": 3,
+      "title": "Kadath, the Giant Castle of Dreams",
+      "artist": "Aka Kyuketsuki",
+      "viewCount": 2525,
+      "likeCount": 71,
+      "commentCount": 7,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
+    },
+    "fan-album-altend-glory-deep-skies-08": {
+      "videoId": "wsMo4dvIozo",
+      "score": 17.5,
+      "videoTitle": "Dreamquest of the Forsaken Gods - Touhou Mukyuushi ～ Glory of Deep Skies OST (Stage 3 Boss Theme)",
+      "channelTitle": "AlfredPros",
+      "matchedAt": "2026-10-04T07:37:22.251Z",
+      "matcherVersion": 3,
+      "title": "Dreamquest of the Forsaken Gods",
+      "artist": "Dragon Zwei",
+      "viewCount": 18171,
+      "likeCount": 124,
+      "commentCount": 13,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
+    },
+    "fan-album-altend-glory-deep-skies-10": {
+      "videoId": "-45Vbj8UgAw",
+      "score": 20.5,
+      "videoTitle": "Insane God of the Primordial Chaos ～ Ethereal Paradise - Touhou Mukyuushi OST (Stage 4 Boss Theme)",
+      "channelTitle": "AlfredPros",
+      "matchedAt": "2026-10-04T07:37:22.680Z",
+      "matcherVersion": 3,
+      "title": "Insane God of the Primordial Chaos ~ Ethereal Paradise",
+      "artist": "Wanwan, Tokiko Tatsunagi",
+      "viewCount": 55481,
+      "likeCount": 545,
+      "commentCount": 36,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-04T07:37:23.254Z",
+      "videoUnavailable": false
     }
-  }
+  },
+  "matcherVersion": 3,
+  "viewCountTracks": 62
 }
