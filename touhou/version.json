@@ -1,5 +1,5 @@
 {
-  "version": "0.9.46",
+  "version": "0.9.47",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-10-05",
@@ -336,6 +336,9 @@
     "fuzzy-title-search",
     "search-relevance-ranking",
     "full-index-query-scan",
-    "mobile-full-index-search"
+    "mobile-full-index-search",
+    "legacy-web-medley-pack-21",
+    "legacy-web-quick-filter",
+    "archive-medley-lineage-links"
   ]
 }
