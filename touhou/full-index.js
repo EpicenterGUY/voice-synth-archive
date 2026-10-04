@@ -37,10 +37,8 @@ function mediaOf(p){
   if(!provider||(!id&&!url))return null;
   const numeric=/^\d+$/.test(id);
   const embeddable=
-    provider==="soundcloud"?!!url:
-    provider==="youtube"||provider==="niconico"||provider==="piapro"?!!id:
-    provider==="bilibili"?numeric:
-    provider==="bandcamp"?numeric:false;
+    provider==="youtube"||provider==="niconico"?!!id:
+    provider==="bilibili"?numeric:false;
   return{provider,id,url,name,viewCount:Number.isFinite(viewCount)&&viewCount>=0?viewCount:null,mode:embeddable?"embed":"external"};
 }
 function relationCategory(r){
