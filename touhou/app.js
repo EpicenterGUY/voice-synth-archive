@@ -86,7 +86,7 @@ async function boot(){
     setDataHealth("error","UI 초기화 오류 · 새로고침 필요");
   }
   if("serviceWorker" in navigator){
-    navigator.serviceWorker.register("./sw.js?v=0.9.26").then(r=>r.update()).catch(err=>console.warn("service worker",err));
+    navigator.serviceWorker.register("./sw.js?v=0.9.27").then(r=>r.update()).catch(err=>console.warn("service worker",err));
   }
 
   const [or,ar,fr,far,fy,wr,sr]=await Promise.all([
@@ -642,7 +642,7 @@ function playerRankMeta(t){
     const pool=currentPool(),sample=pool.length>5000?pool.slice(0,1200):pool;
     const r=sampleRankByScore(t,popularityScore,sample);popValue=fmt(pop.total)+"곡 전체 · 순위 준비 중";popSub="현재 로드 표본 "+fmt(r.rank)+"/"+fmt(r.total);
   }
-  const fan=isFanOriginal(t);
+  const fan=isCuratedStyle(t);
   return{
     overall:{label:fan?"동방풍 순위":"종합",value:rankText(overall),sub:rankPercentText(overall),detail:overallRankDetail(t)},
     popularity:{label:fan?"동방풍 인기":"인기",value:popValue,sub:popSub,detail:popularityRankDetail(t)},
@@ -740,15 +740,24 @@ function updateStats(){
   const localOrig=state.localOriginals.length,localArr=state.localArrangements.length,localFan=state.localFanOriginals.length;
   const originalCount=meta?.counts?.original||state.remote.counts.original||loaded.filter(x=>x.type==="original").length||localOrig;
   const arrangementCount=meta?.counts?.arrangement||state.remote.counts.arrangement||loaded.filter(x=>x.type==="arrangement").length||localArr;
-  const fanOriginalCount=Math.max(Number(meta?.counts?.fanOriginal)||0,loaded.filter(isFanOriginal).length,localFan);
+  const fanOriginalCount=Math.max(Number(meta?.counts?.fanOriginal)||0,loaded.filter(t=>isFanOriginal(t)&&!isCuratedStyle(t)).length);
   const mediaCount=meta?.counts?.mediaCandidates??null;
+  const fanItems=state.fanYoutubeMeta?.items&&typeof state.fanYoutubeMeta.items==="object"?state.fanYoutubeMeta.items:{};
+  const curatedMeasured=Object.entries(fanItems).filter(([id,x])=>!id.startsWith("tdb-")&&x?.videoId&&!x?.videoUnavailable&&Number.isFinite(Number(x?.viewCount))).length;
+  const fanMedia=Number(meta?.counts?.categoryMediaCandidates?.["fan-original"])||0;
+  const fanYoutube=Number(meta?.counts?.categoryYoutubeCandidates?.["fan-original"])||0;
+  const fanViews=Number(meta?.counts?.categoryViewTracks?.["fan-original"])||0;
   $("#statOriginal").textContent=fmt(originalCount);
   $("#statArrangement").textContent=fmt(arrangementCount);
   $("#statFanOriginal").textContent=fmt(fanOriginalCount);
+  $("#statCuratedStyle").textContent=fmt(localFan);
   $("#statMedia").textContent=mediaCount===null?"집계 중":fmt(mediaCount);
   $("#statOriginalMeta").textContent=meta?"공식 작품/ZUN 기준":"TouhouDB 공식 원곡 분류";
   $("#statArrangementMeta").textContent=meta?"어레인지·리믹스·커버 등 전체 파생":"TouhouDB 파생곡 분류";
-  $("#statFanOriginalMeta").textContent=meta?"TouhouDB 팬 원곡 + 동방풍 큐레이션":"팬 원곡 + 동방풍 큐레이션";
+  $("#statFanOriginalMeta").textContent=meta&&fanMedia
+    ?"TouhouDB 팬 원곡 · 영상 후보 "+fmt(fanMedia)+" · YouTube "+fmt(fanYoutube)+" · 조회수 "+fmt(fanViews)
+    :"TouhouDB 비공식 Original · 동방풍 큐레이션과 별도";
+  $("#statCuratedStyleMeta").textContent=fmt(curatedMeasured)+" / "+fmt(localFan)+"곡 영상·반응 실측";
   $("#statMediaMeta").textContent=meta?"전체 "+fmt(meta.indexed)+"곡에서 PV 후보 확인":"전수 인덱스 생성 후 확정";
   updateCatalogTotal();
 }
@@ -828,7 +837,7 @@ function renderGrid(list){
 function typeLabel(t){return RELATION_BADGES[relationCategory(t)]||"TOUHOU RELATED"}
 function typeClass(t){return relationCategory(t)}
 function card(t){
-  const playable=player.playable(t),external=trustedExternalMedia(t),canLookup=!isFanOriginal(t)&&!playable&&!external&&state.remote.available,origins=originalNames(t);
+  const playable=player.playable(t),external=trustedExternalMedia(t),canLookup=!playable&&state.remote.available,origins=originalNames(t);
   const rank=trackRank(t);
   const by=t.type==="arrangement"
     ? [t.circle,(t.artists?.vocal||[]).join(", ")].filter(Boolean).join(" · ")
@@ -836,7 +845,7 @@ function card(t){
   const thumb=t.thumb?' style="background-image:url(&quot;'+escAttr(t.thumb)+'&quot;)"':"";
   const originLine=t.type==="arrangement"
     ? "원곡 · "+(origins.join(" / ")||(t.originalIds?.length?"계보 연결 가능":"원곡 정보 확인 가능"))
-    : isFanOriginal(t)
+    : isCuratedStyle(t)
       ? (t.year||"연도 미상")+" · 동방풍 오리지널 · 직접 원곡 없음"
       : (t.year||"연도 미상")+" · "+countChildren(t.id)+"개 연결";
   const originButton=t.type==="arrangement"
@@ -869,7 +878,7 @@ function openTrack(t,opts={}){
   const external=trustedExternalMedia(t);
   const source=t.media?.url||external?.url||t.source?.url||"";
   const rank=trackRank(t),popRank=popularityRankInfo(t),infRank=influenceRankInfo(t),links=trustedLinks(t);
-  const fan=isFanOriginal(t),rankLabel=fan?"동방풍 순위":"종합";
+  const fan=isCuratedStyle(t),rankLabel=fan?"동방풍 순위":"종합";
   const canLookup=!player.playable(t)&&state.remote.available;
   const missing=(t.originalIds||[]).filter(id=>!byId(id));
   $("#detailContent").innerHTML=`
@@ -1291,6 +1300,7 @@ function searchBlob(t){
   return [t.title,...(t.aliases||[]),t.work,t.role,t.character,t.circle,t.album,t.artistString,artists,originals,t.styleClass,...(t.moods||[])].filter(Boolean).join(" ").toLowerCase();
 }
 function isFanOriginal(t){return !!t&&(t.type==="fan-original"||t.category==="fan-original")}
+function isCuratedStyle(t){return !!t&&!String(t.id||"").startsWith("tdb-")&&(!!t.touhouStyle||!!t.styleClass||!!t.classification?.sourceKind)}
 const RELATION_LABELS={
   "official-original":"공식 원곡","fan-original":"팬 오리지널","touhou-style":"동방풍 오리지널","fan-game-ost":"팬게임 OST",
   "arrangement":"어레인지","rearrangement":"재어레인지","remix":"리믹스","cover":"커버",
@@ -1386,7 +1396,7 @@ function communitySignal(t){
   return Math.log10(rating+1)*8+Math.log10(favorites+1)*8+Math.log10(hits+1)*2+Math.min(4,providers);
 }
 function popularityScore(t){
-  if(isFanOriginal(t))return fanPopularityScore(t);
+  if(isCuratedStyle(t))return fanPopularityScore(t);
   const community=communitySignal(t),views=mediaViewStats(t);
   if(platformViewsEligible()&&views.mediaCount)return viewSignal(t)+community*0.35;
   return community*0.45;
@@ -1405,7 +1415,7 @@ function popularityBreakdown(t){
   const favorites=Math.max(0,Number(t?.favoritedTimes)||0);
   const hits=Math.max(0,Number(t?.hitCount)||0);
   const providers=new Set((t?.mediaCandidates||[]).map(m=>m?.provider).filter(Boolean)).size;
-  const views=mediaViewStats(t),fan=isFanOriginal(t),eligible=fan?views.mediaCount>0:platformViewsEligible();
+  const views=mediaViewStats(t),fan=isCuratedStyle(t),eligible=fan?views.mediaCount>0:platformViewsEligible();
   const eng=fanEngagementStats(t);
   const engagementPts=fan?(Math.log10(eng.likes+1)*2+Math.log10(eng.comments+1)*0.8):0;
   const ratingPts=Math.log10(rating+1)*8;
@@ -1455,7 +1465,7 @@ function influenceBreakdown(t){
 function popularityRankDetail(t){
   const rank=popularityRankInfo(t),b=popularityBreakdown(t);
   let source;
-  if(isFanOriginal(t)){
+  if(isCuratedStyle(t)){
     source={label:"동방풍 실측 인기",text:(rank.rank?fmt(rank.total)+"곡 중 "+fmt(rank.rank)+"위":"실측 데이터 집계 중")+" · 전체 "+fmt(rank.catalogTotal||fanOriginalPool().length)+"곡"};
   }else if(rank.rawRank&&state.full.manifest){
     source={label:"전수 인기순위",text:fmt(rank.total)+"곡 중 "+fmt(rank.rank)+"위 · 랭킹 v5 전수 인덱스"};
@@ -1464,16 +1474,16 @@ function popularityRankDetail(t){
   }
   return{
     title:"인기순위 산정 근거",
-    formula:isFanOriginal(t)?"인기 점수 = 검증 조회수 + YouTube 좋아요/댓글 + DB 반응 보정":"인기 점수 = 검증 조회수 점수 + 커뮤니티 지표의 보정 기여",
+    formula:isCuratedStyle(t)?"인기 점수 = 검증 조회수 + YouTube 좋아요/댓글 + DB 반응 보정":"인기 점수 = 검증 조회수 점수 + 커뮤니티 지표의 보정 기여",
     score:Number(rank.score)||b.total,
     source,
     components:[
       {label:"플랫폼 조회수",points:b.viewPts,description:b.views.mediaCount?fmt(b.views.total)+"회 · "+fmt(b.views.mediaCount)+"개 영상":"조회수 미확인"},
-      ...(isFanOriginal(t)?[{label:"YouTube 반응",points:b.engagementPts,description:fmt(b.engagement.likes)+" 좋아요 · "+fmt(b.engagement.comments)+" 댓글"}]:[]),
+      ...(isCuratedStyle(t)?[{label:"YouTube 반응",points:b.engagementPts,description:fmt(b.engagement.likes)+" 좋아요 · "+fmt(b.engagement.comments)+" 댓글"}]:[]),
       {label:"커뮤니티 보정",points:b.baseTotal,description:"TouhouDB 추천 · Favorite · DB조회 · 소스 다양성 × "+Math.round(b.communityWeight*100)+"%"}
     ],
     metrics:b.metrics,
-    note:isFanOriginal(t)?"동방풍/팬게임 곡은 조회수·좋아요·댓글을 실측한 곡만 우선 순위에 넣습니다. 아직 미수집인 곡은 0회로 간주하지 않습니다.":"v5에서는 조회수가 확인된 곡은 플랫폼 조회수를 주 신호로 사용합니다. TouhouDB의 소수 투표만으로 상위권에 오르는 현상을 막기 위해 커뮤니티 지표는 보정치로만 반영합니다. 같은 곡의 서로 다른 영상은 합산하고 동일 영상 ID는 중복 제거합니다."
+    note:isCuratedStyle(t)?"동방풍/팬게임 곡은 조회수·좋아요·댓글을 실측한 곡만 우선 순위에 넣습니다. 아직 미수집인 곡은 0회로 간주하지 않습니다.":"v5에서는 조회수가 확인된 곡은 플랫폼 조회수를 주 신호로 사용합니다. TouhouDB의 소수 투표만으로 상위권에 오르는 현상을 막기 위해 커뮤니티 지표는 보정치로만 반영합니다. 같은 곡의 서로 다른 영상은 합산하고 동일 영상 ID는 중복 제거합니다."
   };
 }
 function influenceRankDetail(t){
@@ -1501,7 +1511,7 @@ function fanViewRankInfo(t){
   return{rank:i>=0?i+1:null,total:pool.length,score:viewSignal(t),views:stats.total,platforms:stats.platforms,media:stats.mediaCount,partial:pool.length<catalogTotal,fanOriginal:true,catalogTotal};
 }
 function viewRankInfo(t){
-  if(isFanOriginal(t))return fanViewRankInfo(t);
+  if(isCuratedStyle(t))return fanViewRankInfo(t);
   const stats=mediaViewStats(t),coverage=state.full.manifest?.viewCoverage||{};
   const total=Number(coverage.rankedTracks)||0;
   const views=Math.max(Number(t?.viewTotal)||0,stats.total);
@@ -1555,7 +1565,7 @@ function viewRankDetail(t){
   };
 }
 function overallRankDetail(t){
-  if(isFanOriginal(t)){
+  if(isCuratedStyle(t)){
     const r=fanOriginalRankInfo(t),pop=popularityBreakdown(t);
     return{
       title:"동방풍 순위 산정 근거",
@@ -1601,7 +1611,7 @@ function refreshRanks(){
     state.rankTotal=state.full.manifest?.indexed||state.fullItems.length;
     return;
   }
-  const pool=dedupe([...state.known.values()]).filter(t=>!isFanOriginal(t)).sort((a,b)=>overallRankScore(b)-overallRankScore(a)||recommendScore(b)-recommendScore(a)||a.title.localeCompare(b.title,"ja"));
+  const pool=dedupe([...state.known.values()]).filter(t=>!isCuratedStyle(t)).sort((a,b)=>overallRankScore(b)-overallRankScore(a)||recommendScore(b)-recommendScore(a)||a.title.localeCompare(b.title,"ja"));
   state.rankIndex=new Map(pool.map((t,i)=>[resolveId(t.id),{rank:i+1,score:overallRankScore(t)}]));
   state.rankTotal=pool.length;
 }
@@ -1611,7 +1621,7 @@ function fullRankTotal(){
 function trackRank(t){
   const total=fullRankTotal();
   if(!t)return{rank:null,sampleRank:null,score:0,total,sampleTotal:state.rankTotal||0,estimated:false,fullScale:false,stale:!rankingV5Ready()};
-  if(isFanOriginal(t)){
+  if(isCuratedStyle(t)){
     const r=fanOriginalRankInfo(t);
     return{rank:r.rank,sampleRank:r.rank,score:r.score,total:r.total,sampleTotal:r.total,estimated:false,fullScale:false,stale:false,fanOriginal:true,catalogTotal:r.catalogTotal,coverage:r.coverage,pending:r.pending};
   }
@@ -1660,7 +1670,7 @@ function rankText(rank){
   return fmt(total)+"곡 중 "+fmt(rank.rank)+"위";
 }
 function popularityRankInfo(t){
-  if(isFanOriginal(t))return fanOriginalRankInfo(t);
+  if(isCuratedStyle(t))return fanOriginalRankInfo(t);
   const total=fullRankTotal();
   if(rankingV5Ready()&&t?.popularityRank&&state.full.manifest){
     const rank=Number(t.popularityRank);
