@@ -1,11 +1,26 @@
 {
   "current": {
-    "version": "39.130.1",
+    "version": "39.130.2",
     "releasedAt": "2026-10-05",
-    "title": "Updater Navigation Fix",
-    "summary": "업데이트 메뉴가 새로고침만 하던 문제와 업데이터의 오래된 버전 고정을 수정했습니다."
+    "title": "Update Rescue · Original Filter Guard",
+    "summary": "오래된 앱 셸 캐시를 강제로 복구하는 업데이트 경로를 추가하고 오리지널곡 필터 누수를 막았습니다."
   },
   "entries": [
+    {
+      "version": "39.130.2",
+      "date": "2026-10-05",
+      "title": "Update Rescue · Original Filter Guard",
+      "changes": [
+        "웹 업데이트 적용 시 모든 Cache Storage를 비우고 stale service worker를 정리한 뒤 전용 update-rescue.html을 거쳐 최신 index를 다시 불러오도록 변경",
+        "PWA 업데이트도 동일한 rescue 경로를 사용하도록 변경하고 PWA 내부 버전을 39.130.2로 갱신",
+        "오리지널곡 필터에서 엔진명(VOCALOID/UTAU 등)만 붙은 영상이 통과하던 느슨한 보조 판정을 제거",
+        "VOCALOID·UTAU·SynthV 등 오리지널 전용 범위는 실제 오리지널 증거 태그를 요구하도록 강화",
+        "게임実況·実況プレイ·プレイ動画·配信·生放送·切り抜き·RTA·TAS·攻略·解説·reaction·gameplay 등을 파생/비원곡으로 추가 차단",
+        "정확 제목 우선 검색이 오리지널 필터를 우회하던 예외를 제거",
+        "제목 관련 결과 추가 수집에서도 현재 오리지널 범위를 다시 검증해 실황/커버가 재유입되지 않도록 수정",
+        "검색 결과 병합 직후 최종 scope 검사를 한 번 더 수행해 API 결과와 제목 rescue 결과 모두 동일한 필터를 통과하도록 통일"
+      ]
+    },
     {
       "version": "39.130.1",
       "date": "2026-10-05",
