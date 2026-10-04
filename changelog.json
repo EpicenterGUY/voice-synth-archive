@@ -1,11 +1,24 @@
 {
   "current": {
-    "version": "39.120.0",
+    "version": "39.122.0",
     "releasedAt": "2026-10-04",
-    "title": "Skin Experience · Device Identity",
-    "summary": "스킨마다 MP3 스테이션·워크맨·카세트·유리 플레이어·네온 신스·포켓 MP3처럼 서로 다른 음악기기 경험을 갖도록 확장했습니다."
+    "title": "Skin Fix · Discovery Ocean",
+    "summary": "스킨 버튼만 바뀌고 Discovery Ocean 본문이 그대로였던 문제를 수정했습니다."
   },
   "entries": [
+    {
+      "version": "39.122.0",
+      "date": "2026-10-04",
+      "title": "Skin Fix · Discovery Ocean",
+      "changes": [
+        "현재 홈의 v3989 Discovery Ocean 구조에 스킨이 실제 적용되도록 연결",
+        "Music Station·Walkman·Aqua·Cassette·Neon·Pocket Mono 전용 기기 패널을 홈 히어로에 직접 표시",
+        "입수 시작 카드·게이트웨이 버튼·오늘의 입수 지점·탐험 기록 패널까지 스킨 표면색과 테두리 적용",
+        "모바일·폴드 화면에서 기기 패널을 축소하고 버튼 배치를 2열로 유지",
+        "선택된 스킨을 상단 스킨 버튼 자체의 색과 약어로 즉시 확인 가능",
+        "서비스워커와 웹 캐시를 39.122.0으로 갱신해 이전 스킨 스크립트가 남지 않도록 처리"
+      ]
+    },
     {
       "version": "39.120.0",
       "date": "2026-10-04",
