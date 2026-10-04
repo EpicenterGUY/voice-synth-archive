@@ -1,6 +1,6 @@
 {
-  "version": "39.129.3",
+  "version": "39.130.0",
   "channel": "web",
-  "publishedAt": "2026-10-05T03:02:00+09:00",
-  "notes": "Parallel stability pass: fixed filter tap failures, removed self-triggering MutationObserver loops causing lag, simplified landscape to a stable bottom dock, reduced blur/compositing, cleaned Library, enabled in-app library playback queues, and added a lightweight Up Next drawer."
+  "publishedAt": "2026-10-05T03:18:00+09:00",
+  "notes": "MY is simplified around listening, saved playlists appear directly in MY with instant in-app playback, Playlist Lab can play drafts and saved lists through the unified player, and playlist playback now feeds the shared Up Next queue."
 }
