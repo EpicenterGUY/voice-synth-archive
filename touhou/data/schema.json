@@ -1,5 +1,5 @@
 {
-  "version": 8,
+  "version": 9,
   "entities": {
     "track": [
       "id",
@@ -76,6 +76,10 @@
       "youtubeCandidates",
       "viewTracks",
       "fallbackYoutubeMatches"
+    ],
+    "uiSkin": [
+      "station",
+      "graph"
     ]
   },
   "notes": [
@@ -96,6 +100,9 @@
     "The curated Touhou-style tab contains only the curated local catalog; generic TouhouDB fan originals remain available through the inclusive all-catalog view.",
     "TouhouDB fan originals and the curated Touhou-style catalog are separate populations in UI, ranking, and coverage statistics.",
     "The fan YouTube matcher also searches TouhouDB fan-original tracks that lack an existing YouTube PV and overlays verified fallback videos without rewriting the source shards.",
-    "Per-category media candidates, YouTube candidates, and measured view-track counts are emitted by the full-index build."
+    "Per-category media candidates, YouTube candidates, and measured view-track counts are emitted by the full-index build.",
+    "The STATION skin is the default presentation and keeps the GRAPH archive skin as a persistent user-selectable alternative.",
+    "Home recommendation mixes official originals, derivatives, TouhouDB fan originals, curated Touhou-style tracks, and hidden playable tracks instead of allowing one category to dominate.",
+    "The in-app playable filter requires an embeddable provider supported by the TouhouDive player; external-only links no longer count as in-app playable."
   ]
 }
