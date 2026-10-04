@@ -8,7 +8,7 @@
   <meta name="description" content="동방 Project 공식 원곡, 파생곡, 팬 오리지널, 동방풍 음악까지 관계별로 연결해 탐색하고 앱 안에서 영상을 재생하는 음악 탐색 앱.">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icon.svg">
-  <link rel="stylesheet" href="./styles.css?v=0.9.28">
+  <link rel="stylesheet" href="./styles.css?v=0.9.29">
 </head>
 <body data-view="home">
   <div class="app-shell">
@@ -32,8 +32,8 @@
       </nav>
 
       <div class="sidebar-footer">
-        <div class="build-chip"><span></span>TouhouDive v0.9.28 Alpha</div>
-        <button class="ghost-btn" id="skinBtn">▣ STATION 스킨</button>
+        <div class="build-chip"><span></span>TouhouDive v0.9.29 Alpha</div>
+        <button class="ghost-btn" id="skinBtn">▣ 스킨 설정</button>
         <button class="ghost-btn" id="themeBtn">◐ 테마 전환</button>
       </div>
     </aside>
@@ -48,7 +48,7 @@
           <button class="search-clear" id="searchClear" aria-label="검색어 지우기" hidden>×</button>
           <kbd>/</kbd>
         </div>
-        <button class="station-toggle" id="skinTopBtn" title="STATION / GRAPH 스킨 전환" aria-label="스킨 전환">▣</button>
+        <button class="station-toggle" id="skinTopBtn" title="스킨 설정" aria-label="스킨 설정">▣</button>
         <button class="random-btn" id="randomBtn"><span>✦</span><b>랜덤 다이브</b></button>
       </header>
 
@@ -210,6 +210,41 @@
   </nav>
 
   <div class="scrim" id="scrim"></div>
+  <section class="skin-panel" id="skinPanel" aria-hidden="true" aria-label="스킨 설정">
+    <div class="skin-panel-head">
+      <div><small>APPEARANCE</small><strong>스킨 설정</strong></div>
+      <button id="skinPanelClose" aria-label="닫기">×</button>
+    </div>
+    <div class="skin-choice-grid" role="radiogroup" aria-label="스킨 선택">
+      <button class="skin-choice" data-skin-choice="station" role="radio">
+        <b>STATION</b><span>MP3 · 미니컴포넌트</span>
+      </button>
+      <button class="skin-choice" data-skin-choice="graph" role="radio">
+        <b>GRAPH</b><span>아카이브 · 데이터 탐색</span>
+      </button>
+      <button class="skin-choice" data-skin-choice="custom" role="radio">
+        <b>CUSTOM</b><span>내 그림 · 내 배경</span>
+      </button>
+    </div>
+    <div class="custom-skin-options" id="customSkinOptions" hidden>
+      <div class="custom-skin-title">
+        <div><small>CUSTOM ONLY</small><strong>내 그림 배경</strong></div>
+        <span>STATION/GRAPH에는 적용되지 않음</span>
+      </div>
+      <label class="custom-image-drop" for="customBgInput">
+        <input id="customBgInput" type="file" accept="image/*" hidden>
+        <span class="custom-image-preview" id="customImagePreview"><b>＋</b><em>내 그림 추가</em></span>
+        <strong>사진·그림 선택</strong>
+        <small>이 기기에만 저장 · 서버 업로드 없음</small>
+      </label>
+      <div class="custom-skin-row">
+        <label><span>배경 어둡기</span><input id="customBgDim" type="range" min="0" max="80" value="46"></label>
+        <label><span>배경 맞춤</span><select id="customBgFit"><option value="cover">화면 채우기</option><option value="contain">전체 보기</option></select></label>
+      </div>
+      <button class="custom-remove-image" id="customBgRemove">내 그림 제거</button>
+    </div>
+    <p class="skin-panel-note">기본 스킨은 그림 없이 유지됩니다. 사용자 이미지는 CUSTOM 스킨에서만 표시됩니다.</p>
+  </section>
   <div class="toast" id="toast"></div>
 
   <section class="player-shell" id="playerShell" hidden>
@@ -265,9 +300,9 @@
     </aside>
   </section>
 
-  <script src="./catalog.js?v=0.9.28"></script>
-  <script src="./media.js?v=0.9.28"></script>
-  <script src="./full-index.js?v=0.9.28"></script>
-  <script src="./app.js?v=0.9.28" type="module"></script>
+  <script src="./catalog.js?v=0.9.29"></script>
+  <script src="./media.js?v=0.9.29"></script>
+  <script src="./full-index.js?v=0.9.29"></script>
+  <script src="./app.js?v=0.9.29" type="module"></script>
 </body>
 </html>
