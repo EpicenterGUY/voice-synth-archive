@@ -50,5 +50,515 @@
     },
     "publishDate": "2024-04-07",
     "remote": false
+  },
+  {
+    "id": "fan-akakyu-the-theorists-interpretation-of-fantasia",
+    "type": "fan-original",
+    "category": "fan-original",
+    "title": "The Theorists' Interpretation of \"Fantasia\"",
+    "year": 2017,
+    "circle": "Aka Kyuketsuki",
+    "artistString": "Aka Kyuketsuki",
+    "role": "Touhou-style original",
+    "album": "北海道調査 ～ Traces of Utopian Civilisation",
+    "moods": [
+      "동방풍",
+      "자작곡",
+      "Touhou-style"
+    ],
+    "originalIds": [],
+    "artists": {
+      "composer": [
+        "Aka Kyuketsuki"
+      ]
+    },
+    "aliases": [],
+    "touhouStyle": true,
+    "styleClass": "touhou-style-composition",
+    "albumTrack": 1,
+    "classification": {
+      "basis": "creator-described-touhou-style",
+      "note": "제작자가 Touhou-style album / touhou-style composition으로 명시한 작품군. 공식 동방 원곡·어레인지와 별도 집계.",
+      "evidenceUrl": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation"
+    },
+    "media": {
+      "provider": "bandcamp",
+      "url": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation",
+      "mode": "external",
+      "name": "The Theorists' Interpretation of \"Fantasia\" · Bandcamp"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "bandcamp",
+        "url": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation",
+        "mode": "external",
+        "name": "The Theorists' Interpretation of \"Fantasia\" · Bandcamp"
+      }
+    ],
+    "source": {
+      "name": "Aka Kyuketsuki Bandcamp",
+      "url": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation"
+    },
+    "publishDate": "2017-07-29",
+    "remote": false
+  },
+  {
+    "id": "fan-akakyu-refreshing-earth-of-krummholz",
+    "type": "fan-original",
+    "category": "fan-original",
+    "title": "Refreshing Earth of Krummholz",
+    "year": 2017,
+    "circle": "Aka Kyuketsuki",
+    "artistString": "Aka Kyuketsuki",
+    "role": "Touhou-style original",
+    "album": "北海道調査 ～ Traces of Utopian Civilisation",
+    "moods": [
+      "동방풍",
+      "자작곡",
+      "Touhou-style"
+    ],
+    "originalIds": [],
+    "artists": {
+      "composer": [
+        "Aka Kyuketsuki"
+      ]
+    },
+    "aliases": [],
+    "touhouStyle": true,
+    "styleClass": "touhou-style-composition",
+    "albumTrack": 2,
+    "classification": {
+      "basis": "creator-described-touhou-style",
+      "note": "제작자가 Touhou-style album / touhou-style composition으로 명시한 작품군. 공식 동방 원곡·어레인지와 별도 집계.",
+      "evidenceUrl": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation"
+    },
+    "media": {
+      "provider": "bandcamp",
+      "url": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation",
+      "mode": "external",
+      "name": "Refreshing Earth of Krummholz · Bandcamp"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "bandcamp",
+        "url": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation",
+        "mode": "external",
+        "name": "Refreshing Earth of Krummholz · Bandcamp"
+      }
+    ],
+    "source": {
+      "name": "Aka Kyuketsuki Bandcamp",
+      "url": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation"
+    },
+    "publishDate": "2017-07-29",
+    "remote": false
+  },
+  {
+    "id": "fan-akakyu-hidden-under-the-willows-ancient-backwoods",
+    "type": "fan-original",
+    "category": "fan-original",
+    "title": "Hidden Under the Willows ~ Ancient Backwoods",
+    "year": 2017,
+    "circle": "Aka Kyuketsuki",
+    "artistString": "Aka Kyuketsuki",
+    "role": "Touhou-style original",
+    "album": "北海道調査 ～ Traces of Utopian Civilisation",
+    "moods": [
+      "동방풍",
+      "자작곡",
+      "Touhou-style"
+    ],
+    "originalIds": [],
+    "artists": {
+      "composer": [
+        "Aka Kyuketsuki"
+      ]
+    },
+    "aliases": [],
+    "touhouStyle": true,
+    "styleClass": "touhou-style-composition",
+    "albumTrack": 3,
+    "classification": {
+      "basis": "creator-described-touhou-style",
+      "note": "제작자가 Touhou-style album / touhou-style composition으로 명시한 작품군. 공식 동방 원곡·어레인지와 별도 집계.",
+      "evidenceUrl": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation"
+    },
+    "media": {
+      "provider": "bandcamp",
+      "url": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation",
+      "mode": "external",
+      "name": "Hidden Under the Willows ~ Ancient Backwoods · Bandcamp"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "bandcamp",
+        "url": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation",
+        "mode": "external",
+        "name": "Hidden Under the Willows ~ Ancient Backwoods · Bandcamp"
+      }
+    ],
+    "source": {
+      "name": "Aka Kyuketsuki Bandcamp",
+      "url": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation"
+    },
+    "publishDate": "2017-07-29",
+    "remote": false
+  },
+  {
+    "id": "fan-akakyu-curious-capital-of-sheen-and-beauty",
+    "type": "fan-original",
+    "category": "fan-original",
+    "title": "Curious Capital of Sheen and Beauty",
+    "year": 2017,
+    "circle": "Aka Kyuketsuki",
+    "artistString": "Aka Kyuketsuki",
+    "role": "Touhou-style original",
+    "album": "北海道調査 ～ Traces of Utopian Civilisation",
+    "moods": [
+      "동방풍",
+      "자작곡",
+      "Touhou-style"
+    ],
+    "originalIds": [],
+    "artists": {
+      "composer": [
+        "Aka Kyuketsuki"
+      ]
+    },
+    "aliases": [],
+    "touhouStyle": true,
+    "styleClass": "touhou-style-composition",
+    "albumTrack": 4,
+    "classification": {
+      "basis": "creator-described-touhou-style",
+      "note": "제작자가 Touhou-style album / touhou-style composition으로 명시한 작품군. 공식 동방 원곡·어레인지와 별도 집계.",
+      "evidenceUrl": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation"
+    },
+    "media": {
+      "provider": "bandcamp",
+      "url": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation",
+      "mode": "external",
+      "name": "Curious Capital of Sheen and Beauty · Bandcamp"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "bandcamp",
+        "url": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation",
+        "mode": "external",
+        "name": "Curious Capital of Sheen and Beauty · Bandcamp"
+      }
+    ],
+    "source": {
+      "name": "Aka Kyuketsuki Bandcamp",
+      "url": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation"
+    },
+    "publishDate": "2017-07-29",
+    "remote": false
+  },
+  {
+    "id": "fan-akakyu-orwell-s-quarantined-utopia",
+    "type": "fan-original",
+    "category": "fan-original",
+    "title": "Orwell's Quarantined Utopia",
+    "year": 2017,
+    "circle": "Aka Kyuketsuki",
+    "artistString": "Aka Kyuketsuki",
+    "role": "Touhou-style original",
+    "album": "北海道調査 ～ Traces of Utopian Civilisation",
+    "moods": [
+      "동방풍",
+      "자작곡",
+      "Touhou-style"
+    ],
+    "originalIds": [],
+    "artists": {
+      "composer": [
+        "Aka Kyuketsuki"
+      ]
+    },
+    "aliases": [],
+    "touhouStyle": true,
+    "styleClass": "touhou-style-composition",
+    "albumTrack": 5,
+    "classification": {
+      "basis": "creator-described-touhou-style",
+      "note": "제작자가 Touhou-style album / touhou-style composition으로 명시한 작품군. 공식 동방 원곡·어레인지와 별도 집계.",
+      "evidenceUrl": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation"
+    },
+    "media": {
+      "provider": "bandcamp",
+      "url": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation",
+      "mode": "external",
+      "name": "Orwell's Quarantined Utopia · Bandcamp"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "bandcamp",
+        "url": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation",
+        "mode": "external",
+        "name": "Orwell's Quarantined Utopia · Bandcamp"
+      }
+    ],
+    "source": {
+      "name": "Aka Kyuketsuki Bandcamp",
+      "url": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation"
+    },
+    "publishDate": "2017-07-29",
+    "remote": false
+  },
+  {
+    "id": "fan-akakyu-undecided-fate-of-the-altered-strings",
+    "type": "fan-original",
+    "category": "fan-original",
+    "title": "Undecided Fate of the Altered Strings",
+    "year": 2017,
+    "circle": "Aka Kyuketsuki",
+    "artistString": "Aka Kyuketsuki",
+    "role": "Touhou-style original",
+    "album": "北海道調査 ～ Traces of Utopian Civilisation",
+    "moods": [
+      "동방풍",
+      "자작곡",
+      "Touhou-style"
+    ],
+    "originalIds": [],
+    "artists": {
+      "composer": [
+        "Aka Kyuketsuki"
+      ]
+    },
+    "aliases": [],
+    "touhouStyle": true,
+    "styleClass": "touhou-style-composition",
+    "albumTrack": 6,
+    "classification": {
+      "basis": "creator-described-touhou-style",
+      "note": "제작자가 Touhou-style album / touhou-style composition으로 명시한 작품군. 공식 동방 원곡·어레인지와 별도 집계.",
+      "evidenceUrl": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation"
+    },
+    "media": {
+      "provider": "bandcamp",
+      "url": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation",
+      "mode": "external",
+      "name": "Undecided Fate of the Altered Strings · Bandcamp"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "bandcamp",
+        "url": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation",
+        "mode": "external",
+        "name": "Undecided Fate of the Altered Strings · Bandcamp"
+      }
+    ],
+    "source": {
+      "name": "Aka Kyuketsuki Bandcamp",
+      "url": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation"
+    },
+    "publishDate": "2017-07-29",
+    "remote": false
+  },
+  {
+    "id": "fan-akakyu-a-maiden-s-nonsensical-bunraku",
+    "type": "fan-original",
+    "category": "fan-original",
+    "title": "A Maiden's Nonsensical Bunraku",
+    "year": 2017,
+    "circle": "Aka Kyuketsuki",
+    "artistString": "Aka Kyuketsuki",
+    "role": "Touhou-style original",
+    "album": "北海道調査 ～ Traces of Utopian Civilisation",
+    "moods": [
+      "동방풍",
+      "자작곡",
+      "Touhou-style"
+    ],
+    "originalIds": [],
+    "artists": {
+      "composer": [
+        "Aka Kyuketsuki"
+      ]
+    },
+    "aliases": [],
+    "touhouStyle": true,
+    "styleClass": "touhou-style-composition",
+    "albumTrack": 7,
+    "classification": {
+      "basis": "creator-described-touhou-style",
+      "note": "제작자가 Touhou-style album / touhou-style composition으로 명시한 작품군. 공식 동방 원곡·어레인지와 별도 집계.",
+      "evidenceUrl": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation"
+    },
+    "media": {
+      "provider": "bandcamp",
+      "url": "https://akakyu.bandcamp.com/track/a-maidens-nonsensical-bunraku",
+      "mode": "external",
+      "name": "A Maiden's Nonsensical Bunraku · Bandcamp"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "bandcamp",
+        "url": "https://akakyu.bandcamp.com/track/a-maidens-nonsensical-bunraku",
+        "mode": "external",
+        "name": "A Maiden's Nonsensical Bunraku · Bandcamp"
+      }
+    ],
+    "source": {
+      "name": "Aka Kyuketsuki Bandcamp",
+      "url": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation"
+    },
+    "publishDate": "2017-07-29",
+    "remote": false
+  },
+  {
+    "id": "fan-akakyu-diamond-tears-in-the-palace",
+    "type": "fan-original",
+    "category": "fan-original",
+    "title": "Diamond Tears in the Palace",
+    "year": 2017,
+    "circle": "Aka Kyuketsuki",
+    "artistString": "Aka Kyuketsuki",
+    "role": "Touhou-style original",
+    "album": "北海道調査 ～ Traces of Utopian Civilisation",
+    "moods": [
+      "동방풍",
+      "자작곡",
+      "Touhou-style"
+    ],
+    "originalIds": [],
+    "artists": {
+      "composer": [
+        "Aka Kyuketsuki"
+      ]
+    },
+    "aliases": [],
+    "touhouStyle": true,
+    "styleClass": "touhou-style-composition",
+    "albumTrack": 8,
+    "classification": {
+      "basis": "creator-described-touhou-style",
+      "note": "제작자가 Touhou-style album / touhou-style composition으로 명시한 작품군. 공식 동방 원곡·어레인지와 별도 집계.",
+      "evidenceUrl": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation"
+    },
+    "media": {
+      "provider": "bandcamp",
+      "url": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation",
+      "mode": "external",
+      "name": "Diamond Tears in the Palace · Bandcamp"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "bandcamp",
+        "url": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation",
+        "mode": "external",
+        "name": "Diamond Tears in the Palace · Bandcamp"
+      }
+    ],
+    "source": {
+      "name": "Aka Kyuketsuki Bandcamp",
+      "url": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation"
+    },
+    "publishDate": "2017-07-29",
+    "remote": false
+  },
+  {
+    "id": "fan-akakyu-unseen-madness",
+    "type": "fan-original",
+    "category": "fan-original",
+    "title": "Unseen Madness",
+    "year": 2017,
+    "circle": "Aka Kyuketsuki",
+    "artistString": "Aka Kyuketsuki",
+    "role": "Touhou-style original",
+    "album": "北海道調査 ～ Traces of Utopian Civilisation",
+    "moods": [
+      "동방풍",
+      "자작곡",
+      "Touhou-style"
+    ],
+    "originalIds": [],
+    "artists": {
+      "composer": [
+        "Aka Kyuketsuki"
+      ]
+    },
+    "aliases": [],
+    "touhouStyle": true,
+    "styleClass": "touhou-style-composition",
+    "albumTrack": 9,
+    "classification": {
+      "basis": "creator-described-touhou-style",
+      "note": "제작자가 Touhou-style album / touhou-style composition으로 명시한 작품군. 공식 동방 원곡·어레인지와 별도 집계.",
+      "evidenceUrl": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation"
+    },
+    "media": {
+      "provider": "bandcamp",
+      "url": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation",
+      "mode": "external",
+      "name": "Unseen Madness · Bandcamp"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "bandcamp",
+        "url": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation",
+        "mode": "external",
+        "name": "Unseen Madness · Bandcamp"
+      }
+    ],
+    "source": {
+      "name": "Aka Kyuketsuki Bandcamp",
+      "url": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation"
+    },
+    "publishDate": "2017-07-29",
+    "remote": false
+  },
+  {
+    "id": "fan-akakyu-two-snowflakes-wafting-above-one-big-world",
+    "type": "fan-original",
+    "category": "fan-original",
+    "title": "Two Snowflakes Wafting Above One Big World",
+    "year": 2017,
+    "circle": "Aka Kyuketsuki",
+    "artistString": "Aka Kyuketsuki",
+    "role": "Touhou-style original",
+    "album": "北海道調査 ～ Traces of Utopian Civilisation",
+    "moods": [
+      "동방풍",
+      "자작곡",
+      "Touhou-style"
+    ],
+    "originalIds": [],
+    "artists": {
+      "composer": [
+        "Aka Kyuketsuki"
+      ]
+    },
+    "aliases": [],
+    "touhouStyle": true,
+    "styleClass": "touhou-style-composition",
+    "albumTrack": 10,
+    "classification": {
+      "basis": "creator-described-touhou-style",
+      "note": "제작자가 Touhou-style album / touhou-style composition으로 명시한 작품군. 공식 동방 원곡·어레인지와 별도 집계.",
+      "evidenceUrl": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation"
+    },
+    "media": {
+      "provider": "bandcamp",
+      "url": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation",
+      "mode": "external",
+      "name": "Two Snowflakes Wafting Above One Big World · Bandcamp"
+    },
+    "mediaCandidates": [
+      {
+        "provider": "bandcamp",
+        "url": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation",
+        "mode": "external",
+        "name": "Two Snowflakes Wafting Above One Big World · Bandcamp"
+      }
+    ],
+    "source": {
+      "name": "Aka Kyuketsuki Bandcamp",
+      "url": "https://akakyu.bandcamp.com/album/traces-of-utopian-civilisation"
+    },
+    "publishDate": "2017-07-29",
+    "remote": false
   }
 ]
