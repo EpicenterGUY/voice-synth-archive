@@ -2,7 +2,7 @@
 "use strict";
 const BASE="./data/full/";
 let manifestCache=null,works=[],fanVideoOverlay=null;
-const lookupCache=new Map();
+const lookupCache=new Map(),circleSearchCache=new Map();
 const clean=v=>String(v??"").trim();
 const arr=v=>Array.isArray(v)?v:[];
 async function loadFanVideoOverlay(force=false){
@@ -106,7 +106,7 @@ async function prepareCache(meta){
   }
   localStorage.setItem(key,meta.generatedAt||"");
 }
-async function fetchShard(file,generation,expectedCount=0){
+async function fetchShardRows(file,generation,expectedCount=0){
   const url=BASE+file+"?g="+encodeURIComponent(generation||"");
   let res=await fetch(url,{cache:"default"});
   if(!res.ok)throw new Error(file+" HTTP "+res.status);
@@ -124,7 +124,10 @@ async function fetchShard(file,generation,expectedCount=0){
     rows=await res.json();
   }
   if(expectedCount&&arr(rows).length!==expectedCount)throw new Error(file+" row mismatch "+arr(rows).length+"/"+expectedCount);
-  return arr(rows).map(toTrack);
+  return arr(rows);
+}
+async function fetchShard(file,generation,expectedCount=0){
+  return (await fetchShardRows(file,generation,expectedCount)).map(toTrack);
 }
 async function lookupBucket(bucket,meta){
   if(lookupCache.has(bucket))return lookupCache.get(bucket);
@@ -181,6 +184,44 @@ async function enrichTrack(track){
   }else if(media.length)out.media=media[0];
   return out;
 }
+function normCircle(v){
+  return clean(v).normalize("NFKC").toLowerCase().replace(/[\s\u3000&＋+・_.\-—:：'"“”‘’()[\]{}]+/g,"");
+}
+function rawCircleHay(r){
+  const artists=r?.ar&&typeof r.ar==="object"?Object.values(r.ar).flat():[];
+  return [r?.c,r?.a,r?.l,...artists].filter(Boolean).map(normCircle).join(" ");
+}
+async function searchByCircleAliases(aliases,opts={}){
+  const list=arr(aliases).map(normCircle).filter(Boolean);
+  if(!list.length)return{tracks:[],total:0,manifest:await manifest()};
+  const meta=await manifest(!!opts.force);
+  await prepareCache(meta);
+  const key=meta.generatedAt+"|"+list.slice().sort().join("|");
+  if(circleSearchCache.has(key)&&!opts.force)return circleSearchCache.get(key);
+  const promise=(async()=>{
+    const files=meta.files.slice(),hits=[];
+    let cursor=0,scanned=0;
+    const concurrency=Math.max(1,Math.min(5,Number(opts.concurrency)||3));
+    const worker=async()=>{
+      while(true){
+        const idx=cursor++;if(idx>=files.length)return;
+        const cfg=files[idx];
+        const rows=await fetchShardRows(cfg.file,meta.generatedAt,Number(cfg.count)||0);
+        for(const r of rows){
+          const hay=rawCircleHay(r);
+          if(list.some(term=>hay.includes(term)))hits.push(r);
+        }
+        scanned+=rows.length;
+        opts.onProgress?.({scanned,total:meta.indexed,hits:hits.length,shards:idx+1,shardCount:files.length});
+      }
+    };
+    await Promise.all(Array.from({length:concurrency},worker));
+    const tracks=hits.map(toTrack);
+    return{manifest:meta,tracks,total:tracks.length};
+  })();
+  circleSearchCache.set(key,promise);
+  try{return await promise}catch(err){circleSearchCache.delete(key);throw err}
+}
 async function loadAll(opts={}){
   const meta=await manifest(!!opts.force),files=meta.files.slice();
   await prepareCache(meta);
@@ -199,5 +240,5 @@ async function loadAll(opts={}){
   return{manifest:meta,tracks:chunks.flat()};
 }
 function setWorks(v){works=Array.isArray(v)?v:[]}
-window.TouhouFullIndex={manifest,loadAll,lookupStats,enrichTrack,toTrack,setWorks,loadFanVideoOverlay,base:BASE};
+window.TouhouFullIndex={manifest,loadAll,lookupStats,enrichTrack,toTrack,setWorks,loadFanVideoOverlay,searchByCircleAliases,base:BASE};
 })();
