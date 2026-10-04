@@ -1,5 +1,5 @@
 {
-  "version": "0.9.29",
+  "version": "0.9.30",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-10-04",
@@ -228,6 +228,14 @@
     "custom-artwork-local-only",
     "custom-artwork-auto-optimize",
     "custom-only-artwork-isolation",
-    "single-skin-settings-panel"
+    "single-skin-settings-panel",
+    "ranking-v6",
+    "cross-platform-view-scoring",
+    "niconico-retry-collection",
+    "bilibili-retry-collection",
+    "all-platform-source-spread",
+    "soundcloud-bandcamp-piapro-ranking-signal",
+    "platform-direct-links",
+    "touhoudb-direct-link"
   ]
 }
