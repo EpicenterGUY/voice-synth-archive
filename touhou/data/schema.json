@@ -1,5 +1,5 @@
 {
-  "version": 15,
+  "version": 16,
   "entities": {
     "track": [
       "id",
@@ -162,6 +162,12 @@
         "detail"
       ],
       "timeline": "YouTube currentTime/duration when API control is available"
+    },
+    "playerStateGuard": {
+      "activeClass": "is-active",
+      "boot": "always hidden until an actual track starts",
+      "emptyMinimize": "close instead of no-op",
+      "videoMode": "16:9 edge-to-edge on mobile"
     }
   },
   "notes": [
@@ -205,6 +211,9 @@
     "The beginner MV/PV filter restricts the discovery pool to tracks with a video-provider candidate.",
     "The full player defaults to a music-app song view with large artwork and can switch to the embedded video without restarting the selected track.",
     "The mini player uses artwork/title/play controls instead of showing the embedded video surface.",
-    "Player actions preserve playback while navigating to origin, dive, or detail by minimizing the player first."
+    "Player actions preserve playback while navigating to origin, dive, or detail by minimizing the player first.",
+    "The player shell is hidden unless it has an active playback session, preventing restored/cached DOM from exposing an empty full player.",
+    "Close and minimize controls are guarded with capture-phase handlers; minimizing an empty player closes it.",
+    "Video mode uses a dedicated 16:9 stage and expands edge-to-edge on mobile while song mode keeps square artwork."
   ]
 }
