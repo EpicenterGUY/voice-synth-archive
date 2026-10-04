@@ -89,7 +89,7 @@ async function boot(){
     setDataHealth("error","UI 초기화 오류 · 새로고침 필요");
   }
   if("serviceWorker" in navigator){
-    navigator.serviceWorker.register("./sw.js?v=0.9.29").then(r=>r.update()).catch(err=>console.warn("service worker",err));
+    navigator.serviceWorker.register("./sw.js?v=0.9.30").then(r=>r.update()).catch(err=>console.warn("service worker",err));
   }
 
   const [or,ar,fr,far,fy,wr,sr]=await Promise.all([
@@ -957,7 +957,7 @@ function openTrack(t,opts={}){
     <div class="detail-actions"><button class="hot" id="detailPlay" ${player.playable(t)||external||canLookup?"":"disabled"}>${player.playable(t)?(player.getYoutubeMode?.()==="youtube"&&player.candidates?.(t).some(x=>x.provider==="youtube")?"▶ YouTube 앱 재생":"▶ 앱에서 재생"):canLookup?"⌕ YouTube/영상 찾기":external?"↗ 외부 재생":"영상 없음"}</button><button id="detailDive">⌁ 다이브</button>${t.type==="arrangement"?'<button class="origin-jump" id="detailOrigin"><span>↖</span><strong>원곡으로</strong></button>':""}<button id="favBtn">${fav?"♥ 보관됨":"♡ 보관하기"}</button>${source?`<a href="${escAttr(source)}" target="_blank" rel="noopener">원본 링크 ↗</a>`:'<button disabled>원본 링크 없음</button>'}</div>
     ${fan?'<div class="fact-box"><label>분류</label><div class="detail-meta">공식 동방 원곡을 직접 사용하지 않는 동방풍 오리지널입니다. 통합 검색에는 포함하고, 계보·분류·순위 축은 별도로 유지합니다.</div></div>':t.type==="arrangement"?lineageBox("이 어레인지의 원곡",origins,missing):lineageBox("이 원곡을 사용한 현재 로드 어레인지",children,[])}
     <div class="fact-box"><label>순위 기준</label><div class="detail-meta">${fan?"동방풍 순위는 동방풍 큐레이션 내부에서 비교합니다. 곡 자체는 동방 관련 전체 검색에 포함되며 공식 원곡·파생곡 랭킹 축과는 분리합니다.":"종합 = 인기 + 원곡 영향력. 종합·인기 순위의 분모는 FULL INDEX 전체 등록곡 "+fmt(fullRankTotal())+"곡을 그대로 사용하며, 현재 로드된 표본 순위를 전수 순위처럼 환산하지 않습니다. 플랫폼 조회수 순위는 실제 조회수 확인에 성공한 곡만 별도로 집계합니다."}</div></div>
-    ${links.length?'<div class="fact-box trusted-links"><label>확인된 링크</label><div class="trusted-link-list">'+links.slice(0,12).map(x=>'<a href="'+escAttr(x.url)+'" target="_blank" rel="noopener noreferrer">'+esc(x.provider)+' ↗</a>').join("")+'</div></div>':""}
+    ${links.length?'<div class="fact-box trusted-links"><label>플랫폼 바로가기</label><div class="trusted-link-list">'+links.slice(0,18).map(x=>'<a class="platform-link platform-'+escAttr(x.provider)+'" href="'+escAttr(x.url)+'" target="_blank" rel="noopener noreferrer"><span>'+esc(platformLabel(x.provider))+'</span><b>↗</b></a>').join("")+'</div></div>':""}
     <div class="fact-box"><label>다이브 기준</label><div class="detail-meta">${esc(relationText(t))}</div></div>
     ${!fan&&!opts.skipEnrich&&!t.touhoudbId&&state.remote.available?'<div class="detail-sync">TouhouDB에서 영상·통계를 보강하는 중…</div>':""}`;
   $("#detailPanel").classList.add("is-open");$("#detailPanel").setAttribute("aria-hidden","false");syncScrim();
@@ -1445,27 +1445,35 @@ function mediaViewStats(t){
   return{total,max,platforms:byProvider.size||Number(t?.viewPlatformCount)||0,mediaCount,providers};
 }
 function platformLabel(p){
-  return({youtube:"YouTube",niconico:"NicoNico",bilibili:"Bilibili",soundcloud:"SoundCloud",bandcamp:"Bandcamp",piapro:"Piapro"})[p]||p;
+  return({youtube:"YouTube",niconico:"NicoNico",bilibili:"Bilibili",soundcloud:"SoundCloud",bandcamp:"Bandcamp",piapro:"Piapro",touhoudb:"TouhouDB",source:"원본/공식"})[p]||p;
+}
+const SOURCE_WEIGHTS={youtube:1,niconico:1.25,bilibili:1,soundcloud:.75,bandcamp:1,piapro:.9};
+function sourceProviders(t){
+  return new Set((t?.mediaCandidates||[]).map(m=>m?.provider).filter(p=>SOURCE_WEIGHTS[p]!=null));
+}
+function sourceSpreadSignal(t){
+  let score=0;for(const p of sourceProviders(t))score+=SOURCE_WEIGHTS[p]||.5;return score;
 }
 function viewSignal(t){
   const v=mediaViewStats(t);
   if(!v.mediaCount)return 0;
-  return Math.log10(v.total+1)*8+Math.log10(v.max+1)*2+Math.min(3,v.platforms)*1.5;
+  let perPlatform=0;
+  for(const x of v.providers)perPlatform+=Math.log10(Math.max(0,x.views)+1)*1.25;
+  return Math.log10(v.total+1)*6+Math.log10(v.max+1)*1.5+perPlatform+Math.min(6,v.platforms);
 }
-function rankingV5Ready(){return Number(state.full.manifest?.ranking?.version)>=5}
+function rankingV5Ready(){return Number(state.full.manifest?.ranking?.version)>=6}
 function platformViewsEligible(){return !!state.full.manifest?.viewCoverage?.popularityEligible}
 function communitySignal(t){
   const rating=Math.max(0,Number(t?.ratingScore)||0);
   const favorites=Math.max(0,Number(t?.favoritedTimes)||0);
   const hits=Math.max(0,Number(t?.hitCount)||0);
-  const providers=new Set((t?.mediaCandidates||[]).map(m=>m?.provider).filter(Boolean)).size;
-  return Math.log10(rating+1)*8+Math.log10(favorites+1)*8+Math.log10(hits+1)*2+Math.min(4,providers);
+  return Math.log10(rating+1)*8+Math.log10(favorites+1)*8+Math.log10(hits+1)*2;
 }
 function popularityScore(t){
   if(isCuratedStyle(t))return fanPopularityScore(t);
-  const community=communitySignal(t),views=mediaViewStats(t);
-  if(platformViewsEligible()&&views.mediaCount)return viewSignal(t)+community*0.35;
-  return community*0.45;
+  const community=communitySignal(t),views=mediaViewStats(t),spread=sourceSpreadSignal(t);
+  if(platformViewsEligible()&&views.mediaCount)return viewSignal(t)+spread*.8+community*.30;
+  return community*.45+spread*.9;
 }
 function influenceScore(t){
   if(t?.type!=="original")return 0;
@@ -1480,28 +1488,28 @@ function popularityBreakdown(t){
   const rating=Math.max(0,Number(t?.ratingScore)||0);
   const favorites=Math.max(0,Number(t?.favoritedTimes)||0);
   const hits=Math.max(0,Number(t?.hitCount)||0);
-  const providers=new Set((t?.mediaCandidates||[]).map(m=>m?.provider).filter(Boolean)).size;
+  const providers=sourceProviders(t),providerCount=providers.size,spread=sourceSpreadSignal(t);
   const views=mediaViewStats(t),fan=isCuratedStyle(t),eligible=fan?views.mediaCount>0:platformViewsEligible();
   const eng=fanEngagementStats(t);
   const engagementPts=fan?(Math.log10(eng.likes+1)*2+Math.log10(eng.comments+1)*0.8):0;
   const ratingPts=Math.log10(rating+1)*8;
   const favoritePts=Math.log10(favorites+1)*8;
   const hitPts=Math.log10(hits+1)*2;
-  const providerPts=Math.min(4,providers);
-  const communityRaw=ratingPts+favoritePts+hitPts+providerPts;
-  const communityWeight=fan?(eligible?0.25:0.35):(eligible&&views.mediaCount?0.35:0.45);
+  const communityRaw=ratingPts+favoritePts+hitPts;
+  const communityWeight=fan?(eligible?0.25:0.35):(eligible&&views.mediaCount?0.30:0.45);
   const communityPts=communityRaw*communityWeight;
   const viewPts=eligible&&views.mediaCount?viewSignal(t):0;
+  const sourcePts=spread*(eligible&&views.mediaCount?.8:.9);
   const platformRows=views.providers.map(x=>({label:platformLabel(x.provider)+" 조회수",raw:fmt(x.views)+"회",rule:"서로 다른 영상 ID의 확인 조회수를 합산",points:null}));
   return{
-    total:viewPts+communityPts+engagementPts,
+    total:viewPts+communityPts+sourcePts+engagementPts,
     baseTotal:communityPts,
-    communityRaw,communityWeight,viewPts,engagementPts,views,eligible,engagement:eng,
+    communityRaw,communityWeight,viewPts,sourcePts,sourceSpread:spread,sourceProviders:[...providers],engagementPts,views,eligible,engagement:eng,
     metrics:[
       {label:"TouhouDB 누적 추천점수",raw:fmt(rating)+"점",rule:"log10(n+1) × 8",points:ratingPts*communityWeight},
       {label:"Favorite 수",raw:fmt(favorites)+"회",rule:"log10(n+1) × 8",points:favoritePts*communityWeight},
       {label:"TouhouDB 조회",raw:fmt(hits)+"회",rule:"log10(n+1) × 2",points:hitPts*communityWeight},
-      {label:"재생 소스 다양성",raw:fmt(providers)+"종",rule:"최대 4점",points:providerPts*communityWeight},
+      {label:"플랫폼 확산",raw:fmt(providerCount)+"종",rule:"YouTube 1.0 · NicoNico 1.25 · Bilibili 1.0 · SoundCloud 0.75 · Bandcamp 1.0 · Piapro 0.9",points:sourcePts},
       ...platformRows,
       ...(fan?[{label:"YouTube 좋아요",raw:eng.mediaCount?fmt(eng.likes)+"회":"미집계",rule:"log10(n+1) × 2",points:Math.log10(eng.likes+1)*2},{label:"YouTube 댓글",raw:eng.mediaCount?fmt(eng.comments)+"회":"미집계",rule:"log10(n+1) × 0.8",points:Math.log10(eng.comments+1)*0.8}]:[]),
       {label:"플랫폼 조회수",raw:views.mediaCount?fmt(views.total)+"회":"미집계",rule:eligible&&views.mediaCount?"조회수 점수를 인기의 주 신호로 직접 반영":"실측 조회수 미수집 · 임의 조회수 0점 처리 안 함",points:viewPts}
@@ -1540,16 +1548,17 @@ function popularityRankDetail(t){
   }
   return{
     title:"인기순위 산정 근거",
-    formula:isCuratedStyle(t)?"인기 점수 = 검증 조회수 + YouTube 좋아요/댓글 + DB 반응 보정":"인기 점수 = 검증 조회수 점수 + 커뮤니티 지표의 보정 기여",
+    formula:isCuratedStyle(t)?"인기 점수 = 검증 조회수 + YouTube 반응 + DB 보정":"인기 점수 = YouTube·NicoNico·Bilibili 실측 조회수 + 모든 플랫폼 확산 + TouhouDB 보정",
     score:Number(rank.score)||b.total,
     source,
     components:[
       {label:"플랫폼 조회수",points:b.viewPts,description:b.views.mediaCount?fmt(b.views.total)+"회 · "+fmt(b.views.mediaCount)+"개 영상":"조회수 미확인"},
       ...(isCuratedStyle(t)?[{label:"YouTube 반응",points:b.engagementPts,description:fmt(b.engagement.likes)+" 좋아요 · "+fmt(b.engagement.comments)+" 댓글"}]:[]),
-      {label:"커뮤니티 보정",points:b.baseTotal,description:"TouhouDB 추천 · Favorite · DB조회 · 소스 다양성 × "+Math.round(b.communityWeight*100)+"%"}
+      {label:"플랫폼 확산",points:b.sourcePts,description:(b.sourceProviders||[]).map(platformLabel).join(" · ")||"연결 플랫폼 없음"},
+      {label:"커뮤니티 보정",points:b.baseTotal,description:"TouhouDB 추천 · Favorite · DB조회 × "+Math.round(b.communityWeight*100)+"%"}
     ],
     metrics:b.metrics,
-    note:isCuratedStyle(t)?"동방풍/팬게임 곡은 조회수·좋아요·댓글을 실측한 곡만 우선 순위에 넣습니다. 아직 미수집인 곡은 0회로 간주하지 않습니다.":"v5에서는 조회수가 확인된 곡은 플랫폼 조회수를 주 신호로 사용합니다. TouhouDB의 소수 투표만으로 상위권에 오르는 현상을 막기 위해 커뮤니티 지표는 보정치로만 반영합니다. 같은 곡의 서로 다른 영상은 합산하고 동일 영상 ID는 중복 제거합니다."
+    note:isCuratedStyle(t)?"동방풍/팬게임 곡은 조회수·좋아요·댓글을 실측한 곡만 우선 순위에 넣습니다. 아직 미수집인 곡은 0회로 간주하지 않습니다.":"v6에서는 YouTube·NicoNico·Bilibili의 확인 가능한 조회수를 주 신호로 사용하고, SoundCloud·Bandcamp·Piapro는 링크 존재를 낮은 가중치의 확산 신호로 반영합니다. TouhouDB의 소수 투표만으로 상위권에 오르는 현상을 막기 위해 커뮤니티 지표는 보정치로만 반영합니다. 같은 곡의 서로 다른 영상은 합산하고 동일 영상 ID는 중복 제거합니다."
   };
 }
 function influenceRankDetail(t){
@@ -1599,15 +1608,21 @@ function viewRankDetail(t){
   const platforms=rank?.platforms??Math.max(v.platforms,Number(t?.viewPlatformCount)||0);
   const providerCoverage=coverage.providers||{},candidates=coverage.candidates||{};
   const actual=new Map(v.providers.map(x=>[x.provider,x.views]));
-  const metrics=["youtube","niconico","bilibili"].map(p=>{
+  const measuredProviders=["youtube","niconico","bilibili"],linkOnlyProviders=["soundcloud","bandcamp","piapro"];
+  const metrics=measuredProviders.map(p=>{
     if(actual.has(p))return{label:platformLabel(p),raw:fmt(actual.get(p))+"회",rule:"실제 조회수 확인 영상만 합산",points:null};
     if(p==="youtube"&&coverage.youtubeKeyConfigured===false)return{label:"YouTube",raw:"미수집",rule:"YouTube API 키 미설정 · 후보 "+fmt(Number(candidates.youtube)||0)+"개",points:null};
     if(Number(candidates[p])>0)return{label:platformLabel(p),raw:"미확인",rule:"후보 "+fmt(Number(candidates[p])||0)+"개 중 조회수 확인 실패/미수집",points:null};
     return{label:platformLabel(p),raw:"후보 없음",rule:"이 곡에 연결된 조회수 대상 영상 없음",points:null};
   });
+  for(const p of linkOnlyProviders){
+    const count=(t?.mediaCandidates||[]).filter(m=>m?.provider===p).length;
+    metrics.push({label:platformLabel(p),raw:count?fmt(count)+"개 링크":"후보 없음",rule:count?"공개 조회수 미수집 · 링크 존재를 플랫폼 확산 보조점수에 반영":"등록 링크 없음",points:null});
+  }
   metrics.push({label:"전체 합산",raw:fmt(views)+"회",rule:"조회수 값이 확인된 영상만 · 중복 영상 ID 제거",points:null});
   metrics.push({label:"최고 단일 영상",raw:fmt(maxViews)+"회",rule:"조회수 확인 성공 PV 중 최댓값",points:null});
-  const coverageText=["youtube","niconico","bilibili"].map(p=>platformLabel(p)+" "+fmt(Number(providerCoverage[p])||0)+"곡").join(" · ");
+  const manifestProviders=state.full.manifest?.providers||{};
+  const coverageText=["youtube","niconico","bilibili","soundcloud","bandcamp","piapro"].map(p=>platformLabel(p)+" "+fmt(Number(providerCoverage[p]??manifestProviders[p])||0)+"곡").join(" · ");
   const indexed=Number(state.full.manifest?.indexed)||fullRankTotal();
   const coverageRatio=indexed?((Number(coverage.rankedTracks)||0)/indexed*100):0;
   const youtubeNote=coverage.youtubeKeyConfigured===false
@@ -1615,7 +1630,7 @@ function viewRankDetail(t){
     :"";
   return{
     title:"플랫폼 조회수 순위 근거",
-    formula:"조회수 점수 = log10(합산+1)×8 + log10(최고+1)×2 + 확인 플랫폼 수×1.5",
+    formula:"조회수 점수 = 합산 log×6 + 최고 영상 log×1.5 + 플랫폼별 log 기여 + 확인 플랫폼 폭",
     score:Number(rank?.score)||viewSignal(t),
     source:rank?.rank
       ?{label:"부분 조회수 표본 순위",text:fmt(rank.total)+"곡(조회수 확인 성공 곡) 중 "+fmt(rank.rank)+"위 · 합산 "+fmt(views)+"회"}
@@ -1756,16 +1771,25 @@ function influenceRankInfo(t){
     stale:state.full.loaded&&!ready
   };
 }
+function mediaPublicUrl(m){
+  const p=m?.provider,id=String(m?.id||"").trim(),url=String(m?.url||"").trim();
+  if(/^https?:\/\//.test(url))return url;
+  if(p==="youtube"&&id)return"https://www.youtube.com/watch?v="+encodeURIComponent(id);
+  if(p==="niconico"&&id)return"https://www.nicovideo.jp/watch/"+encodeURIComponent(id);
+  if(p==="bilibili"&&id)return/^BV/i.test(id)?"https://www.bilibili.com/video/"+encodeURIComponent(id):"https://www.bilibili.com/video/av"+encodeURIComponent(id.replace(/^av/i,""));
+  if(p==="piapro"&&id)return"https://piapro.jp/content/"+encodeURIComponent(id);
+  return"";
+}
 function trustedLinks(t){
-  const seen=new Set(),out=[];
-  for(const m of t?.mediaCandidates||[]){
-    const url=String(m?.url||"").trim();
-    if(!url||!/^https?:\/\//.test(url))continue;
-    const key=(m.provider||"link")+":"+url;
-    if(seen.has(key))continue;
-    seen.add(key);out.push({provider:m.provider||"link",url});
-  }
-  return out;
+  const seen=new Set(),out=[],order={youtube:1,niconico:2,bilibili:3,soundcloud:4,bandcamp:5,piapro:6,touhoudb:7,source:8};
+  const add=(provider,url)=>{
+    url=String(url||"").trim();if(!/^https?:\/\//.test(url))return;
+    const key=provider+":"+url;if(seen.has(key))return;seen.add(key);out.push({provider,url});
+  };
+  for(const m of t?.mediaCandidates||[])add(m?.provider||"source",mediaPublicUrl(m));
+  if(t?.touhoudbId)add("touhoudb","https://touhoudb.com/S/"+encodeURIComponent(t.touhoudbId));
+  if(t?.source?.url)add(t.source?.name==="TouhouDB"?"touhoudb":"source",t.source.url);
+  return out.sort((a,b)=>(order[a.provider]||99)-(order[b.provider]||99));
 }
 function orderByStoredRank(list,field,totalHint=0){
   const max=Math.max(Number(totalHint)||0,list.length);
