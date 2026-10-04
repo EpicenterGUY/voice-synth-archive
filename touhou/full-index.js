@@ -2,7 +2,7 @@
 "use strict";
 const BASE="./data/full/";
 let manifestCache=null,works=[],fanVideoOverlay=null;
-const lookupCache=new Map(),circleSearchCache=new Map(),beginnerSearchCache=new Map(),derivedSearchCache=new Map();
+const lookupCache=new Map(),circleSearchCache=new Map(),beginnerSearchCache=new Map(),derivedSearchCache=new Map(),querySearchCache=new Map();
 const clean=v=>String(v??"").trim();
 const arr=v=>Array.isArray(v)?v:[];
 async function loadFanVideoOverlay(force=false){
@@ -239,6 +239,70 @@ function rawHasExplicitMv(r){
 function rawTitleHay(r){
   return [r?.n,...arr(r?.x)].filter(Boolean).map(normCircle).join(" ");
 }
+function normSearch(v){
+  return clean(v).normalize("NFKC").toLowerCase().replace(/[\s\u3000\p{P}\p{S}]+/gu,"");
+}
+function searchTokens(v){
+  return clean(v).normalize("NFKC").toLowerCase().split(/[\s\u3000\p{P}\p{S}]+/u).map(normSearch).filter(Boolean);
+}
+function searchBigrams(v){
+  const s=normSearch(v),out=[];if(s.length<2)return out;
+  for(let i=0;i<s.length-1;i++)out.push(s.slice(i,i+2));
+  return [...new Set(out)];
+}
+function rawSearchScore(r,query){
+  const q=clean(query),qn=normSearch(q);if(!qn)return 0;
+  const names=[r?.n,...arr(r?.x)].filter(Boolean).map(normSearch).filter(Boolean);
+  if(names.some(x=>x===qn))return 1000;
+  if(names.some(x=>x.startsWith(qn)))return 930;
+  if(names.some(x=>x.includes(qn)))return 890;
+  const meta=normSearch([r?.n,...arr(r?.x),r?.c,r?.a,r?.l,...arr(r?.g),r?.k].filter(Boolean).join(" "));
+  if(meta.includes(qn))return 780;
+  const tokens=searchTokens(q);
+  if(tokens.length>1&&tokens.every(x=>meta.includes(x)))return 710;
+  if(qn.length>=4){
+    const grams=searchBigrams(qn);let best=0;
+    for(const name of names){
+      let hit=0;for(const g of grams)if(name.includes(g))hit++;
+      best=Math.max(best,grams.length?hit/grams.length:0);
+    }
+    if(best>=.82)return 640+Math.round(best*40);
+    if(qn.length>=6&&best>=.68)return 560+Math.round(best*40);
+  }
+  return 0;
+}
+async function searchByQuery(query,opts={}){
+  const q=clean(query),qn=normSearch(q),limit=Math.max(40,Math.min(600,Number(opts.limit)||260));
+  const meta=await manifest(!!opts.force);
+  if(!qn)return{manifest:meta,tracks:[],total:0,scanned:0};
+  await prepareCache(meta);
+  const key=meta.generatedAt+"|query:"+qn+"|"+limit;
+  if(querySearchCache.has(key)&&!opts.force)return querySearchCache.get(key);
+  const promise=(async()=>{
+    const files=meta.files.slice(),hits=[];
+    let cursor=0,scanned=0,completed=0;
+    const concurrency=Math.max(1,Math.min(5,Number(opts.concurrency)||3));
+    const worker=async()=>{
+      while(true){
+        const idx=cursor++;if(idx>=files.length)return;
+        const cfg=files[idx],rows=await fetchShardRows(cfg.file,meta.generatedAt,Number(cfg.count)||0);
+        for(const r of rows){
+          const score=rawSearchScore(r,q);
+          if(score>0)hits.push({r,score});
+        }
+        scanned+=rows.length;completed++;
+        opts.onProgress?.({scanned,total:meta.indexed,hits:hits.length,shards:completed,shardCount:files.length});
+      }
+    };
+    await Promise.all(Array.from({length:concurrency},worker));
+    hits.sort((a,b)=>b.score-a.score||(Number(a.r?.qp)||1e12)-(Number(b.r?.qp)||1e12)||(Number(a.r?.q)||1e12)-(Number(b.r?.q)||1e12));
+    const picked=hits.slice(0,limit).map(x=>{const t=toTrack(x.r);t.searchRelevance=x.score;return t});
+    return{manifest:meta,tracks:picked,total:hits.length,scanned};
+  })();
+  querySearchCache.set(key,promise);
+  try{return await promise}catch(err){querySearchCache.delete(key);throw err}
+}
+
 function rawBeginnerRankScore(r){
   const gr=Number(r?.q)||0,pr=Number(r?.qp)||0,vr=Number(r?.qv)||0,views=Math.max(0,Number(r?.vt)||0);
   let score=0;
@@ -362,5 +426,5 @@ async function loadAll(opts={}){
   return{manifest:meta,tracks:chunks.flat()};
 }
 function setWorks(v){works=Array.isArray(v)?v:[]}
-window.TouhouFullIndex={manifest,loadAll,lookupStats,enrichTrack,toTrack,setWorks,loadFanVideoOverlay,searchByCircleAliases,searchByOriginalId,searchBeginnerCandidates,base:BASE};
+window.TouhouFullIndex={manifest,loadAll,lookupStats,enrichTrack,toTrack,setWorks,loadFanVideoOverlay,searchByCircleAliases,searchByQuery,searchByOriginalId,searchBeginnerCandidates,base:BASE};
 })();
