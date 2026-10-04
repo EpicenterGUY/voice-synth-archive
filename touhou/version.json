@@ -1,5 +1,5 @@
 {
-  "version": "0.9.27",
+  "version": "0.9.28",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-10-04",
@@ -207,6 +207,15 @@
     "fan-original-category-media-coverage",
     "touhoudb-fan-original-youtube-fallback-search",
     "fan-youtube-overlay-on-full-index",
-    "curated-style-rank-isolation"
+    "curated-style-rank-isolation",
+    "music-station-skin",
+    "mp3-player-face",
+    "live-vu-meter",
+    "skin-persistence",
+    "balanced-home-station-mix",
+    "db-fan-original-tab",
+    "true-inline-playable-filter",
+    "mobile-2x3-stat-dashboard",
+    "fan-original-api-original-filter"
   ]
 }
