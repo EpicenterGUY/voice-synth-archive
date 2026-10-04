@@ -220,7 +220,7 @@ function bind(){
   $("#themeBtn").onclick=toggleTheme;
   $("#skinBtn").onclick=openSkinPanel;
   $("#skinTopBtn").onclick=openSkinPanel;
-  $("#skinPanel [data-skin-choice]").forEach(btn=>btn.onclick=()=>setSkin(btn.dataset.skinChoice));
+  $$("#skinPanel [data-skin-choice]").forEach(btn=>btn.onclick=()=>setSkin(btn.dataset.skinChoice));
   $("#customBgInput").addEventListener("change",async e=>{
     const file=e.target.files?.[0];e.target.value="";
     if(!file)return;
@@ -1891,7 +1891,7 @@ function updateCustomSkinSetting(key,value){
 }
 function syncSkinPanel(){
   const skin=currentSkin();
-  $("#skinPanel [data-skin-choice]").forEach(btn=>{
+  $$("#skinPanel [data-skin-choice]").forEach(btn=>{
     const on=btn.dataset.skinChoice===skin;btn.classList.toggle("is-active",on);btn.setAttribute("aria-checked",on?"true":"false");
   });
   const custom=$("#customSkinOptions");if(custom)custom.hidden=skin!=="custom";
