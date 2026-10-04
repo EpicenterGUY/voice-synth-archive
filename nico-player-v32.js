@@ -1,4 +1,4 @@
-/* VocaDive in-app Nico player v39.102 · Native Lifecycle Playback 3.0 */
+/* VocaDive in-app Nico player v39.128 · Unified Music Player 4.0 */
 (function(){
 "use strict";
 var modal=null,mini=null,frame=null,fullStage=null,miniStage=null,inlineHost=null,currentId="",currentTitle="",pushed=false,queue=[],queueIndex=-1,autoNext=true,pipWindow=null,pipClosing=false,lastPlayerStatus=0,maxVolume=true,volumeAppliedFor="",playerVolume=100,volumePopover=null,surfaceRepairTimer=0,routeObserver32=null,routeObserverRetry32=0;
@@ -16,8 +16,8 @@ function videoIdFromUrl(url){
 }
 function findSong(id,anchor){
   if(anchor){
-    var card=anchor.closest(".v28-card,.song,.us-result,.v331-song");
-    var t=card&&card.querySelector(".v28-title,.song-title,.us-copy b,.v331-song b");
+    var card=anchor.closest(".v28-card,.song,.us-result,.v331-song,.v39-media-card,.v395-saved,.v126-card,.mr58-node");
+    var t=card&&card.querySelector(".v28-title,.song-title,.us-copy b,.v331-song b,.v39-media-title,.v395-saved-title,.v126-title,.mr58-node-copy b");
     var img=card&&card.querySelector("img");
     if(t)return{title:t.textContent.trim()||id,thumb:img&&img.src||""};
   }
@@ -315,7 +315,7 @@ function normalizeQueue(items){
   return out;
 }
 function queueFromAnchor(anchor,id,title){
-  var container=anchor&&anchor.closest(".v28-cards,.v331-songgrid,.v332-feed-grid,.v332-lib-grid,.v22-card-grid,.list,.us-results");
+  var container=anchor&&anchor.closest(".v28-cards,.v331-songgrid,.v332-feed-grid,.v332-lib-grid,.v22-card-grid,.list,.us-results,.v39-media-grid,.v395-saved-row,.v126-grid,.mr58-map");
   if(!container)return[{id:id,title:title||id}];
   var out=[];
   container.querySelectorAll('a[href*="nicovideo.jp/watch/"]').forEach(function(a){
@@ -331,7 +331,7 @@ function markPlaying(){
   document.querySelectorAll(".v332-playing").forEach(function(x){x.classList.remove("v332-playing")});
   if(!currentId)return;
   document.querySelectorAll('a[href*="nicovideo.jp/watch/'+CSS.escape(currentId)+'"]').forEach(function(a){
-    var card=a.closest(".v28-card,.v331-song,.v22-song-card,.song,.us-result");
+    var card=a.closest(".v28-card,.v331-song,.v22-song-card,.song,.us-result,.v39-media-card,.v395-saved,.v126-card,.mr58-node");
     if(card)card.classList.add("v332-playing");
   });
 }
