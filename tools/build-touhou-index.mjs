@@ -74,6 +74,12 @@ function circleName(item,roles){
 }
 function matchesCanonicalOriginal(item){
   if(!CANONICAL_ORIGINALS.length||!hasZunArtist(item))return false;
+  // Canonical-title recovery is only for parentless source entries.
+  // A ZUN arrangement/version can have the exact same title as its source
+  // (e.g. Touhou soundtrack/game-album variants); promoting those to an
+  // official original splits derivative counts and can hijack the local seed.
+  const parent=Number(item?.originalVersionId)||Number(item?.originalVersion?.id)||Number(item?.parentSongId)||0;
+  if(parent)return false;
   const names=[clean(item?.name),clean(item?.defaultName),clean(item?.additionalNames),...arr(item?.names).map(nameValue)]
     .filter(Boolean).map(norm);
   const album=norm(albumName(item)),year=Number(item?.publishDate||item?.year||0)||0;
@@ -398,6 +404,11 @@ async function main(){
   };
   await Promise.all(Array.from({length:CONCURRENCY},worker));
   let tracks=results.flat().filter(x=>x?.i);
+  const invalidOfficialParents=tracks.filter(t=>!t.t&&Number(t.o)>0);
+  if(invalidOfficialParents.length){
+    const sample=invalidOfficialParents.slice(0,8).map(t=>({id:t.i,title:t.n,parent:t.o,songType:t.k}));
+    throw new Error("classification invariant failed: official originals with parent="+invalidOfficialParents.length+" "+JSON.stringify(sample));
+  }
   const viewCoverage=await enrichPlatformViews(tracks);
   console.log("view coverage",viewCoverage);
   const byId=new Map(tracks.map(x=>[x.i,x]));
@@ -510,7 +521,7 @@ async function main(){
     },
     classification:{
       inclusion:"all TouhouDB song entries are retained as Touhou-related data; category controls presentation, not inclusion",
-      original:"SongType Original AND no parent AND (ZUN artist OR official collaborator + official-work match)",
+      original:"parentless source only: SongType Original AND (ZUN artist OR official collaborator + official-work match), plus canonical-title recovery only when parentless",
       fanOriginal:"non-official SongType Original entries",
       derivative:"Arrangement/Rearrangement/Remix/Cover/Remaster/Instrumental/Mashup/Short and other related entries",
       categories:["official-original","fan-original","arrangement","rearrangement","remix","cover","remaster","instrumental","mashup","short-version","other-related"]
