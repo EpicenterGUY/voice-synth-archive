@@ -1,7 +1,7 @@
 /* VocaDive 39.128.0 · unified music cards + YouTube Music style player */
 (function(){
 "use strict";
-var VER="39.128.0",timer=0,lastPlaying="";
+var VER="39.129.1",timer=0,lastPlaying="";
 function style(){
  if(document.getElementById("v39128MusicUiStyle"))return;
  var s=document.createElement("style");s.id="v39128MusicUiStyle";s.textContent=`
@@ -167,10 +167,10 @@ function cardId(card){
  }
  return card.dataset.contentId||card.dataset.v126Id||""
 }
-function mark(){
+function mark(force){
  var id="";
  try{id=window.VSANicoPlayer&&VSANicoPlayer.state?String(VSANicoPlayer.state().currentId||""):""}catch(_){}
- if(id===lastPlaying&&document.querySelectorAll(".v128-playing").length)return;
+ if(!force&&id===lastPlaying)return;
  lastPlaying=id;
  document.querySelectorAll(".v128-playing").forEach(function(x){x.classList.remove("v128-playing")});
  document.querySelectorAll(".v128-playing-badge").forEach(function(x){x.remove()});
@@ -193,17 +193,15 @@ function normalizeButtons(){
   })
  })
 }
-function sync(){normalizeButtons();mark()}
+function sync(){normalizeButtons();mark(true)}
 function boot(){
  style();sync();
- timer=setInterval(mark,900);
- var root=document.getElementById("toolsModal")||document.body;
- if(root){
-  var mo=new MutationObserver(function(){requestAnimationFrame(sync)});
-  mo.observe(root,{childList:true,subtree:true})
- }
- window.addEventListener("vsa:route-change",function(){setTimeout(sync,0)});
- window.addEventListener("pageshow",function(){setTimeout(sync,0)})
+ timer=setInterval(function(){mark(false)},1800);
+ window.addEventListener("vsa:route-change",function(){setTimeout(sync,40)});
+ window.addEventListener("pageshow",function(){setTimeout(sync,80)});
+ document.addEventListener("click",function(e){
+  if(e.target&&e.target.closest&&e.target.closest("[data-v39-song],[data-v126-open],[data-v395-open-song],.v22-song-card,.mr58-node"))setTimeout(function(){mark(true)},120)
+ },{passive:true})
 }
 window.VSAMusicUi39128={version:VER,refresh:sync};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
