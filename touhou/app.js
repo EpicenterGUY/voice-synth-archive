@@ -937,7 +937,7 @@ function renderFilters(){
     if(!out.some(x=>x.key===state.filter))state.filter="전체";
     quick.innerHTML=out.map(x=>'<button class="filter-chip '+(x.key===state.filter?"is-active":"")+'" data-filter="'+escAttr(x.key)+'">'+esc(x.label)+'</button>').join("");
   }
-  $("#quickFilters .filter-chip").forEach(b=>b.onclick=()=>{
+  $$("#quickFilters .filter-chip").forEach(b=>b.onclick=()=>{
     state.filter=b.dataset.filter;state.renderKey="";
     if(state.filter.startsWith("beginner-circle:"))ensureBeginnerCircleResults(state.filter);
     requestAnimationFrame(()=>renderCatalog());
