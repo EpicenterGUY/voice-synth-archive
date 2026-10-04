@@ -8,7 +8,7 @@ const PLAYBACK_POLICY_KEY="touhoudive:player:youtubeInlinePolicy:v3";
 const BAD_MEDIA_KEY="touhoudive:media:unavailable:v1";
 const VISUAL_MODE_KEY="touhoudive:player:visualMode:v1";
 const INLINE_PROVIDERS=new Set(["youtube","niconico","bilibili"]);
-const EXTERNAL_ONLY_PROVIDERS=new Set(["soundcloud","bandcamp","bandcamp-url","piapro"]);
+const EXTERNAL_ONLY_PROVIDERS=new Set(["soundcloud","bandcamp","bandcamp-url","piapro","touhoudb"]);
 function isExternalOnlyMedia(media){
   return !!media&&(media.mode==="external"||EXTERNAL_ONLY_PROVIDERS.has(String(media.provider||"").toLowerCase()));
 }
@@ -19,6 +19,7 @@ function externalMediaUrl(media){
   if(/^https?:\/\//i.test(raw))return raw;
   if(provider==="piapro"&&media.id)return "https://piapro.jp/content/"+encodeURIComponent(media.id);
   if(provider==="bandcamp"&&media.id)return "https://bandcamp.com";
+  if(provider==="touhoudb"&&media.songId)return "https://touhoudb.com/S/"+encodeURIComponent(media.songId);
   return"";
 }
 
@@ -28,7 +29,6 @@ function srcFor(media){
   if(media.provider==="youtube"&&media.id)return "youtube:"+media.id;
   if(media.provider==="niconico"&&media.id)return NICO_ORIGIN+"/watch/"+encodeURIComponent(media.id)+"?jsapi=1&playerId="+encodeURIComponent(PLAYER_ID)+"&autoplay=1";
   if(media.provider==="bilibili"&&media.id)return "https://player.bilibili.com/player.html?aid="+encodeURIComponent(media.id)+"&page=1&autoplay=1";
-  if(media.provider==="touhoudb"&&media.songId)return "https://touhoudb.com/Ext/EmbedSong?songId="+encodeURIComponent(media.songId)+"&lang=Default";
   return clean(media.embed);
 }
 function embedSrc(media){
