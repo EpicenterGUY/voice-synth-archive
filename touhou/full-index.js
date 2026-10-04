@@ -1,10 +1,33 @@
 (function(){
 "use strict";
 const BASE="./data/full/";
-let manifestCache=null,works=[];
+let manifestCache=null,works=[],fanVideoOverlay=null;
 const lookupCache=new Map();
 const clean=v=>String(v??"").trim();
 const arr=v=>Array.isArray(v)?v:[];
+async function loadFanVideoOverlay(force=false){
+  if(fanVideoOverlay&&!force)return fanVideoOverlay;
+  try{
+    const res=await fetch("./data/fan-youtube.json?fresh="+Date.now(),{cache:"no-store"});
+    if(!res.ok)throw new Error("fan video overlay HTTP "+res.status);
+    const data=await res.json();
+    fanVideoOverlay=data&&typeof data==="object"?data:{items:{}};
+  }catch(_){fanVideoOverlay={items:{}}}
+  return fanVideoOverlay;
+}
+function fanOverlayMedia(id){
+  const row=fanVideoOverlay?.items?.["tdb-"+String(id)];
+  if(!row?.videoId||row.videoUnavailable||row.embeddable===false)return null;
+  return{
+    provider:"youtube",id:clean(row.videoId),
+    url:"https://www.youtube.com/watch?v="+encodeURIComponent(clean(row.videoId)),
+    name:clean(row.videoTitle)||"YouTube",
+    viewCount:Number.isFinite(Number(row.viewCount))?Number(row.viewCount):null,
+    likeCount:Number.isFinite(Number(row.likeCount))?Number(row.likeCount):null,
+    commentCount:Number.isFinite(Number(row.commentCount))?Number(row.commentCount):null,
+    mode:"embed",fallbackMatch:true
+  };
+}
 function inferWork(r){
   const hay=[r.l,...arr(r.g),r.n,...arr(r.x)].filter(Boolean).join(" ").normalize("NFKC").toLowerCase();
   return works.find(w=>[w.title,w.tag,...(w.aliases||[])].some(v=>v&&hay.includes(String(v).normalize("NFKC").toLowerCase())))||null;
@@ -36,6 +59,8 @@ function relationCategory(r){
 }
 function toTrack(r){
   const work=inferWork(r),mediaCandidates=arr(r.p).map(mediaOf).filter(Boolean);
+  const fallback=fanOverlayMedia(r.i);
+  if(fallback&&!mediaCandidates.some(m=>m.provider==="youtube"&&m.id===fallback.id))mediaCandidates.unshift(fallback);
   const search=[r.n,...arr(r.x),r.c,r.a,r.l,...arr(r.g),r.k].filter(Boolean).join(" ").normalize("NFKC").toLowerCase();
   const rawType=clean(r.k),category=relationCategory(r);
   const type=category==="official-original"?"original":category==="fan-original"?"fan-original":"arrangement";
@@ -66,6 +91,7 @@ async function manifest(force=false){
   if(!res.ok)throw new Error("full index manifest HTTP "+res.status);
   const data=await res.json();
   if(!data?.indexed||!Array.isArray(data.files))throw new Error("invalid full index manifest");
+  await loadFanVideoOverlay(force);
   manifestCache=data;return data;
 }
 async function prepareCache(meta){
@@ -173,5 +199,5 @@ async function loadAll(opts={}){
   return{manifest:meta,tracks:chunks.flat()};
 }
 function setWorks(v){works=Array.isArray(v)?v:[]}
-window.TouhouFullIndex={manifest,loadAll,lookupStats,enrichTrack,toTrack,setWorks,base:BASE};
+window.TouhouFullIndex={manifest,loadAll,lookupStats,enrichTrack,toTrack,setWorks,loadFanVideoOverlay,base:BASE};
 })();
