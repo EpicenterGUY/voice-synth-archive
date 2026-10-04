@@ -89,7 +89,7 @@ async function boot(){
     setDataHealth("error","UI 초기화 오류 · 새로고침 필요");
   }
   if("serviceWorker" in navigator){
-    navigator.serviceWorker.register("./sw.js?v=0.9.43").then(r=>r.update()).catch(err=>console.warn("service worker",err));
+    navigator.serviceWorker.register("./sw.js?v=0.9.44").then(r=>r.update()).catch(err=>console.warn("service worker",err));
   }
 
   const [or,ar,fr,far,fy,wr,sr]=await Promise.all([
@@ -548,6 +548,9 @@ function relationCandidatePool(t){
 }
 function localOriginalMatch(t){
   if(!t)return null;
+  // Anything that already points at a parent is a version/arrangement, not the
+  // canonical source. Never let a title-identical ZUN version hijack a local original.
+  if((t.originalIds||[]).length)return null;
   const titleKeys=new Set([t.title,...(t.aliases||[])].map(normKey).filter(Boolean));
   if(!titleKeys.size)return null;
   const sourceKey=normKey([t.circle,t.artistString,...Object.values(t.artists||{}).flat()].filter(Boolean).join(" "));
@@ -565,7 +568,21 @@ function localOriginalMatch(t){
   return null;
 }
 function normalizeOfficialOriginalCandidate(t){
-  if(!t||t.type==="original")return t;
+  if(!t)return t;
+  const raw=String(t.songTypeRaw||t.songType||"").toLowerCase();
+  const parented=(t.originalIds||[]).length>0;
+  const rawDerivative=/(rearrangement|arrangement|remix|cover|remaster|instrumental|off.?vocal|mashup|short)/.test(raw);
+  // Repair stale/full-index rows produced before v0.9.44. An "original" that
+  // still has a parent or a derivative SongType is contradictory by definition.
+  if(t.type==="original"&&(parented||rawDerivative)){
+    const category=/rearrangement/.test(raw)?"rearrangement":
+      /remix/.test(raw)?"remix":/cover/.test(raw)?"cover":
+      /remaster/.test(raw)?"remaster":/instrumental|off.?vocal/.test(raw)?"instrumental":
+      /mashup/.test(raw)?"mashup":/short/.test(raw)?"short-version":
+      /arrangement/.test(raw)?"arrangement":"other-related";
+    return{...t,type:"arrangement",category};
+  }
+  if(t.type==="original"||parented)return t;
   const local=localOriginalMatch(t);
   if(!local)return t;
   return{
@@ -653,13 +670,19 @@ function remember(t){
   t=normalizeOfficialOriginalCandidate(t);
   const direct=state.known.get(t.id);
   if(direct){
+    // History snapshots are convenience caches, never an authority for a local
+    // canonical original. This also self-heals snapshots poisoned by the old
+    // title-only original recovery bug.
+    if(t.snapshot===true&&direct.remote===false&&direct.type==="original")return direct;
     const merged=mergeTrack(direct,t);
     state.known.set(direct.id,merged);
     return merged;
   }
   const key=identityKey(t),canonicalId=key&&state.identities.get(key);
   if(canonicalId&&state.known.has(canonicalId)){
-    const base=state.known.get(canonicalId),merged=mergeTrack(base,t);
+    const base=state.known.get(canonicalId);
+    if(t.snapshot===true&&base.remote===false&&base.type==="original")return base;
+    const merged=mergeTrack(base,t);
     state.known.set(canonicalId,merged);
     state.aliases.set(t.id,canonicalId);
     return merged;
