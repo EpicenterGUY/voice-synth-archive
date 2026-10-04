@@ -8,7 +8,7 @@
   <meta name="description" content="동방 Project 원곡과 2차창작 어레인지를 계보로 연결해 탐색하고 앱 안에서 영상을 재생하는 음악 탐색 앱.">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icon.svg">
-  <link rel="stylesheet" href="./styles.css?v=0.9.21">
+  <link rel="stylesheet" href="./styles.css?v=0.9.22">
 </head>
 <body data-view="home">
   <div class="app-shell">
@@ -32,7 +32,7 @@
       </nav>
 
       <div class="sidebar-footer">
-        <div class="build-chip"><span></span>TouhouDive v0.9.21 Alpha</div>
+        <div class="build-chip"><span></span>TouhouDive v0.9.22 Alpha</div>
         <button class="ghost-btn" id="themeBtn">◐ 테마 전환</button>
       </div>
     </aside>
@@ -55,6 +55,7 @@
           <button class="mode-tab is-active" data-mode="all">전체</button>
           <button class="mode-tab" data-mode="original">공식 원곡</button>
           <button class="mode-tab" data-mode="arrangement">2차창작</button>
+          <button class="mode-tab" data-mode="fan-original">동방풍</button>
         </div>
         <div class="playback-mode-wrap">
           <label for="playbackMode">재생</label>
@@ -92,6 +93,7 @@
       <section class="stats-row home-only" aria-label="카탈로그 상태">
         <article><span>공식 원곡</span><strong id="statOriginal">0</strong><small id="statOriginalMeta">로컬 + 라이브</small></article>
         <article><span>2차창작</span><strong id="statArrangement">0</strong><small id="statArrangementMeta">TouhouDB 라이브</small></article>
+        <article><span>동방풍</span><strong id="statFanOriginal">0</strong><small id="statFanOriginalMeta">별도 큐레이션</small></article>
         <article><span>재생 후보</span><strong id="statMedia">0</strong><small id="statMediaMeta">전체 인덱스 PV 후보</small></article>
         <article><span>전체 카탈로그</span><strong id="statLinks">0</strong><small id="statLinksMeta">연결 확인 중</small></article>
       </section>
@@ -235,9 +237,9 @@
     </aside>
   </section>
 
-  <script src="./catalog.js?v=0.9.21"></script>
-  <script src="./media.js?v=0.9.21"></script>
-  <script src="./full-index.js?v=0.9.21"></script>
-  <script src="./app.js?v=0.9.21" type="module"></script>
+  <script src="./catalog.js?v=0.9.22"></script>
+  <script src="./media.js?v=0.9.22"></script>
+  <script src="./full-index.js?v=0.9.22"></script>
+  <script src="./app.js?v=0.9.22" type="module"></script>
 </body>
 </html>
