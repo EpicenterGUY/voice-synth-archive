@@ -1,5 +1,5 @@
 {
-  "version": 9,
+  "version": 10,
   "entities": {
     "track": [
       "id",
@@ -79,7 +79,8 @@
     ],
     "uiSkin": [
       "station",
-      "graph"
+      "graph",
+      "custom"
     ]
   },
   "notes": [
@@ -103,6 +104,9 @@
     "Per-category media candidates, YouTube candidates, and measured view-track counts are emitted by the full-index build.",
     "The STATION skin is the default presentation and keeps the GRAPH archive skin as a persistent user-selectable alternative.",
     "Home recommendation mixes official originals, derivatives, TouhouDB fan originals, curated Touhou-style tracks, and hidden playable tracks instead of allowing one category to dominate.",
-    "The in-app playable filter requires an embeddable provider supported by the TouhouDive player; external-only links no longer count as in-app playable."
+    "The in-app playable filter requires an embeddable provider supported by the TouhouDive player; external-only links no longer count as in-app playable.",
+    "User-supplied background artwork is available only in the CUSTOM skin; built-in STATION and GRAPH skins never display it.",
+    "Custom artwork is stored locally as a Blob in IndexedDB and is not uploaded by TouhouDive.",
+    "CUSTOM background dimming and cover/contain fit settings persist in local storage independently of the image Blob."
   ]
 }
