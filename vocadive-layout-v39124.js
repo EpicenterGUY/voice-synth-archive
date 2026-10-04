@@ -1,7 +1,7 @@
 /* VocaDive 39.124.0 · tablet portrait/landscape + YouTube Music inspired responsive polish */
 (function(){
 "use strict";
-var VER="39.124.0";
+var VER="39.129.1";
 function style(){
   if(document.getElementById("v39124LayoutStyle"))return;
   var s=document.createElement("style");s.id="v39124LayoutStyle";s.textContent=`
@@ -146,10 +146,10 @@ function markTop(){
   if(first)first.classList.add("v124-top-hit")
 }
 function observe(){
-  var root=document.getElementById("toolsModal")||document.body;
-  if(!root)return;
-  var mo=new MutationObserver(function(){requestAnimationFrame(markTop)});
-  mo.observe(root,{childList:true,subtree:true});
+  var root=document.getElementById("songList");
+  if(!root){markTop();return}
+  var pending=0,mo=new MutationObserver(function(){clearTimeout(pending);pending=setTimeout(markTop,60)});
+  mo.observe(root,{childList:true});
   markTop()
 }
 function boot(){
