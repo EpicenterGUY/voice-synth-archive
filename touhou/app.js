@@ -654,7 +654,7 @@ function renderCatalog(title){
   renderFilters();
   let list=currentPool();
   if(state.filter==="영상 있음")list=list.filter(t=>hasMediaCandidate(t));
-  else if(state.filter!=="전체")list=list.filter(t=>t.circle===state.filter);
+  else if(state.filter!=="전체")list=list.filter(t=>state.mode==="fan-original"?(t.artistString===state.filter||t.circle===state.filter):t.circle===state.filter);
   const work=selectedWork();
   if(work)list=list.filter(t=>trackMatchesWork(t,work));
   const q=$("#searchInput").value.trim().toLowerCase();
