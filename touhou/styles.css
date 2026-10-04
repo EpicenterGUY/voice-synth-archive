@@ -414,3 +414,5 @@ button,a,[role="button"],.mode-tab,.nav-item,.filter-chip{touch-action:manipulat
 .type-badge.instrumental,.type-badge.short-version{color:#b8f5d2;border-color:rgba(184,245,210,.25)}
 .type-badge.mashup,.type-badge.other-related{color:#ffb6cf;border-color:rgba(255,182,207,.26)}
 .filter-scroller{overscroll-behavior-x:contain}
+
+.type-badge.fan-game-ost{color:#9de6ff;border-color:rgba(157,230,255,.3)}
