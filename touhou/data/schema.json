@@ -1,5 +1,5 @@
 {
-  "version": 7,
+  "version": 8,
   "entities": {
     "track": [
       "id",
@@ -69,6 +69,13 @@
       "privacyStatus",
       "statsUpdatedAt",
       "matchedAt"
+    ],
+    "fanOriginalCoverage": [
+      "count",
+      "mediaCandidates",
+      "youtubeCandidates",
+      "viewTracks",
+      "fallbackYoutubeMatches"
     ]
   },
   "notes": [
@@ -86,6 +93,9 @@
     "When an embeddable YouTube match is verified, TouhouDive prefers it for in-app playback while retaining alternate sources as fallbacks.",
     "Touhou-style rankings use measured platform views as the primary signal and YouTube likes/comments as secondary engagement signals.",
     "Touhou-style tracks without measured views or genuine TouhouDB reaction data are not assigned a fabricated zero-view rank.",
-    "The curated Touhou-style tab contains only the curated local catalog; generic TouhouDB fan originals remain available through the inclusive all-catalog view."
+    "The curated Touhou-style tab contains only the curated local catalog; generic TouhouDB fan originals remain available through the inclusive all-catalog view.",
+    "TouhouDB fan originals and the curated Touhou-style catalog are separate populations in UI, ranking, and coverage statistics.",
+    "The fan YouTube matcher also searches TouhouDB fan-original tracks that lack an existing YouTube PV and overlays verified fallback videos without rewriting the source shards.",
+    "Per-category media candidates, YouTube candidates, and measured view-track counts are emitted by the full-index build."
   ]
 }
