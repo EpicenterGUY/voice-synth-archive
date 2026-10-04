@@ -1,5 +1,5 @@
 {
-  "version": "0.9.23",
+  "version": "0.9.24",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-10-04",
@@ -186,6 +186,10 @@
     "fan-original-album-manifest",
     "verified-touhou-style-sources",
     "fangame-original-ost-catalog",
-    "mixed-arrangement-album-exclusion"
+    "mixed-arrangement-album-exclusion",
+    "button-binding-repair",
+    "delegated-navigation-events",
+    "touhou-style-583-track-catalog",
+    "verified-touhou-style-expansion"
   ]
 }
