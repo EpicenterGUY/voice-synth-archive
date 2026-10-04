@@ -1297,7 +1297,13 @@ async function enrichTrack(t){
     if(!candidate||!exact)return t;
     candidate=normalizeOfficialOriginalCandidate(candidate);
     if(t.type==="original"&&candidate.type!=="original")return t;
-    const merged=mergeRemoteIntoTrack(t,candidate);
+    let merged=mergeRemoteIntoTrack(t,candidate);
+    if(merged?.touhoudbId&&fullIndex?.enrichTrack){
+      try{
+        const ranked=await fullIndex.enrichTrack(merged);
+        if(ranked)merged=mergeRemoteIntoTrack(merged,ranked);
+      }catch(_){}
+    }
     refreshRanks();
     return merged||byId(id)||byId(candidate.id)||t;
   })().finally(()=>state.enriching.delete(id));
