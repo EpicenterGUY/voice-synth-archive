@@ -1,4 +1,4 @@
-const SW_VERSION="39.130.3"
+const SW_VERSION="39.130.4"
 const CACHE_NAME="voice-synth-archive-shell-"+SW_VERSION;
 const SHELL=[
   "./",
@@ -20,23 +20,9 @@ self.addEventListener("activate",event=>{
   event.waitUntil((async()=>{
     const names=await caches.keys();
     await Promise.all(names.filter(n=>n.startsWith("voice-synth-archive-shell-")&&n!==CACHE_NAME).map(n=>caches.delete(n)));
+    // Claim clients, but never navigate them from activate. Navigating to the rescue
+    // page here caused rescue -> unregister -> re-register -> activate loops.
     await self.clients.claim();
-    // Rescue already-open stale app shells. This works even when the page itself is
-    // running very old JS and cannot execute the newer updater code.
-    try{
-      const clients=await self.clients.matchAll({type:"window",includeUncontrolled:true});
-      await Promise.all(clients.map(async client=>{
-        try{
-          const u=new URL(client.url);
-          if(u.origin!==self.location.origin)return;
-          if(/update-rescue\.html$/.test(u.pathname))return;
-          const target=new URL("./update-rescue.html",self.registration.scope);
-          target.searchParams.set("target",SW_VERSION);
-          target.searchParams.set("_sw",String(Date.now()));
-          await client.navigate(target.toString());
-        }catch(_){}
-      }))
-    }catch(_){}
   })());
 });
 
