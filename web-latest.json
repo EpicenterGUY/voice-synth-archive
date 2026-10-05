@@ -1,6 +1,6 @@
 {
-  "version": "39.130.3",
+  "version": "39.130.4",
   "channel": "web",
-  "publishedAt": "2026-10-05T03:08:00+09:00",
-  "notes": "Emergency stale-PWA rescue: the service worker now navigates old open clients through update-rescue on activation. Original-only search scopes now require exact original-song proof tags, with a second render-time guard preventing leaked gameplay/cover/derivative results."
+  "publishedAt": "2026-10-05T12:25:00+09:00",
+  "notes": "Updater loop fix: service-worker activation no longer forces update-rescue, controller changes reload the canonical current index once, rescue cleanup is limited to VocaDive, and the manifest no longer pins the 39.116 launch URL."
 }
