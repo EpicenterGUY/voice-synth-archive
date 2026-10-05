@@ -1,11 +1,24 @@
 {
   "current": {
-    "version": "39.130.3",
+    "version": "39.130.4",
     "releasedAt": "2026-10-05",
-    "title": "Stale PWA Rescue · Strict Original Proof",
-    "summary": "오래된 PWA 화면이 계속 남는 문제를 서비스워커 단계에서 강제 복구하고, 오리지널 필터를 최종 렌더 단계까지 엄격하게 적용했습니다."
+    "title": "Updater Loop Break · Stale 39.116 Exit",
+    "summary": "업데이트가 rescue→서비스워커 해제→재등록으로 무한 반복되던 순환을 끊고, 39.116에 고정된 설치 시작 URL도 제거했습니다."
   },
   "entries": [
+    {
+      "version": "39.130.4",
+      "date": "2026-10-05",
+      "title": "Updater Loop Break · Stale 39.116 Exit",
+      "changes": [
+        "서비스워커 활성화 때 모든 열린 화면을 update-rescue.html로 강제 이동시키던 동작을 제거해 rescue→unregister→재등록→rescue 무한 루프 차단",
+        "controllerchange는 서비스워커를 다시 지우지 않고 최신 index.html을 캐시버스터와 함께 한 번만 다시 불러오도록 변경",
+        "웹 업데이트 버튼도 전체 서비스워커 해제 대신 등록 갱신과 VocaDive 셸 캐시만 정리한 뒤 최신 index로 이동",
+        "update-rescue.html은 VocaDive 스코프의 서비스워커와 voice-synth-archive 셸 캐시만 정리하도록 범위를 제한",
+        "manifest start_url에 남아 있던 ?appv=39.116.0 고정을 제거해 설치형 앱이 오래된 시작 URL을 계속 여는 문제 방지",
+        "PWA·웹 업데이터·서비스워커·웹 메타 버전을 39.130.4로 통일"
+      ]
+    },
     {
       "version": "39.130.3",
       "date": "2026-10-05",
