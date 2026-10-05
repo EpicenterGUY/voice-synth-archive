@@ -1,7 +1,7 @@
 /* Voice Synth Archive PWA v21 */
 (function(){
 "use strict";
-const APP_VERSION="39.130.3";
+const APP_VERSION="39.130.4";
 const CHECK_MS=900000;
 const MIN_CHECK_GAP=45000;
 let lastCheckAt=0;
@@ -12,6 +12,7 @@ let reloading=false;
 let applyingUpdate=false;
 const DISMISS_KEY="vsa.pwa.dismissedUpdate";
 const RUNNING_KEY="vsa.pwa.runningVersion";
+const HAD_CONTROLLER_AT_BOOT=!!navigator.serviceWorker?.controller;
 
 function semver(v){return String(v||"0").split(".").map(x=>parseInt(x,10)||0)}
 function newer(a,b){
@@ -206,6 +207,7 @@ async function applyUpdate(){
   if(btn){btn.disabled=true;btn.textContent="업데이트 중…"}
   applyingUpdate=true;
   setDismissedVersion("");
+  const target=latestMeta?.current?.version||APP_VERSION;
   try{
     if(registration)await registration.update();
     if(registration?.waiting){
@@ -215,16 +217,17 @@ async function applyUpdate(){
     try{
       if(window.caches){
         const keys=await caches.keys();
-        await Promise.all(keys.map(k=>caches.delete(k)))
+        await Promise.all(keys.filter(k=>k.startsWith("voice-synth-archive-shell-")).map(k=>caches.delete(k)))
       }
     }catch{}
-    const u=new URL("./update-rescue.html",location.href);
-    u.searchParams.set("target",latestMeta?.current?.version||APP_VERSION);
-    u.searchParams.set("_refresh",String(Date.now()));
+    const u=new URL("./index.html",location.href);
+    u.searchParams.set("ui",target);
+    u.searchParams.set("_fresh",String(Date.now()));
     location.replace(u.toString())
   }catch{
-    const u=new URL("./update-rescue.html",location.href);
-    u.searchParams.set("_refresh",String(Date.now()));
+    const u=new URL("./index.html",location.href);
+    u.searchParams.set("ui",target);
+    u.searchParams.set("_fresh",String(Date.now()));
     location.replace(u.toString())
   }finally{
     if(!registration?.waiting&&btn){btn.disabled=false;btn.textContent="업데이트"}
@@ -261,16 +264,19 @@ window.addEventListener("appinstalled",()=>{
 });
 navigator.serviceWorker?.addEventListener("controllerchange",()=>{
   if(reloading)return;
-  reloading=true;
   hideUpdate();
+  // First install after a rescue may start uncontrolled. Claiming that fresh page is
+  // not an update and must not trigger another reload cycle.
+  if(!HAD_CONTROLLER_AT_BOOT&&!applyingUpdate)return;
+  reloading=true;
   setTimeout(()=>{
     try{
-      const u=new URL("./update-rescue.html",location.href);
-      u.searchParams.set("target",APP_VERSION);
+      const u=new URL("./index.html",location.href);
+      u.searchParams.set("ui",latestMeta?.current?.version||APP_VERSION);
       u.searchParams.set("_controller",String(Date.now()));
       location.replace(u.toString())
     }catch(_){location.reload()}
-  },120);
+  },100);
 });
 
 async function boot(){
