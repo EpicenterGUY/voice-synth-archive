@@ -2,7 +2,7 @@
 (function(){
 "use strict";
 
-var VERSION="39.124.0";
+var VERSION="39.130.4";
 var QUICK_DELAY=320;
 var FULL_DELAY=720;
 var QUICK_TTL=5*60*1000;
