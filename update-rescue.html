@@ -31,12 +31,13 @@ button{margin-top:14px;min-height:42px;padding:0 14px;border:0;border-radius:999
       st.textContent="서비스워커 정리 중…";
       if("serviceWorker" in navigator&&navigator.serviceWorker.getRegistrations){
         const regs=await navigator.serviceWorker.getRegistrations();
-        await Promise.all(regs.map(r=>r.unregister().catch(()=>false)));
+        const scope=new URL("./",location.href).href;
+        await Promise.all(regs.filter(r=>String(r.scope||"")===scope).map(r=>r.unregister().catch(()=>false)));
       }
       st.textContent="캐시 정리 중…";
       if(window.caches&&caches.keys){
         const keys=await caches.keys();
-        await Promise.all(keys.map(k=>caches.delete(k).catch(()=>false)));
+        await Promise.all(keys.filter(k=>k.startsWith("voice-synth-archive-shell-")).map(k=>caches.delete(k).catch(()=>false)));
       }
       try{localStorage.removeItem("vsa.pwa.runningVersion");localStorage.removeItem("vsa.pwa.dismissedUpdate")}catch(e){}
       st.textContent="최신 버전 확인 중…";
