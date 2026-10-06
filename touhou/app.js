@@ -15,7 +15,8 @@ const state={
   history:readJson("touhoudive:history",[]),
   snapshots:readJson("touhoudive:snapshots",{})
 };
-let searchTimer=0,localSearchTimer=0,uiBound=false,customBgObjectUrl="";
+let searchTimer=0,localSearchTimer=0,searchRenderSeq=0,searchComposing=false,uiBound=false,customBgObjectUrl="";
+const SEARCH_TOUCH_DEVICE=window.matchMedia?.("(pointer:coarse)")?.matches||/iPad|iPhone|iPod/i.test(navigator.userAgent)||(/Macintosh/i.test(navigator.userAgent)&&navigator.maxTouchPoints>1);
 const CUSTOM_SKIN_SETTINGS_KEY="touhoudive:customSkin:v1";
 
 document.documentElement.dataset.theme=localStorage.getItem("touhoudive:theme")||"dark";
@@ -90,7 +91,7 @@ async function boot(){
     setDataHealth("error","UI 초기화 오류 · 새로고침 필요");
   }
   if("serviceWorker" in navigator){
-    navigator.serviceWorker.register("./sw.js?v=0.9.48").then(r=>r.update()).catch(err=>console.warn("service worker",err));
+    navigator.serviceWorker.register("./sw.js?v=0.9.50").then(r=>r.update()).catch(err=>console.warn("service worker",err));
   }
 
   const [or,ar,fr,far,fy,wr,sr]=await Promise.all([
@@ -121,12 +122,14 @@ async function boot(){
     const yt={
       provider:"youtube",id:String(hit.videoId),
       url:"https://www.youtube.com/watch?v="+encodeURIComponent(hit.videoId),
-      name:hit.videoTitle||x.title,mode:"embed",matchScore:Number(hit.score)||0,
+      name:hit.videoTitle||x.title,videoTitle:hit.videoTitle||"",mode:"embed",matchScore:Number(hit.score)||0,
       viewCount:Number.isFinite(Number(hit.viewCount))?Number(hit.viewCount):null,
       likeCount:Number.isFinite(Number(hit.likeCount))?Number(hit.likeCount):null,
       commentCount:Number.isFinite(Number(hit.commentCount))?Number(hit.commentCount):null,
-      statsUpdatedAt:hit.statsUpdatedAt||""
+      statsUpdatedAt:hit.statsUpdatedAt||"",videoUnavailable:!!hit.videoUnavailable,
+      embeddable:hit.embeddable!==false,privacyStatus:hit.privacyStatus||""
     };
+    if(player.isKnownUnavailableMedia?.(yt))return x;
     return{
       ...x,
       mediaCandidates:uniqMedia([yt,...(x.mediaCandidates||[]),x.media]),
@@ -180,13 +183,39 @@ function bind(){
       activateModeTab(btn.dataset.mode);
     };
   });
-  $("#searchInput").addEventListener("input",()=>{
-    $("#searchClear").hidden=!$("#searchInput").value;
-    if($("#searchInput").value&&state.view!=="discover")setView("discover");
+  const searchInput=$("#searchInput");
+  const scheduleSearchRefresh=(immediate=false)=>{
+    const seq=++searchRenderSeq;
     clearTimeout(localSearchTimer);
-    localSearchTimer=setTimeout(()=>renderCatalog(),110);
     clearTimeout(searchTimer);
-    searchTimer=setTimeout(()=>loadRemote(true),320);
+    const localDelay=immediate?0:(SEARCH_TOUCH_DEVICE?230:115);
+    const remoteDelay=immediate?240:(SEARCH_TOUCH_DEVICE?620:340);
+    localSearchTimer=setTimeout(()=>{
+      requestAnimationFrame(()=>{
+        if(seq!==searchRenderSeq||searchComposing)return;
+        renderCatalog();
+      });
+    },localDelay);
+    searchTimer=setTimeout(()=>{
+      if(seq!==searchRenderSeq||searchComposing)return;
+      loadRemote(true);
+    },remoteDelay);
+  };
+  searchInput.addEventListener("compositionstart",()=>{
+    searchComposing=true;
+    clearTimeout(localSearchTimer);clearTimeout(searchTimer);
+  });
+  searchInput.addEventListener("compositionend",()=>{
+    searchComposing=false;
+    $("#searchClear").hidden=!searchInput.value;
+    if(searchInput.value&&state.view!=="discover")setView("discover");
+    scheduleSearchRefresh(true);
+  });
+  searchInput.addEventListener("input",()=>{
+    $("#searchClear").hidden=!searchInput.value;
+    if(searchInput.value&&state.view!=="discover")setView("discover");
+    if(searchComposing)return;
+    scheduleSearchRefresh(false);
   });
   $("#searchClear").onclick=()=>{
     $("#searchInput").value="";
@@ -1247,7 +1276,9 @@ function trackYoutubeId(t){
   const hit=raw.match(/i\.ytimg\.com\/vi\/([^/]+)\//i);
   if(!hit)return"";
   const id=decodeURIComponent(hit[1]);
-  return player?.badMedia?.has?.("youtube:"+id)?"":id;
+  const sourceRow=[t?.media,...(t?.mediaCandidates||[])].find(x=>x?.provider==="youtube"&&String(x?.id||"")===id);
+  if(player?.isKnownUnavailableMedia?.(sourceRow)||player?.badMedia?.has?.("youtube:"+id))return"";
+  return id;
 }
 function cssUrl(url){
   return 'url("'+String(url||"").replace(/\\/g,"\\\\").replace(/"/g,'\\"')+'")';
