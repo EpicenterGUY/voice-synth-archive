@@ -24,8 +24,17 @@ function externalMediaUrl(media){
 }
 
 function clean(v){return String(v??"").trim()}
+const UNAVAILABLE_MEDIA_RE=/(?:\[?\s*(?:private|deleted)\s+video\s*\]?|video\s+unavailable|this\s+video\s+is\s+unavailable|비공개(?:된)?\s*(?:동영상|영상)?|삭제(?:된)?\s*(?:동영상|영상)?)/i;
+function knownUnavailableMedia(media){
+  if(!media)return false;
+  if(media.videoUnavailable===true||media.unavailable===true||media.available===false||media.embeddable===false)return true;
+  const privacy=clean(media.privacyStatus||media.privacy||"").toLowerCase();
+  if(privacy&&privacy!=="public"&&privacy!=="unlisted")return true;
+  const label=[media.name,media.title,media.videoTitle,media.status,media.reason].map(clean).filter(Boolean).join(" ");
+  return UNAVAILABLE_MEDIA_RE.test(label);
+}
 function srcFor(media){
-  if(!media||isExternalOnlyMedia(media))return"";
+  if(!media||knownUnavailableMedia(media)||isExternalOnlyMedia(media))return"";
   if(media.provider==="youtube"&&media.id)return "youtube:"+media.id;
   if(media.provider==="niconico"&&media.id)return NICO_ORIGIN+"/watch/"+encodeURIComponent(media.id)+"?jsapi=1&playerId="+encodeURIComponent(PLAYER_ID)+"&autoplay=1";
   if(media.provider==="bilibili"&&media.id)return "https://player.bilibili.com/player.html?aid="+encodeURIComponent(media.id)+"&page=1&autoplay=1";
@@ -131,8 +140,8 @@ class TouhouMediaPlayer{
     if(this.relatedTab)this.relatedTab.onclick=()=>this.setTab("related");
     if(this.lyricsTab)this.lyricsTab.onclick=()=>this.setTab("lyrics");
     if(this.infoTab)this.infoTab.onclick=()=>this.setTab("info");
-    if(this.songModeBtn)this.songModeBtn.onclick=()=>this.setVisualMode("song");
-    if(this.videoModeBtn)this.videoModeBtn.onclick=()=>this.setVisualMode("video");
+    if(this.songModeBtn)this.songModeBtn.onclick=()=>this.setVisualMode("song",true,true);
+    if(this.videoModeBtn)this.videoModeBtn.onclick=()=>this.setVisualMode("video",true,true);
     if(this.seek){
       this.seek.addEventListener("change",()=>{
         if(!this.yt||this.seek.disabled)return;
@@ -176,11 +185,12 @@ class TouhouMediaPlayer{
   }
   esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}
   mediaKey(media){return media&&media.provider&&media.id?media.provider+":"+media.id:""}
+  isKnownUnavailableMedia(media){return knownUnavailableMedia(media)}
   candidates(track){
     const seen=new Set(),out=[];
     for(const media of [track?.media,...(track?.mediaCandidates||[])]){
       const key=this.mediaKey(media);
-      if(!media||!srcFor(media)||!key||seen.has(key)||this.badMedia.has(key))continue;
+      if(!media||knownUnavailableMedia(media)||!srcFor(media)||!key||seen.has(key)||this.badMedia.has(key))continue;
       seen.add(key);out.push(media);
     }
     return out.sort((a,b)=>this.fallbackPriority(a.provider)-this.fallbackPriority(b.provider));
@@ -202,7 +212,7 @@ class TouhouMediaPlayer{
     const seen=new Set(),out=[];
     for(const media of [...(track.mediaCandidates||[]),...(rows||[])]){
       const key=this.mediaKey(media);
-      if(!media||!key||seen.has(key))continue;
+      if(!media||knownUnavailableMedia(media)||!key||seen.has(key)||this.badMedia.has(key))continue;
       seen.add(key);out.push(media);
     }
     track.mediaCandidates=out;
@@ -401,7 +411,7 @@ class TouhouMediaPlayer{
   canVideoVisual(){
     return this.candidates(this.current).some(m=>["youtube","niconico","bilibili"].includes(m?.provider));
   }
-  setVisualMode(mode,persist=true){
+  setVisualMode(mode,persist=true,autoplay=false){
     const next=mode==="video"&&this.canVideoVisual()?"video":"song";
     this.visualMode=next;
     if(persist)try{localStorage.setItem(VISUAL_MODE_KEY,this.visualMode)}catch(_){}
@@ -414,6 +424,27 @@ class TouhouMediaPlayer{
       }
     }
     this.syncVisualMode();
+    if(autoplay)this.startPlaybackNow();
+  }
+  startPlaybackNow(){
+    if(!this.current)return false;
+    const provider=this.current.media?.provider;
+    this.playing=true;
+    if(provider==="youtube"){
+      if(this.yt){
+        try{this.yt.playVideo?.()}catch(_){}
+      }else{
+        this.renderCurrent(true);
+        return true;
+      }
+    }else if(provider==="niconico"){
+      this.sendNico("play");
+    }else if(provider==="bilibili"&&this.frame){
+      const src=embedSrc(this.current.media);
+      if(src&&!String(this.frame.src||"").includes(String(this.current.media?.id||"")))this.frame.src=src;
+    }
+    this.syncControls();this.setPlaybackState("playing");this._pipSync?.();
+    return true;
   }
   syncVisualMode(){
     const canVideo=this.canVideoVisual();
@@ -624,6 +655,12 @@ class TouhouMediaPlayer{
     const trackId=this.current.id;
     const failedKey=this.mediaKey(failedMedia);
     const failedProvider=failedMedia?.provider||"";
+    if(failedKey?.startsWith("youtube:")){
+      const failedId=failedKey.slice("youtube:".length);
+      const rawThumb=String(this.current.thumb||"");
+      if(rawThumb.includes("/vi/"+failedId+"/"))this.current.thumb="";
+      this.artworkCache.delete(String(this.current.id||""));
+    }
     if(this.current.touhoudbId&&window.TouhouCatalog?.hydrate){
       try{
         const hydrated=await window.TouhouCatalog.hydrate(this.current.touhoudbId);
