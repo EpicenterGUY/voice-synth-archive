@@ -174,7 +174,7 @@ function bind(){
   if(uiBound)return;
   // Bind the primary category rail first. On iPad/Safari this must not depend on
   // later optional UI initialization or document-level event bubbling.
-  $("#modeTabs .mode-tab[data-mode]").forEach(btn=>{
+  [...document.querySelectorAll("#modeTabs .mode-tab[data-mode]")].forEach(btn=>{
     btn.onclick=e=>{
       e.preventDefault();
       activateModeTab(btn.dataset.mode);
