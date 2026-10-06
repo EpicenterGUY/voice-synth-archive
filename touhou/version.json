@@ -1,5 +1,5 @@
 {
-  "version": "0.9.49",
+  "version": "0.9.50",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-10-06",
@@ -348,6 +348,11 @@
     "inline-player-provider-whitelist",
     "mode-tab-direct-binding",
     "ipad-mode-tab-click-repair",
-    "early-primary-control-binding"
+    "early-primary-control-binding",
+    "ipad-ime-search-scheduling",
+    "touch-search-render-throttle",
+    "mode-entry-autoplay",
+    "private-video-metadata-filter",
+    "failed-youtube-artwork-purge"
   ]
 }
