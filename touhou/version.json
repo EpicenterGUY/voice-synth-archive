@@ -1,8 +1,8 @@
 {
-  "version": "0.9.48",
+  "version": "0.9.49",
   "name": "TouhouDive",
   "channel": "alpha",
-  "updated": "2026-10-05",
+  "updated": "2026-10-06",
   "dataset": "TouhouDB-full-sharded-index",
   "features": [
     "ui-rebuild",
@@ -345,6 +345,9 @@
     "bandcamp-external-playback",
     "piapro-external-playback",
     "touhoudb-external-fallback",
-    "inline-player-provider-whitelist"
+    "inline-player-provider-whitelist",
+    "mode-tab-direct-binding",
+    "ipad-mode-tab-click-repair",
+    "early-primary-control-binding"
   ]
 }
