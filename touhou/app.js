@@ -157,8 +157,29 @@ async function boot(){
   connectFullDataset();
   connectRemote().catch(err=>remoteFail(String(err?.message||err)));
 }
+function activateModeTab(mode){
+  const next=String(mode||"").trim();
+  if(!next)return;
+  state.mode=next;state.filter="전체";state.homeMixIds=[];
+  if(state.mode==="fan-original"||state.mode==="db-fan-original"){
+    state.workFilter="";
+    const work=$("#workSelect");if(work)work.value="";
+  }
+  syncModeTabs();
+  if(state.mode==="beginner")ensureBeginnerIndex();
+  requestAnimationFrame(()=>state.view==="iceberg"?renderIceberg():renderCatalog());
+  loadRemote(true);
+}
 function bind(){
   if(uiBound)return;
+  // Bind the primary category rail first. On iPad/Safari this must not depend on
+  // later optional UI initialization or document-level event bubbling.
+  $("#modeTabs .mode-tab[data-mode]").forEach(btn=>{
+    btn.onclick=e=>{
+      e.preventDefault();
+      activateModeTab(btn.dataset.mode);
+    };
+  });
   $("#searchInput").addEventListener("input",()=>{
     $("#searchClear").hidden=!$("#searchInput").value;
     if($("#searchInput").value&&state.view!=="discover")setView("discover");
@@ -291,16 +312,6 @@ function bind(){
     }
   });
   document.addEventListener("click",e=>{
-    const modeBtn=e.target.closest?.("#modeTabs .mode-tab");
-    if(modeBtn){
-      state.mode=modeBtn.dataset.mode;state.filter="전체";state.homeMixIds=[];
-      if(state.mode==="fan-original"||state.mode==="db-fan-original"){state.workFilter="";$("#workSelect").value=""}
-      syncModeTabs();
-      if(state.mode==="beginner")ensureBeginnerIndex();
-      requestAnimationFrame(()=>state.view==="iceberg"?renderIceberg():renderCatalog());
-      loadRemote(true);
-      return;
-    }
     const navBtn=e.target.closest?.(".nav-item[data-view]");
     if(navBtn)nav(navBtn.dataset.view);
   });
