@@ -1,9 +1,9 @@
 {
   "version": 4,
-  "updated": "2026-10-09T22:53:58.101Z",
+  "updated": "2026-10-10T21:59:27.981Z",
   "totalTracks": 5967,
-  "checkedTracks": 528,
-  "matchedTracks": 307,
+  "checkedTracks": 618,
+  "matchedTracks": 342,
   "policy": "Curated Touhou-style plus TouhouDB fan-original tracks missing an existing YouTube PV. Exact/near-exact title + artist/channel checks; embeddable syndicated videos only. Views/likes/comments refreshed for every cached match.",
   "items": {
     "fan-sparxe-switcheroo": {
@@ -16,12 +16,12 @@
       "matchedAt": "2026-10-04T07:30:00.000Z",
       "verified": true,
       "basis": "creator-linked",
-      "viewCount": 2940,
+      "viewCount": 2941,
       "likeCount": 85,
       "commentCount": 8,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-akakyu-the-theorists-interpretation-of-fantasia": {
@@ -32,12 +32,12 @@
       "matchedAt": "2026-10-04T07:04:52.090Z",
       "title": "The Theorists' Interpretation of \"Fantasia\"",
       "artist": "Aka Kyuketsuki",
-      "viewCount": 3809,
+      "viewCount": 3811,
       "likeCount": 62,
       "commentCount": 4,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-akakyu-refreshing-earth-of-krummholz": {
@@ -53,7 +53,7 @@
       "commentCount": 4,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-akakyu-hidden-under-the-willows-ancient-backwoods": {
@@ -64,12 +64,12 @@
       "matchedAt": "2026-10-04T07:04:52.796Z",
       "title": "Hidden Under the Willows ~ Ancient Backwoods",
       "artist": "Aka Kyuketsuki",
-      "viewCount": 2566,
+      "viewCount": 2570,
       "likeCount": 45,
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-akakyu-curious-capital-of-sheen-and-beauty": {
@@ -85,7 +85,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-akakyu-orwell-s-quarantined-utopia": {
@@ -101,7 +101,7 @@
       "commentCount": 4,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-akakyu-undecided-fate-of-the-altered-strings": {
@@ -117,7 +117,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-akakyu-a-maiden-s-nonsensical-bunraku": {
@@ -133,7 +133,7 @@
       "commentCount": 3,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-akakyu-diamond-tears-in-the-palace": {
@@ -149,7 +149,7 @@
       "commentCount": 3,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-akakyu-unseen-madness": {
@@ -160,12 +160,12 @@
       "matchedAt": "2026-10-04T07:04:54.917Z",
       "title": "Unseen Madness",
       "artist": "Aka Kyuketsuki",
-      "viewCount": 3714,
+      "viewCount": 3715,
       "likeCount": 69,
       "commentCount": 3,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-akakyu-two-snowflakes-wafting-above-one-big-world": {
@@ -181,7 +181,7 @@
       "commentCount": 3,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-01": {
@@ -197,7 +197,7 @@
       "commentCount": 2,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-02": {
@@ -213,7 +213,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-03": {
@@ -229,7 +229,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-04": {
@@ -245,7 +245,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-05": {
@@ -261,7 +261,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-06": {
@@ -277,7 +277,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-07": {
@@ -293,7 +293,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-08": {
@@ -309,7 +309,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-09": {
@@ -325,7 +325,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-10": {
@@ -341,7 +341,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-11": {
@@ -357,7 +357,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-12": {
@@ -374,7 +374,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-13": {
@@ -390,7 +390,7 @@
       "commentCount": 3,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-14": {
@@ -406,7 +406,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-15": {
@@ -422,7 +422,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-16": {
@@ -438,7 +438,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-17": {
@@ -454,7 +454,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-18": {
@@ -470,7 +470,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-19": {
@@ -486,7 +486,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-20": {
@@ -502,7 +502,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-21": {
@@ -518,7 +518,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-22": {
@@ -534,7 +534,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-23": {
@@ -550,7 +550,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-24": {
@@ -566,7 +566,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-25": {
@@ -582,7 +582,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-26": {
@@ -598,7 +598,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-27": {
@@ -614,7 +614,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-28": {
@@ -630,7 +630,7 @@
       "commentCount": 2,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-29": {
@@ -646,7 +646,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-30": {
@@ -662,7 +662,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-31": {
@@ -678,7 +678,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-32": {
@@ -694,7 +694,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-33": {
@@ -710,7 +710,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-34": {
@@ -726,7 +726,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-drillimation-struggle-mollusk-35": {
@@ -742,7 +742,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-orange-whispers-parallel-world-01": {
@@ -929,7 +929,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-wanwan-hollow-song-birds-02": {
@@ -940,12 +940,12 @@
       "matchedAt": "2026-10-04T07:05:12.663Z",
       "title": "沈黙の春景",
       "artist": "Wanwan",
-      "viewCount": 1839,
+      "viewCount": 1841,
       "likeCount": 22,
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-wanwan-hollow-song-birds-03": {
@@ -961,7 +961,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-wanwan-hollow-song-birds-04": {
@@ -978,7 +978,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-wanwan-hollow-song-birds-05": {
@@ -994,7 +994,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-wanwan-hollow-song-birds-06": {
@@ -1010,7 +1010,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-wanwan-hollow-song-birds-07": {
@@ -1035,7 +1035,7 @@
       "commentCount": 3,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-wanwan-hollow-song-birds-09": {
@@ -1062,7 +1062,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-wanwan-hollow-song-birds-12": {
@@ -1079,7 +1079,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-wanwan-hollow-song-birds-13": {
@@ -1091,12 +1091,12 @@
       "matcherVersion": 3,
       "title": "黄金讃歌 〜 アイビストリスメギストス",
       "artist": "Wanwan",
-      "viewCount": 136328,
+      "viewCount": 136404,
       "likeCount": 1296,
       "commentCount": 98,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-wanwan-hollow-song-birds-16": {
@@ -1113,7 +1113,7 @@
       "commentCount": 3,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-wanwan-tri-focuser-03": {
@@ -1152,12 +1152,12 @@
       "matcherVersion": 3,
       "title": "Yosakoi Foxtrot",
       "artist": "DJ Abner",
-      "viewCount": 26875,
+      "viewCount": 26885,
       "likeCount": 350,
       "commentCount": 19,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-djabner-servants-harvest-wish-13": {
@@ -1169,12 +1169,12 @@
       "matcherVersion": 3,
       "title": "Vulpecula et Anser",
       "artist": "DJ Abner",
-      "viewCount": 13598,
+      "viewCount": 13605,
       "likeCount": 181,
       "commentCount": 17,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-altend-glory-deep-skies-05": {
@@ -1191,7 +1191,7 @@
       "commentCount": 5,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-altend-glory-deep-skies-07": {
@@ -1203,12 +1203,12 @@
       "matcherVersion": 3,
       "title": "Kadath, the Giant Castle of Dreams",
       "artist": "Aka Kyuketsuki",
-      "viewCount": 2535,
+      "viewCount": 2537,
       "likeCount": 71,
       "commentCount": 7,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-altend-glory-deep-skies-08": {
@@ -1225,7 +1225,7 @@
       "commentCount": 13,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-altend-glory-deep-skies-10": {
@@ -1237,12 +1237,12 @@
       "matcherVersion": 3,
       "title": "Insane God of the Primordial Chaos ~ Ethereal Paradise",
       "artist": "Wanwan, Tokiko Tatsunagi",
-      "viewCount": 55532,
+      "viewCount": 55550,
       "likeCount": 546,
       "commentCount": 36,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-76794": {
@@ -1260,7 +1260,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-117551": {
@@ -1300,12 +1300,12 @@
       "title": "エインシェントドリーム",
       "artist": "湯月",
       "sourceKind": "touhoudb-fan-original",
-      "viewCount": 188,
+      "viewCount": 189,
       "likeCount": 4,
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-74169": {
@@ -1336,12 +1336,12 @@
       "title": "グラスハートシュバリエ",
       "artist": "Wanwan",
       "sourceKind": "curated",
-      "viewCount": 35743,
+      "viewCount": 35753,
       "likeCount": 457,
       "commentCount": 34,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-8634": {
@@ -1363,12 +1363,12 @@
       "title": "Summertime Rhapsody of a Dying World",
       "artist": "sincx",
       "sourceKind": "touhoudb-fan-original",
-      "viewCount": 53652,
+      "viewCount": 53688,
       "likeCount": 430,
       "commentCount": 49,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-27520": {
@@ -1422,7 +1422,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-115104": {
@@ -1444,12 +1444,12 @@
       "title": "From Beginning to End ~ Drunken Prophet",
       "artist": "sincx",
       "sourceKind": "touhoudb-fan-original",
-      "viewCount": 7634,
+      "viewCount": 7635,
       "likeCount": 302,
       "commentCount": 34,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-11106": {
@@ -1476,7 +1476,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-17947": {
@@ -1498,12 +1498,12 @@
       "title": "堕ちた英雄の剣　～　Legend of Sanada",
       "artist": "深蒼穹",
       "sourceKind": "touhoudb-fan-original",
-      "viewCount": 20543,
+      "viewCount": 20558,
       "likeCount": 416,
       "commentCount": 7,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-22834": {
@@ -1521,7 +1521,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-78556": {
@@ -1539,7 +1539,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-79105": {
@@ -1588,12 +1588,12 @@
       "title": "烈日の暴君 ～ Violent General",
       "artist": "Wanwan",
       "sourceKind": "curated",
-      "viewCount": 13596,
+      "viewCount": 13600,
       "likeCount": 136,
       "commentCount": 12,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-88560": {
@@ -1606,12 +1606,12 @@
       "title": "DEEP IN THE HEATWAVE",
       "artist": "GUCCI, MasKaleido feat. 小寺可南子",
       "sourceKind": "touhoudb-fan-original",
-      "viewCount": 120714,
+      "viewCount": 120775,
       "likeCount": 984,
       "commentCount": 32,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-wanwan-hollow-song-birds-14": {
@@ -1629,7 +1629,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-91103": {
@@ -1647,7 +1647,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-wanwan-hollow-song-birds-15": {
@@ -1660,12 +1660,12 @@
       "title": "朝焼けに響く鳥の歌",
       "artist": "Wanwan",
       "sourceKind": "curated",
-      "viewCount": 785,
+      "viewCount": 787,
       "likeCount": 10,
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-93376": {
@@ -1692,7 +1692,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-95930": {
@@ -1710,7 +1710,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-wanwan-tri-focuser-01": {
@@ -1732,12 +1732,12 @@
       "title": "闇の魔法少女",
       "artist": "Jupiter, NYO feat. アキ",
       "sourceKind": "touhoudb-fan-original",
-      "viewCount": 3207,
+      "viewCount": 3208,
       "likeCount": 95,
       "commentCount": 2,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-wanwan-tri-focuser-02": {
@@ -1791,7 +1791,7 @@
       "commentCount": 2,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-117363": {
@@ -1822,12 +1822,12 @@
       "title": "東方っぽい曲を2つ作ってみた",
       "artist": "ちぇあ",
       "sourceKind": "touhoudb-fan-original",
-      "viewCount": 5767,
+      "viewCount": 5769,
       "likeCount": 152,
       "commentCount": 3,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-wanwan-tri-focuser-09": {
@@ -1876,12 +1876,12 @@
       "title": "Withered Bounty",
       "artist": "DJ Abner",
       "sourceKind": "curated",
-      "viewCount": 15869,
+      "viewCount": 15877,
       "likeCount": 212,
       "commentCount": 7,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-113616": {
@@ -1894,12 +1894,12 @@
       "title": "メタルバレットヘル",
       "artist": "DO",
       "sourceKind": "touhoudb-fan-original",
-      "viewCount": 1202770,
-      "likeCount": 14673,
+      "viewCount": 1208095,
+      "likeCount": 14703,
       "commentCount": 131,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-djabner-servants-harvest-wish-02": {
@@ -1912,12 +1912,12 @@
       "title": "The Golden Sun and the Cloud-Colored Horizon",
       "artist": "DJ Abner",
       "sourceKind": "curated",
-      "viewCount": 9401,
+      "viewCount": 9402,
       "likeCount": 132,
       "commentCount": 3,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-10897": {
@@ -1935,7 +1935,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-djabner-servants-harvest-wish-03": {
@@ -1948,12 +1948,12 @@
       "title": "Cumulonimbus Grimace",
       "artist": "DJ Abner",
       "sourceKind": "curated",
-      "viewCount": 9655,
+      "viewCount": 9657,
       "likeCount": 121,
       "commentCount": 5,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-17923": {
@@ -1971,7 +1971,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-djabner-servants-harvest-wish-04": {
@@ -1984,12 +1984,12 @@
       "title": "Evening Parade of Humans and Beasts",
       "artist": "DJ Abner",
       "sourceKind": "curated",
-      "viewCount": 10541,
+      "viewCount": 10544,
       "likeCount": 136,
       "commentCount": 6,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-17925": {
@@ -2007,7 +2007,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-djabner-servants-harvest-wish-06": {
@@ -2020,12 +2020,12 @@
       "title": "Beware the Forest's Flowers",
       "artist": "DJ Abner",
       "sourceKind": "curated",
-      "viewCount": 12581,
+      "viewCount": 12582,
       "likeCount": 143,
       "commentCount": 10,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-19253": {
@@ -2043,7 +2043,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-djabner-servants-harvest-wish-07": {
@@ -2056,12 +2056,12 @@
       "title": "Night-Blooming Camellia ~ Heart of the Swarm",
       "artist": "DJ Abner",
       "sourceKind": "curated",
-      "viewCount": 22850,
+      "viewCount": 22856,
       "likeCount": 246,
       "commentCount": 28,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-29676": {
@@ -2083,12 +2083,12 @@
       "title": "Windy Waves of a Starry Sea",
       "artist": "DJ Abner",
       "sourceKind": "curated",
-      "viewCount": 9242,
+      "viewCount": 9245,
       "likeCount": 135,
       "commentCount": 3,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-29679": {
@@ -2110,12 +2110,12 @@
       "title": "Poppet of Nemesis",
       "artist": "DJ Abner",
       "sourceKind": "curated",
-      "viewCount": 22853,
+      "viewCount": 22855,
       "likeCount": 258,
       "commentCount": 27,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-29684": {
@@ -2137,12 +2137,12 @@
       "title": "A Profane Shrine Maiden in a Sacred Shrine (Ruby Version)",
       "artist": "DJ Abner",
       "sourceKind": "curated",
-      "viewCount": 13163,
+      "viewCount": 13172,
       "likeCount": 127,
       "commentCount": 7,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-29686": {
@@ -2164,12 +2164,12 @@
       "title": "A Profane Shrine Maiden in a Sacred Shrine (Sapphire Version)",
       "artist": "DJ Abner",
       "sourceKind": "curated",
-      "viewCount": 11227,
+      "viewCount": 11234,
       "likeCount": 128,
       "commentCount": 10,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-29687": {
@@ -2191,12 +2191,12 @@
       "title": "Showdown! Trial of the Wish-Fulfilling Jewel",
       "artist": "DJ Abner",
       "sourceKind": "curated",
-      "viewCount": 21552,
+      "viewCount": 21560,
       "likeCount": 210,
       "commentCount": 19,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-69863": {
@@ -2218,12 +2218,12 @@
       "title": "Rising Sun Moon Viewing ~ Best Wishes",
       "artist": "DJ Abner",
       "sourceKind": "curated",
-      "viewCount": 25374,
+      "viewCount": 25383,
       "likeCount": 256,
       "commentCount": 46,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-69870": {
@@ -2245,12 +2245,12 @@
       "title": "Master of Harvest Wish",
       "artist": "DJ Abner",
       "sourceKind": "curated",
-      "viewCount": 15603,
+      "viewCount": 15606,
       "likeCount": 147,
       "commentCount": 7,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-69874": {
@@ -2277,7 +2277,7 @@
       "commentCount": 5,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-79071": {
@@ -2304,7 +2304,7 @@
       "commentCount": 2,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-79073": {
@@ -2317,12 +2317,12 @@
       "title": "Jewel of the Sky-Ruling Dragon God ~ Quintessential Fragments",
       "artist": "Various artists",
       "sourceKind": "touhoudb-fan-original",
-      "viewCount": 15160,
+      "viewCount": 15163,
       "likeCount": 333,
       "commentCount": 44,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-djabner-servants-harvest-wish-18": {
@@ -2335,12 +2335,12 @@
       "title": "Spiriting Away of Mañju and Saka ~ by any other name",
       "artist": "DJ Abner",
       "sourceKind": "curated",
-      "viewCount": 20422,
+      "viewCount": 20425,
       "likeCount": 188,
       "commentCount": 15,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-79074": {
@@ -2362,12 +2362,12 @@
       "title": "Mikuzume's Mind Game",
       "artist": "DJ Abner",
       "sourceKind": "curated",
-      "viewCount": 33413,
+      "viewCount": 33421,
       "likeCount": 279,
       "commentCount": 75,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-79081": {
@@ -2389,12 +2389,12 @@
       "title": "Tessenjutsu Dance ~ Harvest Mix",
       "artist": "DJ Abner",
       "sourceKind": "curated",
-      "viewCount": 12884,
+      "viewCount": 12897,
       "likeCount": 169,
       "commentCount": 12,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-79083": {
@@ -2416,12 +2416,12 @@
       "title": "Player's Score ~ Reap and Sow",
       "artist": "DJ Abner",
       "sourceKind": "curated",
-      "viewCount": 4577,
+      "viewCount": 4578,
       "likeCount": 61,
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-79086": {
@@ -2434,12 +2434,12 @@
       "title": "Crossing the River of Heaven",
       "artist": "Aka Kyuketsuki",
       "sourceKind": "touhoudb-fan-original",
-      "viewCount": 4329,
+      "viewCount": 4331,
       "likeCount": 104,
       "commentCount": 16,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-altend-glory-deep-skies-01": {
@@ -2452,12 +2452,12 @@
       "title": "The Shadow Over Gensokyo",
       "artist": "GizmoTheDragon, Tokiko Tatsunagi",
       "sourceKind": "curated",
-      "viewCount": 5023,
+      "viewCount": 5024,
       "likeCount": 45,
       "commentCount": 4,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-79092": {
@@ -2484,7 +2484,7 @@
       "commentCount": 4,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-86524": {
@@ -2502,7 +2502,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-altend-glory-deep-skies-03": {
@@ -2520,7 +2520,7 @@
       "commentCount": 9,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-92992": {
@@ -2542,12 +2542,12 @@
       "title": "Madman's Tavern of the Dream World",
       "artist": "Tokiko Tatsunagi",
       "sourceKind": "curated",
-      "viewCount": 4948,
+      "viewCount": 4950,
       "likeCount": 64,
       "commentCount": 5,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-119880": {
@@ -2574,7 +2574,7 @@
       "commentCount": 11,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-123937": {
@@ -2596,12 +2596,12 @@
       "title": "Into the Courts of Azathoth",
       "artist": "Spectral Nexus",
       "sourceKind": "curated",
-      "viewCount": 16954,
+      "viewCount": 16955,
       "likeCount": 159,
       "commentCount": 10,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-45761": {
@@ -2619,7 +2619,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-altend-glory-deep-skies-11": {
@@ -2632,12 +2632,12 @@
       "title": "The Old Ones' Promise of Eternal Life ~ AZOTH",
       "artist": "Tokiko Tatsunagi",
       "sourceKind": "curated",
-      "viewCount": 9235,
+      "viewCount": 9236,
       "likeCount": 101,
       "commentCount": 6,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-85461": {
@@ -2650,12 +2650,12 @@
       "title": "魔法の足音",
       "artist": "奥山ナマリ feat. 天宮みや",
       "sourceKind": "touhoudb-fan-original",
-      "viewCount": 2185,
+      "viewCount": 2187,
       "likeCount": 13,
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-altend-glory-deep-skies-12": {
@@ -2668,12 +2668,12 @@
       "title": "Aethyr Paradise",
       "artist": "Spectral Nexus",
       "sourceKind": "curated",
-      "viewCount": 2113,
+      "viewCount": 2114,
       "likeCount": 38,
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-11281": {
@@ -2700,7 +2700,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-79078": {
@@ -2722,12 +2722,12 @@
       "title": "Crossing the River of Heaven",
       "artist": "Aka Kyuketsuki",
       "sourceKind": "curated",
-      "viewCount": 4329,
+      "viewCount": 4331,
       "likeCount": 104,
       "commentCount": 16,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-119008": {
@@ -2749,12 +2749,12 @@
       "title": "Jewel of the Sky-Ruling Dragon God ~ Quintessential Fragments",
       "artist": "ELEMENTAL SYMPOSIUM",
       "sourceKind": "curated",
-      "viewCount": 13514,
+      "viewCount": 13517,
       "likeCount": 142,
       "commentCount": 7,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-119010": {
@@ -2776,12 +2776,12 @@
       "title": "Jewel of the Sky-Ruling Dragon God ~ Quintessential Fragments (Distant Sea MIX)",
       "artist": "Aka Kyuketsuki",
       "sourceKind": "curated",
-      "viewCount": 3184,
+      "viewCount": 3186,
       "likeCount": 67,
       "commentCount": 9,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-119012": {
@@ -2808,7 +2808,7 @@
       "commentCount": 2,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-119014": {
@@ -2830,12 +2830,12 @@
       "title": "Jewel of the Sky-Ruling Dragon God ~ Quintessential Fragments (Death Garden MIX)",
       "artist": "GizmoTheDragon",
       "sourceKind": "curated",
-      "viewCount": 3172,
+      "viewCount": 3179,
       "likeCount": 38,
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-119016": {
@@ -2857,12 +2857,12 @@
       "title": "Jewel of the Sky-Ruling Dragon God ~ Quintessential Fragments (Zenith Peak MIX)",
       "artist": "Mana Kazami",
       "sourceKind": "curated",
-      "viewCount": 3943,
+      "viewCount": 3945,
       "likeCount": 70,
       "commentCount": 8,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-119017": {
@@ -2889,7 +2889,7 @@
       "commentCount": 7,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-119018": {
@@ -2916,7 +2916,7 @@
       "commentCount": 6,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-119019": {
@@ -2943,7 +2943,7 @@
       "commentCount": 3,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-3214": {
@@ -2979,7 +2979,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-altend-glory-deep-skies-24": {
@@ -2997,7 +2997,7 @@
       "commentCount": 35,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-12349": {
@@ -3019,12 +3019,12 @@
       "title": "Natsukashii Fantasy ~ Imaginary Dreams in The Air",
       "artist": "Benji Tunez",
       "sourceKind": "curated",
-      "viewCount": 643,
+      "viewCount": 644,
       "likeCount": 16,
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-13378": {
@@ -3051,7 +3051,7 @@
       "commentCount": 4,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-16183": {
@@ -3078,7 +3078,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-114098": {
@@ -3091,12 +3091,12 @@
       "title": "Flawless Rhapsody of the Sea ~ Nautilus Symphony",
       "artist": "Melody Harmonia",
       "sourceKind": "touhoudb-fan-original",
-      "viewCount": 1291,
+      "viewCount": 1293,
       "likeCount": 74,
       "commentCount": 7,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-benji-compendium-legendary-beast-04": {
@@ -3114,7 +3114,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-114105": {
@@ -3136,12 +3136,12 @@
       "title": "Pumpkin Jack's Attack ~ Mazel-Tov!",
       "artist": "Benji Tunez",
       "sourceKind": "curated",
-      "viewCount": 954,
+      "viewCount": 956,
       "likeCount": 17,
       "commentCount": 3,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-115284": {
@@ -3168,7 +3168,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-117362": {
@@ -3195,7 +3195,7 @@
       "commentCount": 4,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-117541": {
@@ -3222,7 +3222,7 @@
       "commentCount": 6,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-117545": {
@@ -3249,7 +3249,7 @@
       "commentCount": 9,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-117546": {
@@ -3276,7 +3276,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-117549": {
@@ -3303,7 +3303,7 @@
       "commentCount": 4,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-117562": {
@@ -3330,7 +3330,7 @@
       "commentCount": 2,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-117563": {
@@ -3352,12 +3352,12 @@
       "title": "Eldritch Being ~ The Ones Forgotten by Their Creators",
       "artist": "Benji Tunez",
       "sourceKind": "curated",
-      "viewCount": 2638,
+      "viewCount": 2640,
       "likeCount": 36,
       "commentCount": 5,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-117729": {
@@ -3379,12 +3379,12 @@
       "title": "Horizon of Pandora ~ Ragnarok",
       "artist": "Benji Tunez",
       "sourceKind": "curated",
-      "viewCount": 1916,
+      "viewCount": 1918,
       "likeCount": 30,
       "commentCount": 2,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-120879": {
@@ -3411,7 +3411,7 @@
       "commentCount": 6,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-120903": {
@@ -3438,7 +3438,7 @@
       "commentCount": 3,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-123942": {
@@ -3465,7 +3465,7 @@
       "commentCount": 2,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-123944": {
@@ -3492,7 +3492,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-123945": {
@@ -3519,7 +3519,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-123946": {
@@ -3546,7 +3546,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-123951": {
@@ -3573,7 +3573,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-123952": {
@@ -3600,7 +3600,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-123985": {
@@ -3627,7 +3627,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-123986": {
@@ -3654,7 +3654,7 @@
       "commentCount": 8,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-123989": {
@@ -3681,7 +3681,7 @@
       "commentCount": 2,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-123991": {
@@ -3708,7 +3708,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-123992": {
@@ -3726,7 +3726,7 @@
       "commentCount": 13,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-benji-compendium-bonus-09": {
@@ -3744,7 +3744,7 @@
       "commentCount": 9,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-123993": {
@@ -3771,7 +3771,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-123995": {
@@ -3789,7 +3789,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-benji-compendium-bonus-11": {
@@ -3807,7 +3807,7 @@
       "commentCount": 3,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-127867": {
@@ -3847,12 +3847,12 @@
       "title": "Technological Gensokyo (Encore Mix)",
       "artist": "Benji Tunez",
       "sourceKind": "curated",
-      "viewCount": 562,
+      "viewCount": 563,
       "likeCount": 12,
       "commentCount": 3,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-33": {
@@ -3865,12 +3865,12 @@
       "title": "River of Tears",
       "artist": "SHO",
       "sourceKind": "touhoudb-fan-original",
-      "viewCount": 10097428,
-      "likeCount": 46527,
+      "viewCount": 10099877,
+      "likeCount": 46536,
       "commentCount": 2470,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-benji-technological-gensokyo-encore-02": {
@@ -3883,12 +3883,12 @@
       "title": "Landscape of the Vitruvian Summit (Extended)",
       "artist": "Benji Tunez",
       "sourceKind": "curated",
-      "viewCount": 901,
+      "viewCount": 902,
       "likeCount": 23,
       "commentCount": 6,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-5629": {
@@ -3910,12 +3910,12 @@
       "title": "The Space-Time Abyss of Gensokyo",
       "artist": "Benji Tunez",
       "sourceKind": "curated",
-      "viewCount": 469,
+      "viewCount": 470,
       "likeCount": 19,
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-10507": {
@@ -3942,7 +3942,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-11372": {
@@ -3964,12 +3964,12 @@
       "title": "Wandering Painter ~ Colorful Night to Fight",
       "artist": "Benji Tunez",
       "sourceKind": "curated",
-      "viewCount": 900,
+      "viewCount": 901,
       "likeCount": 11,
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-16718": {
@@ -3996,7 +3996,7 @@
       "commentCount": 5,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-17945": {
@@ -4041,7 +4041,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-22379": {
@@ -4068,7 +4068,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-25109": {
@@ -4086,7 +4086,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-benji-supernatural-oasis-stars-08": {
@@ -4104,7 +4104,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-25553": {
@@ -4131,7 +4131,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-65267": {
@@ -4158,7 +4158,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-74921": {
@@ -4176,7 +4176,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-benji-supernatural-oasis-stars-11": {
@@ -4194,7 +4194,7 @@
       "commentCount": 3,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-77984": {
@@ -4207,12 +4207,12 @@
       "title": "幻想国家黎明　～　Prayer Player",
       "artist": "ido",
       "sourceKind": "touhoudb-fan-original",
-      "viewCount": 49029,
+      "viewCount": 49068,
       "likeCount": 434,
       "commentCount": 14,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-benji-supernatural-oasis-stars-12": {
@@ -4230,7 +4230,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-83877": {
@@ -4243,12 +4243,12 @@
       "title": "ReReReBirth",
       "artist": "konoyaAF",
       "sourceKind": "touhoudb-fan-original",
-      "viewCount": 9362,
+      "viewCount": 9364,
       "likeCount": 212,
       "commentCount": 5,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-benji-supernatural-oasis-stars-13": {
@@ -4266,7 +4266,7 @@
       "commentCount": 2,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-85530": {
@@ -4293,7 +4293,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-88488": {
@@ -4320,7 +4320,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-91224": {
@@ -4338,7 +4338,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-benji-supernatural-oasis-stars-16": {
@@ -4351,12 +4351,12 @@
       "title": "Undaunted Fate of Inescapable Horizons ~ Everlasting Entropy",
       "artist": "Benji Tunez",
       "sourceKind": "curated",
-      "viewCount": 849,
+      "viewCount": 850,
       "likeCount": 25,
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-91444": {
@@ -4369,12 +4369,12 @@
       "title": "Same Nightmare",
       "artist": "黒鳥 feat. 花咲あんな",
       "sourceKind": "touhoudb-fan-original",
-      "viewCount": 11301,
+      "viewCount": 11308,
       "likeCount": 123,
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-sylvysprit-celestial-heaven-collider-01": {
@@ -4392,7 +4392,7 @@
       "commentCount": 14,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-96820": {
@@ -4414,12 +4414,12 @@
       "title": "Gensokyo's Twilight ~ Night of Magic",
       "artist": "Princess Sylvysprit",
       "sourceKind": "curated",
-      "viewCount": 852,
+      "viewCount": 853,
       "likeCount": 52,
       "commentCount": 14,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-102936": {
@@ -4437,7 +4437,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-sylvysprit-celestial-heaven-collider-03": {
@@ -4455,7 +4455,7 @@
       "commentCount": 5,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-112484": {
@@ -4473,7 +4473,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-sylvysprit-celestial-heaven-collider-04": {
@@ -4491,7 +4491,7 @@
       "commentCount": 21,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-113628": {
@@ -4513,12 +4513,12 @@
       "title": "Forbidden from Heaven ~ Gatekeeper of Paradise",
       "artist": "Princess Sylvysprit",
       "sourceKind": "curated",
-      "viewCount": 944,
+      "viewCount": 945,
       "likeCount": 55,
       "commentCount": 10,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-113636": {
@@ -4545,7 +4545,7 @@
       "commentCount": 6,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-8688": {
@@ -4572,7 +4572,7 @@
       "commentCount": 24,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-85218": {
@@ -4590,7 +4590,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-sylvysprit-fraternity-melancholy-01": {
@@ -4608,7 +4608,7 @@
       "commentCount": 21,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-91120": {
@@ -4621,12 +4621,12 @@
       "title": "In Pulse",
       "artist": "AIUEO",
       "sourceKind": "touhoudb-fan-original",
-      "viewCount": 920,
+      "viewCount": 942,
       "likeCount": 19,
       "commentCount": 5,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-sylvysprit-fraternity-melancholy-02": {
@@ -4644,7 +4644,7 @@
       "commentCount": 11,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-91127": {
@@ -4662,7 +4662,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-sylvysprit-fraternity-melancholy-03": {
@@ -4684,12 +4684,12 @@
       "title": "Ubermensch",
       "artist": "Rhyktz",
       "sourceKind": "touhoudb-fan-original",
-      "viewCount": 51118,
-      "likeCount": 1265,
+      "viewCount": 51198,
+      "likeCount": 1267,
       "commentCount": 70,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-sylvysprit-fraternity-melancholy-04": {
@@ -4707,7 +4707,7 @@
       "commentCount": 6,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-91129": {
@@ -4734,7 +4734,7 @@
       "commentCount": 9,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-91131": {
@@ -4761,7 +4761,7 @@
       "commentCount": 7,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-91132": {
@@ -4788,7 +4788,7 @@
       "commentCount": 15,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-91133": {
@@ -4815,7 +4815,7 @@
       "commentCount": 17,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-112737": {
@@ -4842,7 +4842,7 @@
       "commentCount": 6,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-112738": {
@@ -4869,7 +4869,7 @@
       "commentCount": 5,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-113874": {
@@ -4891,12 +4891,12 @@
       "title": "Absence of the Eternal Dawn ~ Meiji Restoration",
       "artist": "Princess Sylvysprit",
       "sourceKind": "curated",
-      "viewCount": 5826,
+      "viewCount": 5829,
       "likeCount": 164,
       "commentCount": 13,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-119005": {
@@ -4918,12 +4918,12 @@
       "title": "Starting an Ordinary Life",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 2104,
+      "viewCount": 2108,
       "likeCount": 77,
       "commentCount": 6,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-119006": {
@@ -4950,7 +4950,7 @@
       "commentCount": 7,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-119007": {
@@ -4972,12 +4972,12 @@
       "title": "I'm More Than Just a Meowing Cat",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 1472,
+      "viewCount": 1473,
       "likeCount": 63,
       "commentCount": 18,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-141873": {
@@ -5004,7 +5004,7 @@
       "commentCount": 6,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-142607": {
@@ -5026,12 +5026,12 @@
       "title": "Welcome to My Game Show ~ Comedic Bonanza!",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 1771,
+      "viewCount": 1772,
       "likeCount": 47,
       "commentCount": 12,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-142610": {
@@ -5058,7 +5058,7 @@
       "commentCount": 2,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-152757": {
@@ -5080,12 +5080,12 @@
       "title": "Nano's Screw Rhapsody ~ Little Robot Maid",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 2118,
+      "viewCount": 2123,
       "likeCount": 58,
       "commentCount": 13,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-153533": {
@@ -5112,7 +5112,7 @@
       "commentCount": 6,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-153534": {
@@ -5134,12 +5134,12 @@
       "title": "Mai's Sutras ~ Immeasurable Devilment",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 1399,
+      "viewCount": 1402,
       "likeCount": 42,
       "commentCount": 11,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-153535": {
@@ -5166,7 +5166,7 @@
       "commentCount": 7,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-153536": {
@@ -5188,12 +5188,12 @@
       "title": "Revenge Without End",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 1956,
+      "viewCount": 1959,
       "likeCount": 43,
       "commentCount": 8,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-153537": {
@@ -5220,7 +5220,7 @@
       "commentCount": 3,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-2597": {
@@ -5242,12 +5242,12 @@
       "title": "A Girl's Laboratory Playground ~ Atomic Playtime!",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 4602,
+      "viewCount": 4611,
       "likeCount": 85,
       "commentCount": 19,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-10302": {
@@ -5274,7 +5274,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-12185": {
@@ -5287,12 +5287,12 @@
       "title": "Burn",
       "artist": "TSF Project",
       "sourceKind": "touhoudb-fan-original",
-      "viewCount": 2420,
+      "viewCount": 2421,
       "likeCount": 13,
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-fantouhou-fabricated-firmament-15": {
@@ -5305,12 +5305,12 @@
       "title": "Last Comer",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 1367,
+      "viewCount": 1370,
       "likeCount": 40,
       "commentCount": 17,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-15756": {
@@ -5332,12 +5332,12 @@
       "title": "All in the Name of Science ~ Research Impetus",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 4252,
+      "viewCount": 4263,
       "likeCount": 57,
       "commentCount": 13,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-16156": {
@@ -5364,7 +5364,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-17346": {
@@ -5386,12 +5386,12 @@
       "title": "Ending an Ordinary Life ~ Good Night",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 1096,
+      "viewCount": 1097,
       "likeCount": 50,
       "commentCount": 4,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-24184": {
@@ -5409,7 +5409,7 @@
       "commentCount": 3,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-fantouhou-naivete-festive-01": {
@@ -5427,7 +5427,7 @@
       "commentCount": 11,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-26867": {
@@ -5445,7 +5445,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-fantouhou-naivete-festive-02": {
@@ -5458,12 +5458,12 @@
       "title": "Legend of a Demon and a Human ~ Ultimate Showdown!",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 2159,
+      "viewCount": 2160,
       "likeCount": 68,
       "commentCount": 10,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-27059": {
@@ -5490,7 +5490,7 @@
       "commentCount": 4,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-27063": {
@@ -5512,12 +5512,12 @@
       "title": "An Unexpected Havoc",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 6565,
+      "viewCount": 6568,
       "likeCount": 191,
       "commentCount": 6,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-27347": {
@@ -5535,7 +5535,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-fantouhou-naivete-soul-02": {
@@ -5548,12 +5548,12 @@
       "title": "A New Day, A New Journey",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 1780,
+      "viewCount": 1781,
       "likeCount": 63,
       "commentCount": 6,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-27348": {
@@ -5580,7 +5580,7 @@
       "commentCount": 16,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-76792": {
@@ -5598,7 +5598,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-fantouhou-naivete-soul-04": {
@@ -5611,12 +5611,12 @@
       "title": "Valley of Dancing Spirits and Youkai",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 1669,
+      "viewCount": 1673,
       "likeCount": 48,
       "commentCount": 7,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-76793": {
@@ -5634,7 +5634,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-fantouhou-naivete-soul-05": {
@@ -5647,12 +5647,12 @@
       "title": "Tomfoolery Shenanigans",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 3724,
+      "viewCount": 3725,
       "likeCount": 91,
       "commentCount": 20,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-76795": {
@@ -5670,7 +5670,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-fantouhou-naivete-soul-06": {
@@ -5688,7 +5688,7 @@
       "commentCount": 5,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-76797": {
@@ -5706,7 +5706,7 @@
       "commentCount": 13,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-fantouhou-naivete-soul-07": {
@@ -5719,12 +5719,12 @@
       "title": "Hall of Disharmonious Sounds",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 2035,
+      "viewCount": 2036,
       "likeCount": 64,
       "commentCount": 7,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-78013": {
@@ -5737,12 +5737,12 @@
       "title": "ハルマゲドン　～ The Final Decisive Battle",
       "artist": "深蒼穹",
       "sourceKind": "touhoudb-fan-original",
-      "viewCount": 10264,
-      "likeCount": 210,
+      "viewCount": 10277,
+      "likeCount": 211,
       "commentCount": 8,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-fantouhou-naivete-soul-08": {
@@ -5760,7 +5760,7 @@
       "commentCount": 5,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-78014": {
@@ -5773,12 +5773,12 @@
       "title": "月灯星輝　～ Moon Twinkl and Star Twinkles",
       "artist": "深蒼穹",
       "sourceKind": "touhoudb-fan-original",
-      "viewCount": 2418,
+      "viewCount": 2419,
       "likeCount": 85,
       "commentCount": 4,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-fantouhou-naivete-soul-09": {
@@ -5796,7 +5796,7 @@
       "commentCount": 12,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-78015": {
@@ -5809,12 +5809,12 @@
       "title": "薄命なる少女　～ Sentence of death",
       "artist": "深蒼穹",
       "sourceKind": "touhoudb-fan-original",
-      "viewCount": 4343,
+      "viewCount": 4344,
       "likeCount": 97,
       "commentCount": 2,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-fantouhou-naivete-soul-10": {
@@ -5827,12 +5827,12 @@
       "title": "Unilluminated Spirits of Illusionary",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 1581,
+      "viewCount": 1584,
       "likeCount": 43,
       "commentCount": 3,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-78783": {
@@ -5850,7 +5850,7 @@
       "commentCount": 4,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-fantouhou-naivete-soul-11": {
@@ -5863,12 +5863,12 @@
       "title": "Heart of a Lost Girl ~ Unbroken Feline",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 3288,
+      "viewCount": 3291,
       "likeCount": 57,
       "commentCount": 8,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-78785": {
@@ -5881,12 +5881,12 @@
       "title": "フラクタルロリータ",
       "artist": "或兎",
       "sourceKind": "touhoudb-fan-original",
-      "viewCount": 4532,
+      "viewCount": 4537,
       "likeCount": 111,
       "commentCount": 6,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-fantouhou-naivete-soul-12": {
@@ -5899,12 +5899,12 @@
       "title": "Raging Heartbeat",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 2243,
+      "viewCount": 2244,
       "likeCount": 56,
       "commentCount": 9,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-78797": {
@@ -5922,7 +5922,7 @@
       "commentCount": 6,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-fantouhou-naivete-soul-13": {
@@ -5935,12 +5935,12 @@
       "title": "Unimaginable Phantasmic Power ~ Dream Pavement",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 7469,
+      "viewCount": 7476,
       "likeCount": 176,
       "commentCount": 18,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-82179": {
@@ -5962,12 +5962,12 @@
       "title": "Ultimate Dream Pavement",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 4427,
+      "viewCount": 4432,
       "likeCount": 98,
       "commentCount": 12,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-83346": {
@@ -5994,7 +5994,7 @@
       "commentCount": 5,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-90769": {
@@ -6016,12 +6016,12 @@
       "title": "Through the Deep Mystical Flora",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 2464,
+      "viewCount": 2465,
       "likeCount": 48,
       "commentCount": 10,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-91090": {
@@ -6043,12 +6043,12 @@
       "title": "A Heart that Blooms Once ~ Romantic Floret",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 4234,
+      "viewCount": 4240,
       "likeCount": 87,
       "commentCount": 16,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-93226": {
@@ -6075,7 +6075,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-101481": {
@@ -6102,7 +6102,7 @@
       "commentCount": 4,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-101902": {
@@ -6124,12 +6124,12 @@
       "title": "An Unknown Red-Colored Arrival",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 1450,
+      "viewCount": 1451,
       "likeCount": 42,
       "commentCount": 2,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-106537": {
@@ -6151,12 +6151,12 @@
       "title": "A Red Evening with Fairies and Youkais",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 786,
+      "viewCount": 787,
       "likeCount": 28,
       "commentCount": 7,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-112430": {
@@ -6178,12 +6178,12 @@
       "title": "Bright Feathers ~ Little Sparrow",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 1930,
+      "viewCount": 1931,
       "likeCount": 65,
       "commentCount": 4,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-112699": {
@@ -6201,7 +6201,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-fantouhou-crimson-acropolis-04": {
@@ -6214,12 +6214,12 @@
       "title": "Reddish Misty Lake",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 880,
+      "viewCount": 882,
       "likeCount": 28,
       "commentCount": 2,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-112700": {
@@ -6237,7 +6237,7 @@
       "commentCount": 25,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "fan-album-fantouhou-crimson-acropolis-05": {
@@ -6250,12 +6250,12 @@
       "title": "Deep Mermaid of a Far Land",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 2051,
+      "viewCount": 2055,
       "likeCount": 48,
       "commentCount": 7,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-112709": {
@@ -6277,12 +6277,12 @@
       "title": "Bizzare Nights",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 945,
+      "viewCount": 946,
       "likeCount": 40,
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-112720": {
@@ -6304,12 +6304,12 @@
       "title": "Delusion Hibernation",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 2140,
+      "viewCount": 2143,
       "likeCount": 48,
       "commentCount": 4,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-112749": {
@@ -6331,12 +6331,12 @@
       "title": "A Hope Above the Dark Mist",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 885,
+      "viewCount": 888,
       "likeCount": 32,
       "commentCount": 4,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-112751": {
@@ -6358,12 +6358,12 @@
       "title": "Dark Cinderella",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 2881,
+      "viewCount": 2886,
       "likeCount": 61,
       "commentCount": 5,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-112766": {
@@ -6385,12 +6385,12 @@
       "title": "Melancholic Mansion of the Past",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 1787,
+      "viewCount": 1788,
       "likeCount": 43,
       "commentCount": 3,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-113579": {
@@ -6412,12 +6412,12 @@
       "title": "Red-Bloody Service ~ Maid Business",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 4078,
+      "viewCount": 4080,
       "likeCount": 80,
       "commentCount": 8,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-113966": {
@@ -6439,12 +6439,12 @@
       "title": "Soaring to the Red Full Moon",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 1228,
+      "viewCount": 1229,
       "likeCount": 40,
       "commentCount": 5,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-113978": {
@@ -6466,12 +6466,12 @@
       "title": "Agony, Bloodshed and Misdirection ~ Divine Revolution",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 3682,
+      "viewCount": 3684,
       "likeCount": 87,
       "commentCount": 10,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-114015": {
@@ -6493,12 +6493,12 @@
       "title": "A Reconciliation",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 457,
+      "viewCount": 458,
       "likeCount": 24,
       "commentCount": 3,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-114016": {
@@ -6520,12 +6520,12 @@
       "title": "Insane Whereabouts ~ Senseless Pathway",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 2371,
+      "viewCount": 2373,
       "likeCount": 59,
       "commentCount": 5,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-114017": {
@@ -6547,12 +6547,12 @@
       "title": "Aggression and Grim ~ Demon's Offensive",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 2468,
+      "viewCount": 2470,
       "likeCount": 64,
       "commentCount": 2,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-114019": {
@@ -6574,12 +6574,12 @@
       "title": "End of a Deal",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 712,
+      "viewCount": 714,
       "likeCount": 42,
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-114020": {
@@ -6606,7 +6606,7 @@
       "commentCount": 8,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-114021": {
@@ -6628,12 +6628,12 @@
       "title": "An Eastern Story from Another World",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 3106,
+      "viewCount": 3108,
       "likeCount": 124,
       "commentCount": 10,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-114023": {
@@ -6660,7 +6660,7 @@
       "commentCount": 6,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-114024": {
@@ -6687,7 +6687,7 @@
       "commentCount": 3,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-114025": {
@@ -6714,7 +6714,7 @@
       "commentCount": 0,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-114026": {
@@ -6736,12 +6736,12 @@
       "title": "Illusionary Trickster",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 2952,
+      "viewCount": 2953,
       "likeCount": 70,
       "commentCount": 11,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-114032": {
@@ -6768,7 +6768,7 @@
       "commentCount": 3,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-114425": {
@@ -6795,7 +6795,7 @@
       "commentCount": 8,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-114426": {
@@ -6822,7 +6822,7 @@
       "commentCount": 5,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-114427": {
@@ -6849,7 +6849,7 @@
       "commentCount": 4,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-114429": {
@@ -6876,7 +6876,7 @@
       "commentCount": 4,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-114430": {
@@ -6898,12 +6898,12 @@
       "title": "Thousand Years Old Samurai Sword ~ Shimmering Blade",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 2055,
+      "viewCount": 2056,
       "likeCount": 55,
       "commentCount": 12,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-114431": {
@@ -6930,7 +6930,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-114443": {
@@ -6952,12 +6952,12 @@
       "title": "Warrior God who Wields Countless Swords ~ Immense Battle Force",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 3624,
+      "viewCount": 3625,
       "likeCount": 78,
       "commentCount": 12,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-115069": {
@@ -6984,7 +6984,7 @@
       "commentCount": 9,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-115070": {
@@ -7011,7 +7011,7 @@
       "commentCount": 8,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-115071": {
@@ -7038,7 +7038,7 @@
       "commentCount": 6,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-115072": {
@@ -7060,12 +7060,12 @@
       "title": "Behold as Hinode has Come Again",
       "artist": "FanTouhouMusic",
       "sourceKind": "curated",
-      "viewCount": 1940,
+      "viewCount": 1941,
       "likeCount": 62,
       "commentCount": 12,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-115073": {
@@ -7164,7 +7164,7 @@
       "commentCount": 7,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-115078": {
@@ -7209,7 +7209,7 @@
       "commentCount": 1,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-115080": {
@@ -7249,12 +7249,12 @@
       "title": "Illusive Place where Cats Live ~ Dreaming Shrine",
       "artist": "Anyatsu",
       "sourceKind": "curated",
-      "viewCount": 3498,
+      "viewCount": 3499,
       "likeCount": 148,
       "commentCount": 19,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-115082": {
@@ -7281,7 +7281,7 @@
       "commentCount": 2,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-115083": {
@@ -7321,12 +7321,12 @@
       "title": "A Castle Once Called Home",
       "artist": "RickyRister, Sodacat",
       "sourceKind": "curated",
-      "viewCount": 1718,
+      "viewCount": 1719,
       "likeCount": 57,
       "commentCount": 5,
       "embeddable": true,
       "privacyStatus": "public",
-      "statsUpdatedAt": "2026-10-09T22:53:58.100Z",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
       "videoUnavailable": false
     },
     "tdb-115085": {
@@ -7409,16 +7409,1141 @@
       "sourceKind": "touhoudb-fan-original",
       "matchedAt": "2026-10-09T22:53:56.758Z",
       "matcherVersion": 4
+    },
+    "fan-album-cd-forgotten-fables-17": {
+      "videoId": "",
+      "score": 0,
+      "title": "Sinking into the Setting Sun",
+      "artist": "RickyRister, Compound",
+      "sourceKind": "curated",
+      "matchedAt": "2026-10-10T21:58:58.818Z",
+      "matcherVersion": 4
+    },
+    "tdb-115267": {
+      "videoId": "",
+      "score": 0,
+      "title": "過去への補遺",
+      "artist": "辰凪トキコ",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:58:59.169Z",
+      "matcherVersion": 4
+    },
+    "fan-album-cd-forgotten-fables-18": {
+      "videoId": "",
+      "score": 0,
+      "title": "Dawn of Our Beginning ~ Illusion or Reality?",
+      "artist": "Broken Moon, Purulixir, Eren, Sodacat, Ocha",
+      "sourceKind": "curated",
+      "matchedAt": "2026-10-10T21:58:59.539Z",
+      "matcherVersion": 4
+    },
+    "tdb-115268": {
+      "videoId": "",
+      "score": 0,
+      "title": "アウグスタイアポ二コルム",
+      "artist": "辰凪トキコ",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:58:59.799Z",
+      "matcherVersion": 4
+    },
+    "fan-album-cd-forgotten-fables-19": {
+      "videoId": "",
+      "score": 0,
+      "title": "Grim Reaper's Distorted Wife ~ Song of Despair",
+      "artist": "Ocha, Eren",
+      "sourceKind": "curated",
+      "matchedAt": "2026-10-10T21:59:00.096Z",
+      "matcherVersion": 4
+    },
+    "tdb-116621": {
+      "videoId": "",
+      "score": 0,
+      "title": "カーニバルシンドローム",
+      "artist": "Wanwan",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:00.483Z",
+      "matcherVersion": 4
+    },
+    "fan-album-cd-forgotten-fables-20": {
+      "videoId": "",
+      "score": 0,
+      "title": "Fable's End",
+      "artist": "Ocha, Sodacat",
+      "sourceKind": "curated",
+      "matchedAt": "2026-10-10T21:59:00.783Z",
+      "matcherVersion": 4
+    },
+    "tdb-116643": {
+      "videoId": "",
+      "score": 0,
+      "title": "霊魂の宴と生命の祭",
+      "artist": "Wanwan",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:01.077Z",
+      "matcherVersion": 4
+    },
+    "fan-album-cd-forgotten-fables-21": {
+      "videoId": "BV5rkWRtSa4",
+      "score": 16,
+      "videoTitle": "Naufal Syachreza, Naykilla - Sayonara (Lirik Lagu)",
+      "channelTitle": "LIRIK LAGU TERBARU",
+      "matchedAt": "2026-10-10T21:59:01.441Z",
+      "matcherVersion": 4,
+      "title": "Sayonara",
+      "artist": "ivanlychkov",
+      "sourceKind": "curated",
+      "viewCount": 29145,
+      "likeCount": 133,
+      "commentCount": 8,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "tdb-116644": {
+      "videoId": "",
+      "score": 0,
+      "title": "解離不能のトランスミグレーション",
+      "artist": "Wanwan",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:01.700Z",
+      "matcherVersion": 4
+    },
+    "fan-album-team-eclectic-empyreal-garden-01": {
+      "videoId": "",
+      "score": 0,
+      "title": "Main Menu Theme: Overcast Carnival Day",
+      "artist": "Plazzap",
+      "sourceKind": "curated",
+      "matchedAt": "2026-10-10T21:59:02.080Z",
+      "matcherVersion": 4
+    },
+    "tdb-116645": {
+      "videoId": "",
+      "score": 0,
+      "title": "桜花詠草　～ The Forgotten History",
+      "artist": "Wanwan",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:02.343Z",
+      "matcherVersion": 4
+    },
+    "fan-album-team-eclectic-empyreal-garden-02": {
+      "videoId": "m9Rz9EX79Pk",
+      "score": 24.5,
+      "videoTitle": "(Touhou Style | 東方天界雲 ~ Empyreal Garden of Amusements) A Waterlogged Hibernation",
+      "channelTitle": "Tempura - Ocha",
+      "matchedAt": "2026-10-10T21:59:02.646Z",
+      "matcherVersion": 4,
+      "title": "A Waterlogged Hibernation",
+      "artist": "Ocha",
+      "sourceKind": "curated",
+      "viewCount": 3806,
+      "likeCount": 113,
+      "commentCount": 11,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "tdb-116665": {
+      "videoId": "6ft69UVO44A",
+      "score": 20.5,
+      "videoTitle": "ツインフロウス - By Wanwan",
+      "channelTitle": "Fetch",
+      "matchedAt": "2026-10-10T21:59:02.959Z",
+      "matcherVersion": 4,
+      "title": "ツインフロウス",
+      "artist": "Wanwan",
+      "sourceKind": "touhoudb-fan-original",
+      "viewCount": 819,
+      "likeCount": 6,
+      "commentCount": 2,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "fan-album-team-eclectic-empyreal-garden-03": {
+      "videoId": "kFblZ-1jZLY",
+      "score": 17.5,
+      "videoTitle": "EGoA Numako&#39;s Theme: Exiled Psalakantha",
+      "channelTitle": "doremy",
+      "matchedAt": "2026-10-10T21:59:03.311Z",
+      "matcherVersion": 4,
+      "title": "Exiled Psalakantha",
+      "artist": "SlowBro",
+      "sourceKind": "curated",
+      "viewCount": 30317,
+      "likeCount": 606,
+      "commentCount": 37,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "tdb-116667": {
+      "videoId": "",
+      "score": 0,
+      "title": "夢世界 ～ the World of Lie",
+      "artist": "Wanwan",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:03.631Z",
+      "matcherVersion": 4
+    },
+    "fan-album-team-eclectic-empyreal-garden-04": {
+      "videoId": "fIytiXoIKtk",
+      "score": 17.5,
+      "videoTitle": "EGoA Stage 2 Theme : The Silent River Below the Sunless Sky",
+      "channelTitle": "thuban",
+      "matchedAt": "2026-10-10T21:59:03.926Z",
+      "matcherVersion": 4,
+      "title": "The Silent River Below the Sunless Sky",
+      "artist": "Eren",
+      "sourceKind": "curated",
+      "viewCount": 1409,
+      "likeCount": 12,
+      "commentCount": 3,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "tdb-116700": {
+      "videoId": "",
+      "score": 0,
+      "title": "神と人と見捨てられた子羊",
+      "artist": "Wanwan",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:04.185Z",
+      "matcherVersion": 4
+    },
+    "fan-album-team-eclectic-empyreal-garden-05": {
+      "videoId": "GFnFYBhZtlk",
+      "score": 24.5,
+      "videoTitle": "[Touhou Style Original] Iwabami’s Theme - Blue Shadow of Aggrandizement",
+      "channelTitle": "PumpkinPielex",
+      "matchedAt": "2026-10-10T21:59:04.515Z",
+      "matcherVersion": 4,
+      "title": "Blue Shadow of Aggrandizement",
+      "artist": "PumpkinPielex",
+      "sourceKind": "curated",
+      "viewCount": 1464,
+      "likeCount": 32,
+      "commentCount": 4,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "tdb-116701": {
+      "videoId": "",
+      "score": 0,
+      "title": "ディラペデイティデンド",
+      "artist": "Wanwan",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:04.788Z",
+      "matcherVersion": 4
+    },
+    "fan-album-team-eclectic-empyreal-garden-06": {
+      "videoId": "TsrTTv5EHus",
+      "score": 11.5,
+      "videoTitle": "[Touhou Style Original] Dance and Melodies Amidst Pleasant Fragrances",
+      "channelTitle": "Benji Tunez",
+      "matchedAt": "2026-10-10T21:59:05.114Z",
+      "matcherVersion": 4,
+      "title": "Dances and Melodies Amidst Fragrant Fields",
+      "artist": "Benji Tunez",
+      "sourceKind": "curated",
+      "viewCount": 726,
+      "likeCount": 33,
+      "commentCount": 5,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "tdb-116702": {
+      "videoId": "",
+      "score": 0,
+      "title": "水瓶に降り注ぐ星々",
+      "artist": "Wanwan",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:05.396Z",
+      "matcherVersion": 4
+    },
+    "fan-album-team-eclectic-empyreal-garden-07": {
+      "videoId": "Yu8Fqjtptm8",
+      "score": 20.5,
+      "videoTitle": "[Touhou Style Original] Unparalleled Grace ~ Heavenly Terpsichorean",
+      "channelTitle": "Compound!",
+      "matchedAt": "2026-10-10T21:59:05.725Z",
+      "matcherVersion": 4,
+      "title": "Unparalleled Grace ~ Heavenly Terpsichorean",
+      "artist": "Benji Tunez, Compound",
+      "sourceKind": "curated",
+      "viewCount": 7438,
+      "likeCount": 220,
+      "commentCount": 16,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "tdb-116703": {
+      "videoId": "",
+      "score": 0,
+      "title": "仰ぎ見るは天空の大地",
+      "artist": "Wanwan",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:06.029Z",
+      "matcherVersion": 4
+    },
+    "fan-album-team-eclectic-empyreal-garden-08": {
+      "videoId": "O71FvXpzSbg",
+      "score": 24.5,
+      "videoTitle": "【東方天界雲 ～ Empyreal Garden of Amusements】Stage 4 Theme: Symposium of Nebulas",
+      "channelTitle": "Plazzap",
+      "matchedAt": "2026-10-10T21:59:06.378Z",
+      "matcherVersion": 4,
+      "title": "Symposium of Nebulas",
+      "artist": "Plazzap",
+      "sourceKind": "curated",
+      "viewCount": 3480,
+      "likeCount": 70,
+      "commentCount": 5,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "tdb-116704": {
+      "videoId": "",
+      "score": 0,
+      "title": "未来に抱いて　～ Ordinary Girl",
+      "artist": "Wanwan",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:06.684Z",
+      "matcherVersion": 4
+    },
+    "fan-album-team-eclectic-empyreal-garden-09": {
+      "videoId": "CTNBC-xu3pk",
+      "score": 10.5,
+      "videoTitle": "(Touhou Style | 東方天界雲 ~ Empyreal Garden of Amusements) An Okeanid-Sylph&#39;s Sky Embodiment",
+      "channelTitle": "Tempura - Ocha",
+      "matchedAt": "2026-10-10T21:59:06.990Z",
+      "matcherVersion": 4,
+      "title": "An Okeanid-Sylph's Sky Embodiment",
+      "artist": "Ocha, Plazzap",
+      "sourceKind": "curated",
+      "viewCount": 14938,
+      "likeCount": 282,
+      "commentCount": 19,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "tdb-116739": {
+      "videoId": "",
+      "score": 0,
+      "title": "光と闇のコントラスト",
+      "artist": "Wanwan",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:07.268Z",
+      "matcherVersion": 4
+    },
+    "fan-album-team-eclectic-empyreal-garden-10": {
+      "videoId": "jnKrRRXKvxQ",
+      "score": 24.5,
+      "videoTitle": "[Touhou Style / EGoA Stage 5 theme] Starlit Ceremony of Paradise",
+      "channelTitle": "Benji Tunez",
+      "matchedAt": "2026-10-10T21:59:07.582Z",
+      "matcherVersion": 4,
+      "title": "Starlit Ceremony of Paradise",
+      "artist": "Benji Tunez",
+      "sourceKind": "curated",
+      "viewCount": 7780,
+      "likeCount": 220,
+      "commentCount": 16,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "tdb-116740": {
+      "videoId": "",
+      "score": 0,
+      "title": "古書娘の怪異譚　～fantastic and romantic",
+      "artist": "緋子望",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:07.826Z",
+      "matcherVersion": 4
+    },
+    "fan-album-team-eclectic-empyreal-garden-11": {
+      "videoId": "8FOPGSzKfkE",
+      "score": 24.5,
+      "videoTitle": "【東方天界雲 ～ Empyreal Garden of Amusements】Stage 5 Boss: The Kindreds Intertwined by One Undying Nexus",
+      "channelTitle": "Plazzap",
+      "matchedAt": "2026-10-10T21:59:08.113Z",
+      "matcherVersion": 4,
+      "title": "The Kindreds Intertwined by One Undying Nexus",
+      "artist": "Plazzap",
+      "sourceKind": "curated",
+      "viewCount": 7536,
+      "likeCount": 173,
+      "commentCount": 22,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "tdb-116741": {
+      "videoId": "",
+      "score": 0,
+      "title": "懐古的未來科學　～Retrospective New Era",
+      "artist": "緋子望",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:08.398Z",
+      "matcherVersion": 4
+    },
+    "fan-album-team-eclectic-empyreal-garden-12": {
+      "videoId": "ZD7FeZpBGLc",
+      "score": 17.5,
+      "videoTitle": "EGoA Stage 6 Theme: Jubilant Fields in Elysium",
+      "channelTitle": "doremy",
+      "matchedAt": "2026-10-10T21:59:08.707Z",
+      "matcherVersion": 4,
+      "title": "Jubilant Fields in Elysium",
+      "artist": "SlowBro, Plazzap",
+      "sourceKind": "curated",
+      "viewCount": 10036,
+      "likeCount": 147,
+      "commentCount": 8,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "tdb-116742": {
+      "videoId": "",
+      "score": 0,
+      "title": "哀しきゴシックドール",
+      "artist": "緋子望, よいやみ",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:08.990Z",
+      "matcherVersion": 4
+    },
+    "fan-album-team-eclectic-empyreal-garden-13": {
+      "videoId": "uq2luHhekDc",
+      "score": 23,
+      "videoTitle": "【東​方​天​界​雲 ～ Empyreal Garden of Amusements】The Ostracized Seraphic Emissary ~ Zeal Hauler",
+      "channelTitle": "Armand",
+      "matchedAt": "2026-10-10T21:59:09.279Z",
+      "matcherVersion": 4,
+      "title": "The Ostracized Seraphic Emissary ~ Zeal Hauler",
+      "artist": "Armand",
+      "sourceKind": "curated",
+      "viewCount": 26127,
+      "likeCount": 443,
+      "commentCount": 28,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "tdb-116744": {
+      "videoId": "",
+      "score": 0,
+      "title": "龍神飛至蓬莱山",
+      "artist": "緋子望",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:09.559Z",
+      "matcherVersion": 4
+    },
+    "fan-album-team-eclectic-empyreal-garden-14": {
+      "videoId": "fSn6T1uAHwk",
+      "score": 17.5,
+      "videoTitle": "EGoA Ending Theme : Slumbering Mists",
+      "channelTitle": "thuban",
+      "matchedAt": "2026-10-10T21:59:09.835Z",
+      "matcherVersion": 4,
+      "title": "Slumbering Mists",
+      "artist": "Compound, Plazzap",
+      "sourceKind": "curated",
+      "viewCount": 598,
+      "likeCount": 5,
+      "commentCount": 3,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "tdb-116749": {
+      "videoId": "",
+      "score": 0,
+      "title": "水底の極光",
+      "artist": "緋子望",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:10.125Z",
+      "matcherVersion": 4
+    },
+    "fan-album-team-eclectic-empyreal-garden-15": {
+      "videoId": "Jz3coVhpqXE",
+      "score": 17.5,
+      "videoTitle": "EGoA Player&#39;s Score Theme:  Symposium of Nebulas ~ Evergreen Mix",
+      "channelTitle": "doremy",
+      "matchedAt": "2026-10-10T21:59:10.416Z",
+      "matcherVersion": 4,
+      "title": "Symposium of Nebulas (Evergreen Mix)",
+      "artist": "PumpkinPielex",
+      "sourceKind": "curated",
+      "viewCount": 1154,
+      "likeCount": 24,
+      "commentCount": 0,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "tdb-116756": {
+      "videoId": "",
+      "score": 0,
+      "title": "モノノケドリームトレイン",
+      "artist": "緋子望",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:10.672Z",
+      "matcherVersion": 4
+    },
+    "fan-album-team-eclectic-empyreal-garden-16": {
+      "videoId": "pEi9iRE9kwg",
+      "score": 24.5,
+      "videoTitle": "[Touhou Style Original] EGoA Ex Stage Theme: The Leafage Blanket Shields Them from the Storm",
+      "channelTitle": "PumpkinPielex",
+      "matchedAt": "2026-10-10T21:59:11.014Z",
+      "matcherVersion": 4,
+      "title": "The Leafage Blanket Shields Them From the Storm",
+      "artist": "PumpkinPielex",
+      "sourceKind": "curated",
+      "viewCount": 1251,
+      "likeCount": 26,
+      "commentCount": 10,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "tdb-117207": {
+      "videoId": "",
+      "score": 0,
+      "title": "東方漆陽光 ６面ボス曲",
+      "artist": "深蒼穹",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:11.316Z",
+      "matcherVersion": 4
+    },
+    "fan-album-team-eclectic-empyreal-garden-17": {
+      "videoId": "2iu4BO_afqs",
+      "score": 24.5,
+      "videoTitle": "[Touhou Style Original] Hosaki’s Theme - Protector of the Evergreen Dharma ~ Floral Guardian",
+      "channelTitle": "PumpkinPielex",
+      "matchedAt": "2026-10-10T21:59:11.689Z",
+      "matcherVersion": 4,
+      "title": "Protector of the Evergreen Dharma ~ Floral Guardian",
+      "artist": "PumpkinPielex",
+      "sourceKind": "curated",
+      "viewCount": 4645,
+      "likeCount": 82,
+      "commentCount": 8,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "tdb-117350": {
+      "videoId": "",
+      "score": 0,
+      "title": "潮の香る縁日に",
+      "artist": "VCLN",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:11.970Z",
+      "matcherVersion": 4
+    },
+    "fan-album-team-eclectic-empyreal-garden-18": {
+      "videoId": "XwWVruggsfc",
+      "score": 17.5,
+      "videoTitle": "EGoA Extra Ending Theme: Words From an Evergreen Authority",
+      "channelTitle": "doremy",
+      "matchedAt": "2026-10-10T21:59:12.250Z",
+      "matcherVersion": 4,
+      "title": "Words From An Evergreen Authority",
+      "artist": "PumpkinPielex",
+      "sourceKind": "curated",
+      "viewCount": 1093,
+      "likeCount": 21,
+      "commentCount": 1,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "tdb-117359": {
+      "videoId": "",
+      "score": 0,
+      "title": "東方赤河童 ～ interactive dream",
+      "artist": "153",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:12.507Z",
+      "matcherVersion": 4
+    },
+    "fan-album-team-eclectic-empyreal-garden-19": {
+      "videoId": "oIgni18ZyaE",
+      "score": 24.5,
+      "videoTitle": "(Touhou Style | 東方天界雲 ~ Empyreal Garden of Amusements) A World of Festivity and Joyful Treasures",
+      "channelTitle": "Tempura - Ocha",
+      "matchedAt": "2026-10-10T21:59:12.856Z",
+      "matcherVersion": 4,
+      "title": "A World of Festivity and Joyful Treasures",
+      "artist": "Ocha",
+      "sourceKind": "curated",
+      "viewCount": 2935,
+      "likeCount": 78,
+      "commentCount": 7,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "tdb-117367": {
+      "videoId": "",
+      "score": 0,
+      "title": "夢幻世界のディストピア",
+      "artist": "めいす",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:13.167Z",
+      "matcherVersion": 4
+    },
+    "fan-album-team-eclectic-empyreal-garden-20": {
+      "videoId": "",
+      "score": 0,
+      "title": "Blue Shadow of Aggrandizement (Beta Mix)",
+      "artist": "PumpkinPielex",
+      "sourceKind": "curated",
+      "matchedAt": "2026-10-10T21:59:13.485Z",
+      "matcherVersion": 4
+    },
+    "tdb-117368": {
+      "videoId": "",
+      "score": 0,
+      "title": "愉快な悪魔っ娘　～Sweet Devil",
+      "artist": "シュクル",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:13.805Z",
+      "matcherVersion": 4
+    },
+    "fan-album-team-eclectic-empyreal-garden-21": {
+      "videoId": "",
+      "score": 0,
+      "title": "The Leafage Blanked Sheilds Them From the Storm ~ Piano Mix",
+      "artist": "PumpkinPielex",
+      "sourceKind": "curated",
+      "matchedAt": "2026-10-10T21:59:14.155Z",
+      "matcherVersion": 4
+    },
+    "tdb-117601": {
+      "videoId": "_hvJhmQAcjY",
+      "score": 19,
+      "videoTitle": "命脈は天に勝たず V2 / RioClare",
+      "channelTitle": "リオクレア",
+      "matchedAt": "2026-10-10T21:59:14.488Z",
+      "matcherVersion": 4,
+      "title": "命脈は天に勝たず",
+      "artist": "わほた",
+      "sourceKind": "touhoudb-fan-original",
+      "viewCount": 136,
+      "likeCount": 4,
+      "commentCount": 1,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "fan-album-cd-falsified-wonders-01": {
+      "videoId": "",
+      "score": 0,
+      "title": "宝飾のプロビデンス (Jeweled Providence)",
+      "artist": "Ocha",
+      "sourceKind": "curated",
+      "matchedAt": "2026-10-10T21:59:14.874Z",
+      "matcherVersion": 4
+    },
+    "tdb-117602": {
+      "videoId": "",
+      "score": 0,
+      "title": "斎刺結界の罪犬",
+      "artist": "わほた",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:15.135Z",
+      "matcherVersion": 4
+    },
+    "fan-album-cd-falsified-wonders-02": {
+      "videoId": "PbtyWYHot5s",
+      "score": 7.5,
+      "videoTitle": "FalseWonder Stage 1 Theme: The Blue Horizon Leads to the Future",
+      "channelTitle": "A Frog's Various Uploads",
+      "matchedAt": "2026-10-10T21:59:15.471Z",
+      "matcherVersion": 4,
+      "title": "青い空際が未来に連れる (The Blue Horizon Leads to the Future)",
+      "artist": "bebn legg",
+      "sourceKind": "curated",
+      "viewCount": 188,
+      "likeCount": 1,
+      "commentCount": 0,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "tdb-117611": {
+      "videoId": "",
+      "score": 0,
+      "title": "ススキヤコウ",
+      "artist": "わほた",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:15.817Z",
+      "matcherVersion": 4
+    },
+    "fan-album-cd-falsified-wonders-03": {
+      "videoId": "obsVBTE9Mrk",
+      "score": 7.5,
+      "videoTitle": "FalseWonder Hydra&#39;s Theme: Dragon Stone Luminarie",
+      "channelTitle": "A Frog's Various Uploads",
+      "matchedAt": "2026-10-10T21:59:16.147Z",
+      "matcherVersion": 4,
+      "title": "龍石ルミナリエ (Dragon Stone Luminarie)",
+      "artist": "lunar_eyes, Ocha",
+      "sourceKind": "curated",
+      "viewCount": 319,
+      "likeCount": 4,
+      "commentCount": 1,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "tdb-117624": {
+      "videoId": "",
+      "score": 0,
+      "title": "月夜に咲く桔梗",
+      "artist": "わほた",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:16.474Z",
+      "matcherVersion": 4
+    },
+    "fan-album-cd-falsified-wonders-04": {
+      "videoId": "",
+      "score": 0,
+      "title": "ゲラゲラのドブ川 (A Guffawing Gutter)",
+      "artist": "Kale Hakaido, Ocha",
+      "sourceKind": "curated",
+      "matchedAt": "2026-10-10T21:59:16.772Z",
+      "matcherVersion": 4
+    },
+    "tdb-117625": {
+      "videoId": "",
+      "score": 0,
+      "title": "幻想が終わる時まで",
+      "artist": "わほた",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:17.197Z",
+      "matcherVersion": 4
+    },
+    "fan-album-cd-falsified-wonders-05": {
+      "videoId": "",
+      "score": 0,
+      "title": "サルドニック・プリンセス (Sardonic Princess)",
+      "artist": "Plazzap",
+      "sourceKind": "curated",
+      "matchedAt": "2026-10-10T21:59:17.490Z",
+      "matcherVersion": 4
+    },
+    "tdb-117715": {
+      "videoId": "",
+      "score": 0,
+      "title": "ざわめく幻想都市",
+      "artist": "きさらぎ",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:17.806Z",
+      "matcherVersion": 4
+    },
+    "fan-album-cd-falsified-wonders-06": {
+      "videoId": "",
+      "score": 0,
+      "title": "エッシャーの終わりなき用水路 (Escher's Endless Aqueduct)",
+      "artist": "Wookywok",
+      "sourceKind": "curated",
+      "matchedAt": "2026-10-10T21:59:18.106Z",
+      "matcherVersion": 4
+    },
+    "tdb-117716": {
+      "videoId": "_uxp6M1W0Pc",
+      "score": 21.5,
+      "videoTitle": "東方無街條一面道中「一直線の小道　～ Straight loose.（Remaster）」",
+      "channelTitle": "きさらぎ",
+      "matchedAt": "2026-10-10T21:59:18.400Z",
+      "matcherVersion": 4,
+      "title": "一直線の小道 ～Straight loose",
+      "artist": "きさらぎ",
+      "sourceKind": "touhoudb-fan-original",
+      "viewCount": 1811,
+      "likeCount": 35,
+      "commentCount": 4,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "fan-album-cd-falsified-wonders-07": {
+      "videoId": "",
+      "score": 0,
+      "title": "検査因の見る目 (The Inspector's Discerning Gazes) 〜 Qigong Aquaterrean",
+      "artist": "Tuck V",
+      "sourceKind": "curated",
+      "matchedAt": "2026-10-10T21:59:18.701Z",
+      "matcherVersion": 4
+    },
+    "tdb-117717": {
+      "videoId": "",
+      "score": 0,
+      "title": "幸せなレイジネス",
+      "artist": "きさらぎ",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:18.936Z",
+      "matcherVersion": 4
+    },
+    "fan-album-cd-falsified-wonders-08": {
+      "videoId": "Hl2eZcAEKho",
+      "score": 7.5,
+      "videoTitle": "FalseWonder Stage 4 Theme: On the Other Side of Where the Road Originates",
+      "channelTitle": "A Frog's Various Uploads",
+      "matchedAt": "2026-10-10T21:59:19.304Z",
+      "matcherVersion": 4,
+      "title": "道源郷の向こう側に (On the Other Side of Where the Road Originates)",
+      "artist": "bebn legg",
+      "sourceKind": "curated",
+      "viewCount": 200,
+      "likeCount": 2,
+      "commentCount": 1,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "tdb-117718": {
+      "videoId": "",
+      "score": 0,
+      "title": "ポジティブ妖怪録",
+      "artist": "きさらぎ",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:19.591Z",
+      "matcherVersion": 4
+    },
+    "fan-album-cd-falsified-wonders-09": {
+      "videoId": "",
+      "score": 0,
+      "title": "デーモン不変条件 (Daemon Invariant)",
+      "artist": "Eikishiki, camu, Tuck V",
+      "sourceKind": "curated",
+      "matchedAt": "2026-10-10T21:59:19.865Z",
+      "matcherVersion": 4
+    },
+    "tdb-117724": {
+      "videoId": "",
+      "score": 0,
+      "title": "外界と幻想の狭間に",
+      "artist": "きさらぎ",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:20.212Z",
+      "matcherVersion": 4
+    },
+    "fan-album-cd-falsified-wonders-10": {
+      "videoId": "",
+      "score": 0,
+      "title": "液晶画面に映るアーコロジー (Arcology On a Liquid Crystal Display)",
+      "artist": "Wookywok",
+      "sourceKind": "curated",
+      "matchedAt": "2026-10-10T21:59:20.484Z",
+      "matcherVersion": 4
+    },
+    "tdb-117728": {
+      "videoId": "",
+      "score": 0,
+      "title": "虚ろに煌めく有象無象",
+      "artist": "きさらぎ, 緋子望",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:20.783Z",
+      "matcherVersion": 4
+    },
+    "fan-album-cd-falsified-wonders-11": {
+      "videoId": "YrMz3EaWEyc",
+      "score": 7.5,
+      "videoTitle": "FalseWonder Tamawo &amp; Makoto&#39;s Theme: A Bird Taking Flight Burns its Bridges ~ Disconnected Network",
+      "channelTitle": "A Frog's Various Uploads",
+      "matchedAt": "2026-10-10T21:59:21.210Z",
+      "matcherVersion": 4,
+      "title": "立つ鳥絆を断つ (A Bird Taking Flight Burns its Bridges) ～ Disconnected Network",
+      "artist": "Plazzap",
+      "sourceKind": "curated",
+      "viewCount": 469,
+      "likeCount": 7,
+      "commentCount": 3,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "tdb-119031": {
+      "videoId": "QGB7t-V-3T8",
+      "score": 18.5,
+      "videoTitle": "【東方風自作曲】暮春の辻風",
+      "channelTitle": "風雲",
+      "matchedAt": "2026-10-10T21:59:21.527Z",
+      "matcherVersion": 4,
+      "title": "暮春の辻風",
+      "artist": "風雲",
+      "sourceKind": "touhoudb-fan-original",
+      "viewCount": 1188,
+      "likeCount": 33,
+      "commentCount": 0,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "fan-album-cd-falsified-wonders-12": {
+      "videoId": "6W5wLXvWFj4",
+      "score": 7.5,
+      "videoTitle": "FalseWonder Final Stage Theme: Eternal Nostalgia for the Last Day on Earth",
+      "channelTitle": "A Frog's Various Uploads",
+      "matchedAt": "2026-10-10T21:59:21.881Z",
+      "matcherVersion": 4,
+      "title": "地球での最終日の永遠な懐かしさ (Eternal Nostalgia for the Last Day on Earth)",
+      "artist": "Tuck V",
+      "sourceKind": "curated",
+      "viewCount": 257,
+      "likeCount": 2,
+      "commentCount": 1,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "tdb-119098": {
+      "videoId": "",
+      "score": 0,
+      "title": "無想城 ～ roar of the devil",
+      "artist": "よいやみ",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:22.200Z",
+      "matcherVersion": 4
+    },
+    "fan-album-cd-falsified-wonders-13": {
+      "videoId": "_O64hzW540M",
+      "score": 7.5,
+      "videoTitle": "FalseWonder Minakami&#39;s Theme: Absolute Value of the Infinite Sacred Capital ~ Integral Utopia",
+      "channelTitle": "A Frog's Various Uploads",
+      "matchedAt": "2026-10-10T21:59:22.592Z",
+      "matcherVersion": 4,
+      "title": "無限聖都の絶対値 (Absolute Value of the Infinite Sacred Capital) ～ Integral Utopia",
+      "artist": "Ocha, Plazzap, lunar_eyes, bebn legg",
+      "sourceKind": "curated",
+      "viewCount": 823,
+      "likeCount": 10,
+      "commentCount": 9,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "tdb-120201": {
+      "videoId": "Db5zZgknR5w",
+      "score": 21.5,
+      "videoTitle": "【東方風自作曲】7300のマレディクトゥム ～ Inevitable Day.",
+      "channelTitle": "古明地かなで",
+      "matchedAt": "2026-10-10T21:59:22.935Z",
+      "matcherVersion": 4,
+      "title": "7300のマレディクトゥム　～ Inevitable Day.",
+      "artist": "古明地かなで",
+      "sourceKind": "touhoudb-fan-original",
+      "viewCount": 2185,
+      "likeCount": 79,
+      "commentCount": 9,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "fan-album-cd-falsified-wonders-14": {
+      "videoId": "",
+      "score": 0,
+      "title": "彗星のベンベン (Cometary Benben)",
+      "artist": "Ocha",
+      "sourceKind": "curated",
+      "matchedAt": "2026-10-10T21:59:23.258Z",
+      "matcherVersion": 4
+    },
+    "tdb-120849": {
+      "videoId": "",
+      "score": 0,
+      "title": "翠影の森　～ Verdurous Wind",
+      "artist": "プリズム",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:23.512Z",
+      "matcherVersion": 4
+    },
+    "fan-album-cd-falsified-wonders-15": {
+      "videoId": "8SfyODjJhpM",
+      "score": 7.5,
+      "videoTitle": "FalseWonder Shieko&#39;s Theme: Wonderland Expansion Protocol ~ Universal Elimination Fallacy",
+      "channelTitle": "A Frog's Various Uploads",
+      "matchedAt": "2026-10-10T21:59:23.798Z",
+      "matcherVersion": 4,
+      "title": "不思議の国の拡張プロトコル (Wonderland Expansion Protocol) ～ Universal Elimination Fallacy",
+      "artist": "lunar_eyes, Ocha",
+      "sourceKind": "curated",
+      "viewCount": 932,
+      "likeCount": 11,
+      "commentCount": 4,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "tdb-120851": {
+      "videoId": "",
+      "score": 0,
+      "title": "嘯風ストリーム",
+      "artist": "プリズム",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:24.188Z",
+      "matcherVersion": 4
+    },
+    "fan-album-cd-falsified-wonders-16": {
+      "videoId": "yU7oA8_NUPk",
+      "score": 7.5,
+      "videoTitle": "FalseWonder Ending Theme: At the Limit of Divine Providence",
+      "channelTitle": "A Frog's Various Uploads",
+      "matchedAt": "2026-10-10T21:59:24.543Z",
+      "matcherVersion": 4,
+      "title": "神のプロビデンスの極限に (At the Limit of Divine Providence)",
+      "artist": "bebn legg",
+      "sourceKind": "curated",
+      "viewCount": 110,
+      "likeCount": 1,
+      "commentCount": 0,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "tdb-120859": {
+      "videoId": "",
+      "score": 0,
+      "title": "風吹く森の冒険譚",
+      "artist": "プリズム",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:24.835Z",
+      "matcherVersion": 4
+    },
+    "fan-album-cd-falsified-wonders-17": {
+      "videoId": "CCKOrZjk098",
+      "score": 7.5,
+      "videoTitle": "FalseWonder Staff Roll Theme: The Starry Sky Beyond the Tricornered Fantasy",
+      "channelTitle": "A Frog's Various Uploads",
+      "matchedAt": "2026-10-10T21:59:25.188Z",
+      "matcherVersion": 4,
+      "title": "さんかく幻想の外側は星空 (The Starry Sky Beyond the Tricornered Fantasy)",
+      "artist": "Ocha",
+      "sourceKind": "curated",
+      "viewCount": 159,
+      "likeCount": 1,
+      "commentCount": 1,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "tdb-120880": {
+      "videoId": "DhsQ0O0C7Ck",
+      "score": 8.5,
+      "videoTitle": "【東方風自作曲アレンジ】フラクタルロリータ 【凹山Ver 】",
+      "channelTitle": "凹山",
+      "matchedAt": "2026-10-10T21:59:25.542Z",
+      "matcherVersion": 4,
+      "title": "2面ボス戦のような曲を作ってみた",
+      "artist": "凹山",
+      "sourceKind": "touhoudb-fan-original",
+      "viewCount": 1489,
+      "likeCount": 32,
+      "commentCount": 3,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "fan-album-cd-falsified-wonders-18": {
+      "videoId": "",
+      "score": 0,
+      "title": "デーモン不変条件 (Daemon Invariant) (SMW arr.)",
+      "artist": "bebn legg",
+      "sourceKind": "curated",
+      "matchedAt": "2026-10-10T21:59:25.785Z",
+      "matcherVersion": 4
+    },
+    "tdb-120881": {
+      "videoId": "",
+      "score": 0,
+      "title": "湖上に輝く月",
+      "artist": "凹山",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:26.070Z",
+      "matcherVersion": 4
+    },
+    "fan-album-cd-falsified-wonders-19": {
+      "videoId": "LCMauQUGcDA",
+      "score": 14.5,
+      "videoTitle": "[東方近状況] 不思議の国の拡張プロトコル　〜 Universal Elimination Fallacy (Original Ver.)",
+      "channelTitle": "lunar_eyes",
+      "matchedAt": "2026-10-10T21:59:26.389Z",
+      "matcherVersion": 4,
+      "title": "不思議の国の拡張プロトコル ～ Universal Elimination Fallacy (Original Version)",
+      "artist": "lunar_eyes",
+      "sourceKind": "curated",
+      "viewCount": 3978,
+      "likeCount": 120,
+      "commentCount": 12,
+      "embeddable": true,
+      "privacyStatus": "public",
+      "statsUpdatedAt": "2026-10-10T21:59:27.980Z",
+      "videoUnavailable": false
+    },
+    "tdb-121193": {
+      "videoId": "",
+      "score": 0,
+      "title": "寂然の晴れみち　～ Eastern Road",
+      "artist": "こをり",
+      "sourceKind": "touhoudb-fan-original",
+      "matchedAt": "2026-10-10T21:59:26.655Z",
+      "matcherVersion": 4
     }
   },
   "matcherVersion": 4,
-  "viewCountTracks": 307,
+  "viewCountTracks": 342,
   "curatedTotalTracks": 583,
   "dbFanMissingYoutubeTargets": 5384,
-  "curatedCheckedTracks": 295,
-  "curatedMatchedTracks": 250,
-  "curatedViewCountTracks": 250,
-  "dbFanFallbackChecked": 233,
-  "dbFanFallbackMatched": 57,
-  "dbFanFallbackViewCountTracks": 57
+  "curatedCheckedTracks": 340,
+  "curatedMatchedTracks": 279,
+  "curatedViewCountTracks": 279,
+  "dbFanFallbackChecked": 278,
+  "dbFanFallbackMatched": 63,
+  "dbFanFallbackViewCountTracks": 63
 }
