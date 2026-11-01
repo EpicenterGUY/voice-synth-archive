@@ -2,11 +2,11 @@
   "schema": 3,
   "source": "TouhouDB",
   "api": "https://touhoudb.com/api",
-  "generatedAt": "2026-10-25T21:06:50.581Z",
-  "totalCount": 189855,
-  "indexed": 189855,
+  "generatedAt": "2026-11-01T22:18:31.880Z",
+  "totalCount": 190129,
+  "indexed": 190129,
   "shardSize": 1000,
-  "shardCount": 190,
+  "shardCount": 191,
   "files": [
     {
       "file": "shard-000.json",
@@ -956,65 +956,70 @@
     {
       "file": "shard-189.json",
       "start": 189000,
-      "count": 855
+      "count": 1000
+    },
+    {
+      "file": "shard-190.json",
+      "start": 190000,
+      "count": 129
     }
   ],
   "counts": {
     "original": 593,
-    "fanOriginal": 8109,
-    "arrangement": 181153,
-    "mediaCandidates": 73376,
+    "fanOriginal": 8131,
+    "arrangement": 181405,
+    "mediaCandidates": 74734,
     "categories": {
       "official-original": 593,
-      "other-related": 4475,
-      "arrangement": 146019,
-      "rearrangement": 13629,
-      "short-version": 2333,
-      "cover": 2853,
-      "instrumental": 10029,
-      "remaster": 1815,
-      "fan-original": 8109
+      "other-related": 4507,
+      "arrangement": 146174,
+      "rearrangement": 13661,
+      "short-version": 2334,
+      "cover": 2868,
+      "instrumental": 10045,
+      "remaster": 1816,
+      "fan-original": 8131
     },
     "categoryMediaCandidates": {
       "official-original": 557,
-      "other-related": 735,
-      "arrangement": 59702,
-      "rearrangement": 5227,
-      "short-version": 564,
-      "cover": 691,
-      "instrumental": 1349,
-      "remaster": 661,
-      "fan-original": 3890
+      "other-related": 742,
+      "arrangement": 60633,
+      "rearrangement": 5429,
+      "short-version": 570,
+      "cover": 735,
+      "instrumental": 1391,
+      "remaster": 688,
+      "fan-original": 3989
     },
     "categoryYoutubeCandidates": {
       "official-original": 554,
-      "other-related": 481,
-      "arrangement": 47751,
-      "rearrangement": 4256,
-      "short-version": 416,
-      "cover": 629,
-      "instrumental": 971,
-      "remaster": 488,
-      "fan-original": 2714
+      "other-related": 488,
+      "arrangement": 48714,
+      "rearrangement": 4465,
+      "short-version": 423,
+      "cover": 673,
+      "instrumental": 1013,
+      "remaster": 515,
+      "fan-original": 2813
     },
     "categoryViewTracks": {
-      "official-original": 550,
-      "other-related": 482,
-      "arrangement": 46728,
-      "rearrangement": 4132,
-      "short-version": 351,
-      "cover": 612,
-      "instrumental": 933,
-      "remaster": 463,
-      "fan-original": 2594
+      "official-original": 551,
+      "other-related": 489,
+      "arrangement": 47726,
+      "rearrangement": 4343,
+      "short-version": 358,
+      "cover": 656,
+      "instrumental": 977,
+      "remaster": 490,
+      "fan-original": 2705
     }
   },
   "providers": {
-    "youtube": 66026,
-    "niconico": 10747,
+    "youtube": 68968,
+    "niconico": 10749,
     "bandcamp": 12805,
-    "soundcloud": 4333,
-    "bilibili": 775,
+    "soundcloud": 4334,
+    "bilibili": 777,
     "piapro": 11
   },
   "allowedProviders": [
@@ -1027,32 +1032,32 @@
   ],
   "viewCoverage": {
     "providers": {
-      "youtube": 64057,
-      "niconico": 563,
-      "bilibili": 11
+      "youtube": 67017,
+      "niconico": 565,
+      "bilibili": 8
     },
     "candidates": {
-      "youtube": 65838,
-      "niconico": 9514,
-      "soundcloud": 3615,
+      "youtube": 68778,
+      "niconico": 9516,
+      "soundcloud": 3616,
       "piapro": 7,
-      "bilibili": 767,
+      "bilibili": 769,
       "bandcamp": 12409
     },
     "ratios": {
-      "youtube": 0.9729487529997873,
-      "niconico": 0.05917595122976666,
+      "youtube": 0.9743958824042572,
+      "niconico": 0.05937368642286675,
       "soundcloud": 0,
       "piapro": 0,
-      "bilibili": 0.014341590612777053,
+      "bilibili": 0.010403120936280884,
       "bandcamp": 0
     },
-    "tracks": 56845,
-    "media": 64631,
+    "tracks": 58295,
+    "media": 67590,
     "youtubeKeyConfigured": true,
     "popularityEligible": true,
     "mode": "youtube-major",
-    "rankedTracks": 56845,
+    "rankedTracks": 58295,
     "supportedProviders": [
       "youtube",
       "niconico",
@@ -1070,7 +1075,7 @@
   "lookup": {
     "path": "lookup",
     "bucketSize": 1000,
-    "bucketCount": 200,
+    "bucketCount": 201,
     "format": "[id,q,s,qp,sp,qi,si,qv,sv,vt,vm,vp,vc,dc,dsc,da,dm,viewMedia]"
   },
   "ranking": {
