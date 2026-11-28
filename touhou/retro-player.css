@@ -200,3 +200,6 @@ html[data-skin="station"] .player-shell.player-song-mode:not(.is-mini) .station-
   .player-extras-hint{display:none}
 }
 @media(prefers-reduced-motion:reduce){.player-extras-arrow{transition:none!important}}
+
+/* Preserve native hidden state for unavailable source and PiP controls. */
+.player-shell:not(.is-mini) .player-controls [hidden]{display:none!important}
