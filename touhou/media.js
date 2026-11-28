@@ -87,6 +87,8 @@ class TouhouMediaPlayer{
     this.stationAlbum=document.getElementById("stationPlayerAlbum");
     this.stationSource=document.getElementById("stationPlayerSource");
     this.stationQueue=document.getElementById("stationPlayerQueue");
+    this.drawer=document.getElementById("playerExtras");
+    this.nextTitle=document.getElementById("retroNextTitle");
     this.artwork=document.getElementById("playerArtwork");
     this.miniArt=document.getElementById("playerMiniArt");
     this.ambient=document.getElementById("playerAmbient");
@@ -225,7 +227,11 @@ class TouhouMediaPlayer{
     return media;
   }
   play(track,queue){
-    if(!track||!this.selectPlayableMedia(track))return false;
+    if(!track)return false;
+    // Every fresh song opens as a pocket MP3, while Video remains one tap away.
+    this.visualMode="song";
+    if(this.drawer)this.drawer.open=false;
+    if(!this.selectPlayableMedia(track))return false;
     if(this.youtubeMode==="youtube"&&track.media?.provider==="youtube"){
       return this.openYoutubePremium(track);
     }
@@ -491,6 +497,10 @@ class TouhouMediaPlayer{
     if(this.stationAlbum)this.stationAlbum.textContent=this.current.album||this.current.work||this.current.role||"TOUHOU STATION";
     if(this.stationSource)this.stationSource.textContent=(this.current.media?.provider||"stream").toUpperCase();
     if(this.stationQueue)this.stationQueue.textContent="QUEUE "+(this.index>=0?String(this.index+1).padStart(2,"0"):"--")+"/"+(this.queue.length?String(this.queue.length).padStart(2,"0"):"--");
+    if(this.nextTitle){
+      const next=this.queue[this.index+1];
+      this.nextTitle.textContent=next?.title?"NEXT  →  "+next.title:"재생목록 · 곡 순위 · 가사 · 상세 정보";
+    }
   }
   setTab(tab){
     this.activeTab=["lyrics","info"].includes(tab)?tab:"related";
@@ -643,6 +653,8 @@ class TouhouMediaPlayer{
     if(!Number.isInteger(index)||index<0||index>=this.queue.length||index===this.index)return false;
     const mini=this.shell.classList.contains("is-mini");
     this.index=index;this.current=this.queue[index];this.playing=true;
+    this.visualMode="song";
+    if(this.drawer)this.drawer.open=false;
     this.renderCurrent(true);
     if(mini)this.minimize();else this.expand();
     return true;
@@ -859,6 +871,8 @@ class TouhouMediaPlayer{
     const next=this.index+dir;if(next<0||next>=this.queue.length)return false;
     const mini=this.shell.classList.contains("is-mini");
     this.index=next;this.current=this.queue[next];this.playing=true;
+    this.visualMode="song";
+    if(this.drawer)this.drawer.open=false;
     this.renderCurrent(true);
     this._pipSync?.();
     if(mini)this.minimize();else if(!fromEnded)this.expand();
