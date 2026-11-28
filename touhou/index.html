@@ -8,8 +8,8 @@
   <meta name="description" content="동방 Project 공식 원곡, 파생곡, 팬 오리지널, 동방풍 음악까지 관계별로 연결해 탐색하고 앱 안에서 영상을 재생하는 음악 탐색 앱.">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icon.svg">
-  <link rel="stylesheet" href="./styles.css?v=0.9.51">
-  <link rel="stylesheet" href="./retro-player.css?v=0.9.51">
+  <link rel="stylesheet" href="./styles.css?v=0.9.52">
+  <link rel="stylesheet" href="./retro-player.css?v=0.9.52">
 </head>
 <body data-view="home">
   <div class="app-shell">
@@ -258,7 +258,7 @@
         <button id="playerHeadClose" aria-label="플레이어 닫기">×</button>
       </div>
       <div class="retro-player-device">
-        <div class="retro-device-brand" aria-hidden="true"><span>TOUHOU DIVE <b>／ POCKET AUDIO</b></span><span class="retro-record-light">PLAY</span></div>
+        <div class="retro-device-brand"><span>TOUHOU DIVE <b>／ POCKET AUDIO</b></span><span class="retro-header-actions"><span class="retro-record-light" aria-hidden="true">PLAY</span><button type="button" class="retro-finish-toggle" id="retroFinishToggle" aria-label="본체 색상 변경" title="본체 색상 변경">SILVER</button></span></div>
       <div class="station-player-face" id="stationPlayerFace" aria-label="MP3 재생 정보">
         <div class="station-player-top"><span>GENSOKYO DIGITAL AUDIO</span><b id="stationPlayerSource">READY</b></div>
         <div class="station-player-screen">
@@ -270,6 +270,10 @@
             <em id="stationPlayerAlbum">STATION MODE</em>
           </div>
           <div class="station-vu" aria-hidden="true"><i style="--n:0"></i><i style="--n:1"></i><i style="--n:2"></i><i style="--n:3"></i><i style="--n:4"></i><i style="--n:5"></i><i style="--n:6"></i><i style="--n:7"></i><i style="--n:8"></i><i style="--n:9"></i><i style="--n:10"></i><i style="--n:11"></i></div>
+          <div class="retro-screen-progress">
+            <div class="retro-screen-time"><span id="retroElapsed">--:--</span><span class="retro-screen-format">♪ DIGITAL AUDIO</span><span id="retroDuration">--:--</span></div>
+            <div class="retro-screen-bar" id="retroScreenProgress" role="progressbar" aria-label="곡 재생 진행률" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="retroProgressFill"></span></div>
+          </div>
         </div>
         <div class="station-player-bottom"><span id="stationPlayerQueue">QUEUE --/--</span><span>MP3 / STREAM</span><span>AUTO</span></div>
       </div>
@@ -342,9 +346,9 @@
     </div>
   </section>
 
-  <script src="./catalog.js?v=0.9.51"></script>
-  <script src="./media.js?v=0.9.51"></script>
-  <script src="./full-index.js?v=0.9.51"></script>
-  <script src="./app.js?v=0.9.51" type="module"></script>
+  <script src="./catalog.js?v=0.9.52"></script>
+  <script src="./media.js?v=0.9.52"></script>
+  <script src="./full-index.js?v=0.9.52"></script>
+  <script src="./app.js?v=0.9.52" type="module"></script>
 </body>
 </html>
