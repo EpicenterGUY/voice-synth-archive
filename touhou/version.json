@@ -1,8 +1,8 @@
 {
-  "version": "0.9.50",
+  "version": "0.9.51",
   "name": "TouhouDive",
   "channel": "alpha",
-  "updated": "2026-10-06",
+  "updated": "2026-11-28",
   "dataset": "TouhouDB-full-sharded-index",
   "features": [
     "ui-rebuild",
@@ -353,6 +353,9 @@
     "touch-search-render-throttle",
     "mode-entry-autoplay",
     "private-video-metadata-filter",
-    "failed-youtube-artwork-purge"
+    "failed-youtube-artwork-purge",
+    "retro-pocket-mp3-player",
+    "collapsible-player-queue-rankings",
+    "next-track-preview"
   ]
 }
