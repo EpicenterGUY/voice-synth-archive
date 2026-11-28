@@ -1,5 +1,5 @@
 {
-  "version": "0.9.51",
+  "version": "0.9.52",
   "name": "TouhouDive",
   "channel": "alpha",
   "updated": "2026-11-28",
@@ -356,6 +356,9 @@
     "failed-youtube-artwork-purge",
     "retro-pocket-mp3-player",
     "collapsible-player-queue-rankings",
-    "next-track-preview"
+    "next-track-preview",
+    "modernized-neo-retro-mp3",
+    "live-lcd-progress-and-time",
+    "switchable-silver-graphite-finish"
   ]
 }
