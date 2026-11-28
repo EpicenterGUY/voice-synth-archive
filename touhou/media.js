@@ -89,6 +89,15 @@ class TouhouMediaPlayer{
     this.stationQueue=document.getElementById("stationPlayerQueue");
     this.drawer=document.getElementById("playerExtras");
     this.nextTitle=document.getElementById("retroNextTitle");
+    this.retroElapsed=document.getElementById("retroElapsed");
+    this.retroDuration=document.getElementById("retroDuration");
+    this.retroProgress=document.getElementById("retroScreenProgress");
+    this.retroProgressFill=document.getElementById("retroProgressFill");
+    this.finishBtn=document.getElementById("retroFinishToggle");
+    let savedFinish="silver";
+    try{savedFinish=localStorage.getItem("touhoudive:player:finish")==="graphite"?"graphite":"silver"}catch(_){}
+    this.setDeviceFinish(savedFinish,false);
+    if(this.finishBtn)this.finishBtn.onclick=()=>this.setDeviceFinish(this.deviceFinish==="silver"?"graphite":"silver",true);
     this.artwork=document.getElementById("playerArtwork");
     this.miniArt=document.getElementById("playerMiniArt");
     this.ambient=document.getElementById("playerAmbient");
@@ -283,7 +292,7 @@ class TouhouMediaPlayer{
     this.source.hidden=this.source.href.endsWith("#");
     this.shell.classList.add("is-active");
     this.shell.hidden=false;
-    this.rankDetailKey="";if(this.rankDetailEl){this.rankDetailEl.hidden=true;this.rankDetailEl.innerHTML=""}this.syncMeta();this.syncArtwork();this.syncStationDisplay();this.syncVisualMode();this.syncControls();this.syncMediaSession();this.renderRankings();this.renderPanels();
+    this.rankDetailKey="";if(this.rankDetailEl){this.rankDetailEl.hidden=true;this.rankDetailEl.innerHTML=""}this.syncTimeline();this.syncMeta();this.syncArtwork();this.syncStationDisplay();this.syncVisualMode();this.syncControls();this.syncMediaSession();this.renderRankings();this.renderPanels();
     window.dispatchEvent(new CustomEvent("touhoudive:player-track",{detail:{trackId:this.current.id,touhoudbId:this.current.touhoudbId||null}}));
     if(provider==="youtube"){
       const expectedTrack=this.current.id,expectedVideo=this.current.media.id;
@@ -464,6 +473,18 @@ class TouhouMediaPlayer{
       const on=this.visualMode==="video";this.videoModeBtn.disabled=!canVideo;this.videoModeBtn.classList.toggle("is-active",on);this.videoModeBtn.setAttribute("aria-selected",on?"true":"false");
     }
   }
+  setDeviceFinish(finish,persist=true){
+    this.deviceFinish=finish==="graphite"?"graphite":"silver";
+    if(this.shell)this.shell.dataset.deviceFinish=this.deviceFinish;
+    if(this.finishBtn){
+      const graphite=this.deviceFinish==="graphite";
+      this.finishBtn.textContent=graphite?"GRAPHITE":"SILVER";
+      this.finishBtn.title="본체 색상 변경";
+      this.finishBtn.setAttribute("aria-label",graphite?"그라파이트 본체 사용 중. 실버로 변경":"실버 본체 사용 중. 그라파이트로 변경");
+      this.finishBtn.setAttribute("aria-pressed",graphite?"true":"false");
+    }
+    if(persist)try{localStorage.setItem("touhoudive:player:finish",this.deviceFinish)}catch(_){}
+  }
   formatTime(sec){
     sec=Math.max(0,Math.floor(Number(sec)||0));
     const m=Math.floor(sec/60),s=sec%60;return m+":"+String(s).padStart(2,"0");
@@ -481,6 +502,11 @@ class TouhouMediaPlayer{
     }else{
       this.seek.value="0";this.elapsed.textContent="--:--";this.duration.textContent="--:--";
     }
+    if(this.retroElapsed)this.retroElapsed.textContent=this.elapsed.textContent;
+    if(this.retroDuration)this.retroDuration.textContent=this.duration.textContent;
+    const progress=ok?Math.max(0,Math.min(100,now/total*100)):0;
+    if(this.retroProgressFill)this.retroProgressFill.style.width=progress+"%";
+    if(this.retroProgress)this.retroProgress.setAttribute("aria-valuenow",String(Math.round(progress)));
   }
   setFavoriteState(on){
     if(this.favoriteBtn)this.favoriteBtn.textContent=on?"♥ 보관됨":"♡ 보관";
